@@ -1,0 +1,57 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+
+    List<TCAssociationTool.Entities.SponsorCategories> lstSponsorCategories = ViewBag.lstSponsorCategories;
+    List<TCAssociationTool.Entities.Sponsors> lstSponsors = ViewBag.lstSponsors;
+
+    var Type = ViewBag.Type;
+
+    var sponsorlocation = System.Configuration.ConfigurationManager.AppSettings["adminimgurl"] + "Sponsors/";   
+
+    ViewBag.Title = "Sponsors - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+}
+<article class="clearfix t-m0 l-h28 t-t-u Impact font26 evesec-tex letespa1 b-m25 tabhorizontal-b-m10 mobile-b-m5">Sponsors<i class="inertitsid-img l-m10 mobile-hide">&nbsp;</i>
+                    
+                </article>
+            @if (lstSponsorCategories != null)
+            {
+                foreach (var SponsorCategory in lstSponsorCategories)
+                {
+                    <article class="t-p40 b-p25">
+                  <article class="clearfix white-bg l-r-m-auto t-b-p10 border-radius50 shadow" style="max-width:390px;">
+                    <h2 class="m0 t-c Montserrat-SemiBold pink-t font20 letespa1 mobile-font16">@SponsorCategory.CategoryName</h2>
+                  </article>
+                </article>
+                    
+                <ul class="clearfix list-pn list-f sponsors-li">
+                    @if (lstSponsors != null && lstSponsors.Count != 0)
+                    {
+                        foreach (var item in lstSponsors)
+                        {
+                            if (item.SponsorCategoryId == SponsorCategory.SponsorCategoryId)
+                            {
+                        <li>
+                            <article class="clearfix position-r overflow-h">
+                                @if (item.RedirectUrl != "")
+                                {
+                                    <a href="@item.RedirectUrl" target="@item.Target">
+                                        <img src="@TCAssociationTool.BLL.Common.ValidateImage((sponsorlocation + item.LogoUrl), sponsorlocation + "no-image.jpg")" class="width100 img-b2 shadow p5" alt="" width="158" height="75" border="0"></a>
+                                }
+                                else
+                                {
+                                    <img src="@TCAssociationTool.BLL.Common.ValidateImage((sponsorlocation + item.LogoUrl), sponsorlocation + "no-image.jpg")" class="width100 img-b2 shadow p5" alt="" width="158" height="75" border="0">
+                                }
+                            </article>
+                        </li>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <h2 class="t-c Lobster-Regular font20 b-p20">No @SponsorCategory.CategoryName Found.</h2>
+                    }
+                </ul>
+                   
+                }
+            }
+    

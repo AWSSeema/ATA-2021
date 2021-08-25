@@ -1,0 +1,49 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+    var heading = "";
+    var desc = "";
+    var dhd = "";
+    TCAssociationTool.Entities.InnerPages innerpage = ViewBag.InnerPage;
+    if (innerpage != null)
+    {
+        heading = innerpage.Heading;
+        desc = innerpage.Description;
+        dhd = TCAssociationTool.BLL.Common.EncodeURL(heading);
+    }
+
+    ViewBag.Title = heading;
+    if (innerpage != null)
+    {
+        ViewBag.Title = (innerpage.PageTitle == "" ? innerpage.Heading + " - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"] : innerpage.PageTitle);
+        ViewBag.MetaDescription = (innerpage.MetaDescription == "" ? innerpage.Heading : innerpage.MetaDescription);
+        ViewBag.MetaKeywords = (innerpage.MetaKeywords == "" ? innerpage.Heading : innerpage.MetaKeywords);
+        ViewBag.heading = innerpage.Heading;
+    }
+    
+}
+
+@if (innerpage != null)
+{
+
+    if (@desc != "")
+    {
+    @Html.Raw(desc.Replace("src=\"Content/images/", "src=\"Content/User/images/").Replace("src=\"/content/", "src=\"" + System.Configuration.ConfigurationManager.AppSettings["adminsiteurl"].ToString() + "Content/").Replace("href=\"Content/images/", "href=\"" + System.Configuration.ConfigurationManager.AppSettings["baseurl"].ToString() + "Content/User/images/").Replace("href=\"/content/", "href=\"" + System.Configuration.ConfigurationManager.AppSettings["adminsiteurl"].ToString() + "Content/"))
+    }
+    else
+    {
+    
+    <h3 class="clearfix m0 AlexBrush-Regular font56 red-t tp10 tabhorizontal-t-p30 tabhorizontal-b-p20 t-c l-h34 mobile-font45 mobile-l-h28 mobile-t-b-p30">Content will update soon...,</h3>
+    }
+}
+else
+{
+    <article class="clearfix t-m0 l-h28 t-t-u Impact font26 evesec-tex letespa1 b-m25 tabhorizontal-b-m10 mobile-b-m5">Update<span class="evered-t"> Soon</span><i class="inertitsid-img l-m10 mobile-hide">&nbsp;</i></article>
+    
+    <h3 class="clearfix m0 AlexBrush-Regular font56 red-t tp10 tabhorizontal-t-p30 tabhorizontal-b-p20 t-c l-h34 mobile-font45 mobile-l-h28 mobile-t-b-p30">Content will update soon...,</h3>
+}
+
+
+
+
+
+

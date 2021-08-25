@@ -1,0 +1,160 @@
+﻿@{
+
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+    Int64 DonationCategoryId = ViewBag.DonationCategoryId;
+    List<TCAssociationTool.Entities.DonationCategories> lstDonationCategories = ViewBag.lstDonationCategories;
+
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#Donations').addClass('active');
+        $('#wDonors').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        PagerClickBind();
+
+    });
+
+    function sortresult(sortcolumn) {
+
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        DetailsBind(1);
+    }
+
+    function DetailsBind(Pageno) {
+
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = $('#txtsearch').val();
+        var DonationCategoryId = $('#DonationCategoryId').val();
+
+        $.ajax({
+            url: '@Url.Action("DonorsList", "Donors")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items, DonationCategoryId: DonationCategoryId },
+            success: function (result) {
+                $('#divDetails').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+    function Delete(DonorId) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteDonor", "Donors")',  // the URL of the controller action method
+                data: { DonorId: DonorId }, // optional data
+                success: function (result) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    DetailsBind($('#hdnPageNo').val());
+                },
+                error: function (req, status, error) {
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $("#divmessage").html(result.data);
+                }
+            });
+        }
+    }
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            DetailsBind($(this).text());
+        });
+    }
+
+    function SearchClear() {
+        $('#txtsearch').val('');
+        DetailsBind(1);
+    }
+    function ClearSearch() {
+        $('#txtsearch').val('');
+        $('#DonationCategoryId').val('');
+        $('#hdnPageNo').val(1);
+        DetailsBind(1);
+    }
+    function DonorStatus(DonorId) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DonorsStatus", "Donors")',  // the URL of the controller action method
+                data: { DonorId: DonorId }, // optional data
+                success: function (result) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    DetailsBind(1);
+                },
+                error: function (req, status, error) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            });
+    }
+    function ExporttoExcel() {
+        window.location.href = "Donors/DonorRegistrationsExportToExcel?& PaymentStatusId=" + $('#PaymentStatusId').val() + " & PaymentMethodId=" + $('#PaymentMethodId').val() + "&Search=" + $('#txtsearch').val() + "&SortColumn=" + $('#hdnsortcolumn').val() + "&SortOrder=" + $('#hdnsortorder').val() + "";
+    }
+
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="UpdatedDate" />
+<input id="hdnsortorder" type="hidden" value="DESC" />
+
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Donors </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active"><i class="fa fa-list-alt"></i> Donors</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+
+<div class="content">
+    <!-- Main content -->
+
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-4 col-sm-6">
+                    <label>Search</label>
+                    <input type="text" placeholder="Name / Email / PhoneNo / TransactionId" name="txtsearch" id="txtsearch" class="form-control" />
+                </div>
+            
+                <div class="col-xs-12 col-lg-8 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <button class="btn btn-primary" type="submit" onclick="DetailsBind(1);">Search</button>
+                    <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
+                    @*<a data-toggle="modal" href="@Url.Action("AddDetails", "Donors")" class="btn btn-danger pull-right">Add Donor</a>*@
+                    <a data-toggle="modal" onclick="ExporttoExcel();" class="btn btn-primary pull-right" style="margin-left:50px;">Export Details to Excel</a>
+                </div>
+            </div>
+        </div>
+        <div id="divDetails" class="box-body table-responsive">
+             @{Html.RenderAction("DonorsList", "Donors");}
+        </div>
+    </div>
+</div>
+
+
+
+

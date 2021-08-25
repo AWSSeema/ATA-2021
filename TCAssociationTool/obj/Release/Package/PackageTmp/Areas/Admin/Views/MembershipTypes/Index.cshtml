@@ -1,0 +1,279 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+}
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#MMembers').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $("#Validity").datepicker({ changeMonth: true, changeYear: true, yearRange: "-10:+10", altFormat: 'mm/dd/yy' });
+        PagerClickBind();
+
+    });
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            MembershipTypeBind($(this).text());
+        });
+    }
+
+
+    function sortresult(sortcolumn) {
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        MembershipTypeBind(1);
+    }
+
+    function Add() {
+        clearMembershipType();
+        $("#AddMembershipType").modal('show');
+        $('#lbltitle').html('Add Membership Type');
+    }
+
+    function clearMembershipType() {
+        $("#MembershipTypeId").val('');
+        $('#MembershipType').val('');
+        $('#spanMembershipType').html('');
+        $('#Price').val('');
+        $('#spanPrice').html('');
+        $("#AddMembershipType").modal('hide');
+        $('#MembershipType').focus().removeClass("red-border");
+        $('#Price').focus().removeClass("red-border");
+    }
+
+    function MembershipTypeBind(Pageno) {
+
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        $.ajax({
+            url: '@Url.Action("MembershipTypesList", "MembershipTypes")',
+            type: 'GET',
+            cache: false,
+            data: {  PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder },
+            success: function (result) {
+                $('#divMembershipType').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+    function MembershipTypeEdit(MembershipTypeId) {
+        $.ajax({
+            url: '@Url.Action("EditMembershipTypes", "MembershipTypes")',
+            type: 'POST',
+            data: { MembershipTypeId: MembershipTypeId },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objMembershipType = result.data;
+                    $('#MembershipTypeId').val(objMembershipType.MembershipTypeId);
+                    $('#MembershipType').val(objMembershipType.MembershipType);
+                    $('#Price').val(objMembershipType.Price);
+                    var Date = Common.ConvertDate(objMembershipType.Validity);
+                    $('#Validity').val(Date);
+                    if (Common.ConvertDate(objMembershipType.Validity) != '1/1/1') {
+                        $('#Validity').show();
+                        var arr = document.getElementsByName('mval');
+                        arr[1].checked = true;
+                        arr[0].checked = false;
+                    }
+                    $('#DisplayOrder').val(objMembershipType.DisplayOrder);
+                    $('#lbltitle').html('Edit Membership Type');
+
+                    $('#MembershipType').focus().removeClass("red-border");
+                    $('#Price').focus().removeClass("red-border");
+                    $('#spanMembershipType').html('');
+                    $('#spanPrice').html('');
+                    $('#Validity').removeClass("red-border");
+                    $('#spanValidity').html('');
+
+                    $("#AddMembershipType").modal('show');
+                }
+                else {
+                    alert(result.data);
+                }
+            }
+        });
+    }
+
+    function MembershipTypeSave() {
+        var objMembershipType = {};
+        objMembershipType.MembershipTypeId = $('#MembershipTypeId').val();
+        objMembershipType.MembershipType = $('#MembershipType').val();
+        objMembershipType.Price = $('#Price').val();
+        objMembershipType.Validity = $('#Validity').val();
+        objMembershipType.DisplayOrder = $('#DisplayOrder').val();
+
+        $.ajax({
+            url: '@Url.Action("AddMembershipTypes", "MembershipTypes")',
+            type: 'POST',
+            data: JSON.stringify(objMembershipType),
+            datatype: "JSON",
+            contentType: 'application/json',
+            success: function (result) {
+                if (result.ok) {
+                    $("#divmessage").html(result.data);
+                    MembershipTypeBind($('#hdnPageNo').val());
+
+                    $("#AddCommitteeCategory").modal("hide");
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+                else {
+                    $("#spanCategoryName").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+    function Delete(MembershipTypeId) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteMembershipTypes", "MembershipTypes")',  // the URL of the controller action method
+                data: { MembershipTypeId: MembershipTypeId }, // optional data
+                success: function (result) {
+                    $("#divmessage").html(result.data);
+                    MembershipTypeBind($('#hdnPageNo').val());
+                },
+                error: function (req, status, error) {
+                    $("#divmessage").html(result.data);
+                }
+            });
+        }
+    }
+
+    function Validate() {
+
+
+         if ($.trim($('#MembershipType').val()) == '') { document.getElementsByName('MembershipType')[0].placeholder = 'Membership Type Required'; $('#MembershipType').focus().addClass("validate"); return false; } else { $('#MembershipType').focus().removeClass("validate"); }
+         if ($.trim($('#Price').val()) == '') { document.getElementsByName('Price')[0].placeholder = 'Price Required'; $('#Price').focus().addClass("validate"); return false; } else { $('#Price').focus().removeClass("validate"); }
+        // if (!IsNumeric($("#Price").val())) { $('#spanPrice').html('Invalid Price.'); $('#Price').focus(); return false; } else { $('#spanPrice').html(''); $('#Price').focus().removeClass("red-border"); }
+         if (!Common.IsNumeric($('#Price').val())) { $('#spanPrice').html('Invalid price.'); $('#Price').focus(); return false; } else { $('#spanPrice').html(''); }
+     
+         var radioButtons = document.getElementsByName('mval');
+        if (radioButtons[1].checked) {
+            if ($.trim($('#Validity').val()) == '') { document.getElementsByName('Validity')[0].placeholder = 'Validity Required'; $('#Validity').focus().addClass("validate"); return false; } else { $('#Validity').focus().removeClass("validate"); }
+        }
+
+        //if ($('#MembershipType').val().trim() == '') { $('#spanMembershipType').html('Required.'); $('#MembershipType').focus().addClass("red-border"); return false; } else { $('#spanMembershipType').html(''); $('#MembershipType').focus().removeClass("red-border"); }
+        //if ($('#Price').val().trim() == '') { $('#spanPrice').html('Required.'); $('#Price').focus().addClass("red-border"); return false; } else { $('#spanPrice').html(''); $('#Price').focus().removeClass("red-border"); }
+        //if (!IsNumeric($("#Price").val())) { $('#spanPrice').html('Invalid Price.'); $('#Price').focus(); return false; } else { $('#spanPrice').html(''); $('#Price').focus().removeClass("red-border"); }
+        //var radioButtons = document.getElementsByName('mval');
+
+        //if (radioButtons[1].checked) {
+        //    if ($('#Validity').val() == '') { $('#spanValidity').html('Required.'); $('#Validity').focus().addClass("red-border"); return false; } else { $('#spanValidity').html(''); $('#Validity').removeClass("red-border"); }
+        //}
+        // if (!Common.IsNumeric($('#Price').val())) { $('#spanPrice').html('Invalid price.'); $('#Price').focus(); return false; } else { $('#spanPrice').html(''); }
+        return true;
+    }
+    function mvalidity() {
+        $('#Validity').show();
+    }
+    function lvalidity() {
+        $('#Validity').hide();
+        $('#Validity').val('');
+    }
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="Validity" />
+<input id="hdnsortorder" type="hidden" value="DESC" />
+
+<div class="content-header">
+    <h1>Membership Types</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active">Membership Types</li>
+    </ol>
+</div>
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage" class="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+    </div>
+    <div class="box">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li><a href="@Url.Action("Index", "Members")">Members</a></li>
+                <li><a class="btn"  href="@Url.Action("Index", "MembersOrders")">Orders</a></li>
+                <li class="active"><a class="btn" href="@Url.Action("Index", "MembershipTypes")">Membership Types</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="box">
+        <!-- /.box-header -->
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-12 col-sm-6">
+                    <a class="btn btn-danger pull-right" onclick="Add();">Add Membership Type</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="divMembershipType" class="box-body table-responsive">
+            @{Html.RenderAction("MembershipTypesList", "MembershipTypes");}
+        </div>
+
+    </div>
+</div>
+
+<div id="AddMembershipType" role="dialog" tabindex="-1" class="modal fade" aria-hidden="true">
+
+    @using (Html.BeginForm("AddMembershipTypes", "MembershipTypes", FormMethod.Post))
+    {
+        <input type="hidden" id="MembershipTypeId" name="MembershipTypeId" value="0" />
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span id="lbltitle"></span></h4>
+                </div>
+                <div class="modal-body validation">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Membership Type :<span class="red-t">*</span></label>
+                            <input type="text" value="" class="form-control" id="MembershipType" name="MembershipType">
+                            <span class="field-validation-error" id="spanMembershipType"></span>
+                        </div>
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Price :<span class="red-t">*</span></label>
+                            <input type="text" value="" class="form-control" onkeypress="return Common.isNumberKey(event);" id="Price" name="Price">
+                            <span class="field-validation-error" id="spanPrice"></span>
+                        </div>
+                        <div class="col-xs-12 col-lg-6">
+                            <label>Display Order </label>
+                            <input type="text" name="DisplayOrder" onkeypress="return Common.isNumberKey(event);" placeholder="DisplayOrder" id="DisplayOrder" value="" class="form-control">
+                            <span id="spanDisplayOrder" class="field-validation-error"></span>
+                        </div>
+                        <div class="col-xs-12 col-lg-6">
+                            <label>Validity :<span class="red-t">*</span></label>
+                            <input type="radio" value="" checked="checked" id="lifetime" name="mval" onclick="lvalidity();">
+                            Life Time
+                    <input type="radio" value="" id="No" name="mval" onclick="mvalidity();">
+                            No
+                    <input type="text" value="" class="form-control t-m10" id="Validity" name="Validity" style="display: none;">
+                            <span class="field-validation-error" id="spanValidity"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="modal-footer clearfix">
+                    <input type="submit" onclick="return Validate()" class="btn btn-danger" value="Submit" />
+                    <a class="btn btn-primary pull-left" onclick=" $('#AddMembershipType').dialog('close')" data-dismiss="modal">Cancel</a>
+                </div>
+            </div>
+        </div>
+          
+    }
+</div>

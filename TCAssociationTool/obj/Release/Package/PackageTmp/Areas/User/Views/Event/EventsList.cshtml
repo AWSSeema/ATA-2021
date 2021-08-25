@@ -1,0 +1,144 @@
+﻿@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+    var Type = ViewBag.Type;
+    var lstEvents = (List<TCAssociationTool.Entities.Events>)ViewBag.Eventslist;
+    var imglocEvent = System.Configuration.ConfigurationManager.AppSettings["adminimgurl"] + "events/banners/";
+}
+
+
+               
+                     <!------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+@*                    @if (lstEvents != null && lstEvents.Count != 0)
+                    {
+
+                        <ul class="clearfix list-pn members-list6 font16 Roboto-Medium letespa1">
+                            @foreach (var item in lstEvents)
+                            {
+
+                                <li><a href="Content/pdf/aidswalk.pdf" target="_blank" class="evesec-tex">@item.EventName</a></li>
+                             }
+                        </ul>
+                    }   
+                  
+                    else
+                    {
+                    <h4 class="font30 Mistral  thickblack-t t-c p100 black-t">No Events Found...</h4>
+                    }*@
+
+
+
+@if (lstEvents != null && lstEvents.Count != 0)
+                     {
+                  <ul class="clearfix b-m0 list-f list-pn evenlis1-li l-r-p2 t-m25 tabhorizontal-t-m10">
+                       @foreach (var item in lstEvents)
+                      {
+                    <li>
+                      <article class="clearfix"> 
+                           @if (item.BannerUrl != null && item.BannerUrl != "")
+                           {
+                               <article style="min-height:212px; max-height:212px; overflow:hidden;">
+                          <a href="@Url.Action("EventDetails", "Event", new { EventName = TCAssociationTool.BLL.Common.EncodeURL(@item.EventName), Type = "upcoming", eid = item.EventId })">
+                          <img src="@(imglocEvent + item.BannerUrl)" alt="@item.EventName" class="width100" width="372" height="212" />
+                          </a>
+                                   </article>
+                           }
+                           else
+                           {
+                              <article style="min-height:212px; max-height:212px; overflow:hidden;">
+                               <a href="@Url.Action("EventDetails", "Event", new { EventName = TCAssociationTool.BLL.Common.EncodeURL(@item.EventName), Type = "upcoming", eid = item.EventId })">
+                          <img src="@(imglocEvent + "no-image.jpg")" alt="@item.EventName" class="width100" width="372" height="212" />
+                          </a> 
+                                  </article>
+                           }
+                        <article class="clearfix p20 mobile-p10"> <a href="@Url.Action("EventDetails", "Event", new { EventName = TCAssociationTool.BLL.Common.EncodeURL(@item.EventName), Type = "upcoming", eid = item.EventId })" class="f-r"> 
+                            <img src="Content/User/images/event-arrow-ico.png" class="t-m10" alt="Profile" width="21" height="15"/> </a>
+                          <h3 class="clearfix m0 l-h10 Montserrat-Regular font14 evetex-t b-p12 t-t-u dis-b">
+                              <span class="l-h20">
+                              @if (item.EventName.Length >= 40)
+                                                                                                              { @Html.Raw(item.EventName.Substring(0, 40))  @("...")}
+                                                                                                              else
+                                                                                                              {@Html.Raw(item.EventName)}
+                                  </span>
+
+                          </h3>
+                          <h4 class="clearfix m0 l-h10 OpenSans font13 evencal-tex t-t-u"><i class="calen-ico r-m8">&nbsp;</i> 
+                              @item.StartDate.ToString("MMM dd/yyyy")</h4>
+                        </article>
+                      </article>
+                    </li> 
+                      }                  
+                  </ul>
+                     }
+                     else{
+<h3 class="clearfix m0 AlexBrush-Regular font56 red-t tp10 tabhorizontal-t-p30 tabhorizontal-b-p20 t-c l-h34 mobile-font45 mobile-l-h28 mobile-t-b-p30">No Events Found...,</h3>
+}
+               
+
+
+@*@if (lstEvents != null && lstEvents.Count != 0)
+{
+    <ul class="clearfix list-pn list-f m0 event-list">
+        @foreach (var item in lstEvents)
+        {
+            <li>
+                <article class="clearfix mobilev-p10 shadow">
+                    <article class="clearfix block-row">
+                        <article class="clearfix left-block5">
+                            <article class="clearfix white-bg mobile-t-c" style="min-height: 170px;">
+                                @if (item.BannerUrl != null && item.BannerUrl != "")
+                                {
+                                    <a href="@Url.Action("EventDetails", "Event", new { EventName = TCAssociationTool.BLL.Common.EncodeURL(@item.EventName), Type = Type, eid = item.EventId })">
+                                        <img src="@(imglocEvent + item.BannerUrl)" class="width100" alt="Event" width="190" height="175" border="0" style="min-height: 170px; max-height:190px;"></a>
+                                }
+                                else
+                                {
+                                    <img src="@(imglocEvent + "no-image.jpg")" alt="@item.EventName" title="@item.EventName" class="width100" width="160" height="104" style="min-height: 170px; max-height:190px;"/>
+                                }
+                            </article>
+                        </article>
+                        <article class="clearfix right-block5">
+                            <article class="clearfix p15 tablet-p15 tabhorizontal-p10">
+                                <h5 class="clearfix font16 muliregular l-h18 gray-t t-m0"><a href="@Url.Action("EventDetails", "Event", new { EventName = TCAssociationTool.BLL.Common.EncodeURL(@item.EventName), Type = Type, eid = item.EventId })">@item.EventName</a>  </h5>
+                                <article class="clearfix ligray-t font12 muliregular" style="line-height: 17px;">
+                                    Event on: <span class="dis-b red1-t font13 muliregular">@if (item.StartDate != DateTime.MinValue && item.EndDate != DateTime.MinValue && (item.EndDate.Date - item.StartDate.Date).Days > 0)
+                                                                                             {
+                                        @Html.Raw(@item.StartDate.ToString("dddd") + " , " + @item.StartDate.ToString("MM/dd/yyyy"))
+                                                      
+                                                                                             }
+                                                                                             else if (item.StartDate != DateTime.MinValue && item.EndDate != DateTime.MinValue)
+                                                                                             {
+                                        @Html.Raw(@item.StartDate.ToString("dddd") + " , " + item.StartDate.ToString("MM/dd/yyyy"))
+                                                                                                 if (item.StartDate.ToString("hh.mm tt") != "12.00 AM")
+                                                                                                 {
+                                        @Html.Raw(" " + @item.StartDate.ToString("hh.mm tt") + " - ")
+                                        @Html.Raw(@item.EndDate.ToString("hh.mm tt"))
+                                                                                                 }
+                                                                                             }
+                                                                                             else
+                                                                                             {
+                                        <span class="black-t">N/A</span>
+                                                                                             }</span>
+                                </article>
+                                <article class="clearfix ligray-t font12 muliregular t-p3" style="line-height: 17px;">Location: <span class="dis-b gray-t font13 OpenSans">@item.Location</span></article>
+                                <article class="clearfix pull-right t-p5"><a href="@Url.Action("EventDetails", "Event", new { EventName = TCAssociationTool.BLL.Common.EncodeURL(@item.EventName), Type = Type, eid = item.EventId })">
+                                    <img src="Content/User/images/event-arrow.png" width="23" height="23" border="0"></a></article>
+                            </article>
+                        </article>
+
+                    </article>
+                </article>
+            </li>
+        }
+    </ul>
+}
+
+else
+{
+<h4 class="font30 Mistral  thickblack-t t-c p100 black-t">No Events Found...</h4>
+}*@

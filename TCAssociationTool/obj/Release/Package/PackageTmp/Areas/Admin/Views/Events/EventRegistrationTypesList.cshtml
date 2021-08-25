@@ -1,0 +1,92 @@
+﻿@{Layout = null;
+  List<TCAssociationTool.Entities.EventRegistrationTypes> lstEventRegistrationTypes = ViewBag.lstEventRegistrationTypes;
+}
+
+ @if (lstEventRegistrationTypes != null && lstEventRegistrationTypes.Count != 0)
+                {
+                    int i = 0;  
+                    <table width="100%" class="table table-bordered table-hover">
+                        <tbody>
+                            <tr>
+                                <th width="20%">Title</th>
+                                <th width="15%">Member Amount</th>
+                                <th width="15%">Non-Member Amount</th>
+                                <th width="15%">Status</th>
+                                <th width="10%">Reg.Count</th>
+                                <th width="15%">Order No</th>
+                                <th width="13%">Action</th>
+                            </tr>
+                            @foreach (var item in lstEventRegistrationTypes)
+                            {
+                                <tr id="view-@item.EventRegistrationTypeId">
+                                    <td width="20%">
+                                        <label>@item.RegistrationTitle</label></td>
+                                    <td width="15%">
+                                        <label>@item.MemberAmount</label></td>
+                                    <td width="15%">
+                                        <label>@item.NonMemberAmount</label></td>
+                                    <td width="15%">
+
+                                        @{
+                                var isactive = "";
+                                var active = "";
+                                var disable = "";
+                                if (item.IsActive == true)
+                                {
+                                    isactive = "Active";
+                                    disable = "style=\"cursor: pointer;\" onclick=\"javascript:EventBeneifitsRegistrationTypesStatus(" + item.EventRegistrationTypeId + ");\"";
+                                }
+                                else
+                                {
+                                    isactive = "Disabled";
+                                    active = "style=\"cursor: pointer;\" onclick=\"javascript:EventBeneifitsRegistrationTypesStatus(" + item.EventRegistrationTypeId + ");\"";
+                                }
+                                            <div class="admin-active">@isactive
+                                                <ul>
+                                                    <li><a @Html.Raw(active) >Active</a></li>
+                                                    <li><a @Html.Raw(disable) >Disabled</a></li>
+                                                </ul>
+                                            </div>      
+                                        }
+
+
+                                    </td>
+                                    <td width="10%">@item.RegCount</td>
+                                    <td width="15%">
+                                        <input type="text" style="width:30px;margin-bottom:0px;" maxlength="3" id="OrderNo@(i)" value="@item.OrderNo" onkeypress ="return Common.isNumberKey(event)"/>
+                                        <a onclick="UpdateDisplayOrder(@i,@item.EventRegistrationTypeId);" title="Update"><i class="fa fa-fw fa-refresh"></i></a>
+
+                                    </td>
+                                    <td width="13%">
+                                    <a onclick="EventRegistrationTypesEdit(@item.EventRegistrationTypeId);" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a title="Delete" onclick="DeleteEventRegistrationType(@item.EventRegistrationTypeId)" class="pagedelete"><i class="fa fa-trash-o"></i></a></td>
+                                </tr> 
+                                
+                                <tr id="edit-@item.EventRegistrationTypeId" style="display:none;">
+                                    <td width="20%">
+                                       <input type="text" class="form-control" id="RegistrationTitle-@item.EventRegistrationTypeId" name="RegistrationTitle-@item.EventRegistrationTypeId" value="@item.RegistrationTitle" /></td>
+                                    <td width="15%">
+                                       <input type="text" class="form-control" id="MemberAmount-@item.EventRegistrationTypeId" name="MemberAmount-@item.EventRegistrationTypeId" value="@item.MemberAmount" /></td>
+                                    <td width="15%">
+                                        <input type="text" class="form-control" id="NonMemberAmount-@item.EventRegistrationTypeId" name="NonMemberAmount-@item.EventRegistrationTypeId" value="@item.NonMemberAmount" /></td>
+                                    <td width="15%"></td>
+                                    <td width="10%">
+
+                                        <input type="text" class="form-control" id="RegCount-@item.EventRegistrationTypeId" name="RegCount-@item.EventRegistrationTypeId" value="@item.RegCount" /></td>
+                                    
+                                    <td width="15%">
+                                        @*<input type="text" style="width:30px;margin-bottom:0px;" maxlength="3" id="OrderNo@(i)" value="@item.OrderNo" onkeypress ="return Common.isNumberKey(event)"/>
+                                        <a onclick="UpdateDisplayOrder(@i,@item.EventRegistrationTypeId);" title="Update"><i class="fa fa-fw fa-refresh"></i></a>*@
+
+                                    </td>
+                                    <td width="13%">
+                                      <a onclick="TypesUpdate(@item.EventRegistrationTypeId);" title="Update">Update</a> </td>
+                                </tr>
+                                
+                                i++;
+                            }
+
+                          
+                        </tbody>
+                    </table>
+                }

@@ -1,0 +1,205 @@
+﻿@model IEnumerable<TCAssociationTool.Entities.PaymentSettings>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    } 
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#Settings').addClass('active');
+        $('#wPaymentSettings').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+    $(document).ready(function () {
+        PagerClickBind();
+        IsActive();
+        $('.closable').append('<span id="lblclose" class="closelink" title="Close"></span>');
+        $('#PaymentSettings').addClass('active');
+        
+    });
+
+    function IsActive() {
+        $('#statustrue').removeClass('active');
+        $('#statusfalse').removeClass('active');
+        if ($('#hdnsorting').val() == "true") {
+            $('#statustrue').addClass('active');
+           
+            $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        }
+        else {
+            $('#statusfalse').addClass('active');
+            $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+            
+        }
+    }
+
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+    function Onload(pageno) {
+        var pageno = Common.Pageno(pageno);
+        var search = $('#txtsearch').val();
+        $.ajax({
+            url: '@Url.Action("PartialList", "PaymentSettings")',
+            type: 'GET',
+            cache: false,
+            data: { search: search, PageNo: $('#hdnPageNo').val(), PageItems: $('#txtitems').val() },
+            success: function (result) {
+                $('#divbind').html(result);
+                PagerClickBind();
+            }
+        });
+        // IsActive();
+    }
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            Onload($(this).text(), $('#hdnsorting').val());
+        });
+    }
+
+    function validate(Id) {
+        if (Id == "") {
+            alert("Please select atleast one Item.");
+            return false;
+        }
+        return true;
+    }
+
+    function PaymentSettingView(Id) {
+        $.ajax({
+            url: '@Url.Action("View", "PaymentSettings")',
+            type: 'POST',
+            data: { Id: Id },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objPaymentSettings = result.data;
+                    $('#lblPaymentMethod').html(objPaymentSettings.PaymentMethod);
+                    $('#lblPaymentUrl').html(objPaymentSettings.PaymentUrl);
+                    $('#lblPaymentEmail').html(objPaymentSettings.PaymentEmail);
+                    $('#lblCurrencyCode').html(objPaymentSettings.CurrencyCode);
+                    $('#lblSuccessUrl').html(objPaymentSettings.SuccessUrl);
+                    $('#lblCancelUrl').html(objPaymentSettings.CancelUrl);
+                    $('#lblNotifyURL').html(objPaymentSettings.NotifyUrl);
+                    $('#lblTokenNo').html(objPaymentSettings.TokenNo);
+                    $('#lblAccountType').html(objPaymentSettings.AccountType);
+                    $('#PaymentSettingView').modal('show');
+                    
+                    $('#vbltitle').html('View Payment Settings');
+
+                }
+                else {
+                    $('#divmessage').val(result.data);
+                }
+            }
+        });
+    } 
+    function SearchClear() {
+        $('#txtsearch').val('');
+        Onload(1);
+    }
+
+</script>
+
+<input type="hidden" id="hdnPageNo" value="1" />
+<input type="hidden" id="hdnPaymentSettingId" value="0" />
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Payment Settings</h1>
+    <ol class="breadcrumb">
+        @if (userRole.Contains("SuperAdmin"))
+        {
+            <li><a href="@Url.Action("Index", "ApplicationSettings")"><i class="fa fa-dashboard"></i>Application Settings</a></li>
+        }        
+        <li class="active"><i class="fa fa-money"></i> Payment Settings</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+             <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-12 col-sm-6">
+                    <a class="btn btn-danger pull-right" href="@Url.Action("Add", "PaymentSettings")">Add  New Settings</a>
+                </div>
+                </div>
+             </div>
+        <div id="divbind" class="box-body table-responsive">
+                       @{Html.RenderAction("PartialList", "PaymentSettings");}
+                    </div>
+</div>
+</div>
+
+<div class="modal fade" id="PaymentSettingView" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><span id="vbltitle"></span></h4>
+            </div>
+            <div class="modal-body validation">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-6">
+                        <label>Payment Method </label>
+                        : <span id="lblPaymentMethod" class="font13 t-t-c"></span>
+                        <br />
+                        <label>Payment Url </label>
+                        : <span id="lblPaymentUrl" class="font13"></span>
+                        <br />
+                        <label>Payment Email </label>
+                        : <span id="lblPaymentEmail" class="font13 t-t-c"></span>
+                        <br />
+                        <label>Currency Code </label>
+                        : <span id="lblCurrencyCode" class="font13 t-t-c"></span>
+                        <br />
+                        <label>Success Url </label>
+                        : <span id="lblSuccessUrl" class="font13 t-t-c"></span>
+                         <br />
+                        <label>Cancel Url </label>
+                        : <span id="lblCancelUrl" class="font13 t-t-c"></span>
+                          <br />
+                        <label>Notify URL </label>
+                        : <span id="lblNotifyURL" class="font13 t-t-c"></span>
+                         <br />
+                        <label>Token No </label>
+                        : <span id="lblTokenNo" class="font13 t-t-c"></span>
+                         <br />
+                        <label>Account Type </label>
+                        : <span id="lblAccountType" class="font13 t-t-c"></span>
+                    </div> 
+                </div>
+            </div>
+            <div class="modal-footer clearfix">
+                <a class="btn btn-primary" data-dismiss="modal" onclick=" $('#PaymentSettingView').dialog('close')">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+

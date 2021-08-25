@@ -1,0 +1,221 @@
+﻿@{
+    ViewBag.Title = "EditMemberOrder";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+    var objMembers = (TCAssociationTool.Entities.Members)ViewBag.objMembers;
+    var lstMembershipType = (List<TCAssociationTool.Entities.MembershipTypes>)objMembers.lstMembershipType;
+    var lstPaymentMethod = (List<TCAssociationTool.Entities.PaymentMethods>)objMembers.lstPaymentMethod;
+    var lstPaymentStatus = (List<TCAssociationTool.Entities.PaymentStatus>)objMembers.lstPaymentStatus;
+    var objMemberOrder = (TCAssociationTool.Entities.MembershipOrders)ViewBag.objMemberOrder;
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#wMembers').addClass('active');
+    });
+
+    function Validate() {
+
+        if ($('#PaymentMethodId').val() == "PayPal") {
+            if ($('#TransactionId').val() == "") { $('#spanTransactionId').html('Required.'); $('#TransactionId').focus().addClass("red-border"); return false; } else { $('#spanTransactionId').html(''); }
+        }
+        return true;
+    }
+
+</script>
+<script type="text/javascript">
+    $(function () {
+        $(".ui-accordion").accordion({
+            collapsible: true,
+            heightStyle: "content"
+        });
+
+        // date picker
+        $(function () {
+            $(function () {
+                $(".datepicker").datepicker({
+                    altField: "#alternate",
+                    altFormat: "DD, d MM, yy"
+                });
+            });
+        });
+    });
+    $(document).ready(function () {
+        $('#MMembers').addClass('active');
+        getamount();
+        $(".Odate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altField: '.Odate', altFormat: 'mm/dd/yy' });
+        $(".Edate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altField: '.Edate', altFormat: 'mm/dd/yy' });
+        $(".Cdate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altField: '.Cdate', altFormat: 'mm/dd/yy' });
+    });
+    function getamount() {
+        var membershipid = $('#MembershipTypeId').val();
+        $.ajax({
+            url: '@Url.Action("EditMembershipTypes", "MembershipTypes")',
+            type: 'POST',
+            data: { MembershipTypeId: membershipid },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objMembershipType = result.data;
+                    $('#payamount').html(objMembershipType.Price);
+                    $('#Amount').val(objMembershipType.Price);
+                    if (objMembershipType.Validity != 0) {
+                        var d = new Date();
+                        d.setMonth((d.getMonth() + 1) + objMembershipType.Validity);
+                        $('#ExpiryDate').val(d.toDateString("MM/dd/yyyy"));
+                    } else { $('#ExpiryDate').val('Life Time'); }
+                }
+                else {
+                    alert(result.data);
+                }
+            }
+        });
+    }
+</script>
+<input type="hidden" value="1" id="hdnRowCount" />
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Edit Member Orders </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")">Home</a></li>
+        <li><a href="@Url.Action("Index", "Members")"><i class="fa fa-user"></i>Members</a></li>
+        <li class="active">Edit Member Orders</li>
+    </ol>
+</div>
+<!-- end breadcumb -->
+<div class="content">
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+
+    <div class="box">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li><a  class="btn" href="@Url.Action("Index", "Members")">Members</a></li>
+                <li class="active"><a href="@Url.Action("Index", "MembersOrders")">Orders</a></li>
+                <li><a class="btn" href="@Url.Action("Index", "MembershipTypes")">Membership Types</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="clearfix sepH_b"></div>
+    @using (Html.BeginForm("UpdateMemberOrder", "MembersOrders", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="hidden" id="MembershipOrderId" name="MembershipOrderId" value="@objMemberOrder.MembershipOrderId" />
+        <input type="hidden" id="MemberId" name="MemberId" value="@objMemberOrder.MemberId" />  
+        <input type="hidden" id="Amount" name="Amount" value="" />  
+   
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Edit Orders</h3>
+                <h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons" role="tab" id="ui-accordion-2-header-0" aria-controls="ui-accordion-2-panel-0" aria-selected="true" tabindex="0"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s"></span><b><a href="@Url.Action("ViewMember", "Members", new { MemberId = objMemberOrder.MemberId })" class='lightview rightmost' data-lightview-group='example' data-lightview-type='iframe' data-lightview-options="width: 800" data-lightview-caption="@objMemberOrder.MemberId">Member Id : @objMemberOrder.MemberId</a></b></h3>
+            </div>
+
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Membership  Type :</label>
+                        <select onchange="getamount();" class="form-control" name="MembershipTypeId" id="MembershipTypeId">
+                            @if (lstMembershipType != null)
+                            {
+                                foreach (var item in lstMembershipType)
+                                { 
+                                <option  @(item.MembershipTypeId == objMemberOrder.MembershipTypeId ? "selected=selected" : "")  value="@item.MembershipTypeId">@item.MembershipType</option>
+                                }
+                            }
+                        </select>
+                        <span class="field-validation-error" id="spanMembershipTypeId"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Transaction Id  :</label>
+                        <input type="text" id="TransactionId" value="@objMemberOrder.TransactionId" class="form-control" name="TransactionId" >
+                        <span class="field-validation-error" id="spanTransactionId"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label class="t-p5">Payment Method :</label>
+                        <select class="form-control" name="PaymentMethodId" id="PaymentMethodId">
+                            @if (lstPaymentMethod != null)
+                            {
+                                <option value="">Select</option>
+                                foreach (var item in lstPaymentMethod)
+                                { 
+                                <option  @(item.PaymentMethodId == objMemberOrder.PaymentMethodId ? "selected=selected" : "")  value="@item.PaymentMethodId">@item.PaymentMethod</option>
+                                }
+                            }
+                        </select>
+                        <span class="field-validation-error" id="spanPaymentMethodId"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Bank Name :</label>
+                        <input type="text" class="form-control" id="BankName" value="@objMemberOrder.BankName" name="BankName" >
+                        <span class="field-validation-error" id="spanBankName"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Expiry Date :</label>
+                        <input type="text" class="form-control" readonly="true" value="@(objMemberOrder.ExpiryDate == DateTime.MinValue ? "" : objMemberOrder.ExpiryDate.ToString("MM/dd/yyyy"))" id="ExpiryDate" name="ExpiryDate" >
+                        <span class="field-validation-error" id="spanExpiryDate"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Payment Status :</label>
+                        <select class="form-control" name="PaymentStatusId" id="PaymentStatusId">
+                            @if (lstPaymentStatus != null)
+                            {
+                                <option value="">Select</option>
+                                foreach (var item in lstPaymentStatus)
+                                { 
+                                <option  @(item.PaymentStatusId == objMemberOrder.PaymentStatusId ? "selected=selected" : "") value="@item.PaymentStatusId">@item.PaymentStatus1</option>
+                                }
+                            }
+                        </select>
+                        <span class="field-validation-error" id="spanState"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <div>
+                            <label>&nbsp;</label>
+                        </div>
+                        <label>Amount :</label>
+                        $ <span id="payamount"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Order Date :</label>
+                        <input type="text" class="form-control Odate" value="@(objMemberOrder.OrderDate == DateTime.MinValue ? "" : objMemberOrder.OrderDate.ToString("MM/dd/yyyy"))" id="OrderDate" name="OrderDate" >
+                        <span class="field-validation-error" id="spanOrderDate"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Cheque No :</label>
+                        <input type="text" class="form-control" value="@objMemberOrder.ChequeNo" id="ChequeNo" name="ChequeNo" >
+                        <span class="field-validation-error"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Cheque Date :</label>
+                        <input type="text" class="form-control Cdate" value="@(objMemberOrder.ChequeDate == DateTime.MinValue ? "" : objMemberOrder.ChequeDate.ToString("MM/dd/yyyy"))" id="ChequeDate" name="ChequeDate" >
+                        <span class="field-validation-error"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Admin Comment :</label>
+                        <textarea type="text" value="" class="form-control" id="AdminComment" name="AdminComment">@objMemberOrder.AdminComment</textarea>
+                        <span class="field-validation-error" id="spanAdminComment"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>User Comment :</label>
+                        <textarea class="form-control" id="UserComment" name="UserComment">@objMemberOrder.UserComment</textarea>
+                        <span class="field-validation-error"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+                        
+                    
+        <!-- end other details form -->
+        <div class="box">
+                <div class="box-body text-right">
+                <input type="submit" value="Update" onclick="return Validate()" name="send" class="btn btn-primary">
+                <a class="btn btn-info" href="@Url.Action("Index", "MembersOrders")">Cancel</a>
+            </div>
+        </div>
+    }
+</div>
+
+

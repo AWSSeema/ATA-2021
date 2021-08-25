@@ -1,0 +1,233 @@
+﻿@{
+    ViewBag.Title = "ViewMember";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    var objMemberDetails = (TCAssociationTool.Entities.Members)ViewBag.objMemberDetails;
+}
+@{var baseurl = System.Configuration.ConfigurationManager.AppSettings["baseurl"];}
+<base href="@(baseurl)" />
+
+<script type="text/javascript">
+    $(function () {
+        $(".ui-accordion").accordion({
+            collapsible: true,
+            heightStyle: "content"
+        });
+
+        // date picker
+        $(function () {
+            $(function () {
+                $(".datepicker").datepicker({
+                    altField: "#alternate",
+                    altFormat: "DD, d MM, yy"
+                });
+            });
+        });
+    });
+    $(document).ready(function () {
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+
+    });
+</script>
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>View Member</h1>
+   <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active">View Member</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<input type="hidden" id="hdnimgvalidate" value="0" />
+<div class="content">
+    <!-- Main content -->
+    <div class="clearfix sepH_b"></div>
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+   
+    <div class="box validation">
+        <div class="box-header">
+            <h3 class="box-title dis-in">Personal Details</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Member Id :<span class="red-t">*</span></label>
+                    @objMemberDetails.SpouseCell
+                </div>
+
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label><strong>Title : </strong></label>
+                    @objMemberDetails.UserName
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label><strong>FirstName : </strong></label>
+                    @objMemberDetails.FirstName
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label><strong>LastName : </strong></label>
+                    @objMemberDetails.LastName
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label><strong>Email : </strong></label>
+                    @(objMemberDetails.Email)
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label><strong>Mobile Phone: </strong></label>
+                    @(objMemberDetails.MobilePhone == "" ? "N/A" : objMemberDetails.MobilePhone)
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label><strong>Preoffession: </strong></label>
+                    @(objMemberDetails.Occupation == "" ? "N/A" : objMemberDetails.Occupation)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- end personal info form -->
+    <div class="box validation">
+        <div class="box-header">
+            <h3 class="box-title dis-in">Spouse Details </h3>
+        </div>
+
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Spouse Name :</label>
+                    @(objMemberDetails.SpouseFirstName == "" ? "N/A" : objMemberDetails.SpouseFirstName)
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label class="t-p5 font12">Profession :</label>
+                    @(objMemberDetails.SpouseOccupation == "" ? "N/A" : objMemberDetails.SpouseOccupation)
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end personal info form -->
+
+    <div class="box validation">
+        <div class="box-header">
+            <h3 class="box-title dis-in">Contact Details </h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>State:</label>
+                    @objMemberDetails.State
+
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Home Phone:</label>
+                    @objMemberDetails.HomePhone
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Country:</label>
+                    @objMemberDetails.City
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>City: </label>
+                    @objMemberDetails.City
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Zip Code:</label>
+                    @objMemberDetails.ZipCode
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label class="t-p5">Mobile Phone </label>
+                    @objMemberDetails.MobilePhone
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label class="t-p5">Reffered By </label>
+                    @objMemberDetails.ReferredBy
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label class="t-p5">Fax </label>
+                    @objMemberDetails.Fax
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Address1:<span class="red-t">*</span></label>
+                    @objMemberDetails.Address
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Address2:<span class="red-t">*</span></label>
+                    @objMemberDetails.Address
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Comments:</label>
+                    @objMemberDetails.Comments
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box validation">
+        <div class="box-header">
+            <h3 class="box-title dis-in">Latest Order Details </h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Membership  Type : <span class="red-t">*</span></label>
+                    @objMemberDetails.objMembershipOrder.MembershipType
+
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Transaction Id  :</label>
+                    @objMemberDetails.objMembershipOrder.TransactionId
+                    <span class="field-validation-error"></span>
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Payment Method :</label>
+                    @objMemberDetails.objMembershipOrder.PaymentMethod
+
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>
+                        Payment By (Already Paid) :
+                    </label>
+                    @objMemberDetails.objMembershipOrder.PaymentBy
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Expiry Date :</label>
+                    @(objMemberDetails.objMembershipOrder.ExpiryDate == DateTime.MinValue ? "LifeTime" : objMemberDetails.objMembershipOrder.ExpiryDate.ToString("MM/dd/yyyy"))
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Cheque No :</label>
+                    @objMemberDetails.objMembershipOrder.ChequeNo
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Amount :</label>
+                    $ @objMemberDetails.objMembershipOrder.Amount<span id="payamount"></span>
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label class="t-p5">Bank Name :</label>
+                    @objMemberDetails.objMembershipOrder.BankName
+                </div>
+
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Payment Status :</label>
+                    @objMemberDetails.objMembershipOrder.PaymentStatus
+                    <span class="field-validation-error"></span>
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Cheque Date :</label>
+                    @(objMemberDetails.objMembershipOrder.ChequeDate == DateTime.MinValue ? "" : objMemberDetails.objMembershipOrder.ChequeDate.ToString("MM/dd/yyyy"))
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>User Comment :</label>
+                    @objMemberDetails.objMembershipOrder.UserComment
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Admin Comment :</label>
+                    @objMemberDetails.objMembershipOrder.AdminComment
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>

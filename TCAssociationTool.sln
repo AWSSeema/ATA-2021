@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCAssociationTool", "TCAssociationTool\TCAssociationTool.csproj", "{A5C521CF-D921-4FCB-A939-740F9D75CFE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCAssociationTool.BLL", "TCAssociationTool.BLL\TCAssociationTool.BLL.csproj", "{F7A0B8C6-5BE7-44A2-8620-D299C80E5864}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCAssociationTool.DAL", "TCAssociationTool.DAL\TCAssociationTool.DAL.csproj", "{6729EF5D-317C-420C-A683-F831F7A8E583}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 4
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://arjunweb-team.visualstudio.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = TCAssociationTool.BLL\\TCAssociationTool.BLL.csproj
+		SccProjectName1 = TCAssociationTool.BLL
+		SccLocalPath1 = TCAssociationTool.BLL
+		SccProjectUniqueName2 = TCAssociationTool.DAL\\TCAssociationTool.DAL.csproj
+		SccProjectName2 = TCAssociationTool.DAL
+		SccLocalPath2 = TCAssociationTool.DAL
+		SccProjectUniqueName3 = TCAssociationTool\\TCAssociationTool.csproj
+		SccProjectName3 = TCAssociationTool
+		SccLocalPath3 = TCAssociationTool
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A5C521CF-D921-4FCB-A939-740F9D75CFE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5C521CF-D921-4FCB-A939-740F9D75CFE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5C521CF-D921-4FCB-A939-740F9D75CFE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5C521CF-D921-4FCB-A939-740F9D75CFE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7A0B8C6-5BE7-44A2-8620-D299C80E5864}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7A0B8C6-5BE7-44A2-8620-D299C80E5864}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7A0B8C6-5BE7-44A2-8620-D299C80E5864}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7A0B8C6-5BE7-44A2-8620-D299C80E5864}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6729EF5D-317C-420C-A683-F831F7A8E583}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6729EF5D-317C-420C-A683-F831F7A8E583}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6729EF5D-317C-420C-A683-F831F7A8E583}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6729EF5D-317C-420C-A683-F831F7A8E583}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

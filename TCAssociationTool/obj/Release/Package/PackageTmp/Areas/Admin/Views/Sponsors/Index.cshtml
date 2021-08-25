@@ -1,0 +1,283 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    List<TCAssociationTool.Entities.SponsorCategories> lstSponsorCategories = ViewBag.lstSponsorCategories;
+
+    var SponsorCategoryId = ViewBag.SponsorCategoryId;
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#Gallery').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('#wSponsors').addClass('active');
+        PagerClickBind();
+    });
+
+    function sortresult(sortcolumn) {
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        Onload(1);
+    }
+
+
+    function Onload(Pageno) {
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = ($.trim($('#txtsearch').val()));
+        var SponsorCategoryId = $('#SponsorCategoryId1').val();
+
+        $.ajax({
+            url: '@Url.Action("SponsorsList", "Sponsors")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items, SponsorCategoryId: SponsorCategoryId },
+            success: function (result) {
+                $('#divSponsors').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            Onload($(this).text());
+        });
+    }
+
+    function EditSponsor(Id) {
+        $.ajax({
+            url: '@Url.Action("EditSponsor", "Sponsors")',
+            type: 'POST',
+            data: { SponsorId: Id },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objSponsor = result.data;
+                    $('#RedirectUrl').val(objSponsor.RedirectUrl);
+                    $('#DisplayOrder').val(objSponsor.DisplayOrder);
+                    $('#SponsorCategoryId').val(objSponsor.SponsorCategoryId);
+                    $('#Target').val(objSponsor.Target);
+                    $('#SponsorId').val(objSponsor.SponsorId);
+                    $('#AddSponsors').modal("show");
+                    $('#lbltitle').html('Edit Sponsor');
+
+                    $('#spanTarget').html('');
+                    $('#spanAspanfile').html('');
+                    $('#spanLogoUrl').html('');
+                    $('#spanDisplayOrder').html('');
+                    $('#spanSponsorCategoryId').html('');
+                    $('#spanRedirectUrl').html('');
+
+                    $('#DisplayOrder').focus().removeClass("red-border");
+                    $('#RedirectUrl').focus().removeClass("red-border");
+                    $('#Target').focus().removeClass("red-border");
+                }
+                else {
+                    $('#divmessage').val(result.data);
+                }
+            }
+        });
+    }
+
+    function Add() {
+        clearInnerPageCategory();
+        $("#AddSponsors").modal("show");
+        $('#lbltitle').html('Add Media');
+    }
+
+    function clearInnerPageCategory() {
+        $('#SponsorId').val('0');
+        $('#LogoUrl').val('');
+        $('#DisplayOrder').val('');
+        $('#RedirectUrl').val('');
+        $('#Target').val('');
+        $('#spanTarget').html('');
+        $('#spanAspanfile').html('');
+        $('#spanLogoUrl').html('');
+        $('#spanSponsorCategoryId').html('');
+        $('#spanDisplayOrder').html('');
+        $('#spanRedirectUrl').html('');
+        $('#Aspanfile').focus().removeClass("red-border");
+        $('#DisplayOrder').focus().removeClass("red-border");
+        $('#RedirectUrl').focus().removeClass("red-border");
+        $('#Target').focus().removeClass("red-border");
+
+    }
+    function Validate() {
+        if ($('#SponsorId').val() == "0") {
+            if ($('#LogoUrl').val() == "") { $('#Aspanfile').html('Required.'); $('#LogoUrl').focus(); return false; } else { $('#Aspanfile').html(' '); $('#Aspanfile').focus().removeClass("red-border"); }
+            if (!Common.isImage($('#LogoUrl').val())) { $('#Aspanfile').html('Sorry image is invalid. Only allowed extensions are:<b>jpg, png, PNG, gif, jpeg, JPEG</b>.'); $('#LogoUrl').focus(); return false; } else { $('#Aspanfile').html(''); $('#Aspanfile').focus().removeClass("red-border"); }
+            //if ($('#hdnimgvalidate').val() == '0') { $('#Aspanfile').html('Please select image with diemensions equal to 950 * 450.'); $('#LogoUrl').focus(); return false; } else { $('#Aspanfile').html(''); }
+        }
+        if ($('#SponsorCategoryId').val() == "") { $('#spanSponsorCategoryId').html('Required.'); $('#SponsorCategoryId').focus(); return false; } else { $('#spanSponsorCategoryId').html(''); $('#SponsorCategoryId').focus(); }
+
+        //if ($('#Target').val() == "") { $('#spanTarget').html('Required.'); $('#Target').focus(); return false; } else { $('#spanTarget').html(''); $('#Target').focus(); }
+        //if ($('#RedirectUrl').val() == "") { $('#spanRedirectUrl').html('Required.'); $('#RedirectUrl').focus().addClass("red-border"); return false; } else { $('#spanRedirectUrl').html(''); $('#RedirectUrl').focus().removeClass("red-border"); }
+        return true;
+    }
+    function ClearSearch() {
+        $('#txtsearch').val('');
+        $('#SponsorCategoryId1').val('');
+        Onload(1);
+    }
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="SponsorId" />
+<input id="hdnsortorder" type="hidden" value="ASC" />
+<input type="hidden" id="hdnimgvalidate" value="0" />
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Sponsors</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active">Sponsors</li>
+    </ol>
+</div>
+<!-- end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="clearfix sepH_b"></div>
+    <div class="box">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a  href="@Url.Action("Index", "Sponsors")" class="btn btn-primary coursesMenu">Sponsors</a></li>
+                <li><a class="btn" href="@Url.Action("SponsorCategory", "Sponsors")">Sponsors Categories</a></li>
+            </ul>
+
+      <div class="clearfix box-body">
+                <div class="clearfix row">
+                <div class="col-xs-4 col-lg-4 col-sm-6">
+                    <label>Category</label>
+                    <select class="form-control" name="SponsorCategoryId" id="SponsorCategoryId1">
+                        @if (lstSponsorCategories != null)
+                                                    {
+                            <option value="">Select</option>
+                                                        foreach (var item in lstSponsorCategories)
+                                                        { 
+                            <option @(item.SponsorCategoryId==SponsorCategoryId?"selected='selected'":"") value="@item.SponsorCategoryId">@item.CategoryName</option>
+                                                        }
+                                                    }
+                    </select>
+                </div>
+                <div class="col-xs-12 col-lg-4 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <button class="btn btn-primary" onclick="Onload(1);">Search</button>
+                    <button class="btn btn-info" onclick="ClearSearch();">Clear</button>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6 text-right">
+                        <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <a data-toggle="modal" onclick="Add();" class="btn btn-danger">Add Sponsors</a> 
+                </div>
+            </div>
+        </div>
+        <div id="divSponsors" class="box-body table-responsive">
+            @{Html.RenderAction("SponsorsList", "Sponsors", new { SponsorCategoryId = SponsorCategoryId });}
+        </div>
+    </div>
+</div>
+    </div>
+
+<div class="modal fade" id="AddSponsors" tabindex="-1" role="dialog" aria-hidden="true">
+
+    @using (Html.BeginForm("AddSponsors", "Sponsors", FormMethod.Post, new { enctype = "multipart/form-data", style = "margin-bottom:0" }))
+    {
+        <input type="hidden" id="SponsorId" name="SponsorId" value="0" />
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><span id="lbltitle"></span></h4>
+            </div>
+            <div class="modal-body validation">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-12">
+                        <label>Image <span class="red-t">*</span></label>
+                        <input type="file" name="LogoUrl" id="LogoUrl" onchange="checkPhoto(this)" />
+                        <span style="padding-top: 15px;" class="field-validation-error" id="Aspanfile"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-6">
+                        <label>Category <span class="red-t">*</span></label>
+                        <select class="form-control" id="SponsorCategoryId" name="SponsorCategoryId">
+                            <option value="">-- Select --</option>
+                            @if (lstSponsorCategories != null)
+                                 {
+                                     foreach (var item in lstSponsorCategories)
+                                     { 
+                                <option value="@item.SponsorCategoryId">@item.CategoryName</option>
+                                     }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-xs-12 col-lg-6">
+                        <label>Display Order </label>
+                        <input type="text" name="DisplayOrder" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="DisplayOrder" id="DisplayOrder" value="" class="form-control">
+                        <span id="spanDisplayOrder" class="field-validation-error"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-6">
+                        <label>Target </label>
+                        <select class="form-control" name="Target" id="Target">
+                            <option value="">Select</option>
+                            <option value="_blank">Blank</option>
+                            <option value="_parent">Parent</option>
+                        </select>
+                        <span id="spanTarget" class="field-validation-error"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-6">
+                        <label>Redirect Url </label>
+                        <input type="text" name="RedirectUrl" id="RedirectUrl" class="form-control" />
+                        <span id="spanRedirectUrl" class="field-validation-error"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-12">
+                        <b class="red-t">Note</b> : : Enter the "Redirect URL" start with http://
+                    <br />
+                        2. Image size should be maintained width * height (950 * 450)
+                    </div> 
+                </div>
+                <div class="modal-footer clearfix">
+                        <input type="submit" onclick="return Validate();" value="Submit" class="btn btn-danger" />
+                        <a class="btn btn-primary pull-left" data-dismiss="modal">Cancel</a>
+                    </div>
+            </div>
+            
+        </div>
+        </div>
+    }
+    </div>
+        <script>
+            var _URL = window.URL || window.webkitURL;
+            $("#LogoUrl").change(function (e) {
+                var file, img;
+                if ((file = this.files[0])) {
+                    img = new Image();
+                    img.onload = function () {
+                        if (this.width == 950 && this.height == 450) {
+                            $('#hdnimgvalidate').val('1');
+                        }
+                        else {
+                            $('#hdnimgvalidate').val('0');
+                        }
+                    };
+                    img.src = _URL.createObjectURL(file);
+                }
+            });
+
+        </script>

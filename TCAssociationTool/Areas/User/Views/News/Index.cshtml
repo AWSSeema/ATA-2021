@@ -1,0 +1,55 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+    var NewsId = ViewBag.NewsId;
+
+    ViewBag.Title = "News - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        PagerClickBind();
+        $('#load').hide();
+        $('#MNews').addClass('active');
+    });
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            NewsBind($(this).text(), $('#hdnsorting').val());
+        });
+    }
+
+    function NewsBind(Pageno) {
+        $('#load').show();
+        $('#divNewsList').hide();
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+
+        $.ajax({
+            url: '@Url.Action("NewsList", "News")',
+            type: 'GET',
+            cache: false,
+            data: { PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items, NewsId: '@NewsId' },
+            success: function (result) {
+                $('#divNewsList').html(result);
+                $('#load').hide();
+                $('#prolist').show();
+                $('#divNewsList').show();
+                PagerClickBind();
+            }
+        });
+    }
+
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="UpdatedTime" />
+<input id="hdnsortorder" type="hidden" value="DESC" />
+<article class="clearfix t-m0 l-h28 t-t-u Impact font26 evesec-tex letespa1 b-m25 tabhorizontal-b-m10 mobile-b-m5">Video<span class="evered-t"> Gallery</span><i class="inertitsid-img l-m10 mobile-hide">&nbsp;</i></article>
+ 
+<article class="clearfix  t-b-p20 tabhorizontal-p15 tabhorizontal-minheight0" style="min-height: 1065px;">
+                                           <article id="divNewsList">
+                @{Html.RenderAction("NewsList", "News", new { NewsId = NewsId });}
+            </article>
+            @*<h3 class="clearfix m0 AlexBrush-Regular font56 presedname-t tp10 tabhorizontal-t-p30 tabhorizontal-b-p20 t-c l-h34 mobile-font45 mobile-l-h28 mobile-t-b-p30">Content Will Update Soon..</h3>*@
+                                           </article>

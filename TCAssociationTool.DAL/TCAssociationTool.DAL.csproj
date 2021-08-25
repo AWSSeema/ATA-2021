@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6729EF5D-317C-420C-A683-F831F7A8E583}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TCAssociationTool.DAL</RootNamespace>
+    <AssemblyName>TCAssociationTool.DAL</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppInfo.cs" />
+    <Compile Include="Class1.cs" />
+    <Compile Include="CommitteeCategories.cs" />
+    <Compile Include="CommitteeMembers.cs" />
+    <Compile Include="Committees.cs" />
+    <Compile Include="Cultural.cs" />
+    <Compile Include="DBAccess.cs" />
+    <Compile Include="DonationCategories.cs" />
+    <Compile Include="Donors.cs" />
+    <Compile Include="Enquiries.cs" />
+    <Compile Include="Entities\AppInfo.cs" />
+    <Compile Include="Entities\CommitteeCategories.cs" />
+    <Compile Include="Entities\CommitteeMembers.cs" />
+    <Compile Include="Entities\Committees.cs" />
+    <Compile Include="Entities\Cultural.cs" />
+    <Compile Include="Entities\CurrencyCodes.cs" />
+    <Compile Include="Entities\DonationCategories.cs" />
+    <Compile Include="Entities\Donors.cs" />
+    <Compile Include="Entities\Enquiries.cs" />
+    <Compile Include="Entities\EventCategories.cs" />
+    <Compile Include="Entities\EventRegistrationCounts.cs" />
+    <Compile Include="Entities\EventRegistrationTypes.cs" />
+    <Compile Include="Entities\Events.cs" />
+    <Compile Include="Entities\Flyers.cs" />
+    <Compile Include="Entities\Golf2021.cs" />
+    <Compile Include="Entities\Greetings.cs" />
+    <Compile Include="Entities\InnerPageCategories.cs" />
+    <Compile Include="Entities\InnerPages.cs" />
+    <Compile Include="Entities\MailTemplates.cs" />
+    <Compile Include="Entities\Members.cs" />
+    <Compile Include="Entities\MembershipTypes.cs" />
+    <Compile Include="Entities\MenuItems.cs" />
+    <Compile Include="Entities\News.cs" />
+    <Compile Include="Entities\NewsLetter.cs" />
+    <Compile Include="Entities\PaymentMethods.cs" />
+    <Compile Include="Entities\PaymentSettings.cs" />
+    <Compile Include="Entities\PaymentStatus.cs" />
+    <Compile Include="Entities\PhotoCategories.cs" />
+    <Compile Include="Entities\Photos.cs" />
+    <Compile Include="Entities\Scholarships.cs" />
+    <Compile Include="Entities\SponsorCategories.cs" />
+    <Compile Include="Entities\Sponsors.cs" />
+    <Compile Include="Entities\Ticket.cs" />
+    <Compile Include="Entities\Users.cs" />
+    <Compile Include="Entities\Vaccinations.cs" />
+    <Compile Include="Entities\VideoCategories.cs" />
+    <Compile Include="Entities\Videos.cs" />
+    <Compile Include="Entities\VolunteerCategories.cs" />
+    <Compile Include="Entities\Volunteers.cs" />
+    <Compile Include="Entities\WebsiteBanners.cs" />
+    <Compile Include="Entities\WomensdayLocations.cs" />
+    <Compile Include="EventCategories.cs" />
+    <Compile Include="Events.cs" />
+    <Compile Include="Flyers.cs" />
+    <Compile Include="Golf2021.cs" />
+    <Compile Include="Greetings.cs" />
+    <Compile Include="InnerPageCategories.cs" />
+    <Compile Include="InnerPages.cs" />
+    <Compile Include="MailTemplates.cs" />
+    <Compile Include="Members.cs" />
+    <Compile Include="MembershipTypes.cs" />
+    <Compile Include="News.cs" />
+    <Compile Include="NewsLetter.cs" />
+    <Compile Include="PaymentSettings.cs" />
+    <Compile Include="PhotoCategories.cs" />
+    <Compile Include="Photos.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scholarships.cs" />
+    <Compile Include="SponsorCategories.cs" />
+    <Compile Include="Sponsors.cs" />
+    <Compile Include="Users.cs" />
+    <Compile Include="Vaccinations.cs" />
+    <Compile Include="VideoCategories.cs" />
+    <Compile Include="Videos.cs" />
+    <Compile Include="VolunteerCategories.cs" />
+    <Compile Include="Volunteers.cs" />
+    <Compile Include="WebsiteBanners.cs" />
+    <Compile Include="WomensdayLocations.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

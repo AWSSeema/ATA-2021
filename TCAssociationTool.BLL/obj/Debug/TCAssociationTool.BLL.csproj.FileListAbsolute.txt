@@ -1,0 +1,71 @@
+D:\Development\Projects\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.BLL.dll
+D:\Development\Projects\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.BLL.pdb
+D:\Development\Projects\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.dll
+D:\Development\Projects\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.pdb
+D:\Development\Projects\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csprojResolveAssemblyReference.cache
+D:\Development\Projects\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.dll
+D:\Development\Projects\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.pdb
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.BLL.dll
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.BLL.pdb
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\bin\Debug\SendGrid.dll
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.dll
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\bin\Debug\Newtonsoft.Json.dll
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.pdb
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csprojAssemblyReference.cache
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csproj.CoreCompileInputs.cache
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csproj.CopyComplete
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.dll
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.pdb
+D:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.BLL.dll
+D:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.BLL.pdb
+D:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\bin\Debug\SendGrid.dll
+D:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.dll
+D:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\bin\Debug\Newtonsoft.Json.dll
+D:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.pdb
+D:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csprojResolveAssemblyReference.cache
+D:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.dll
+D:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.pdb
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.BLL.dll
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.BLL.pdb
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\SendGrid.dll
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.dll
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\Newtonsoft.Json.dll
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.pdb
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csprojAssemblyReference.cache
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csproj.CoreCompileInputs.cache
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csproj.CopyComplete
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.dll
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.pdb
+D:\Development\Projects\TeluguAssociationTool-Github\aws-dotnet\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.BLL.dll
+D:\Development\Projects\TeluguAssociationTool-Github\aws-dotnet\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.BLL.pdb
+D:\Development\Projects\TeluguAssociationTool-Github\aws-dotnet\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\SendGrid.dll
+D:\Development\Projects\TeluguAssociationTool-Github\aws-dotnet\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.dll
+D:\Development\Projects\TeluguAssociationTool-Github\aws-dotnet\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\Newtonsoft.Json.dll
+D:\Development\Projects\TeluguAssociationTool-Github\aws-dotnet\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.pdb
+D:\Development\Projects\TeluguAssociationTool-Github\aws-dotnet\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csproj.CoreCompileInputs.cache
+D:\Development\Projects\TeluguAssociationTool-Github\aws-dotnet\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csproj.CopyComplete
+D:\Development\Projects\TeluguAssociationTool-Github\aws-dotnet\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.dll
+D:\Development\Projects\TeluguAssociationTool-Github\aws-dotnet\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.pdb
+D:\Development\Projects\TeluguAssociationTool-Github\aws-dotnet\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csproj.AssemblyReference.cache
+C:\Users\Jyothi\Desktop\Development\Projects\ATA\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.BLL.dll
+C:\Users\Jyothi\Desktop\Development\Projects\ATA\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.BLL.pdb
+C:\Users\Jyothi\Desktop\Development\Projects\ATA\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\SendGrid.dll
+C:\Users\Jyothi\Desktop\Development\Projects\ATA\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.dll
+C:\Users\Jyothi\Desktop\Development\Projects\ATA\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Jyothi\Desktop\Development\Projects\ATA\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.pdb
+C:\Users\Jyothi\Desktop\Development\Projects\ATA\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csprojAssemblyReference.cache
+C:\Users\Jyothi\Desktop\Development\Projects\ATA\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csproj.CoreCompileInputs.cache
+C:\Users\Jyothi\Desktop\Development\Projects\ATA\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csproj.CopyComplete
+C:\Users\Jyothi\Desktop\Development\Projects\ATA\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.dll
+C:\Users\Jyothi\Desktop\Development\Projects\ATA\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.pdb
+D:\Development\Projects\ATA (2)\ATA\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csproj.AssemblyReference.cache
+D:\Development\Projects\ATA (2)\ATA\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csproj.CoreCompileInputs.cache
+D:\Development\Projects\ATA (2)\ATA\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.dll
+D:\Development\Projects\ATA (2)\ATA\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.pdb
+D:\Development\Projects\ATA (2)\ATA\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.BLL.dll
+D:\Development\Projects\ATA (2)\ATA\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.BLL.pdb
+D:\Development\Projects\ATA (2)\ATA\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\SendGrid.dll
+D:\Development\Projects\ATA (2)\ATA\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.dll
+D:\Development\Projects\ATA (2)\ATA\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\Newtonsoft.Json.dll
+D:\Development\Projects\ATA (2)\ATA\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.pdb
+D:\Development\Projects\ATA (2)\ATA\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csproj.CopyComplete

@@ -1,0 +1,136 @@
+﻿@{
+    ViewBag.Title = "AddPhoto";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    List<TCAssociationTool.Entities.PhotoCategories> lstPhotoCategories = ViewBag.lstPhotoCategories;
+    Int64 PhotoCategoryId = ViewBag.PhotoCategoryId;
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#Gallery').addClass('active');
+        $('#wPhotoGallery').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+         
+    });
+    function Validate() {
+        if ($('#PhotoCategoryId').val() == "") { $('#PhotoCategoryId').focus().addClass('validate'); return false; } else { $('#PhotoCategoryId').removeClass('validate'); }
+       // if ($.trim($('#ImageDescription').val()) == '') { $('#ImageDescription').focus().addClass("validate"); return false; } else {  $('#ImageDescription').focus().removeClass("validate"); }
+        if ($.trim($('#ImageDescription').val()) == '') { document.getElementsByName('ImageDescription')[0].placeholder = 'Title Required'; $('#ImageDescription').focus().addClass("validate"); return false; } else { $('#ImageDescription').focus().removeClass("validate"); }
+      
+
+        //if ($('#AlbumLink').val() == "") { $('#AlbumLink').focus().addClass("validate"); return false; } else { $('#AlbumLink').removeClass("validate"); }
+        if ($('#file1').val() == "") { $('#file1').focus(); $('#spanfile1').html('Required.'); return false; } else { $('#spanfile1').html(''); }
+        if (!Common.isImage($('#file1').val())) { $('#spanfile1').html('Sorry image is invalid. Only allowed extensions are:<b>jpg, png, PNG, gif, jpeg, JPEG</b>.'); $('#file1').focus(); return false; } else { $('#spanfile1').html(''); }
+        //if ($('#hdnimgvalidate').val() == '0') { $('#spanfile1').html('Please select image with diemensions equal to 350 * 250.'); $('#file1').focus(); return false; } else { $('#spanfile1').html(''); }
+         
+        return true;
+    }
+
+    function ResetValidateClass() {
+        $('#FirstName').removeClass("validate");
+        $('#LastName').removeClass("validate");
+        $('#Email').removeClass("validate");
+        $('#Branch').removeClass("validate");
+        $('#MobileNo').removeClass("validate");
+    }
+
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Add Photos</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "PhotoGallery")"><i class="fa fa-picture-o"></i>Photo Gallery</a></li>
+        <li><a href="@Url.Action("Photos", "PhotoGallery")"><i class="fa fa-picture-o"></i>Photos</a></li>
+        <li class="active"><i class="fa fa-picture-o"></i> Add Photos</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="clearfix sepH_b"></div>
+    @using (Html.BeginForm("AddPhoto", "PhotoGallery", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+      <input type="hidden" name="IsAgree" id="IsAgree" value="true" />
+        <div class="box validation">
+            <!-- /.box-header -->
+            <div class="box-header">
+                <h3 class="box-title dis-in">Add Photos</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Gallery :  <span class="red-t">*</span></label>
+                        <select id="PhotoCategoryId" name="PhotoCategoryId" class="form-control">
+                                                                <option value="">-- Select --</option>
+                                                                @if (lstPhotoCategories.Count > 0)
+                                                                {
+                                                                    foreach (var item in lstPhotoCategories)
+                                                                    {
+                                                                    <option @(item.PhotoCategoryId == PhotoCategoryId ? "selected = selected" : "") value="@(item.PhotoCategoryId)">@(item.CategoryName)</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                    </div> 
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Title : <span class="red-t">*</span></label>
+                        <input type="text" placeholder="" id="ImageDescription" name="ImageDescription" class="form-control"/>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Display Order : </label>
+                        <input type="text" placeholder="" id="DisplayOrder" maxlength="3" onkeypress="return Common.isNumberKey(event)" value="" name="DisplayOrder" class="form-control"/>
+                        <label id="spanDisplayOrder" class="field-validation-error"></label>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Album Link :  </label>
+                        <input type="text" placeholder="" id="AlbumLink" name="AlbumLink" class="form-control"/> 
+                    </div> 
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Image :  <span class="red-t">*</span><span class="red-t">*</span></label>
+                        <input type="file" multiple="multiple" name="file1" id="file1" onchange="checkPhoto(this)"/>
+                        <label id="spanfile1" class="field-validation-error"></label>
+                                                            (It automatically generate thumb also)
+                    </div>
+                </div>
+            </div>
+            </div>      
+        <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body text-right">
+                <input type="submit" onclick="return Validate()" class="btn btn-primary" value="Submit" />
+                <a class="btn btn-info" href="@Url.Action("Photos", "PhotoGallery", new { PhotoCategoryId = PhotoCategoryId })">Cancel</a>
+            </div>
+            <!-- /.box-body -->
+        </div>
+
+    }
+    </div>
+
+<script>
+    var _URL = window.URL || window.webkitURL;
+    $("#file1").change(function (e) {
+        var file, img;
+        if ((file = this.files[0])) {
+            img = new Image();
+            img.onload = function () {
+                if (this.width == 350 && this.height == 250) {
+                    $('#hdnimgvalidate').val('1');
+                }
+                else {
+                    $('#hdnimgvalidate').val('0');
+                }
+            };
+            img.src = _URL.createObjectURL(file);
+        }
+    });
+
+</script>

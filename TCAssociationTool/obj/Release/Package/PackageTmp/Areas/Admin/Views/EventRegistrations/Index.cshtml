@@ -1,0 +1,128 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    Int64 EventId = ViewBag.EventId;
+    
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#wEvents').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        PagerClickBind();
+    });
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            EventRegistrationBind($(this).text());
+        });
+    }
+
+    function sortresult(sortcolumn) {
+
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        EventRegistrationBind(1);
+    }
+
+    function EventRegistrationBind(Pageno) { 
+        var pageno = Common.Pageno(Pageno);
+        var search = $('#txtsearch').val();
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var EventId = '@EventId'; 
+        $.ajax({
+            url: '@Url.Action("EventUsersList", "EventRegistrations")',
+            type: 'GET',
+            cache: false,
+            data: { search: search, EventId: EventId, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items, },
+            success: function (result) {
+                $('#divEventsList').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+    function ClearSearch() {
+        $('#txtsearch').val('');
+        $('#hdnPageNo').val(1);
+        EventRegistrationBind(1);
+    }
+
+    function Delete(EventUserInfoId) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteEventUser", "EventRegistrations")',  // the URL of the controller action method
+                data: { EventUserInfoId: EventUserInfoId }, // optional data
+                success: function (result) {
+                    $("#divmessage").html(result.data);
+                    EventRegistrationBind(1);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                },
+                error: function (req, status, error) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            });
+        }
+    }
+
+    function ExporttoExcel() {
+        var EventId = '@EventId';
+        window.location.href = "EventRegistrations/EventuserExporttoExcel?Search=" + $('#txtsearch').val() + "&EventId=" + '@EventId' + "&SortColumn=" + $('#hdnsortcolumn').val() + "&SortOrder=" + $('#hdnsortorder').val() + "";
+    }
+
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortorder" name="hdnsortorder" value="DESC" type="hidden" />
+<input id="hdnsortcolumn" name="hdnsortcolumn" value="InsertedTime" type="hidden" />
+
+<!-- breadcumb -->
+
+<div class="content-header">
+    <h1>Event Registrations</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active"> Event Registrations</li>
+    </ol>
+</div>
+<!-- end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <!-- /.box-header -->
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-4 col-sm-6">
+                    <label>Search</label>
+                    <input type="text" placeholder="Name / Event Name" class="form-control" name="txtsearch" id="txtsearch" />
+                </div>
+                <div class="col-xs-12 col-lg-8 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <button class="btn btn-primary" type="submit" onclick="EventRegistrationBind(1);">Search</button>
+                    <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
+                    <a data-toggle="modal" onclick="ExporttoExcel();" class="btn btn-primary pull-right">Export Details to Excel</a>
+                </div>
+            </div>
+        </div>
+        <div id="divEventsList" class="box-body table-responsive">
+            @{Html.RenderAction("EventUsersList", "EventRegistrations");}
+        </div>
+    </div>
+    </div>

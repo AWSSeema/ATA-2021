@@ -1,0 +1,257 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+    var objMembers = (TCAssociationTool.Entities.Members)ViewBag.objMembers;
+    var lstMembershipType = (List<TCAssociationTool.Entities.MembershipTypes>)objMembers.lstMembershipType;
+    var lstPaymentMethod = (List<TCAssociationTool.Entities.PaymentMethods>)objMembers.lstPaymentMethod;
+    var lstPaymentStatus = (List<TCAssociationTool.Entities.PaymentStatus>)objMembers.lstPaymentStatus;
+    var objMemberDetails = (TCAssociationTool.Entities.Members)ViewBag.objMemberDetails;
+
+    var MembershipType = ViewBag.MembershipType;
+
+    string str = "";
+    if (ViewBag.str != null && ViewBag.str != "")
+    {
+        str = ViewBag.str;
+    }
+
+    decimal amt = 0;
+    if (objMemberDetails.objMembershipOrder.PaymentStatus == "Completed" && (objMemberDetails.objMembershipOrder.MembershipType == "Annual Family Membership" || objMemberDetails.objMembershipOrder.MembershipType == "Annual Single Membership"))
+    {
+        amt = objMemberDetails.objMembershipOrder.Amount;
+    }
+
+    ViewBag.Title = "Member Renewal - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+}
+
+<script>
+    $(document).ready(function () {
+        $('#LiRenewal').addClass('active');
+        $(".checquedate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altField: '.date', altFormat: 'mm/dd/yy' });
+        $('.closable').append('<span id="lblclose" class="closelink" title="Close"></span>');
+        $('.closelink').click(function () {
+            $(this).parent().fadeOut('600', function () { $(this).remove(); });
+        });
+    });
+    function checkhide() {
+        //document.getElementById("mailed").checked = false;
+        document.getElementById("rpaymentby").checked = false;
+        $('#PaymentBy').show();
+        $('#check').hide();
+        $('#PaymentMethod').val('PayPal');
+    }
+    //function checkshow() {
+    //    //document.getElementById("mailed").checked = false;
+    //    document.getElementById("rpaymentby").checked = true;
+    //    $('#PaymentBy').show();
+    //    $('#check').show();
+    //    $('#PaymentMethod').val('Cash/Cheque');
+    //}
+
+    function checkshow() {
+        //document.getElementById("mailed").checked = false;
+        document.getElementById("rpaymentby").checked = true;
+        $('#PaymentBy').show();
+        $('#check').show();
+        $('#BankName').show();
+        $('#ChequeNo').show();
+        $('#ChequeDate').show();
+        $('#ChequeAmount').show();
+        $('#PaymentMethod').val('Cash/Cheque');
+    }
+
+    //function checkhide() {
+    //    document.getElementById("mailed").checked = false;
+    //    document.getElementById("rpaymentby").checked = true;
+    //    $('#PaymentBy').show();
+    //    $('#check').hide();
+    //    $('#PaymentMethod').val('PayPal');
+    //}
+    //function checkshow() {
+    //    document.getElementById("mailed").checked = false;
+    //    document.getElementById("rpaymentby").checked = true;
+    //    $('#PaymentBy').show();
+    //    $('#check').show();
+    //    $('#PaymentMethod').val('Cash/Cheque');
+    //}
+    //function paymentbyshow() {
+    //    $('#PaymentBy').val('');
+    //    $('#PaymentBy').show();
+    //}
+    //function paymentbyhide() {
+    //    $('#PaymentBy').val('');
+    //    $('#PaymentBy').hide();
+    //    $('#UserComment').val('');
+    //}
+    function paypalyhide() {
+        $('#PayPal').hide();
+    }
+    function paypalbyshow() {
+        $('#PayPal').show();
+    }
+
+    function getamount(membershipid) {
+        var amt = '@amt';
+        var str = "";
+        $.ajax({
+            url: '@Url.Action("GetAmount", "Members")',
+            type: 'POST',
+            data: { MembershipTypeId: membershipid },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objMembershipType = result.data;
+                    if (amt != 0) {
+                        if (objMembershipType.MembershipType == 'Life Membership' || objMembershipType.MembershipType == 'Life Membership Single') {
+                            var acprice = (objMembershipType.Price);
+                            var amt2 = amt;
+                            amt = parseInt(acprice) - parseInt(amt);
+                            str = '<span class="red-t">Note: </span>You already paid (' + Math.round(amt2, 0) + ' $) amount has been deducted from the present amount.'
+                        }
+                        else {
+                            amt = (objMembershipType.Price);
+                        }
+                    }
+                    else {
+                        amt = (objMembershipType.Price);
+                    }
+                    $('#MemberAmount').val(amt);
+                    $('#MembershipType').val(objMembershipType.MembershipType);
+                    $('#MemberDiscounttxt').html(str).show();
+                    $('#AmountPayable').html('$ ' + amt);
+                    if(objMembershipType.Price == 0){
+                        paypalyhide();
+                    }
+                    else{
+                        paypalbyshow();
+                    }
+                    //if(objMembershipType.Validity==12)
+                    //{
+                    //    var d = new Date();
+                    //    d.setFullYear(d.getFullYear()+1);
+                    //    //$('#ExpiryDate').val(d.toDateString("MM/dd/yyyy"));
+                    //    $('#ExpiryDate').val("12/31/2017");
+                    //}
+                    //else { $('#ExpiryDate').val('Life Time'); }
+                    //if (objMembershipType.Validity != 0) {
+                    //    var d = new Date();
+                    //    d.setMonth((d.getMonth()) + objMembershipType.Validity);
+                    //    $('#ExpiryDate').val(d.toDateString("MM/dd/yyyy"));
+                    //} 
+                }
+                else {
+                    alert(result.data);
+                }
+            }
+        });
+    }
+    function Validate() {
+        var radioButtons = document.getElementsByName('Cash/Cheque');
+
+        if (radioButtons[1].checked) {
+            if ($('#PaymentBy').val() == '') { $('#PaymentBy').focus().addClass("validate"); return false; } else { $('#PaymentBy').removeClass("validate"); }
+            //if ($('#PaymentBy').val() == '') { $('#spanPaymentBy').html('Required.'); $('#PaymentBy').focus().addClass("red-border"); return false; } else { $('#spanPaymentBy').html(''); }
+        }
+        return true;
+    }
+</script>
+<article class="clearfix inner-wrapper">
+    <article class="clearfix l-r-p20 white-bg b-p20 mobile-l-r-p10 mobile-b-p10">
+        <article class="clearfix border-t presebor-col b-p3"></article>
+        <article class="clearfix presed-bac-bg l-r-p35 t-b-p25 premod-botbor tabhorizontal-l-r-p10 tabhorizontal-t-p0 inconminhei">
+
+            <h4 class="clearfix m0 l-h24 Montserrat-SemiBold font32 orang-t mobile-font24 tabhorizontal-t-p10 t-t-c">Member Renewal</h4>
+<img src="Content/User/images/presid-yel-bor.jpg" class="t-b-m15 tabhorizontal-t-b-m10 mobile-t-b-m5" alt="Border" width="373" height="1" />
+ <article class="clearfix white-bg p10 t-p0"> 
+<article class="clearfix dk-gray-bg flower-border-new"> 
+<article class="clearfix l-r-p30 t-b-p40 tabhorizontal-p15 tabhorizontal-minheight0" style="min-height:900px;"> 
+  <h4 class="poppinssemibold dkblue-t font20 mobile-t-p10 t-m0 border-b b-p10">Personal Imformation</h4>
+                    @using (Html.BeginForm("MembershipRenewal", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.Hidden("MemberYear", (Int64)2018)
+                    <input type="hidden" value="@objMemberDetails.MemberAmount" id="MemberAmount" name="MemberAmount" />
+                    <input type="hidden" value="@objMemberDetails.objMembershipOrder.MembershipOrderId" id="MembershipOrderId" name="MembershipOrderId" />
+                    <input type="hidden" value="@objMemberDetails.MemberId" id="MemberId" name="MemberId" />
+                    <input type="hidden" value="@objMemberDetails.MembershipType" id="MembershipType" name="MembershipType" />
+                    <input type="hidden" value="@objMemberDetails.objMembershipOrder.ExpiryDate" id="ExpiryDate" name="ExpiryDate" />
+                    <input type="hidden" value="PayPal" id="PaymentMethod" name="PaymentMethod" />
+                    <input type="hidden" value="@objMemberDetails.objMembershipOrder.UserComment" id="UserComment" name="UserComment" />
+                    <input type="hidden" value="renewal" id="OrderType" name="OrderType" />
+            <article class="clearfix part-row">
+                <article class="part-6 t-b-p5">
+                    <article class="clearfix r-p10 mobile-r-p5 tabhorizontal-r-p5 mobilev-r-p0">
+                            <article class="clearfix" >
+                               <label for="First Name">First Name <span class="red-t">*</span></label>
+                               <input class="form-control" name="FirstName" id="FirstName" placeholder="First Name *" onkeypress="return onlyAlphabets(event,this);" onclick="ResetValidateClass();" value="@objMemberDetails.FirstName" readonly="true" type="text">
+                            </article>
+                            </article>
+                        </article>
+                <article class="part-6 t-b-p5">
+                    <article class="clearfix l-p10 tabhorizontal-l-p5 mobile-l-p0">
+                    <article class="clearfix" >
+<label for="Last Name">Last Name <span class="red-t">*</span></label>
+                        <input class="form-control" placeholder="Last Name *" name="LastName" id="LastName" onkeypress="return onlyAlphabets(event,this);" onclick="ResetValidateClass();" value="@objMemberDetails.LastName" readonly="true" type="text">
+                    </article>
+                      </article>
+                </article>
+            </article>
+          <article class="clearfix border-t dashborder-t grayborder t-m10 mobile-t-m10 mobile-t-p0"></article>
+
+            <h3 class="poppins-medium red-t font20 l-h18 b-p5">Membership Type</h3>
+                        
+            <ul class="clearfix m0 list-pn list-f part-row">
+                 @if (lstMembershipType != null)
+                                {
+                                    int i = 1;
+
+                                    foreach (var item in lstMembershipType)
+                                    {
+                                       
+                                            var yesOptions = (i == 1 ? new { @checked = "checked" } : null);
+                    <li class="effectpart part-6 t-b-p7">
+                        <label class="radiostyle b-m0">
+                            <input @(item.MembershipTypeId == objMemberDetails.MembershipTypeId ? "checked='checked'" : "") value="@item.MembershipTypeId" onclick="getamount(@(item.MembershipTypeId));" name="MembershipTypeId" id="MembershipTypeId-@i" @(i == 1 ? "checked='checked'" : "") type="radio">
+                            <span for="radio" class="dis-in Poppins-Regular l-h20 black-t mobile-font12"><a class="black-t">@item.MembershipType  (@(item.Price == 0 ? "Free" : "$" + (Math.Round(@item.Price, 0)))) </a></span>
+                        </label>
+                    </li>
+                                            i++;
+                                       
+                                    }
+                                }
+            </ul>
+                  <article id="MemberDiscounttxt" class="clearfix border-t dashborder-t grayborder t-m10 mobile-t-m0 mobile-t-p0 red-t"></article>
+
+            <article id="PayPal" class="clearfix font13 poppinsregular l-h24 tabhorizontal-p10">
+                <h3 class="poppins-medium red-t font20 l-h18 b-p5">PayPal Payment Method : <span class="red-t">*</span></h3>
+                <article class="clearfix border2 border-radius10 bluegrayborder t-b-m10 p10 l-m5 shadow dk-t" id="paypaldiv" style="border-color: #396dad;">
+                    <article class="clearfix part-row">
+                    <article class="clearfix part-6 t-r mobile-t-c" style="float:right;">
+                                        <article class="clearfix t-c r-m0 dis-in" style="min-width:200px; max-width:200px;">
+                                        <h4 class="clearfix Poppins-Regular blue-t l-h20 font18 b-m15 border-b dis-in b-p5 mobile-font18 mobile-t-b-m0 mobilev-b-m5 t-m0">Payable Amount</h4>
+                                        <h4 id="AmountPayable" class="t-m0 red-t font18 Impact l-h20">$ @Math.Round(objMemberDetails.objMembershipOrder.Amount,0)</h4>
+                                            </article>
+                                    </article>
+                        <article class="clearfix part-6">
+                            <article class="clearfix font13 poppinsregular l-h24 tabhorizontal-p10 b-p5">
+                                <h4 class="clearfix Poppins-Regular blue-t l-h20 font18 b-m15 border-b dis-in b-p5 mobile-font18 mobile-t-b-m0 mobilev-b-m5 t-m0">Payment by using PayPal</h4>
+                                <br>
+                                <img src="Content/User/images/paypal.jpg" alt="PayPal" width="116" height="59">
+                            </article>
+                        </article>
+                    </article>
+                </article>
+                
+                
+
+            </article>
+            <article class="clearfix t-b-p10 pull-right mobile-pull-n">               
+
+                <input value="SUBMIT" id="submitbtn" onclick="return Validate();" style="background-color:#f87500; border-radius:4px; padding:14px 35px; color:#fff; border:none;" type="submit" class="Raleway-Medium font22 t-t-u tabhorizontal-dis-in" />
+            </article>
+                }
+        </article>
+    </article>
+     </article>
+                                          
+</article>
+        </article>
+    </article>

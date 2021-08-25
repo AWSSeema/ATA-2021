@@ -1,0 +1,89 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "Members - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+    Int64 Total = (Int64)ViewBag.total;
+    Int64 PageNo = (Int64)ViewBag.pageno;
+
+    Int64 Items = ViewBag.items;
+
+    Int64 TotalPages = Total / Items;
+
+    if (Total > (Items * TotalPages))
+    {
+        TotalPages = TotalPages + 1;
+    }
+
+    var lstMembers = (List<TCAssociationTool.Entities.Members>)ViewBag.lstMembers;
+
+}
+<script type="text/javascript">
+    $(function () {
+        $('#TotalPages').val(@TotalPages);
+    });
+</script>
+
+
+<!---  Content Section Start ------>
+
+
+            <div class="l-r-m-auto" style="max-width:900px;">
+                <table class="table table-bordered table-hover poppins-regular" cellspacing="0" cellpadding="0" border="1px;" width="100%">
+                    <tbody>
+                        <tr height="20">
+                            <th align="center" width="8%" style="background-color:#ff484b;"><span class="white-t">S.No</span></th>
+                            <th align="left" width="8%" style="background-color:#ff484b;"><span class="white-t">Title.</span></th>
+                            <th align="left" width="20%" style="background-color:#ff484b;"><span class="white-t">First Name</span></th>
+                             <th align="left"  width="20%" style="background-color:#ff484b;"><span class="white-t">Last Name</span></th>
+                            <th align="left"  width="20%" style="background-color:#ff484b;"><span class="white-t">Membership</span></th>
+                            <th align="left"  width="20%" style="background-color:#ff484b;"><span class="white-t">Spouse Name</span></th>
+
+                        </tr>
+
+
+                        @if (lstMembers != null && lstMembers.Count != 0)
+                        {
+                            Int64 i = 1;
+                            foreach (var item in lstMembers)
+                            {
+                                <tr>
+                                      <td align="center">@item.RId</td>
+                                    <td align="left">@item.UserName</td>
+                                    <td align="left" valign="middle">@(item.FirstName)</td>
+                                    <td align="left" valign="middle">@(item.LastName)</td>
+                                    <td align="left" valign="middle">@item.MembershipType</td>
+                                    @if(@item.SpouseFirstName != null || @item.SpouseLastName != null)
+                                    {
+                                    <td align="left" valign="middle">@item.SpouseFirstName @item.SpouseLastName</td>
+                                    }
+                                    else
+                                    {
+                                        <td align="left" valign="middle">--</td>
+                                    }
+                                    @*<td align="center" valign="middle">@Convert.ToDateTime(item.ExpiryDate) </td>*@
+                                </tr>
+                                i++;
+
+
+                            }
+                        }
+
+                        else
+                        {
+                            <tr>
+                                <td class="norecords" colspan="7">No Records Found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                    </table>
+            </div>
+
+
+       
+
+<!---  Content Section End ------>
+<div class="clearfix" style="text-align:center;">
+
+@Html.Raw(TCAssociationTool.BLL.Common.SetPagingFE((Int64)ViewBag.items, ref Total, (Int64)ViewBag.PageNo, "pagination pagination-right border-b b-p10"))
+    </div>
+
+

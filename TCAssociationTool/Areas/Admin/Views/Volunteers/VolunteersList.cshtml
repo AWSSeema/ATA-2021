@@ -1,0 +1,131 @@
+﻿@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+
+    List<TCAssociationTool.Entities.Volunteers> lstVolunteer = ViewBag.lstVolunteers;
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    }
+
+}
+<div class="row-fluid">
+    <div class="span12">
+        @if (Total == -1)
+        {
+            <div class="norecords">Sorry failed processing your request.</div> 
+        }
+        else
+        {
+            <table width="100%" class="table table-bordered table-hover">
+               <thead>
+                   <tr>
+                       <th width="4%" style="text-align:center">S.No.</th>
+                       <th width="20%">
+                           <a onclick="javascript:sortresult('FirstName');" class="white-t-u">
+                               Name @if (sortcolumn == "FirstName")
+            {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                       </th>
+                       <th width="10%">
+                           <a onclick="javascript:sortresult('Email');" class="white-t-u">
+                               Email @if (sortcolumn == "Email")
+            {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                       </th>
+                        @*<th width="12%">
+                           <a class="white-t-u">
+                               Hours Spent</a>
+                       </th>*@
+                       <th width="12%">
+                           <a onclick="javascript:sortresult('PhoneNo');" class="white-t-u">
+                               PhoneNo @if (sortcolumn == "PhoneNo")
+            {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                       </th>
+                       <th width="8%">
+                           <a onclick="javascript:sortresult('IsActive');" class="white-t-u">
+                               IsActive @if (sortcolumn == "IsActive")
+            {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                       </th>
+
+                       @if (userRole.Contains("SuperAdmin"))
+    {
+                   <th width="7%" class="white-t-u" style="text-align:center">Actons</th>
+}
+                   </tr>
+                </thead>
+                <tbody>
+                    @if (lstVolunteer.Count != 0)
+                    {
+                        foreach (var item in lstVolunteer)
+                        { 
+                    <tr>
+                        <td width="41" style="text-align:center">@item.RId</td>
+                        <td style="text-align: left">@(item.FirstName + " " + item.LastName) </td>
+                        <td align="left">@(item.Email == "" ? "N/A" : item.Email)</td>
+                        @* <td align="left">@(item.HoursSpent == "" ? "N/A" : item.HoursSpent)</td>*@
+                        <td align="left">@(item.PhoneNo == "" || item.PhoneNo == null ? "N/A" : item.PhoneNo)</td>
+                        <td>
+                            @{
+            var isactive = "";
+            var active = "";
+            var disable = "";
+            if (item.IsActive == true)
+            {
+                isactive = "Active";
+                disable = "style=\"cursor: pointer;\" onclick=\"javascript:VolunteerStatus(" + item.VolunteerId + ");\"";
+            }
+            else
+            {
+                isactive = "Disabled";
+                active = "style=\"cursor: pointer;\" onclick=\"javascript:VolunteerStatus(" + item.VolunteerId + ");\"";
+            }
+                    <div class="admin-active">
+                        @isactive
+                    <ul>
+                        <li><a @Html.Raw(active)>Active</a></li>
+                        <li><a @Html.Raw(disable)>Disabled</a></li>
+                    </ul>
+                    </div>
+                            }
+                        </td>
+                        <td style="text-align:center">
+                            <a title="View" class="r-p5" href="@Url.Action("ViewVolunteer", "Volunteers", new { VolunteerId = item.VolunteerId })">
+                                <i class="fa fa-eye"></i>
+                            </a>
+
+
+
+                            <a title="Edit" class="r-p5" href="@Url.Action("EditVolunteer", "Volunteers", new { VolunteerId = item.VolunteerId })"><i class="fa fa-pencil-square-o"></i></a>
+
+                            @if (userRole.Contains("SuperAdmin"))
+        {
+
+                    <a id="12" onclick="javascript:Delete(@item.VolunteerId);" class="ntdelete"><i class="fa fa-trash-o"></i></a>
+}
+                        </td>
+                    </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="norecords" colspan="9">No Volunteers Found.</td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.pageno, "pagination pagination-centered"))

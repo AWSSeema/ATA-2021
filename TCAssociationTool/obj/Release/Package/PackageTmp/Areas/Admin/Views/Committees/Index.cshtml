@@ -1,0 +1,196 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    var CommitteeCategoryId = ViewBag.CommitteeCategoryId;
+
+    List<TCAssociationTool.Entities.CommitteeMembers> lstCommittee = ViewBag.lstCommittee;
+}
+
+<link rel="stylesheet" type="text/css" href="Content/Admin/lib/lightview/css/lightview/lightview.css" />
+<script type="text/javascript" src="Content/Admin/lib/lightview/js/spinners/spinners.js"></script>
+<script type="text/javascript" src="Content/Admin/lib/lightview/js/lightview/lightview.js"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#wCommittiees').addClass('active'); 
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+
+    $(document).ready(function () {
+        PagerClickBind();
+    });
+
+    function sortresult(sortcolumn) {
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        Onload(1);
+    }
+
+    function Onload(Pageno) {
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = $('#keyword').val();
+
+        $.ajax({
+            url: '@Url.Action("CommitteesList", "Committees")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items,CommitteeCategoryId:@CommitteeCategoryId },
+            success: function (result) {
+                $('#divcommittee').html(result);
+                PagerClickBind();
+               
+            }
+        });
+    }
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            Onload($(this).text());
+        });        
+    }
+    function ClearSearch() {
+        $('#keyword').val('');
+        $('#hdnPageNo').val(1);
+        Onload(1);
+    }
+
+    function Add() {
+        clearCommitteeMember();
+        $("#AddCommitteeMember").dialog("open");
+        $('#lbltitle').html('Add Committee Member');
+    }
+  
+
+    function clearCommitteeMember() {
+        $('#CommitteeId').val('');
+        $('#Designation').val('');
+        $('#spanCommitteeId').html('');
+        $('#spanDesignation').html('');
+        $('#Designation').focus().focus().removeClass("red-border");
+    }
+
+    function Validate() {
+        if ($('#CommitteeId').val() == '') { $('#spanCommitteeId').html('Required.'); $('#CommitteeId').focus(); return false; } else { $('#spanCommitteeId').html(''); $('#CommitteeId').focus(); }
+        if ($('#Designation').val() == '') { $('#spanDesignation').html('Required.'); $('#Designation').focus().addClass("red-border"); return false; } else { $('#spanDesignation').html(''); $('#Designation').focus().removeClass("red-border"); }
+        return true;
+    }
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="CommitteeId" />
+<input id="hdnsortorder" type="hidden" value="DESC" />
+<input type="hidden" id="hdnimgvalidate" value="0" />
+
+<!-- breadcumb -->
+
+<div class="content-header">
+    <h1>Committee Members</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active"><i class="fa fa-picture-o"></i>Committee Members</li>
+    </ol>
+</div>
+
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <!-- /.box-header -->
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="@Url.Action("Index", "Committees")">Committee Members</a></li>
+                <li><a href="@Url.Action("Index", "CommitteeMaster")">Committees</a></li>
+            </ul>
+            <div class="clearfix sepH_b"></div>
+            <div class="clearfix box-body">
+                <div class="clearfix row">
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Search</label>
+                        <input type="text" placeholder="User Name " class="form-control" name="keyword" id="keyword" />
+                    </div>
+                    <div class="col-xs-12 col-lg-8 col-sm-6">
+                        <div>
+                            <label>&nbsp;</label>
+                        </div>
+                        <button class="btn btn-primary" type="submit" onclick="Onload(1);">Search</button>
+                        <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
+                        @if (CommitteeCategoryId == 0)
+                        {
+                            <a data-toggle="modal" href="@Url.Action("AddCommittee", "Committees")" class="btn btn-danger pull-right">Add Committee Member</a>
+                        }
+                        else
+                        {
+                            <a data-toggle="modal" class="btn btn-danger pull-right r-m10" onclick="Add();">Add Member to Committee</a> 
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div id="divcommittee" class="box-body table-responsive">
+                @{Html.RenderAction("CommitteesList", "Committees");}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="AddCommitteeMember" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><span id="lbltitle"></span></h4>
+            </div>
+            @using (Html.BeginForm("AddCommittee", "Committees", FormMethod.Post))
+            {
+                <input type="hidden" id="CommitteeCategoryId" name="CommitteeCategoryId" value="@CommitteeCategoryId" />
+                <input type="hidden" id="CommitteeId" name="CommitteeId" value="0" />
+         
+                <div class="modal-body validation">
+                    <div class="form-group">
+                        <label>Member :<span class="red-t">*</span></label>
+                        <select id="CommitteeId" class="input" name="CommitteeId">
+                            <option value="">Select</option>
+                            @if (lstCommittee != null)
+                            {
+                                foreach (var item in lstCommittee)
+                                { 
+                                <option value="@item.CommitteeId">@item.Name</option>
+                                }
+                            }
+                        </select>
+                        <span class="field-validation-error" id="spanCommitteeId"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Order No :<span class="red-t">*</span></label>
+                        <input type="text" value="" onkeypress="return Common.isNumberKey(event);" onclick="ResetValidateClass();" class="form-control" id="DisplayOrder" name="DisplayOrder">
+                        <span class="field-validation-error" id="spanDisplayOrder"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Designation :<span class="red-t">*</span></label>
+                        <input type="text" value="" class="form-control" id="Designation" name="Designation" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+                        <span class="field-validation-error" id="spanDesignation"></span>
+                    </div>
+                </div>
+                <div class="clearfix t-r t-p5">
+                    <input type="submit" onclick="return Validate()" class="btn btn-primary font-w7" value="Submit" />
+                    <a class="btn font-w7" onclick=" $('#AddCommitteeMember').dialog('close')">Cancel</a>
+                </div>
+           
+            }
+        </div>
+    </div>
+</div>
+

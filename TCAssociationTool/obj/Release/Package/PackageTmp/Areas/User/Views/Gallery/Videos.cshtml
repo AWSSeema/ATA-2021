@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "Videos - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+    var lstVideos = (List<TCAssociationTool.Entities.Videos>)ViewBag.lstVideos;
+    var lstVideoCategories = (List<TCAssociationTool.Entities.VideoCategories>)ViewBag.lstVideoCategories;
+    ViewBag.heading = "Gallery";
+    Int64 PageId = 0;
+    int Status = 0;
+    TCAssociationTool.BLL.InnerPages _InnerPages = new TCAssociationTool.BLL.InnerPages();
+    TCAssociationTool.Entities.InnerPages objInnerPages = _InnerPages.GetInnerPagesListById(PageId, "Media Page Content", ref Status);
+}
+<article class="clearfix t-m0 l-h28 t-t-u Impact font26 evesec-tex letespa1 b-m25 tabhorizontal-b-m10 mobile-b-m5">Video<span class="evered-t"> Gallery</span><i class="inertitsid-img l-m10 mobile-hide">&nbsp;</i></article>
+ @if (lstVideoCategories != null && lstVideoCategories.Count != 0 && lstVideos.Count != 0)
+                {
+                    foreach (var VideoCategory in lstVideoCategories)
+                    {
+                        if (lstVideos != null && lstVideos.Count != 0 && VideoCategory.VideosCount != 0)
+                        {
+                            if (VideoCategory.CategoryName != "Media Coverage")
+                            {
+                                <article class="t-p40 b-p25">
+                  <article class="clearfix white-bg l-r-m-auto t-b-p10 border-radius50 shadow" style="max-width:390px;">
+                    <h2 class="m0 t-c Montserrat-SemiBold pink-t font20 letespa1 mobile-font16">@VideoCategory.CategoryName</h2>
+                  </article>
+                </article>
+      if (lstVideos != null && lstVideos.Count != 0)
+                                {
+<ul class="clearfix m0 list-pn list-f gallpholis">
+    @foreach (var item in lstVideos)
+                        {
+                            if (item.VideoCategoryId == VideoCategory.VideoCategoryId)
+                            {
+              <li>
+                <article class="clearfix position-r"> 
+                    <a href="https://www.youtube.com/embed/@(item.VideoUrl)" data-fancybox-group="gallery" class="various fancybox.iframe dis-b"> <span class="video-icon-hover1 flip">&nbsp;</span>
+                     <img alt="@item.Heading" title="@item.Heading" src="http://i1.ytimg.com/vi/@(item.VideoUrl)/hqdefault.jpg" class="width100" width="263" height="171"> </a> </article>
+              </li>
+    }
+    }            
+            </ul>
+  }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    <h3 class="clearfix m0 AlexBrush-Regular font56 red-t tp10 tabhorizontal-t-p30 tabhorizontal-b-p20 t-c l-h34 mobile-font45 mobile-l-h28 mobile-t-b-p30">No Videos Found.,</h3>
+                }

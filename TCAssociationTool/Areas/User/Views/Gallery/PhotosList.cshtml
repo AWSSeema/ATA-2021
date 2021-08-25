@@ -1,0 +1,54 @@
+﻿@{
+    ViewBag.Title = "Photos - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+
+
+    var lstPhoto = (List<TCAssociationTool.Entities.Photos>)ViewBag.lstPhotos;
+    var lstPhotoCategories = (List<TCAssociationTool.Entities.PhotoCategories>)ViewBag.lstPhotoCategories;
+
+    var imglocNormal = System.Configuration.ConfigurationManager.AppSettings["adminimgurl"] + "photogallery/normalphoto/";
+
+    var imglocNormal1 = System.Configuration.ConfigurationManager.AppSettings["adminimgurl"] + "photogallery/thumbphoto/";
+    ViewBag.heading = "Photos";
+    var CategoryName = ViewBag.CategoryName;
+}
+
+  <article class="clearfix t-m0 l-h28 t-t-u Impact font26 evesec-tex letespa1 b-m25 tabhorizontal-b-m10 mobile-b-m5">@TCAssociationTool.BLL.Common.DecodeURL(CategoryName)<i class="inertitsid-img l-m10 mobile-hide">&nbsp;</i>
+                    
+                </article>
+               
+ @if (lstPhoto != null && lstPhoto.Count != 0)
+                        {                
+                <ul class="clearfix m0 list-f list-pn gallelis-li2 mobile-b-p15">
+                     @foreach (var item in lstPhoto)
+                     {
+                        
+                  <li>
+                    <article class="clearfix">
+                         @if (item.AlbumLink != "")
+                         {
+                                    <a href="@item.AlbumLink" target="_blank">
+                                        <img src="@TCAssociationTool.BLL.Common.ValidateImage((imglocNormal + item.ImageUrl), imglocNormal + "no-image.jpg")" class="width100 p4" alt="" width="260" height="190" border="0" style="min-height:190px; max-height:190px; overflow:hidden;"></a>
+                         }
+                         else
+                         {
+                                    <a href="@TCAssociationTool.BLL.Common.ValidateImage((imglocNormal + item.ImageUrl), imglocNormal + "no-image.jpg")" data-fancybox-group="5" class="fancybox">
+                                        <img src="@TCAssociationTool.BLL.Common.ValidateImage((imglocNormal + item.ImageUrl), imglocNormal + "no-image.jpg")" class="width100 p4" width="260" height="190" border="0" title="@item.ImageDescription" alt="@item.ImageDescription" style="min-height:190px; max-height:190px; overflow:hidden;" /></a>
+                         }
+                       
+                    </article>
+                    <h2 class="m0 Roboto-Medium font17 l-p15 l-h22 t-p8 b-p10">
+                        <a class="evesec-tex">@item.ImageDescription</a></h2>
+                  </li>
+                         }
+                    
+                </ul>
+   
+             }
+        
+ 
+ else
+ {
+                <h3 class="clearfix m0 AlexBrush-Regular font56 red-t tp10 tabhorizontal-t-p30 tabhorizontal-b-p20 t-c l-h34 mobile-font45 mobile-l-h28 mobile-t-b-p30">No Photos Found..,</h3>
+ }
+     

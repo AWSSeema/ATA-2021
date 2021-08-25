@@ -1,0 +1,140 @@
+﻿@{
+    ViewBag.Title = "Photos";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    Int64 PhotoCategoryId = ViewBag.PhotoCategoryId;
+    var catlist = (List<TCAssociationTool.Entities.PhotoCategories>)ViewBag.catlist;
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#Gallery').addClass('active');
+        $('#wPhotoGallery').addClass('active');
+        $('#PhotoCategoryId').val(@PhotoCategoryId);
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        PagerClickBind();
+    });
+    function Delete(PhotoId, ImageFileName) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("PhotoDelete", "PhotoGallery")',  // the URL of the controller action method
+                data: { PhotoId: PhotoId, ImageFileName: ImageFileName }, // optional data
+                success: function (result) {
+                    PhotosBind($('#hdnPageNo').val());
+                    $("#divmessage").html(result.data);
+                },
+                error: function (req, status, error) {
+                    $("#divmessage").html(result.data);
+                }
+            });
+        }
+    }
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            PhotosBind($(this).text(), $('#hdnsorting').val());
+        });
+    }
+
+    function PhotosBind(Pageno) {
+
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = $('#txtsearch').val();
+        var PhotoCategoryId = $('#PhotoCategoryId').val();
+
+        $.ajax({
+            url: '@Url.Action("PhotosList", "PhotoGallery")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items, PhotoCategoryId: PhotoCategoryId },
+            success: function (result) {
+                $('#divPhotoCategory').html(result);
+                PagerClickBind();
+            }
+        });
+    }   
+
+    function Select(check) {
+        var arr = document.getElementsByName(check);
+        if (arr[0].checked == true) {
+            Common.selectAll('checkbox', check);
+        }
+        else {
+            Common.clearAll('checkbox', check);
+        }
+    }   
+
+    function ClearSearch() {
+        $('#txtsearch').val('');
+        $('#PhotoCategoryId').val('');
+
+        PhotosBind(1);
+    }
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="UpdatedTime" />
+<input id="hdnsortorder" type="hidden" value="DESC" />
+<input type="hidden" id="hdnimgvalidate" value="0" />
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Photos </h1>
+    <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "PhotoGallery")"><i class="fa fa-picture-o"></i>Photo Gallery</a></li>      
+        <li class="active"><i class="fa fa-picture-o"></i> Photos</li>
+    </ol>
+</div>
+<!-- end breadcumb -->
+
+<div class="content">
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+     <div class="box">
+    <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Gallery</label>
+                                <select class="form-control" name="PhotoCategoryId" id="PhotoCategoryId">
+                                    <option value="">-- Select --</option>
+                                    @if (catlist != null)
+                                    { 
+                                        foreach (var item in catlist)
+                                        { 
+                                        <option value="@item.PhotoCategoryId">@item.CategoryName</option>
+                                        }
+                                    }
+                                </select>
+                    </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Search</label>
+                    <input type="text" placeholder="Keyword " class="form-control" name="txtsearch" id="txtsearch" />
+                </div>                                
+                <div class="col-xs-12 col-lg-6 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <button class="btn btn-primary" type="submit" onclick="PhotosBind(1);">Search</button>
+                    <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
+                    <a  class="btn btn-danger pull-right" href="@Url.Action("AddPhoto", "PhotoGallery", new { PhotoCategoryId = PhotoCategoryId })">Add Photo</a>
+                    <a class="btn btn-danger pull-right r-m10" href="@Url.Action("Index", "PhotoGallery")">Photo Gallery</a>    
+                </div>
+            </div>
+        </div>
+            <div id="divPhotoCategory" class="box-body table-responsive">
+             @{Html.RenderAction("PhotosList", "PhotoGallery");}
+        </div>
+    </div>
+</div>

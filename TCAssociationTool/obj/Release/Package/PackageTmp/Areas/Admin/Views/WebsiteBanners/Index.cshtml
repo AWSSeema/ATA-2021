@@ -1,0 +1,331 @@
+﻿@using System.Configuration;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    var imgloc = ConfigurationManager.AppSettings["baseurl"] + "Content/themebanners/normalimages/";
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#Banners').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('#wWebsiteBanners').addClass('active');
+        PagerClickBind();
+    });
+
+    function sortresult(sortcolumn) {
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        ThemeBannerBind(1);
+    }
+
+    function ThemeBannerBind(Pageno) {
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = $('#keyword').val();
+
+        $.ajax({
+            url: '@Url.Action("BannersList", "WebsiteBanners")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items },
+            success: function (result) {
+                $('#divThemeBanner').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            ThemeBannerBind($(this).text());
+        });
+    }
+
+    function EditBanner(WebsiteBannerId) {
+        $.ajax({
+            url: '@Url.Action("EditBanner", "WebsiteBanners")',
+            type: 'POST',
+            data: { WebsiteBannerId: WebsiteBannerId },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objWebsiteBanners = result.data;
+                    $('#BannerTitle').val(objWebsiteBanners.BannerTitle);
+                    $('#RedirectUrl').val(objWebsiteBanners.RedirectUrl);
+                    $('#OrderNo').val(objWebsiteBanners.OrderNo);
+                    $('#Target').val(objWebsiteBanners.Target);
+                    $('#IsApproved').val(objWebsiteBanners.IsActive);
+                    $('#Type').val(objWebsiteBanners.Type);
+                    $('#WebsiteBannerId').val(objWebsiteBanners.WebsiteBannerId);
+
+                    $('#spanBannerTitle').html('');
+                    $('#spanOrderNo').html('');
+                    $('#spanRedirectUrl').html('');
+                    $('#spanTarget').html('');
+
+                    $('#BannerTitle').focus().removeClass("validate");
+                    $('#OrderNo').focus().removeClass("validate");                    
+                    $('#lbltitle').html('Edit Website Banner');
+                    $('#Aspanfile').html('');
+                    $("#AddWebsiteBanners").modal('show');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+                else {
+                    $('#divmessage').val(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+    function ViewBanner(WebsiteBannerId) {
+        $.ajax({
+            url: '@Url.Action("EditBanner", "WebsiteBanners")',
+            type: 'POST',
+            data: { WebsiteBannerId: WebsiteBannerId },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objWebsiteBanners = result.data;
+                    $('#vBannerUrl').html(objWebsiteBanners.BannerUrl);
+                    $('#vBannerTitle').html(objWebsiteBanners.BannerTitle);
+                    $('#vRedirectUrl').html(objWebsiteBanners.RedirectUrl != null && objWebsiteBanners.RedirectUrl != "" ? objWebsiteBanners.RedirectUrl : "N/A");
+                    $('#vOrderNo').html(objWebsiteBanners.OrderNo);
+                    $('#vTarget').html(objWebsiteBanners.Target);
+                    $('#vIsApproved').html(objWebsiteBanners.IsActive);
+                    $('#vType').html(objWebsiteBanners.Type);
+                    $('#vWebsiteBannerId').val(objWebsiteBanners.WebsiteBannerId);
+                     
+                    $('#ViewThemeBanner').modal('show');
+                    $('#vbltitle').html('View Website Banner');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+                else {
+                    $('#divmessage').val(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+    function Add() {
+        clearInnerPageCategory();
+        $("#AddWebsiteBanners").modal('show');
+        $('#lbltitle').html('Add Website Banner');
+    }
+
+    function clearInnerPageCategory() {
+        $('#WebsiteBannerId').val('0');
+        $('#ImageUrl').val('');
+        $('#BannerTitle').val('');
+        $('#Description').val('');
+        $('#OrderNo').val('');
+        $('#RedirectUrl').val('');
+        $('#Target').val('');
+        $('#spanfile').html('');
+        $('#spanBannerUrl').html('');
+        $('#spanBannerTitle').html('');
+        $('#spanOrderNo').html('');
+        $('#spanRedirectUrl').html('');
+        $('#spanDescription').html('');
+        $('#BannerUrl').focus().removeClass("validate");
+        $('#BannerTitle').focus().removeClass("validate");
+        $('#OrderNo').focus().removeClass("validate");
+        $('#Description').focus().removeClass("validate");
+    }
+    function Validate() {
+
+        if ($('#WebsiteBannerId').val() == "0") {
+            if ($('#BannerUrl').val() == "") { $('#spanfile').html('Required.'); $('#ImageUrl').focus(); return false; } else { $('#spanfile').html(' '); }
+
+            if (!Common.isImage($('#BannerUrl').val())) { $('#spanfile').html('Sorry image is invalid. Only allowed extensions are:<b>jpg, png, PNG, gif, jpeg, JPEG</b>.'); $('#BannerUrl').focus(); return false; } else { $('#spanfile').html(''); }
+            //if ($('#hdnimgvalidate').val() == '0') { $('#spanfile').html('Please select image with diemensions equal to 1366 * 543.'); $('#ImageUrl').focus(); return false; } else { $('#spanfile').html(''); }
+        }
+        if ($('#BannerUrl').val() != "") {
+            if (!Common.isImage($('#BannerUrl').val())) { $('#spanfile').html('Sorry image is invalid. Only allowed extensions are:<b>jpg, png, PNG, gif, jpeg, JPEG</b>.'); $('#BannerUrl').focus(); return false; } else { $('#spanfile').html(''); }
+            //if ($('#hdnimgvalidate').val() == '0') { $('#spanfile').html('Please select image with diemensions equal to 1366 * 543.'); $('#ImageUrl').focus(); return false; } else { $('#spanfile').html(''); }
+        }
+        if ($('#BannerTitle').val() == "") { $('#BannerTitle').addClass("validate"); return false; } else { $('#BannerTitle').focus().removeClass("validate"); }
+        //if ($('#OrderNo').val() == "") { $('#OrderNo').addClass("validate");  return  false; } else { $('#OrderNo').focus().removeClass("validate"); }
+
+        return true;
+    }
+
+    function ResetValidateClass() {
+        $('#BannerUrl').removeClass("validate");
+        $('#BannerTitle').removeClass("validate");
+        $('#OrderNo').removeClass("validate");
+    }
+
+    function ClearSearch() {
+        $('#keyword').val('');
+        ThemeBannerBind(1);
+    }
+</script>
+<input type="hidden" id="hdnimgvalidate" value="0" />
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="WebsiteBannerId" />
+<input id="hdnsortorder" type="hidden" value="ASC" />
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Website Banners </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active"><i class="fa fa-th-large"></i> Website Banners</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-4 col-sm-6">
+                    <label>Search</label>
+                    <input type="text" placeholder="BannerTitle" name="keyword" id="keyword" class="form-control" />
+                </div>
+                <div class="col-xs-12 col-lg-8 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <button class="btn btn-primary" type="submit" onclick="ThemeBannerBind(1);">Search</button>
+                    <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
+                    <a data-toggle="modal" onclick="Add();" class="btn btn-danger pull-right">Add Banner</a>
+                </div>
+            </div>
+        </div>
+        <div id="divThemeBanner" class="box-body table-responsive">
+            @{Html.RenderAction("BannersList", "WebsiteBanners");}
+        </div>
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="AddWebsiteBanners" tabindex="-1" role="dialog" aria-hidden="true">
+    @using (Html.BeginForm("AddWebsiteBanners", "WebsiteBanners", FormMethod.Post, new { enctype = "multipart/form-data", style = "margin-bottom:0" }))
+    {
+        <input type="hidden" id="WebsiteBannerId" name="WebsiteBannerId" value="0" />
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span id="lbltitle"></span></h4>
+                </div>
+                <div class="modal-body validation">
+                    <div class="row">
+                       
+                        <div class="col-xs-12 col-lg-12" style="margin-bottom:5px;">
+                            <label>Upload Images <span class="red-t">*</span></label>
+                            <input type="file" name="BannerUrl" id="BannerUrl" />
+                            <span class="field-validation-error" id="spanfile" style="display: inline-block; padding-top: 5px;"></span>
+                        </div>
+                          <div class="col-xs-12 col-lg-12" style="margin-bottom:5px;">
+                            <b class="red-t">Note</b> : Banner size should be maintain 1366 x 543.
+                        </div>
+                        <div class="col-xs-12 col-lg-12" style="margin-bottom:5px;">
+                            <label>Banner Title <span class="red-t">*</span> </label>
+                            <input type="text" name="BannerTitle" placeholder="" id="BannerTitle" value="" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-12" style="margin-bottom:5px;">
+                            <label>Order No </label>
+                            <input type="text" name="OrderNo" onkeypress="return Common.isNumberKey(event)" placeholder="" id="OrderNo" value="" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-12" style="margin-bottom:5px;">
+                            <label>Redirection Url </label>
+                            <input type="text" name="RedirectUrl" placeholder="" id="RedirectUrl" value="" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Target Url </label>
+                            <select name="Target" class="form-control" id="Target" onclick="ResetValidateClass();">
+                                <option value="">--Select--</option>
+                                <option value="_blank">Blank</option>
+                                <option value="_parent">Parent</option>
+                            </select>
+                        </div>
+                        <div class="col-xs-12 col-lg-12">
+                            <b class="red-t">Note</b> : <br />
+                             1. If Target is Blank, url will open in new Tab.<br />
+                             2. If Target is Parent, url will open with in Tab.
+                        </div>
+                         @*<div class="col-xs-12 col-lg-12">
+                            <b class="red-t">Note</b> : Banner size should be maintain 1366 x 543.
+                        </div>*@
+                    </div>
+                </div>
+                <div class="modal-footer clearfix">
+                    <input type="submit" onclick="return Validate();" value="Submit" class="btn btn-danger">
+                    <a class="btn btn-primary pull-left" data-dismiss="modal">Cancel</a>
+                </div>
+            </div>
+        </div> 
+    }
+</div>
+
+<div class="modal fade" id="ViewThemeBanner" tabindex="-1" role="dialog" aria-hidden="true">
+    <input type="hidden" id="vWebsiteBannerId" name="vWebsiteBannerId" value="0" />
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><span id="vbltitle"></span></h4>
+            </div>
+            <div class="modal-body validation">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-6">
+                        <label>Banner Title </label>
+                        : <span id="vBannerTitle" class="font13 t-t-c"></span>
+                        <br />
+                        <label>Order No </label>
+                        : <span id="vOrderNo" class="font13"></span>
+                        <br />
+                        <label>Redirection Url </label>
+                        : <span id="vRedirectUrl" class="font13 t-t-c"></span>
+                        <br />
+                        <label>Target Url </label>
+                        : <span id="vTarget" class="font13 t-t-c"></span>
+                    </div>
+                    @*<div class="col-xs-12 col-lg-6" id="banner"></div>*@
+                </div>
+            </div>
+            <div class="modal-footer clearfix">
+                <a class="btn btn-primary" data-dismiss="modal">Cancel</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    var _URL = window.URL || window.webkitURL;
+    $("#ImageUrl").change(function (e) {
+        var file, img;
+        if ((file = this.files[0])) {
+            img = new Image();
+            img.onload = function () {
+                if (this.width == 1366 && this.height == 543) {
+                    $('#hdnimgvalidate').val('1');
+                }
+                else {
+                    $('#hdnimgvalidate').val('0');
+                }
+            };
+            img.src = _URL.createObjectURL(file);
+        }
+    });
+
+</script>

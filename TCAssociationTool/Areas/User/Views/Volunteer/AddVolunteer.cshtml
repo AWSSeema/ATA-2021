@@ -1,0 +1,493 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+    ViewBag.Title = "Become a Volunteer - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+    ViewBag.heading = "Volunteer";
+
+    var Memberdetails = (TCAssociationTool.Entities.Members)ViewBag.Memberdetails;
+
+    List<TCAssociationTool.Entities.VolunteerCategories> lstVolunteerCategory = ViewBag.lstVolunteerCategory;
+
+    List<TCAssociationTool.Entities.Events> lstEvents = ViewBag.lstEvents;
+
+    Int64 VolunteerCategoryId = ViewBag.VolunteerCategoryId;
+
+    Int64 EventId = ViewBag.EventId;
+
+    Int64 MemberId = ViewBag.MemberId;
+}
+
+
+<script>
+    $(document).ready(function () {
+
+      //  $("#EPhone").mask("(999) 999-9999");
+
+        //print_country("Country");
+        //$("#Country").change(function () {
+        //    print_state('State', $('#Country').val());
+        //});
+
+        $('#volunteeralert').dialog
+      ({
+          autoOpen: false,
+          closeOnEscape: false,
+          width: 500,
+          modal: true
+      });
+    });
+
+
+</script>
+<script type="text/javascript">
+
+    function CheckEmailAvailability(email) {
+
+        var returnval = null;
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CheckEmailAvailability", "Volunteer")', // the URL of the controller action method
+            data: { Email: email }, // optional data
+            datatype: "JSON",
+            async: false,
+            success: function (result) {
+                if (result.ok) {
+                    returnval = result.data;
+                    $('#volunteeralert').show();
+                }
+            }
+        });
+        return returnval;
+    }
+
+     
+
+    function Validate() {
+        
+
+        if ($.trim($('#Email').val()) == '') { $('#Email').focus().addClass('redborder'); $('#spanEmail').show().html('Email Id Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanEmail').hide().html(''); $('#Email').removeClass("redborder"); }
+        if ($.trim($('#Email').val()) != '') {
+            if (!Common.CheckEmail($.trim($('#Email').val()))) { $('#spanEmail').show().html('Please enter valid email address.<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#Email').focus().addClass("red-border"); return false; } else { $('#spanEmail').html(''); }
+        }
+        if ('@MemberId' == 0) {
+            if ($.trim($('#Email').val()) != '') {
+                if (!CheckEmailAvailability($.trim($('#Email').val()))) { $('#spanEmail').show().html('You had Already Registered, Please Login To Countinue.<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#Email').focus().addClass("redborder"); return false; } else { $('#spanEmail').hide().html(''); }
+            }
+            
+            if ($.trim($('#Password').val()) == '') { $('#Password').focus().addClass('redborder'); $('#spanPassword').show().html('Password Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanPassword').hide().html(''); $('#Password').removeClass('redborder'); }
+           
+            if ($.trim($('#Password').val()) != '') {
+                if (!Common.ValidatePassword($('#Password').val())) { $('#Password').focus().addClass('redborder'); $('#spanPassword').show().html('Please enter minimum 8 charecters (atleast one special charecter & one numeric charecter).<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#Password').focus().addClass("redborder"); return false; } else { $('#spanPassword').hide().html(''); $('#Password').focus().removeClass("redborder"); }
+            }
+
+            if ($('#ConfPassword').val() == '') { $('#ConfPassword').focus().addClass('redborder'); $('#spanConfPassword').show().html('Confirm Password Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanConfPassword').hide().html(''); $('#ConfPassword').removeClass('redborder'); }
+            if ($('#Password').val() != $('#ConfPassword').val()) { $('#ConfPassword').focus().addClass('redborder'); $('#spanConfPassword').show().html('Password and confirm password do not match.<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanConfPassword').hide().html(''); $('#ConfPassword').removeClass('redborder'); }
+
+        }        
+       
+        if ($.trim($('#FirstName').val()) == '') { $('#FirstName').focus().addClass('redborder'); $('#spanFirstName').show().html('First Name Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanFirstName').hide().html(''); $('#FirstName').removeClass('redborder'); }
+
+        if ($.trim($('#LastName').val()) == '') { $('#LastName').focus().addClass('redborder'); $('#spanLastName').show().html('Last Name Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanLastName').hide().html(''); $('#LastName').removeClass('redborder'); }
+               
+
+        if ($.trim($('#EPhone').val()) == '') { $('#EPhone').focus().addClass('redborder'); $('#spanEPhone').show().html('Phone No Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanEPhone').hide().html(''); $('#EPhone').removeClass('redborder'); }
+
+        //if ($.trim($('#HoursSpent').val()) == '') { $('#HoursSpent').focus().addClass('redborder'); $('#spanHoursSpent').show().html('Hours Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanHoursSpent').hide().html(''); $('#HoursSpent').removeClass('redborder'); }
+
+        //if ($.trim($('#VolunteerCategoryId').val()) == '') { $('#VolunteerCategoryId').focus().addClass('redborder'); $('#spanVolunteerCategoryId').show().html('Phone No Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanVolunteerCategoryId').hide().html(''); $('#VolunteerCategoryId').removeClass('redborder'); }
+
+        if ($('#txtCaptcha').val() == '') { $('#spantxtCaptcha').show().html('Capcha Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#txtCaptcha').focus().removeClass("validate"); $('#spantxtCaptcha').hide().html(''); }
+        var str = Common.GetCaptcha();
+
+        if ($('#txtCaptcha').val() != str) { $('#txtCaptcha').val(''); document.getElementsByName('VCaptcha')[0].placeholder = 'wrong captcha.'; $('#txtCaptcha').focus().addClass("validate"); return false; } else { $('#txtCaptcha').focus().removeClass("validate"); }
+
+        
+            $('#Loading').show();
+            $('#submitbtn').hide();
+        
+        return true;
+    }
+
+
+    function closeValidation(field) {
+        $(field).parent().hide();
+    }
+    function closeValidationOnClick(field) {
+        $(field).next('span').hide();
+    }
+
+    var specialKeys = new Array();
+    specialKeys.push(8); //Backspace
+    specialKeys.push(9); //Tab
+    specialKeys.push(32); //Space
+    specialKeys.push(46); //Delete
+    specialKeys.push(36); //Home
+    specialKeys.push(35); //End
+    specialKeys.push(37); //Left
+    specialKeys.push(39); //Right    
+
+    function CreloadCaptcha() {
+        document.getElementById('CUcaptcha').src = document.getElementById('CUcaptcha').src + '/';
+    }
+    function ResetValidateClass() {
+        $('#Name').removeClass("validate");
+
+        $('#Email').removeClass("validate");
+
+
+        $('#txtCaptcha').removeClass("validate");
+
+    }
+
+    function onlyAlphabets(e, t) {
+        try {
+            if (window.event) {
+                var charCode = window.event.keyCode;
+            }
+            else if (e) {
+                var charCode = e.which;
+            }
+            else { return true; }
+            if ((charCode == 32) || (charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (specialKeys.indexOf(e.keyCode) != -1 && e.charCode != e.keyCode)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch (err) {
+            alert(err.Description);
+        }
+    }
+    function phonenochange(event) {
+        if (event.keyCode == 8 || event.keyCode == 46) {
+        }
+        else {
+            var ph = $('#EPhone').val();
+            if (ph.length == 3) { $('#EPhone').val(ph + '-'); }
+            if (ph.length == 7) { $('#EPhone').val(ph + '-'); }
+        }
+    }
+
+    function volunteeralert() 
+    {
+        $('#volunteeralert').show();
+    }
+
+
+
+    function closeValidation(field) {
+        $(field).parent().hide();
+    }
+    function closeValidationOnClick(field) {
+        $(field).next('span').hide();
+    }
+
+
+</script>
+
+<input type="hidden" value="1" id="hdnRowCount" />
+
+
+
+                    <!---  Content Section Start ------>
+                    <article class="clearfix inner-wrapper">
+                        <article class="clearfix l-r-p20 white-bg b-p20 mobile-l-r-p10 mobile-b-p10">
+                            <article class="clearfix border-t presebor-col b-p3"></article>
+                            <article class="clearfix presed-bac-bg l-r-p35 t-b-p25 premod-botbor tabhorizontal-l-r-p10 tabhorizontal-t-p0 inconminhei">
+                                <h4 class="clearfix m0 l-h24 Montserrat-SemiBold font32 orang-t mobile-font24 tabhorizontal-t-p10">Volunteer Registration</h4>
+                                <img src="Content/User/images/presid-yel-bor.jpg" class="t-b-m15 tabhorizontal-t-b-m10 mobile-t-b-m5" alt="Border" width="373" height="1" />
+
+                                <!-- <h3 class="clearfix m0 AlexBrush-Regular font56 presedname-t tp10 tabhorizontal-t-p30 tabhorizontal-b-p20 t-c l-h34 mobile-font45 mobile-l-h28 mobile-t-b-p30">Content will update soon...,</h3> -->
+
+                                @*<form action="/volunteer-registration.html" enctype="multipart/form-data" method="post">*@
+                                  <article class="clearfix gr-bg l-r-p80 t-b-p10 tabhorizontal-l-r-p10 mobile-l-r-p0">
+                                        <article class="clearfix border p30 shadowb white-bg grayborder tabhorizontal-p10">
+                                            <article class="clearfix font16 black-t l-h24 Poppins-Regular validation">
+                                            @using (Html.BeginForm("AddVolunteerRegistration", "Volunteer", FormMethod.Post, new { enctype = "multipart/form-data", @class = "validation" }))
+                                            {
+                                                <input type="hidden" value="@ViewBag.MemberId" id="MemberId" name="MemberId" />
+                                                if (@EventId == 0 && @MemberId == 0)
+                                                {
+                                                    <h4 class="poppinssemibold dkblue-t font20 mobile-t-p10 t-m0 border-b b-p10">Login Information</h4>
+                                                    <article class="clearfix part-row t-p15">
+                                
+                                                        <article class="part-6 t-b-p5 position-r">
+                                                            <article class="clearfix r-p10 tabhorizontal-l-p5 mobile-l-p0">
+                                                                <label>Email <span class="red-t">*</span></label>
+                                                                <input class="form-control" placeholder="" onkeypress="closeValidationOnClick(this);" value="@Memberdetails.Email" name="Email" id="Email" onchange="Validate();" type="text" />
+                                                                <span class="errormsg" id="spanEmail"></span>
+                                                            </article>
+                                                        </article>
+                                                    </article>
+                                                    <article class="clearfix part-row">
+                                                        <article class="part-6 t-b-p5 position-r">
+                                                            <article class="clearfix r-p10 tabhorizontal-r-p5 mobile-r-p0">
+                                                                <label>Password <span class="red-t">*</span></label>
+                                                                <input class="form-control" name="Field1" id="Password" value="@Memberdetails.Password" placeholder="" onkeypress="closeValidationOnClick(this);" onchange="Validate();" type="password" />
+                                                                <span class="errormsg" id="spanPassword"></span>
+                                                            </article>
+                                                        </article>
+                                                        <article class="part-6 t-b-p5 position-r">
+                                                            <article class="clearfix l-p10 tabhorizontal-l-p5 mobile-l-p0">
+                                                                <label>Retype Password <span class="red-t">*</span></label>
+                                                                <input class="form-control" name="Field1" id="ConfPassword" value="@Memberdetails.Password" onkeypress="closeValidationOnClick(this);" placeholder="" onchange="Validate();" type="password" />
+                                                                <span class="errormsg" id="spanConfPassword"></span>
+                                                            </article>
+                                                        </article>
+                                                    </article>
+                                                    <h4 class="poppinssemibold dkblue-t font20 t-p20 mobile-t-p10 t-m0 border-b b-p5 b-m15">Personal Information</h4>
+                                                    <article class="clearfix part-row b-p10 mobile-b-p0">
+                                                        <article class="clearfix part-6">
+                                                            <article class="mobile-r-p0 r-p10">
+                                                                <label>First Name <span class="red-t">*</span></label>
+                                                                <input type="text" value="@Memberdetails.FirstName" class="form-control" name="FirstName" placeholder="" id="FirstName" onchange="Validate();" onkeypress="closeValidationOnClick(this); return onlyAlphabets(event,this);">
+                                                                <span class="errormsg" id="spanFirstName"></span>
+                                                            </article>
+                                                        </article>
+                                                        <article class="clearfix part-6 position-r">
+                                                            <article class="clearfix l-p10 tabhorizontal-l-p5 mobile-l-p0 position-r">
+                                                                <label>Last Name <span class="red-t">*</span></label>
+                                                                <input type="text" value="@Memberdetails.LastName" class="form-control" name="LastName" placeholder="" id="LastName" onchange="Validate();" onkeypress="closeValidationOnClick(this); return onlyAlphabets(event,this);">
+                                                                <span class="errormsg" id="spanLastName"></span>
+                                                            </article>
+                                                        </article>
+
+                                                    </article>
+                                                    <article class="clearfix part-row b-p10 mobile-b-p0">
+  
+                                                        <article class="clearfix part-6 r-p10">
+
+                                                            <article class="mobile-l-p0 position-r">
+                                                                <label>Phone No <span class="red-t">*</span></label>
+                                                                <input type="text" class="form-control" value="@Memberdetails.MobilePhone" name="PhoneNo" placeholder="" id="EPhone" onchange="Validate();" onkeypress="closeValidationOnClick(this); phonenochange(event); return Common.isNumberKey(event);" maxlength="12">
+                                                                <span class="errormsg" id="spanEPhone"></span>
+                                                            </article>
+                                                        </article>
+                                                        <article class="clearfix part-6 position-r">
+                                                            <article class="clearfix l-p10 tabhorizontal-l-p5 mobile-l-p0">
+                                                                <label>Hours Spent</label>
+                                                                <input type="text" class="form-control" name="HoursSpent" placeholder="" id="HoursSpent" maxlength="2" />
+                                                                <span class="errormsg" id="spanHoursSpent"></span>
+                                                            </article>
+                                                        </article>
+                                                    </article>
+
+                                                    <article class="clearfix part-row b-p10 effectpart mobile-b-p0">
+
+                                                        <article class="clearfix part-6 position-r">
+                                                            <article class="clearfix r-p10 tabhorizontal-l-p5 mobile-l-p0">
+                                                                <label>Volunteer Category</label>
+                                                                <article class="clearfix dropdown">
+                                                                    <select class="dropdown-select ui-select" id="VolunteerCategoryId" name="VolunteerCategoryId">
+                                                                        <option value="">Select Volunteer Category </option>
+                                                                        @if (lstVolunteerCategory.Count > 0)
+                                                                        {
+                                                                            foreach (var item in lstVolunteerCategory)
+                                                                            {
+                                                                                <option @(item.VolunteerCategoryId == VolunteerCategoryId ? "selected = selected" : "") value="@(item.VolunteerCategoryId)">@(item.CategoryName)</option>
+                                                                            }
+                                                                        }
+                                                                    </select>
+                                                                    <span class="errormsg" id="spanVolunteerCategoryId"></span>
+                                                                </article>
+                                                            </article>
+                                                        </article>
+                                                        <article class="clearfix part-6 position-r">
+                                                            <article class="clearfix l-p10 tabhorizontal-l-p5 mobile-l-p0">
+                                                                <label>Events</label>
+                                                                <article class="clearfix dropdown">
+                                                                    <select class="dropdown-select ui-select" id="EventId" name="EventId" onchange="Validate();">
+                                                                        <option value="">Select Events </option>
+                                                                        @if (lstEvents.Count > 0)
+                                                                        {
+                                                                            foreach (var item in lstEvents)
+                                                                            {
+                                                                                <option @(item.EventId == EventId ? "selected = selected" : "") value="@(item.EventId)">@(item.EventName)</option>
+                                                                            }
+                                                                        }
+                                                                    </select>
+                                                                    <span class="errormsg" id="spanEventId"></span>
+                                                                </article>
+                                                            </article>
+                                                        </article>
+
+                                                    </article>
+
+                                                    <article class="clearfix part-row b-p10 mobile-b-p0 effectpart">
+                                                        <article class="clearfix part-6">
+                                                            <article class="mobile-r-p0 r-p10">
+                                                                <label>Address</label>
+                                                                <textarea class="form-control" name="address" placeholder="" id="address"></textarea>
+                                                            </article>
+                                                        </article>
+                                                        <article class="clearfix part-6">
+                                                            <article class="clearfix l-p10 tabhorizontal-l-p5 mobile-l-p0">
+                                                                <label>Comment</label>
+                                                                <textarea class="form-control" name="Comment" placeholder="" id="Comment"></textarea>
+                                                            </article>
+                                                        </article>
+
+                                                    </article>
+
+                                                    <article class="clearfix part-row b-p5 t-p15 mobile-b-p0">
+                                                        <article class="part-8">
+                                                            <article class="clearfix sm-row b-m5">
+                                                                <article class="sm-6">
+                                                                    <article class="clearfix position-r">
+                                                                        <label>Type the following text as shown <span class="red-t">*</span></label>
+                                                                        <input type="text" placeholder="Security Code" class="form-control" id="txtCaptcha" name="VCaptcha">
+                                                                        <span class="errormsg" id="spantxtCaptcha"></span>
+                                                                    </article>
+                                                                </article>
+                                                                <article class="sm-6 mobilev-t-p0">
+                                                                    <article class="clearfix l-m10 mobilev-l-m0 mobilev-t-p10">
+                                                                        <label>&nbsp;</label>
+                                                                        <img alt="Captcha" id="CUcaptcha" src="Members/ShowCaptchaImage" width="91" height="33" border="0" style="min-height: 38px;">
+                                                                        <a class="l-m10" href="javascript:CreloadCaptcha();">
+                                                                            <img width="20" border="0" height="22" title="Refresh" src="Content/User/images/refresh.png" alt="Refresh">
+                                                                        </a>
+
+                                                                    </article>
+                                                                </article>
+                                                            </article>
+                                                        </article>
+                                                        <article class="part-4 t-r t-p5">                                                            
+                                                            <input value="SUBMIT" id="submitbtn" onclick="return Validate();" style="background-color:#f87500; border-radius:4px; padding:14px 35px; color:#fff; border:none;" type="submit" class="Raleway-Medium font22 t-t-u tabhorizontal-dis-in" />
+                                                        </article>
+                                                    </article>
+
+                                                }
+                                                else
+                                                {
+                                                    <article class="clearfix part-row b-p10 mobile-b-p0">
+                                                        <article class="clearfix part-6">
+                                                            <article class="mobile-r-p0 r-p10 position-r">
+                                                                <input type="text" value="@Memberdetails.FirstName" class="form-control" name="FirstName" onchange="Validate();" placeholder="First Name *" id="FirstName" onkeypress="closeValidationOnClick(this); return onlyAlphabets(event,this);">
+                                                                <span class="errormsg" id="spanFirstName"></span>
+                                                            </article>
+                                                        </article>
+                                                        <article class="clearfix part-6">
+                                                            <article class="mobile-l-p0 position-r">
+                                                                <input type="text" value="@Memberdetails.LastName" class="form-control" name="LastName" onchange="Validate();" placeholder="Last Name *" id="LastName" onkeypress="closeValidationOnClick(this); return onlyAlphabets(event,this);">
+                                                                <span class="errormsg" id="spanLastName"></span>
+                                                            </article>
+                                                        </article>
+
+                                                    </article>
+                                                    <article class="clearfix part-row b-p10 mobile-b-p0">
+                                                        <article class="clearfix part-6">
+                                                            <article class="mobile-r-p0 r-p10 position-r">
+                                                                <input type="text" value="@Memberdetails.Email" class="form-control" name="Email" onchange="Validate();" placeholder="Email *" id="Email" onkeypress="closeValidationOnClick(this);" />
+                                                                <span class="errormsg" id="spanEmail"></span>
+                                                            </article>
+                                                        </article>
+                                                        <article class="clearfix part-6">
+                                                            <article class="clearfix box-row">
+                                                                <article class="box-6">
+                                                                    <article class="mobile-l-p0 position-r">
+                                                                        <input type="text" class="form-control" value="@Memberdetails.MobilePhone" onchange="Validate();" name="PhoneNo" placeholder="PhoneNo *" id="EPhone" onkeypress="phonenochange(event); closeValidationOnClick(this); return Common.isNumberKey(event);" maxlength="12">
+                                                                        <span class="errormsg" id="spanEPhone"></span>
+                                                                    </article>
+                                                                </article>
+                                                                <article class="box-6 l-p5 position-r">
+                                                                    <article class="mobile-l-p0">
+                                                                        <input type="text" class="form-control" name="HoursSpent" placeholder="Hours Spent *" id="HoursSpent" maxlength="2">
+                                                                        <span class="errormsg" id="spanHoursSpent"></span>
+                                                                    </article>
+                                                                </article>
+                                                            </article>
+                                                        </article>
+
+                                                        <article class="clearfix part-row b-p10 effectpart mobile-b-p0">
+
+                                                            <article class="clearfix part-6 position-r">
+                                                                <article class="clearfix r-p10 tabhorizontal-l-p5 mobile-l-p0">
+                                                                    <article class="clearfix dropdown">
+                                                                        <select class="dropdown-select ui-select" id="VolunteerCategoryId" name="VolunteerCategoryId">
+                                                                            <option value="">Select Volunteer Category *</option>
+                                                                            @if (lstVolunteerCategory.Count > 0)
+                                                                            {
+                                                                                foreach (var item in lstVolunteerCategory)
+                                                                                {
+                                                                                    <option @(item.VolunteerCategoryId == VolunteerCategoryId ? "selected = selected" : "") value="@(item.VolunteerCategoryId)">@(item.CategoryName)</option>
+                                                                                }
+                                                                            }
+                                                                        </select>
+                                                                        <span class="errormsg" id="spanVolunteerCategoryId"></span>
+                                                                    </article>
+                                                                </article>
+                                                            </article>
+                                                            <article class="clearfix part-6 position-r">
+                                                                <article class="clearfix l-p0 tabhorizontal-l-p5 mobile-l-p0">
+                                                                    <article class="clearfix dropdown">
+                                                                        <select class="dropdown-select ui-select" id="EventId" name="EventId" onchange="Validate();">
+                                                                            <option value="">Select Events *</option>
+                                                                            @if (lstEvents.Count > 0)
+                                                                            {
+                                                                                foreach (var item in lstEvents)
+                                                                                {
+                                                                                    <option @(item.EventId == EventId ? "selected = selected" : "") value="@(item.EventId)">@(item.EventName)</option>
+                                                                                }
+                                                                            }
+                                                                        </select>
+                                                                        <span class="errormsg" id="spanEventId"></span>
+                                                                    </article>
+                                                                </article>
+                                                            </article>
+
+                                                        </article>
+
+                                                        <article class="clearfix part-row b-p10 mobile-b-p0 effectpart">
+                                                            <article class="clearfix part-6">
+                                                                <article class="mobile-r-p0 r-p10">
+                                                                    <textarea class="form-control" name="address" placeholder="Address" id="address"></textarea>
+                                                                </article>
+                                                            </article>
+                                                            <article class="clearfix part-6">
+                                                                <article class="mobile-l-p0 l-p0">
+                                                                    <textarea class="form-control" name="Comment" placeholder="Comment" id="Comment"></textarea>
+                                                                </article>
+                                                            </article>
+
+                                                        </article>
+
+                                                        <article class="clearfix part-row b-p5 t-p15 mobile-b-p0">
+                                                            <article class="part-8">
+                                                                <article class="clearfix sm-row b-m5">
+                                                                    <article class="sm-6">
+                                                                        <article class="clearfix position-r">
+                                                                            <label>Type the following text as shown <span class="red-t">*</span></label>
+                                                                            <input type="text" placeholder="Security Code" class="form-control" id="txtCaptcha" name="VCaptcha" />
+                                                                            <span class="errormsg" id="spantxtCaptcha"></span>
+                                                                        </article>
+                                                                    </article>
+                                                                    <article class="sm-6 mobilev-t-p0">
+                                                                        <label>&nbsp;</label>
+                                                                        <article class="clearfix l-m10 mobilev-l-m0 mobilev-t-p10">
+                                                                            <img alt="Captcha" id="CUcaptcha" src="Members/ShowCaptchaImage" width="91" height="33" border="0" style="min-height: 38px;">
+                                                                            <a class="l-m10" href="javascript:CreloadCaptcha();">
+                                                                                <img width="33" border="0" height="33" title="Refresh" src="Content/User/images/refresh.png" alt="Refresh">
+                                                                            </a>
+
+                                                                        </article>
+                                                                    </article>
+                                                                </article>
+                                                            </article>
+                                                            <article class="part-4 t-r t-p5">
+                                                                <input value="SUBMIT" id="submitbtn" onclick="return Validate();" style="background-color:#f87500; border-radius:4px; padding:14px 35px; color:#fff; border:none;" type="submit" class="Raleway-Medium font22 t-t-u tabhorizontal-dis-in" />
+                                                            </article>
+                                                        </article>
+                                                    </article>
+                                                }
+
+                                            }
+                                        </article>
+                                    </article>
+                                @*</form>*@
+</article>
+                            </article>
+                        </article>
+                    </article>
+                    <!---  Content Section End ------>
+

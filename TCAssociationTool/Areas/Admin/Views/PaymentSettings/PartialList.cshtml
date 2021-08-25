@@ -1,0 +1,175 @@
+﻿@{ Layout = null;}
+@{
+    Int64 PageNo = ViewBag.pageno;
+    var PageItems = ViewBag.iterms;
+    Int64 Total = ViewBag.total;
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+     
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    }    
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+
+    function PaymentSettingstatus(PaymentSettingId) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("PaymentSettingstatus", "PaymentSettings")',  // the URL of the controller action method
+            data: { PaymentSettingId: PaymentSettingId }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+
+                    $('#message').hide();
+                    $('#divmessage').show();
+                    Onload($('#hdnPageNo').val());
+                }
+                else {
+                    $('#message').hide();
+                    $('#divmessage').html(result.data);
+                    $('#divmessage').show();
+                }
+            }
+        });
+    }
+
+    function Delete(Id) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete", "PaymentSettings")', // the URL of the controller action method
+                data: { Id: Id }, // optional data
+                success: function (result) {
+                    $('#message').hide();
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+
+                    Onload($('#hdnPageNo').val());
+                },
+                error: function (req, status, error) {
+                    $('#message').hide();
+                    $("#divmessage").html(result.data);
+                    // do something with error   
+                }
+            });
+        }
+    }
+</script>
+
+@if (Total == -1)
+{
+    <div class="norecords">Sorry failed processing your request.</div> 
+}
+else
+{
+    <table width="100%" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+
+                <th width="7%" align="center">S.No.</th>
+                        <th>Payment Method</th>
+                        <th width="20%">Account Type</th>
+                        <th width="15%">Currency Code</th>
+                        <th width="15%">Status</th>
+                        <th width="9%" style="text-align:center;">Action</th>
+            </tr>
+        </thead>
+         <tbody>
+             @if (((List<TCAssociationTool.Entities.PaymentSettings>)ViewBag.List).Count != 0)
+                    {
+                int i = 0;
+                foreach (var item in ViewBag.List)
+                { 
+                 <tr>
+                            <td>
+                                @item.RId
+                            </td>
+                            <td>
+                                @item.PaymentMethod
+                            </td>
+                             <td>
+                                @item.AccountType
+                            </td>
+                             <td>
+                                @item.CurrencyCode
+                            </td>
+                            <td>
+                                @{
+                            var isactive = "";
+                            var active = "";
+                            var disable = "";
+                            if (item.IsActive == true)
+                            {
+                                isactive = "Active";
+                                disable = "style=\"cursor: pointer;\" onclick=\"javascript:PaymentSettingstatus(" + item.PaymentSettingId + ");\"";
+                            }
+                            else
+                            {
+                                isactive = "In Active";
+                                active = "style=\"cursor: pointer;\" onclick=\"javascript:PaymentSettingstatus(" + item.PaymentSettingId + ");\"";
+                            }
+                                    <div class="admin-active">@isactive
+                                        <ul>
+                                            @if (item.IsActive == true)
+                                            {
+                                                <li><a @Html.Raw(disable) >In Active</a></li>
+                                            }
+                                            else
+                                            {
+                                                <li><a @Html.Raw(active) >Active</a></li>
+                                            }
+                                        </ul>
+                                    </div>   
+             
+                               
+                                }
+                            </td>
+                            <td width="13%" style="text-align:center;">
+                                @{
+                                    <abbr>
+                                        <a title="View" class="sepV_a" onclick="javascript:PaymentSettingView( @item.PaymentSettingId);" style=" cursor:pointer;"  >
+                                            <i class="fa fa-eye"></i></a> 
+                                        <a title="Edit" class="sepV_a" href="@Url.Action("Add", "PaymentSettings", new {PaymentSettingId= item.PaymentSettingId})"  >
+                                               <i class="fa fa-pencil-square-o"></i></a> 
+                                        @if (userRole.Contains("SuperAdmin"))
+                    {
+                                        <a title="Delete" style=" cursor:pointer;" onclick="javascript:Delete(@item.PaymentSettingId)"  >
+                                                    <i class="fa fa-trash-o"></i></a>
+                                        } 
+                                    </abbr>
+
+                                }
+                            </td>
+                        </tr>
+                        i++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td class="norecords" colspan="10">No Payment Settings Found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int32)PageItems, ref Total, (Int64)ViewBag.pageno, "pagination pagination-centered"))

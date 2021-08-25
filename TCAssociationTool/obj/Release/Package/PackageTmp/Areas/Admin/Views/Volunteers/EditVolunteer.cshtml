@@ -1,0 +1,176 @@
+﻿@{
+    ViewBag.Title = "EditVolunteer";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.Volunteers objTemplates = ViewBag.objVolunteers;
+    List<TCAssociationTool.Entities.VolunteerCategories> lstVolunteerCategory = ViewBag.lstVolunteerCategory;
+    List<TCAssociationTool.Entities.Events> lstEvents = ViewBag.lstEvents;
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#Others').addClass('active');
+        $('#wVolunteers').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+    function EValidate() {
+        var return_val = true;
+        //if ($('#EFirstName').val() == '') { $('#EFirstName').addClass("validate"); return_val = false; } else { $('#EFirstName').removeClass("validate"); }
+        //if ($('#ELastName').val() == '') { $('#ELastName').addClass("validate"); return_val = false; } else { $('#ELastName').removeClass("validate"); }
+        //if ($('#EEmail').val() == '') { $('#EEmail').addClass("validate"); return_val = false; } else { $('#EEmail').removeClass("validate"); }
+        //if (!Common.CheckEmail($.trim($('#EEmail').val()))) { $('#EEmail').val('').attr('placeholder', 'Enter valid Email'); $('#EEmail').addClass("validate"); return false; } else { $('#EEmail').focus().removeClass("validate").attr('placeholder', 'Email*'); }
+        //if (!GECheckEmailAvailability($.trim($('#EEmail').val()))) { $('#EEmail').val(''); $('#spanEmail').html('Email  already exist.').show(); $('#EEmail').focus().addClass("validate"); return false; } else { $('#EEmail').removeClass("validate"); $('#spanEmail').html('').hide(); }
+        //if ($('#EHoursSpent').val() == '') { $('#EHoursSpent').addClass("validate"); return_val = false; } else { $('#EHoursSpent').removeClass("validate"); }
+
+        if ($.trim($('#EFirstName').val()) == '') { document.getElementsByName('FirstName')[0].placeholder = 'First Name Required'; $('#EFirstName').focus().addClass("validate"); return false; } else { $('#EFirstName').focus().removeClass("validate"); }
+        if ($.trim($('#ELastName').val()) == '') { document.getElementsByName('LastName')[0].placeholder = 'Last Name Required'; $('#ELastName').focus().addClass("validate"); return false; } else { $('#ELastName').focus().removeClass("validate"); }
+        
+     
+        if ($.trim($('#EEmail').val()) == '') { document.getElementsByName('Email')[0].placeholder = 'Email Required'; $('#EEmail').focus().addClass("validate"); return false; } else { $('#EEmail').focus().removeClass("validate"); }
+        if (!Common.CheckEmail($('#EEmail').val())) { $('#spanEmail').html('Please enter valid email address.'); $('#EEmail').focus().addClass("red-border"); return false; } else { $('#spanEmail').html(''); $('#EEmail').focus().removeClass("red-border"); }
+        if (!VCheckEmailAvailability($.trim($('#EEmail').val()))) { $('#EEmail').val(''); $('#spanEmail').html('Email  already exist.').show(); $('#EEmail').focus().addClass("validate"); return_val = false; } else { $('#EEmail').removeClass("validate"); $('#spanEmail').html('').hide(); }
+
+        if ($.trim($('#EHoursSpent').val()) == '') { document.getElementsByName('HoursSpent')[0].placeholder = 'Hours Spent Required'; $('#EHoursSpent').focus().addClass("validate"); return false; } else { $('#EHoursSpent').focus().removeClass("validate"); }
+     
+
+        return return_val;
+    }
+
+
+     function VCheckEmailAvailability(email) {
+        var returnval = null;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CheckVolunteerEmailAvailability", "Volunteers")', // the URL of the controller action method
+            data: { Email: email }, // optional data
+            datatype: "JSON",
+            async: false,
+            success: function (result) {
+                if (result.ok) {
+                    returnval = result.data;
+                }
+            }
+        });
+        return returnval;
+    }
+
+    function GECheckEmailAvailability(email) {
+        var returnval = null;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CheckEmailAvailability", "Volunteers")', // the URL of the controller action method
+            data: { VolunteerId: $('#VolunteerId').val(), Email: email }, // optional data
+            datatype: "JSON",
+            async: false,
+            success: function (result) {
+                if (result.ok) {
+                    returnval = result.data;
+                }
+            }
+        });
+        return returnval;
+    }
+</script>
+
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Edit Volunteer </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i> Home</a></li> 
+        <li><a href="@Url.Action("Index", "Volunteers")"><i class="fa fa-envelope"></i>Volunteers</a></li>
+        <li class="active">Edit Volunteers</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="clearfix sepH_b"></div>
+    @using (Html.BeginForm("AddVolunteer", "Volunteers", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+     <input type="hidden" name="VolunteerId" id="VolunteerId" value="@objTemplates.VolunteerId" />
+        <div class="box validation">
+            <div class="box-header">
+              
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>First Name: <span class="red-t">*</span></label>
+                        <input type="text" id="EFirstName" onkeypress="ResetValidateClass();" value=" @objTemplates.FirstName" onclick="ResetValidateClass();" name="FirstName" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Last Name: <span class="red-t">*</span></label>
+                        <input type="text" id="ELastName" onkeypress="ResetValidateClass();" value=" @objTemplates.LastName" onclick="ResetValidateClass();" name="LastName" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Email :<span class="red-t">*</span></label>
+                        <input type="text" id="EEmail" value="@objTemplates.Email" onclick="ResetValidateClass();" name="Email" class="form-control">
+                        <span id="spanEmail" class="red-t font12 dis-in l-h16 t-l" style="display:none;"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Phone No :</label>
+                        <input type="text" id="EPhoneNo" value="@objTemplates.PhoneNo" onclick="ResetValidateClass();" name="PhoneNo" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Hours : <span class="red-t">*</span></label>
+                        <input type="text" id="EHoursSpent" value="@objTemplates.HoursSpent" onclick="ResetValidateClass();" name="HoursSpent" class="form-control">
+                    </div>
+                      <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Volunteer Category : </label>
+                        <select id="VolunteerCategoryId" name="VolunteerCategoryId" class="form-control">
+                            <option value="">-- Select Category --</option>
+                            @if (lstVolunteerCategory.Count > 0)
+                            {
+                                foreach (var item in lstVolunteerCategory)
+                                {
+                                <option @(item.VolunteerCategoryId == objTemplates.VolunteerCategoryId ? "selected = selected" : "") value="@(item.VolunteerCategoryId)">@(item.CategoryName)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Events : </label>
+                        <select id="EventId" name="EventId" class="form-control">
+                            <option value="">-- Select Event --</option>
+                            @if (lstEvents.Count > 0)
+                            {
+                                foreach (var item in lstEvents)
+                                {
+                                <option @(item.EventId == objTemplates.EventId ? "selected = selected" : "") value="@(item.EventId)">@(item.EventName)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Address :</label>
+                        <textarea id="EAddress"  onclick="ResetValidateClass();" name="Address" class="form-control">@objTemplates.Address</textarea>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Comments :</label>
+                        <textarea id="EComments" onclick="ResetValidateClass();" name="Comments" class="form-control">@objTemplates.Comments</textarea>
+                    </div>
+                </div>
+              
+                
+            </div>
+        </div>
+        <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body text-right">
+                <input type="submit" value="Submit" class="btn btn-primary" onclick="return EValidate();" />
+                <a class="btn btn-info" href="@Url.Action("Index", "Volunteers")">Cancel</a>
+            </div>
+            <!-- /.box-body -->
+        </div> 
+    }
+</div>

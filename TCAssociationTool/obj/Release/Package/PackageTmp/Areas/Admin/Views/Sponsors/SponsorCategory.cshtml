@@ -1,0 +1,210 @@
+﻿@{
+    ViewBag.Title = "Category";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#wSponsors').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        PagerClickBind();
+
+    });
+
+    function sortresult(sortcolumn) {
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        PagerClickBind();
+    }
+
+    function Onload(Pageno) {
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = $('#txtsearch').val();
+
+        $.ajax({
+            url: '@Url.Action("SponsorCategoriesList", "Sponsors")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items },
+            success: function (result) {
+                $('#divSponsorCatrgory').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+    function EditSponsorCategory(SponsorCategoryId) {
+        $.ajax({
+            url: '@Url.Action("EditSponsorCategory", "Sponsors")',
+            type: 'POST',
+            data: { SponsorCategoryId: SponsorCategoryId },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objSponsor = result.data;
+                    $('#CategoryName').val(objSponsor.CategoryName);
+                    $('#SponsorCategoryId').val(objSponsor.SponsorCategoryId);
+                    $('#AddSponsorCategory').modal("show");
+                    $('#lbltitle').html('Edit Sponsor');
+
+                    $('#spanCategoryName').html('');
+                    $('#CategoryName').focus().removeClass("red-border");
+                }
+                else {
+                    $('#divmessage').val(result.data);
+                }
+            }
+        });
+    }
+
+    function SponsorSave() {
+        if (Validate()) {
+            var objSponsor = {};
+            objSponsor.SponsorCategoryId = $('#SponsorCategoryId').val();
+            objSponsor.CategoryName = $('#CategoryName').val();
+
+            $.ajax({
+                url: '@Url.Action("AddSponsorCategory", "Sponsors")',
+                type: 'POST',
+                data: JSON.stringify(objSponsor),
+                datatype: "JSON",
+                contentType: 'application/json',
+                success: function (result) {
+                    if (result.ok) {
+                        $("#divmessage").html(result.data);
+                        Onload($('#hdnPageNo').val());
+
+                        $("#AddSponsorCategory").modal("hide");
+                    }
+                    else {
+                        $("#spanCategoryName").html(result.data);
+                    }
+                }
+            });
+        }
+    }
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            Onload($(this).text());
+        });
+    }
+
+    function Add() {
+        clearSponsor();
+        $("#AddSponsorCategory").modal("show");
+        $('#lbltitle').html('Add Category');
+    }
+
+    function clearSponsor() {        
+        $('#CategoryName').val('');
+        $('#SponsorCategoryId').val('');
+        $('#spanCategoryName').html('');
+        $('#CategoryName').focus().removeClass("red-border");
+
+    }
+    function Validate() {
+       // if ($.trim($('#CategoryName').val()) == "") { $('#spanCategoryName').html('Required.'); $('#CategoryName').focus().addClass("red-border"); return false; } else { $('#spanCategoryName').html(''); $('#CategoryName').focus().removeClass("red-border"); }
+           if ($('#CategoryName').val() == '') { $('#spanCategoryName').html('Required.'); $('#CategoryName').focus().addClass("validate"); return false; } else { $('#spanCategoryName').html(''); $('#CategoryName').focus().removeClass("validate"); }
+         
+        return true;
+    }
+
+    function ClearSearch() {
+        $('#txtsearch').val('');
+        Onload(1);
+    }
+</script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#MWebsite').addClass('active');
+        $('.closable').append('<span id="lblclose" class="closelink" title="Close"></span>');
+        PagerClickBind();
+    });
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="txtitems" type="hidden" value="20" />
+<input id="hdnsortcolumn" type="hidden" value="UpdatedTime" />
+<input id="hdnsortorder" type="hidden" value="DESC" />
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Sponsors Categories </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active"> Sponsors Categories</li>
+    </ol>
+</div>
+ <!--end breadcumb -->
+
+<div class="content">
+    <!-- Main content -->
+
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+      <div class="clearfix sepH_b"></div>
+    <div class="box">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li><a  class="btn" href="@Url.Action("Index", "Sponsors")">Sponsors</a></li>
+                <li class="active"><a href="@Url.Action("SponsorCategory", "Sponsors")">Sponsors Category</a></li>
+            </ul>
+     <div class="box">
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-4 col-sm-6">
+                    <label>Search</label>
+                    <input type="text" placeholder="Category Name" name="txtsearch" id="txtsearch" class="form-control" />
+                </div>
+                <div class="col-xs-12 col-lg-8 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <button class="btn btn-primary" onclick="Onload(1);">Search</button>
+                    <button class="btn btn-info" onclick="ClearSearch();">Clear</button>
+                    <a data-toggle="modal" onclick="Add();" class="btn btn-danger pull-right">Add Category</a>
+                </div>
+            </div>
+        </div>
+        <div id="divSponsorCatrgory" class="box-body table-responsive">
+            @{Html.RenderAction("SponsorCategoriesList", "Sponsors");} 
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AddSponsorCategory" tabindex="-1" role="dialog" aria-hidden="true">
+     
+        <input type="hidden" id="SponsorCategoryId" name="SponsorCategoryId" value="0" />
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span id="lbltitle"></span></h4>
+                </div>
+                <div class="modal-body validation">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Category Name </label>
+                            <input type="text" id="CategoryName" name="CategoryName" placeholder="Category Name *" value="" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer clearfix">
+                    <input type="button" onclick="SponsorSave();" value="Submit" class="btn btn-danger">
+                    <a class="btn btn-primary pull-left" data-dismiss="modal">Cancel</a>
+                </div>
+            </div>
+        </div>  
+</div>

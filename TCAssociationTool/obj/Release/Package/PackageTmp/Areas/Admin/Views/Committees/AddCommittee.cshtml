@@ -1,0 +1,148 @@
+﻿@{
+    ViewBag.Title = "AddCommittee";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+    var cssloc = System.Configuration.ConfigurationManager.AppSettings["adminsiteurl"] + "Content/Admin/front-end-style.css";
+}
+
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#wCommittiees').addClass('active');
+        $('#InnerPages').addClass('red-t');
+        $('.closable').append('<span id="lblclose" class="closelink" title="Close"></span>');
+    });
+
+    function Validate() {
+       // if ($('#Name').val() == "") { $('#spanName').html('Required.'); $('#Name').focus().addClass("red-border"); return false; } else { $('#spanName').html(''); $('#Name').focus().removeClass("red-border"); }
+
+        if ($.trim($('#Name').val()) == '') { document.getElementsByName('Name')[0].placeholder = 'Name Required'; $('#Name').focus().addClass("validate"); return false; } else { $('#Name').focus().removeClass("validate"); }
+        if ($.trim($('#Email').val()) == '') { document.getElementsByName('Email')[0].placeholder = 'Email Required'; $('#Email').focus().addClass("validate"); return false; } else { $('#Email').focus().removeClass("validate"); }
+        if (!Common.CheckEmail($('#Email').val())) { $('#spanEmail').html('Please enter valid email address.'); $('#Email').focus().addClass("red-border"); return false; } else { $('#spanEmail').html(''); $('#Email').focus().removeClass("red-border"); }
+        if ($.trim($('#PhoneNo').val()) == '') { document.getElementsByName('PhoneNo')[0].placeholder = 'Phone No Required'; $('#PhoneNo').focus().addClass("validate"); return false; } else { $('#PhoneNo').focus().removeClass("validate"); }
+
+        if ($('#file').val() != "") {
+            if (!Common.isImage($('#file').val())) { $('#spanfile').html('Sorry image is invalid. Only allowed extensions are:<b>jpg, png, PNG, gif, jpeg, JPEG</b>.'); $('#file').focus(); return false; } else { $('#spanfile').html(''); }
+            //if ($('#hdnimgvalidate').val() == '0') { $('#spanfile').html('Please select image with diemensions equal to 350 * 250.'); $('#file').focus(); return false; } else { $('#spanfile').html(''); }
+        }
+        return true;
+    }
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Add Committee Members</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "Committees")"><i class="fa fa-print"></i>Committees</a></li>
+        <li class="active">Add Committee Members</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+
+<input type="hidden" id="hdnimgvalidate" value="0" />
+<div class="content">
+    <div class="box">
+        <!-- /.box-header -->
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="@Url.Action("Index", "Committees")">Committee Members</a></li>
+                <li><a href="@Url.Action("Index", "CommitteeMaster")">Committees</a></li>
+            </ul>
+            <div class="clearfix sepH_b"></div>
+
+            <div id="divmessage">
+                @if (TempData["message"] != null)
+                { @Html.Raw(TempData["message"].ToString())}
+
+                @if (ViewBag.message != null)
+                { @Html.Raw(ViewBag.message.ToString())}
+            </div>
+
+            <div class="validation">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Member Details </h3>
+                </div>
+                @using (Html.BeginForm("AddCommittee", "Committees", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                { 
+        
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-lg-3 col-sm-6">
+                                <label>Name : <span class="red-t">*</span></label>
+                                <input type="text" class="form-control" id="Name" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" value="" name="Name">
+                                <span id="spanName" class="field-validation-error"></span>
+                            </div>
+                            <div class="col-xs-12 col-lg-3 col-sm-6">
+                                <label>Email Id : <span class="red-t">*</span></label>
+                                <input type="text" class="form-control" value="" id="Email" name="Email">
+                                <span id="spanEmail" class="field-validation-error"></span>
+                            </div>
+                            <div class="col-xs-12 col-lg-3 col-sm-6">
+                                <label>Phone No :<span class="red-t">*</span></label>
+                                <input type="text" class="form-control" id="PhoneNo" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" value="" name="PhoneNo">
+                                <span id="spanPhoneNo" class="field-validation-error"></span>
+                            </div>
+                            <div class="col-xs-12 col-lg-3 col-sm-6">
+                                <label>Display Order :</label>
+                                <input type="text" class="form-control" value="" onkeypress="return Common.isNumberKey(event);" id="DisplayOrder" name="DisplayOrder">
+                            </div>
+                        </div>
+                        <div class="row">
+                            @*<div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Image </label>
+                        <input type="file" name="ImageUrl" id="ImageUrl" />
+                    </div>*@
+                            <div class="col-xs-12 col-lg-3 col-sm-6">
+                                <label>City :</label>
+                                <input type="text" class="form-control" value="" id="City" name="City">
+                                <span id="spanCity" class="field-validation-error"></span>
+                            </div>
+                            <div class="col-xs-12 col-lg-3 col-sm-6">
+                                <label>State :</label>
+                                <input type="text" class="form-control" value="" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" id="State" name="State">
+                                <span id="spanState" class="field-validation-error"></span>
+                            </div>
+
+                            <div class="col-xs-12 col-lg-3 col-sm-6">
+                                <label>Address :</label>
+                                <input rows="2" class="form-control" name="Address" id="Address"></input>
+                                <span id="spanAddress" class="field-validation-error"></span>
+                            </div>
+                            <div class="col-xs-12 col-lg-3 col-sm-6">
+                                <label>Member Photo :</label>
+                                <input type="file" id="file" name="file">
+                                <span id="spanfile" class="field-validation-error"></span>
+                                <div class="clearfix">
+                                    <b style="color: #f00; font-size: 11px">Note :</b> Image size should be maintained width * height (160 * 160)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class='box-body'>
+                        <label>Description </label>
+                        <textarea rows="10" placeholder="Description *" name="NewsText" id="Description" cols="80" style="visibility: hidden; display: none;"></textarea><br />
+                        <span class="field-validation-error" id="spanDescription"></span>
+                        <script type="text/javascript">
+                            var editor = CKEDITOR.replace('Description', { contentsCss: '@(cssloc)' });
+                            CKFinder.setupCKEditor(editor, '@(System.Configuration.ConfigurationManager.AppSettings["baseurl"])ckfinder/');
+                        </script>
+                    </div>
+                    <div class="box">
+                        <!-- /.box-header -->
+                        <div class="box-body text-right">
+                            <input type="submit" value=" Submit " name="send" onclick="return Validate()" class="btn btn-primary">
+                            <a class="btn btn-info" href="@Url.Action("Index", "Committees")">Cancel</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

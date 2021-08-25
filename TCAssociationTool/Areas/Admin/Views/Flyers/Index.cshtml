@@ -1,0 +1,237 @@
+﻿@using System.Configuration;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    var imgloc = ConfigurationManager.AppSettings["baseurl"] + "Content/Admin/news/normalimages/";
+    
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#wFlyers').addClass('active');
+        $('#Banners').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
+          
+        PagerClickBind();
+    });
+
+    function sortresult(sortcolumn) {
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        FlyersBind(1);
+    }
+
+    function FlyersBind(Pageno) {
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = $('#keyword').val();
+
+        $.ajax({
+            url: '@Url.Action("Flyerslist", "Flyers")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items },
+            success: function (result) {
+                $('#divNews').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            FlyersBind($(this).text());
+        });
+    }
+
+    function EditFlyers(FlyerId) {
+        $.ajax({
+            url: '@Url.Action("EditFlyer", "Flyers")',
+            type: 'POST',
+            data: { FlyerId: FlyerId },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objFlyer = result.data;
+                    $('#FlyerId').val(objFlyer.FlyerId);
+                    $('#RedirectUrl').val(objFlyer.RedirectUrl);
+                    $('#Add-Flyer').modal('show');
+                    $('#lbltitle').html('Edit PopUp Page');
+                    $('#Aspanfile').html('');
+                    $('#RedirectUrl').focus().removeClass("red-border");
+                    $('#spanImageUrl').html('');
+                }
+                else {
+                    $('#divmessage').val(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+    
+
+    
+
+    function Add() {
+        clearInnerPageCategory();
+        $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
+        $("#Add-Flyer").modal('show');
+        $('#lbltitle').html('Add PopUp Page');
+    }
+
+    function clearInnerPageCategory() {
+        $('#FlyerId').val('0');
+        $('#RedirectUrl').val('');
+        $('#ImageUrl').val('');
+        $('#spanfile').html('');
+        $('#spanRedirectUrl').html('');
+        $('#spanImageUrl').html('');
+        $('#RedirectUrl').focus().removeClass("validate");
+        $('#ImageUrl').focus().removeClass("validate");
+        
+    }
+    function Validate() {
+
+       
+
+        if ($('#FlyerId').val() == "0") {
+            if ($('#ImageUrl').val() == "") { $('#spanfile').html('Required.'); $('#ImageUrl').focus(); return false; } else { $('#spanfile').html(' '); }
+
+            if (!Common.isImage($('#ImageUrl').val())) { $('#spanfile').html('Sorry image is invalid. Only allowed extensions are:<b>jpg, png, PNG, gif, jpeg, JPEG</b>.'); $('#ImageUrl').focus(); return false; } else { $('#spanfile').html(''); }
+            //if ($('#hdnimgvalidate').val() == '0') { $('#spanfile').html('Please select image with diemensions equal to 1366 * 543.'); $('#ImageUrl').focus(); return false; } else { $('#spanfile').html(''); }
+        }
+        if ($('#ImageUrl').val() != "") {
+            if (!Common.isImage($('#ImageUrl').val())) { $('#spanfile').html('Sorry image is invalid. Only allowed extensions are:<b>jpg, png, PNG, gif, jpeg, JPEG</b>.'); $('#ImageUrl').focus(); return false; } else { $('#spanfile').html(''); }
+            //if ($('#hdnimgvalidate').val() == '0') { $('#spanfile').html('Please select image with diemensions equal to 1366 * 543.'); $('#ImageUrl').focus(); return false; } else { $('#spanfile').html(''); }
+        }
+        //if ($('#RedirectUrl').val() == "") { $('#RedirectUrl').addClass("validate"); return false; } else { $('#RedirectUrl').focus().removeClass("validate"); }
+        if ($('#RedirectUrl').val() == "") { $('#RedirectUrl').addClass("validate");  return  false; } else { $('#RedirectUrl').focus().removeClass("validate"); }
+
+        return true;
+    }
+
+    function ResetValidateClass() {
+        $('#RedirectUrl').removeClass("validate");
+        $('#PostDate').removeClass("validate");
+        $('#DisplayOrder').removeClass("validate");
+    }
+
+    function ClearSearch() {
+        $('#keyword').val('');
+        FlyersBind(1);
+    }
+</script>
+<input type="hidden" id="hdnimgvalidate" value="0" />
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="FlyerId" />
+<input id="hdnsortorder" type="hidden" value="ASC" />
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>PopUp Pages </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index","Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active"><i class="fa fa-tasks"></i>PopUp Pages</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-4 col-sm-6">
+                    @*<label>Search</label>
+                    <input type="text" placeholder="News Title" name="keyword" id="keyword" class="form-control" />*@
+                </div>
+                <div class="col-xs-12 col-lg-8 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    @*<button class="btn btn-primary" type="submit" onclick="NewsBind(1);">Search</button>
+                    <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>*@
+                    <a data-toggle="modal" onclick="Add();" class="btn btn-danger pull-right">Add PopUp Page</a>
+                </div>
+            </div>
+        </div>
+        <div id="divNews" class="box-body table-responsive">
+            @{Html.RenderAction("Flyerslist", "Flyers");}
+        </div>
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="Add-Flyer" tabindex="-1" role="dialog" aria-hidden="true">
+    @using (Html.BeginForm("AddFlyers", "Flyers", FormMethod.Post, new { enctype = "multipart/form-data", style = "margin-bottom:0" }))
+    {
+        <input type="hidden" id="FlyerId" name="FlyerId" value="0" />
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span id="lbltitle"></span></h4>
+                </div>
+                <div class="modal-body validation">
+                    <div class="row">
+                       
+                        
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Images Url <span class="red-t">*</span></label>
+                            <input type="file" name="FlyerUrl" id="ImageUrl" />
+                            <span class="field-validation-error" id="spanfile" style="display: inline-block; padding-top: 5px;"></span>
+                        </div>
+                         <div class="col-xs-12 col-lg-12">
+                            <b class="red-t">Note</b> : PopUp size should be maintain 1366 x 543.
+                        </div>
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Redirect Url </label>
+                            <input type="text" name="RedirectUrl" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="Redirect Url *" id="RedirectUrl" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer clearfix">
+                    <input type="submit" onclick="return Validate();" value="Submit" class="btn btn-danger">
+                    <a class="btn btn-primary pull-left" data-dismiss="modal">Cancel</a>
+                </div>
+            </div>
+        </div> 
+    }
+</div>
+
+
+
+<script>
+    var _URL = window.URL || window.webkitURL;
+    $("#ImageUrl").change(function (e) {
+        var file, img;
+        if ((file = this.files[0])) {
+            img = new Image();
+            img.onload = function () {
+                if (this.width == 1366 && this.height == 543) {
+                    $('#hdnimgvalidate').val('1');
+                }
+                else {
+                    $('#hdnimgvalidate').val('0');
+                }
+            };
+            img.src = _URL.createObjectURL(file);
+        }
+    });
+
+</script>

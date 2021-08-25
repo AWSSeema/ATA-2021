@@ -1,0 +1,206 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    var catlist = (List<TCAssociationTool.Entities.VolunteerCategories>)ViewBag.catlist;
+
+    var eventlist = (List<TCAssociationTool.Entities.Events>)ViewBag.eventlist;
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#wVolunteers').addClass('active');
+        $('#Volunteers').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        PagerClickBind();
+    });
+
+    function sortresult(sortcolumn) {
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        VolunteerBind(1);
+    }
+
+    function VolunteerView(VolunteerId) {
+        $.ajax({
+            url: '@Url.Action("EditVolunteer", "Volunteers")',
+            type: 'POST',
+            data: { VolunteerId: VolunteerId },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objInnerPageCategory = result.data;
+                    $('#lblCategoryName').html(objInnerPageCategory.CategoryName);
+
+                    $("#InnerPageCategoryView").dialog("open");
+
+                }
+                else {
+                    alert(result.data);
+                }
+            }
+        });
+
+    }
+    function VolunteerBind(Pageno) {
+
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = $('#txtsearch').val();
+        var catid = $('#VolunteerCategoryId').val();
+        var eventid = $('#EventId').val();
+
+        $.ajax({
+            url: '@Url.Action("VolunteersList", "Volunteers")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items, VolunteerCategoryId : catid, EventId : eventid},
+            success: function (result) {
+                $('#divDetails').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+    function Delete(VolunteerId) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteVolunteer", "Volunteers")',  // the URL of the controller action method
+                data: { VolunteerId: VolunteerId }, // optional data
+                success: function (result) {
+                    $("#divmessage").html(result.data);
+                    VolunteerBind($('#hdnPageNo').val());
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                },
+                error: function (req, status, error) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            });
+        }
+    }
+    function VolunteerStatus(VolunteerId) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Volunteerstatus", "Volunteers")',  // the URL of the controller action method
+                data: { VolunteerId: VolunteerId }, // optional data
+                success: function (result) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    VolunteerBind(1);
+                },
+                error: function (req, status, error) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            });
+    }
+
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            VolunteerBind($(this).text());
+        });
+    }
+
+    function SearchClear() {
+        $('#txtsearch').val('');
+        VolunteerBind(1);
+    }
+    function ClearSearch() {
+        $('#txtsearch').val('');
+        $('#VolunteerId').val('');
+        $('#hdnPageNo').val(1);
+        $('#VolunteerCategoryId').val('');
+        $('#EventId').val('');
+        VolunteerBind(1);
+    }
+
+    function ExporttoExcel() {
+        window.location.href = "Volunteers/VolunteersExporttoExcel?Search=" + $('#txtsearch').val() + "&VolunteerCategoryId=" + VolunteerCategoryId + "&EventId=" + $('#EventId').val() + "";
+    }
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="VolunteerId" />
+<input id="hdnsortorder" type="hidden" value="ASC" />
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Volunteers</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active"><i class="fa fa-envelope"></i>Volunteers</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                  <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Volunteer Category</label>
+                    <select name="VolunteerCategoryId" id="VolunteerCategoryId" class="form-control">
+                        <option value="">-- Select --</option>
+                                    @if (catlist != null)
+                                    { 
+                                        foreach (var item in catlist)
+                                        { 
+                                        <option value="@item.VolunteerCategoryId">@item.CategoryName</option>
+                                        }
+                                    }
+                                </select>
+                    </div>
+                  <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Events</label>
+                    <select name="EventId" id="EventId" class="form-control">
+                        <option value="">-- Select --</option>
+                                    @if (eventlist != null)
+                                    {
+                                        foreach (var item in eventlist)
+                                        { 
+                                        <option value="@item.EventId">@item.EventName</option>
+                                        }
+                                    }
+                                </select>
+                    </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Search</label>
+                    <input type="text" placeholder="Name/Email/PhoneNo" name="txtsearch" id="txtsearch" class="form-control" />
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <button class="btn btn-primary" type="submit" onclick="VolunteerBind(1);">Search</button>
+                    <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
+                    <a data-toggle="modal" href="@Url.Action("AddVolunteer","Volunteers")" class="btn btn-danger pull-right">Add Volunteer</a>
+                </div>
+            </div>
+        </div>
+         <div class="clearfix box-body">
+            <div class="clearfix row pull-right">
+                <div class="col-xs-12 col-lg-3 col-sm-6 pull-right">
+                    <a data-toggle="modal" onclick="ExporttoExcel();" class="btn btn-primary pull-right">Export Details to Excel</a> 
+                    </div>
+                </div>
+               </div>
+        <div id="divDetails" class="box-body table-responsive">
+             @{Html.RenderAction("VolunteersList", "Volunteers");}
+        </div>
+    </div>
+</div>

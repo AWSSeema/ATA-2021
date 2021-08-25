@@ -1,0 +1,119 @@
+﻿@{
+    ViewBag.Title = "AddDetails";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.Donors objDonor = ViewBag.objDonors;
+}
+<script>
+     
+    $(document).ready(function () {
+        $('#wDonors').addClass('active');
+        $('#Others').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');  
+    });
+
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>View Donor </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index","Home")"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="@Url.Action("Index", "Donors")"><i class="fa fa-file-text-o"></i>Donors</a></li>
+        <li class="active"><i class="fa fa-file-text-o"></i> View Donor</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="clearfix sepH_b"></div> 
+        <div class="box validation">
+            <div class="box-header">
+                
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>First Name : </label>
+                        
+                        @(objDonor.FirstName == "" ? "N/A" : objDonor.FirstName)
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Last Name : </label>
+                        
+                        @(objDonor.LastName == "" ? "N/A" : objDonor.LastName)
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Email : </label>
+                        
+                        @(objDonor.Email == "" ? "N/A" : objDonor.Email)
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Mobile No : </label>
+                        
+                        @(objDonor.PhoneNo == "" ? "N/A" : objDonor.PhoneNo)
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Donation Cause  : </label>
+                        
+                        @(objDonor.DonationCause == "" ? "N/A" : objDonor.DonationCause)
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Donation Program  : </label>
+                        @(objDonor.DonationProgram == "" ? "N/A" : objDonor.DonationProgram)
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Amount  : </label>
+                        
+                        @(objDonor.Amount == 0 ? "N/A" : objDonor.Amount.ToString())
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>TransactionId  : </label>
+                        @(objDonor.TransactionId == "" ? "N/A" : objDonor.TransactionId)
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>PaymentStatus : </label>
+
+                        @(objDonor.PaymentStatus == "" ? "N/A" : objDonor.PaymentStatus.ToString())
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>PaymentMethod : </label>
+
+                        @(objDonor.PaymentMethod == "" ? "N/A" : objDonor.PaymentMethod)
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Order Date : </label>
+                        @objDonor.OrderDate.ToString("dd/MM/yyyy")
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>PaymentBy : </label>
+                        @(objDonor.PaymentBy == "" ? "N/A" : objDonor.PaymentBy)
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Address : </label>
+                        
+                        @(objDonor.Address == "" ? "N/A" : objDonor.Address)
+                    </div>
+                </div>
+            </div> 
+        </div> 
+        <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body text-right"> 
+                <a class="btn btn-info" href="@Url.Action("Index", "Donors")">Cancel</a>
+            </div>
+            <!-- /.box-body -->
+        </div> 
+  
+</div>
+
+
+

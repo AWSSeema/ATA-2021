@@ -1,0 +1,97 @@
+﻿@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+
+    List<TCAssociationTool.Entities.SponsorCategories> lstSponsorCategories = ViewBag.lstSponsorCategories;    
+}
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#wSponsors').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+    function DeleteSponsor(SponsorCategoryId) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteSponsorCategory", "Sponsors")',  // the URL of the controller action method
+                data: { SponsorCategoryId: SponsorCategoryId }, // optional data
+                success: function (result) {
+                    if (result.ok) {
+                        $("#divmessage").html(result.data);
+                        Onload($('#hdnPageNo').val());
+                    }
+                    else {
+                        $("#divmessage").val(result.data);
+                    }
+                },
+            });
+        }
+    }
+</script>
+
+@if (Total == -1)
+{
+    <div class="norecords">Sorry failed processing your request.</div> 
+}
+else
+{
+    <table width="100%" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th width="6%" align="center">S.No.</th>
+                <th><a onclick="javascript:sortresult('CategoryName');" class="white-t-u">Category Name @if (sortcolumn == "CategoryName")
+                                                                                                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a></th>
+                <th width="20%">#</th>
+                <th width="10%">Posted Date</th>
+                <th width="10%" style="text-align:center;">Posted By</th>
+                <th width="9%" style="text-align:center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (lstSponsorCategories.Count != 0)
+            {
+                foreach (var item in lstSponsorCategories)
+                { 
+                <tr>
+                    <td width="44" valign="top">@item.RId</td>
+                    <td style="text-align: left">@item.CategoryName</td>
+                    <td><a href="@Url.Action("Index", "Sponsors", new { SponsorCategoryId = item.SponsorCategoryId })">Sponsors</a></td>
+                    <td style="text-align: center">@item.UpdatedTime.ToString("dd-MM-yyyy")</td>
+                    <td style="text-align: center">Admin</td>
+                    <td style="text-align:center;">
+                        <a onclick="EditSponsorCategory(@item.SponsorCategoryId);" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>
+                        @if (item.SponsorsCount == 0)
+                        {
+                            <a class="themedelete" onclick="javascript:DeleteSponsor(@item.SponsorCategoryId);" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>
+                        }
+
+                        else
+                        {
+                            <a title="This category have @item.SponsorsCount sponsors" class="disable-alpha"><i class="fa fa-trash-o"></i></a>
+                        }
+                    </td>
+                </tr>
+                }
+
+            }
+            else
+            {
+                <tr>
+                    <td class="norecords" colspan="9">No Sponsor Categories Found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.pageno, "pagination pagination-centered"))

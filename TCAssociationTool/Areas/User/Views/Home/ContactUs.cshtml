@@ -1,0 +1,168 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+    ViewBag.Title = "Contact Us - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+
+    var objAppInfo = (TCAssociationTool.Entities.AppInfo)ViewBag.objAppInfo;
+
+    TCAssociationTool.Entities.InnerPages objInnerPageMap = ViewBag.objInnerPageMap;
+
+    ViewBag.heading = "ContactUs";
+}
+
+<script>
+    $(document).ready(function () {
+        $('#left-block7').removeClass('left-block7');
+        $('#right-block7').addClass('hide');
+        
+        $('.closable').append('<span id="lblclose" class="closelink" title="Close"></span>');
+        $('.closelink').click(function () {
+            $(this).parent().fadeOut('600', function () { $(this).remove(); });
+        });
+        
+        $("#SubmissionDate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-10:+10", altFormat: 'mm/dd/yy' });
+    });
+
+    //function mobileonchange(event) {
+    //    var phone = $('#Phone').val();
+    //    if (phone.length == 3) { $('#Phone').val(phone + '-'); }
+    //    else if (phone.length == 7) { $('#Phone').val(phone + '-'); }
+    //}
+
+    function EValidate() {
+        if ($.trim($('#Name').val()) == "") { $('#Name').focus().addClass("validate"); $('#spanName').show().html('Name Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanName').hide().html(''); $('#Name').removeClass("validate"); }
+
+        if ($.trim($('#Email').val()) == '') { $('#Email').focus().addClass('redborder'); $('#spanEmail').show().html('Email Id Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; }
+        else {
+            $('#spanEmail').hide().html(''); $('#Email').removeClass('redborder');
+            if (!Common.CheckEmail($.trim($('#Email').val()))) { $('#spanEmail').show().html('Please enter valid email. <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#Email').focus().addClass("redborder"); return false; } else { $('#spanEmail').hide().html(''); $('#Email').removeClass('redborder'); }
+        }
+        if ($.trim($('#Phone').val()) == "") { $('#Phone').focus().addClass("validate"); $('#spanPhone').show().html('Contact no Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanPhone').hide().html(''); $('#Phone').removeClass("validate"); }
+
+        //if ($.trim($('#Subject').val()) == "") { $('#Subject').focus().addClass("validate"); $('#spanSubject').show().html('Comment Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanSubject').hide().html(''); $('#Subject').removeClass("validate"); }
+
+        if ($.trim($('#Message').val()) == "") { $('#Message').focus().addClass("validate"); $('#spanMessage').show().html('Comment Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanMessage').hide().html(''); $('#Message').removeClass("validate"); }
+
+        return true;
+    }
+
+    function closeValidation(field) {
+        $(field).parent().hide();
+    }
+
+    function closeValidationOnClick(field) {
+        $(field).next('span').hide();
+    }
+
+
+    var specialKeys = new Array();
+    specialKeys.push(8); //Backspace
+    specialKeys.push(9); //Tab
+    specialKeys.push(32); //Space
+    specialKeys.push(46); //Delete
+    specialKeys.push(36); //Home
+    specialKeys.push(35); //End
+    specialKeys.push(37); //Left
+    specialKeys.push(39); //Right
+
+
+    function onlyAlphabets(e, t) {
+        try {
+            if (window.event) {
+                var charCode = window.event.keyCode;
+            }
+            else if (e) {
+                var charCode = e.which;
+            }
+            else { return true; }
+            if ((charCode == 32) || (charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (specialKeys.indexOf(e.keyCode) != -1 && e.charCode != e.keyCode))
+                return true;
+            else
+                return false;
+        }
+        catch (err) {
+            alert(err.Description);
+        }
+    }
+</script>
+
+<script>
+    function phonenochange(event) {
+        if (event.keyCode == 8 || event.keyCode == 46) {
+        }
+        else {
+            var ph = $('#Phone').val();
+            if (ph.length == 3) { $('#Phone').val(ph + '-'); }
+            if (ph.length == 7) { $('#Phone').val(ph + '-'); }
+        }
+    }
+
+</script>
+
+
+
+
+
+                    <article class="clearfix t-m0 l-h28 t-t-u Impact font26 evesec-tex letespa1 b-m25 tabhorizontal-b-m10 mobile-b-m5">Contact<span class="evered-t"> Us</span><i class="inertitsid-img l-m10 mobile-hide">&nbsp;</i></article>
+                    <article class="clearfix shadow p5 border map-wrap">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13881.817770805008!2d-98.57000817674414!3d29.561378162967635!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x865c6127ec3f64bf%3A0xd4c77961940dbabc!2sSan%20Antonio%2C%20TX%2078278%2C%20USA!5e0!3m2!1sen!2sin!4v1591946193961!5m2!1sen!2sin" width="100%" height="250" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+                    </article>
+                    <article class="clearfix position-r tm28n b-p50 tabhorizontal-b-p0 t-p30">
+                        <article class="clearfix l-r-m-auto  careerform-shadow" style="max-width:865px;">
+                            <article class="clearfix block-row white-bg shadow">
+                                <article class="clearfix left-block20">
+                                    <article class="clearfix p35 l-h22 mobile-minheight0 tabhorizontal-p20">
+                                        <h4 class="clearfix Montserrat-SemiBold font24 contact-data-t m0 dis-b t-t-u letterspaa2">Write to us</h4>
+                                        @using (Html.BeginForm("ContactUs", "Home", FormMethod.Post, new { enctype = "multipart/form-data", @class = "validation" }))
+                                        {
+                                            <input type="hidden" name="Field1" value="General Enquiry" id="Field1" />
+                                            <article class="clearfix position-r">
+                                                <input value="" name="Name" id="Name" onkeypress="closeValidationOnClick(this);" class="form-control careerform" type="text" required placeholder="Name">
+                                                <span class="errormsg" id="spanName"></span>
+                                            </article>
+                                            <article class="clearfix position-r">
+                                                <input value="" name="Email" id="Email" onkeypress="closeValidationOnClick(this);" class="form-control careerform" type="text" required placeholder="Email ID">
+                                                <span class="errormsg" id="spanEmail"></span>
+                                            </article>
+                                            <article class="clearfix position-r">
+                                                <input value="" name="Phone" id="Phone" onchange="EValidate();" onkeypress="phonenochange(event); closeValidationOnClick(this); return Common.isNumberKey(event);" maxlength="12" class="form-control careerform" type="text" required placeholder="Phone No">
+                                                <span class="errormsg" id="spanPhone"></span>
+                                            </article>
+                                            <article class="clearfix position-r b-m15">
+                                                <input value="" name="Description" id="Message" onkeypress="closeValidationOnClick(this);" class="form-control careerform" type="text" required placeholder="Message">
+                                                <span class="errormsg" id="spanMessage"></span>
+                                            </article>
+                                            <article class="">
+
+                                                <input value="Submit" onclick="return EValidate();" class="clearfix m0 career-submit-bg border-radius4 t-t-u font18 white-t t-c l-h12 Poppins-Medium t-b-p20 border0 width100" type="submit">
+
+                                            </article>
+
+                                        }
+                                    </article>
+                                </article>
+                                <article class="clearfix right-block20 conact-data-bg2 tabhorizontal-b-p0" style="min-height:405px;">
+                                    <article class="clearfix t-p35 l-p35 r-p0 l-h22 mobile-minheight0 tabhorizontal-p20">
+                                        <h4 class="clearfix Poppins-Medium font32 white-t m0 dis-b t-t-u l-h36 letterspa3 mobile-font28 mobile-l-h30 tabhorizontal-font30 tabhorizontal-l-h30">Contact information</h4>
+                                        <article class="clearfix t-p20  mobile-t-p20 mobile-b-p10">
+                                            <article class="clearfix ">
+                                                <span class="Roboto-Medium  t-t-u font18 l-h18 dis-b white-t b-p5 letterspaa2">@objAppInfo.SiteName</span>
+
+                                                <article class="clearfix t-p15">
+                                                    <span class="Poppins-Medium  font15 l-h18 dis-b t-t-u liter-tex letterspaa2">ADDRESS</span>
+                                                    <label class="t-m2 white-t font17 Roboto-Regular t-p0 l-h30 mobile-l-h20  r-p10"> @objAppInfo.CompanyAddress</label>
+                                                </article>
+                                                <article class="clearfix t-p10">
+                                                    <span class="Poppins-Medium font15 l-h18 dis-b t-t-u liter-tex letterspaa2">Call us</span>
+                                                    <label class="t-m2 white-t font17 Roboto-Regular t-p5 l-h30 mobile-l-h20"> <i class="white-conta-img r-m8">&nbsp;</i>@objAppInfo.CompanyPhone</label>
+                                                </article>
+                                            </article>
+                                        </article>
+                                        <h4 class="Montserrat-Light font14 l-h18 dis-b white-t m0 t-p15 b-p5 mobile-t-p0">Send us your Message</h4>
+                                        <label class="white-t font18 Roboto-Regular"><span class="liter-tex font13 Poppins-Medium t-t-u">General information : </span> <a href="mailto:newsletter@tlca.com" class="white-t" style="color:#fff">@objAppInfo.CompanyEmail</a> </label>
+
+                                    </article>
+                                </article>
+                            </article>
+                        </article>
+                    </article>
+               

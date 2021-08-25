@@ -1,0 +1,138 @@
+﻿@{    
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+
+    var lstCommittees = (List<TCAssociationTool.Entities.Committees>)ViewBag.lstCommittees;
+
+    var Type = ViewBag.Type;
+
+    ViewBag.Title = TCAssociationTool.BLL.Common.DecodeURL(TCAssociationTool.BLL.Common.UppercaseFirst(Type)) + " - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+
+    var imglocNormal = System.Configuration.ConfigurationManager.AppSettings["adminimgurl"] + "committees/normalphoto/";
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#committeeinfo').dialog
+           ({
+               autoOpen: false,
+               width: 750,
+               modal: true
+           });
+    });
+
+    function Committeeinfo(CommitteeId) {
+        $.ajax({
+            url: '@Url.Action("CommitteeInfo", "Committee")',
+            type: 'POST',
+            data: { CommitteeId: CommitteeId },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objCommitteeMember = result.data;
+                    $('#CommitteeId').html(objCommitteeMember.CommitteeId);
+                    $('#Name').html(objCommitteeMember.Name);
+                    $('#Description').html(objCommitteeMember.Description.replace('Content/images/', 'Content/User/images/'));
+                    $('Designation').html(objCommitteeMember.Designation)
+
+                    $("#committeeinfo").dialog('open');
+                }
+            }
+        });
+    }
+
+    </script>
+ <article class="clearfix t-m0 l-h28 t-t-u Impact font26 evesec-tex letespa1 b-m25 tabhorizontal-b-m10 mobile-b-m5">@TCAssociationTool.BLL.Common.DecodeURL(Type) <i class="inertitsid-img l-m10 mobile-hide">&nbsp;</i></article>
+@*<article class="clearfix t-c b-p20 mobile-dis-b mobile-b-p5  mobile-t-p10  mobile-b-p10">
+    <span class="dis-in"><a href="Content/pdf/bylaws.pdf" target="_blank" class="btn btn-danger Poppins-Medium t-t-u dis-in border-radius m5 l-r-p20 t-b-p6">By-laws</a> </span><span class="dis-in"><a href="Content/pdf/TLCA2018Membershipform.pdf" target="_blank" class="btn btn-danger Poppins-Medium t-t-u dis-in border-radius m5 l-r-p20 t-b-p6">Membership Form</a> </span>
+</article>*@
+@*<div class="clearfix white-bg p4 shadow">
+    @if (lstCommittees != null && lstCommittees.Count != 0)
+    {
+        int i = 0;
+        <article class="clearfix block-row">
+            @foreach (var item in lstCommittees)
+            {
+                if (item.Designation.Contains("President") || item.Designation.Contains("Vice President"))
+                {
+                    if (i == 1)
+                    {
+                <article class="clearfix left-block16">
+                    <article class="clearfix p10 tablet-p5 white-bg border11">
+                        <article class="clearfix box-row">
+                            <article class="clearfix box-5">
+                                <article class="clearfix profilepic-roundcircle tablet-r-m10 pull-right r-m20 shadow">
+                                    <article class="clearfix">
+                                        <img src="@TLCA2020.BLL.Common.ValidateImage((imglocNormal + item.ImageUrl), imglocNormal + "no-image.jpeg")" alt="@item.Name" title="@item.Name" width="" height="" border="0" />
+                                    </article>
+                                </article>
+                            </article>
+                            <article class="clearfix box-7">
+                                <article class="clearfix t-p20">
+                                    <h5 class=" Roboto-Medium skyblue-t t-b-m0 l-h20 mobilev-font14 mobilev-l-h18 font16 letespace1">@item.Name<span class="poppinsregular dis-b red-t font14">@item.Designation</span></h5>
+                                    <span class="dis-b black-t Oswald-Regular font15 l-h20 t-b-m0 w-w-break letespace1">@item.PhoneNo</span><span class="dis-b"> <a class="Poppins-Medium font14 t-b-m0 black-t letespace1 mobile-font12" href="mailto:@item.Email">@item.Email</a> </span>
+                                </article>
+                            </article>
+                        </article>
+                    </article>
+                </article>  
+                    }
+                    if (i == 2)
+                    {                    
+                <article class="clearfix right-block16">
+                    <article class="clearfix p10 tablet-p5 white-bg border11">
+                        <article class="clearfix box-row">
+                            <article class="clearfix box-5">
+                                <article class="clearfix profilepic-roundcircle tablet-r-m10 pull-right r-m20 shadow">
+                                    <article class="clearfix">
+                                        <img src="@TLCA2020.BLL.Common.ValidateImage((imglocNormal + item.ImageUrl), imglocNormal + "no-image.jpeg")" alt="@item.Name" title="@item.Name" width="" height="" border="0" />
+                                    </article>
+                                </article>
+                            </article>
+                            <article class="clearfix box-7">
+                                <article class="clearfix t-p20">
+                                    <h5 class=" Roboto-Medium skyblue-t t-b-m0 l-h20 mobilev-font14 mobilev-l-h18 font16 letespace1">@item.Name <span class="poppinsregular dis-b red-t font14">@item.Designation</span></h5>
+                                    <span class="dis-b black-t Oswald-Regular font15 l-h20 t-b-m0 w-w-break letespace1">@item.PhoneNo</span><span class="dis-b"> <a class="Poppins-Medium font14 t-b-m0 black-t letespace1 mobile-font12" href="mailto:@item.Email">@item.Email</a> </span>
+                                </article>
+                            </article>
+                        </article>
+                    </article>
+                </article>
+                    }
+                }
+                i++;
+            }
+        </article>
+    }
+</div>*@
+@*<h2 class="m0 t-c Montserrat-SemiBold presmsg-tex-t t-p40 b-p25 font26 t-t-u mobile-font20 mobile-l-h24">Members of the @TLCA2020.BLL.Common.DecodeURL(Type)</h2>*@
+
+    <div class="clearfix white-bg shadow p4">
+        @if (lstCommittees != null && lstCommittees.Count != 0)
+        {
+            <ul class="clearfix list-pn list-f m0 committee-list committee-item1 gray-border">
+                @foreach (var item in lstCommittees)
+                {
+                    <li class="border-bot border-extop">
+                        <article class="clearfix p15 tablet-p10 committee-item ltgrey-bg2 tabhorizontal-p5 mobile-p5">
+                            <article class="clearfix box-row">
+                                <article class="box-4">
+                                    <article class="clearfix r-p10 r-m5 tablet-r-p10">
+                                        <article class="clearfix tablet-minheight0">
+                                            <img src="@TCAssociationTool.BLL.Common.ValidateImage((imglocNormal + item.ImageUrl), imglocNormal + "no-image.jpeg")" alt="@item.Name" title="@item.Name" class="border p5 shadow" width="158" height="172" border="0" />
+                                        </article>
+                                    </article>
+                                </article>
+                                <article class="box-8">
+                                    <article class="clearfix t-p15">
+                                        <h5 class=" Roboto-Medium skyblue-t t-b-m0 l-h20 mobilev-font14 mobilev-l-h18 font16 letespace1">@item.Name<span class="poppinsregular dis-b red-t font14">@item.Designation</span></h5>
+                                        <span class="dis-b black-t Oswald-Regular font15 l-h20 t-b-m0 w-w-break letespace1">@item.PhoneNo</span><span class="dis-b"> <a class="Poppins-Medium font14 t-b-m0 black-t letespace1 mobile-font12" href="mailto:@item.Email">@item.Email</a> </span>
+                                    </article>
+                                </article>
+                            </article>
+                        </article>
+                    </li>
+                }
+            </ul>
+        }
+    </div>    

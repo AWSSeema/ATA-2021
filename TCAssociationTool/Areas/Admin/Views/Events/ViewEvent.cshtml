@@ -1,0 +1,138 @@
+﻿@{
+    ViewBag.Title = "ViewEvent";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.Events objEvent = ViewBag.objEvent;
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#MEvents').addClass('active');
+    });
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Edit Event</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "Events", new { EventType = "upcoming" })">Events</a></li>
+        <li class="active">View Event</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+
+<input type="hidden" id="hdnimgvalidate" value="0" />
+<div class="content">
+    <!-- Main content -->
+    <div class="clearfix sepH_b"></div>
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box validation">
+        <div class="box-header">
+            <h3 class="box-title dis-in"><span class="red-t t-t-c">@objEvent.EventName </span>- View Details</h3>
+        </div>
+    </div>
+    <div class="clearfix sepH_b"></div>
+    @using (Html.BeginForm("AddEvent", "Events", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    { 
+        <input id="EventId" name="EventId" type="hidden" value="@(objEvent.EventId)" />
+            
+           
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Event Details </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Event Name :</label>
+                        @objEvent.EventName
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Start Date :</label>
+                        @(objEvent.StartDate == DateTime.MinValue ? "N/A" : objEvent.StartDate.ToString("MM/dd/yyyy"))
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>End Date :</label>
+                        @(objEvent.EndDate == DateTime.MinValue ? "N/A" : objEvent.EndDate.ToString("MM/dd/yyyy"))
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Event Category :</label>
+                        @objEvent.EventCategory
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Contact Email :</label>
+                        @(objEvent.ContactEmail == null ? "N/A" : objEvent.ContactEmail)
+                    </div>
+                     <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>City :</label>
+                        @(objEvent.City == null ? "N/A" : objEvent.City)
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>State Name :</label>
+                        @(objEvent.StateName == null ? "N/A" : objEvent.StateName)
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Zip Code :</label>
+                        @(objEvent.ZipCode == null ? "N/A" : objEvent.ZipCode)
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Location :</label>
+                        @(objEvent.Location == null ? "N/A" : objEvent.Location)
+                    </div>
+                     <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Is Volunteer :</label>
+                        @(objEvent.TopLine == null ? "N/A" : objEvent.TopLine)
+                    </div>
+                </div>
+
+            </div>
+        </div>       
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Event Description </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-12 col-sm-6">
+                        <div class="filedsetInner clearfix">
+                            @Html.Raw(objEvent.EventDetails == null ? "N/A" : objEvent.EventDetails)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">SEO Details </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Page Title :</label>
+                        @(objEvent.PageTitle == null ? "N/A" : objEvent.PageTitle)
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Meta Keywords :</label>
+                        @(objEvent.MetaKeywords == null ? "N/A" : objEvent.MetaKeywords)
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Meta Description :</label>
+                        @(objEvent.MetaDescription == null ? "N/A" : objEvent.MetaDescription)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-body text-right">
+                <a class="btn btn-info" href="@Url.Action("Index", "Events", new { EventType = "current" })">Cancel</a>
+            </div>
+        </div>         
+    }
+</div>
+

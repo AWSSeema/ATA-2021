@@ -1,0 +1,16 @@
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.DAL\bin\Release\TCAssociationTool.DAL.dll
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.DAL\bin\Release\TCAssociationTool.DAL.pdb
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.csprojAssemblyReference.cache
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.csproj.CoreCompileInputs.cache
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.dll
+E:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.pdb
+D:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.DAL\bin\Release\TCAssociationTool.DAL.dll
+D:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.DAL\bin\Release\TCAssociationTool.DAL.pdb
+D:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.dll
+D:\Development\Projects\TeluguAssociationTool\TeluguAssociation\TeluguAssociation\TCAssociationTool\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.pdb
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.DAL\bin\Release\TCAssociationTool.DAL.dll
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.DAL\bin\Release\TCAssociationTool.DAL.pdb
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.csprojAssemblyReference.cache
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.csproj.CoreCompileInputs.cache
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.dll
+D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.pdb

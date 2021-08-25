@@ -1,0 +1,599 @@
+﻿@{
+    ViewBag.Title = "EditMember";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+    var objMembers = (TCAssociationTool.Entities.Members)ViewBag.objMembers;
+    var lstMembershipType = (List<TCAssociationTool.Entities.MembershipTypes>)objMembers.lstMembershipType;
+    var lstPaymentMethod = (List<TCAssociationTool.Entities.PaymentMethods>)objMembers.lstPaymentMethod;
+    var lstPaymentStatus = (List<TCAssociationTool.Entities.PaymentStatus>)objMembers.lstPaymentStatus;
+    var objMemberDetails = (TCAssociationTool.Entities.Members)ViewBag.objMemberDetails;
+}
+
+ <script type="text/javascript">
+     function addRow() {
+
+         var table = document.getElementById("childinfo");
+
+         var rowCount = table.rows.length;
+         var row = table.insertRow(rowCount);
+         row.id = rowCount;
+
+         var cell1 = row.insertCell(0);
+         var element1 = document.createElement("input");
+         element1.type = "text";
+         element1.name = "[" + (rowCount - 1) + "].FirstName";
+         element1.id = "FirstName-" + (rowCount - 1);
+         element1.className = "form-control";
+         cell1.appendChild(element1);
+
+         //var cell2 = row.insertCell(1);
+         //var element2 = document.createElement("input");
+         //element2.type = "text";
+         //element2.name = "[" + (rowCount - 1) + "].LastName";
+         //element2.id = "LastName-" + (rowCount - 1);
+         //element2.className = "span2 sepH_am";
+         //cell2.appendChild(element2);
+
+         var cell2 = row.insertCell(1);
+         var element2 = document.createElement("input");
+         element2.type = "text";
+         element2.className = "form-control";
+         element2.name = "[" + (rowCount - 1) + "].Age";
+         element2.id = "Age-" + (rowCount - 1);
+         cell2.appendChild(element2);
+
+         //var cell4 = row.insertCell(3);
+         //var element4 = document.createElement("input");
+         //element4.type = "text";
+         //element4.className = "span2 sepH_am";
+         //element4.name = "[" + (rowCount - 1) + "].Relationship";
+         //element4.id = "Relationship-" + (rowCount - 1);
+
+         //cell4.appendChild(element4);
+         document.getElementById("Age-" + (rowCount - 1)).onkeypress = function (event) { return Common.isNumberKey(event) };
+         var cell3 = row.insertCell(2);
+         cell3.innerHTML = '<a onclick="javascript:deleteRow(' + rowCount + ')" class="pagedelete t-p10"><i class="fa fa-trash-o"></i></a>';
+         $('#hdnRowCount').val(rowCount);
+
+         $('.norecords').hide();
+     }
+
+     function deleteRow(i) {
+         try {
+             var row = document.getElementById(i);
+             row.parentNode.removeChild(row);
+         } catch (e) {
+             alert(e);
+         }
+     }
+
+     function DropDown(el) {
+         this.dd = el;
+         this.initEvents();
+     }
+     DropDown.prototype = {
+         initEvents: function () {
+             var obj = this;
+
+             obj.dd.on('click', function (event) {
+                 $(this).toggleClass('active');
+                 event.stopPropagation();
+             });
+         }
+     }
+
+     $(function () {
+
+         var dd = new DropDown($('#dd'));
+
+         $(document).click(function () {
+
+             $('.wrapper-dropdown-3').removeClass('active');
+
+         });
+
+     });
+
+     function CheckEmailAvailability(email) {
+
+         var returnval = null;
+
+         $.ajax({
+             type: "POST",
+             url: '@Url.Action("CheckEmailAvailability", "Members")', // the URL of the controller action method
+            data: { Email: email }, // optional data
+            datatype: "JSON",
+            async: false,
+            success: function (result) {
+                if (result.ok) {
+                    returnval = result.data;
+                }
+            }
+        });
+        return returnval;
+    }
+
+    function CheckUserNameAvailability(username) {
+
+        var returnval = null;
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CheckUserNameAvailability", "Members")', // the URL of the controller action method
+            data: { UserName: username }, // optional data
+            datatype: "JSON",
+            async: false,
+            success: function (result) {
+                if (result.ok) {
+                    returnval = result.data;
+                }
+            }
+        });
+        return returnval;
+    }
+
+    function CheckProfileEmailAvailability(email, userid) {
+        var returnval = null;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CheckProfileEmailAvailability", "Members")', // the URL of the controller action method
+            data: { MemberId: userid, Email: email }, // optional data
+            datatype: "JSON",
+            async: false,
+            success: function (result) {
+                if (result.ok) {
+                    returnval = result.data;
+                }
+            }
+        });
+        return returnval;
+    }
+
+
+    function Validate() {
+        if ($('#UserName').val() == "") { $('#spanUserName').html('User Name Required.'); $('#UserName').focus().addClass("validate"); return false; } else { $('#spanUserName').html(''); $('#UserName').focus().removeClass(""); }
+        if ($('#FirstName').val() == "") { $('#spanFirstName').html('First Name Required.'); $('#FirstName').focus().addClass("validate"); return false; } else { $('#spanFirstName').html(''); $('#FirstName').focus().removeClass(""); }
+        if ($('#LastName').val() == "") { $('#spanLastName').html('Last Name Required.'); $('#LastName').focus().addClass("validate"); return false; } else { $('#spanLastName').html(''); $('#LastName').focus().removeClass(""); }
+        //if ($('#UserName').val() == "") { $('#spanUserName').html('Required.'); $('#UserName').focus().addClass("red-border"); return false; } else { $('#spanUserName').html(''); $('#UserName').focus().removeClass("red-border"); }
+        //if (!CheckUserNameAvailability($.trim($('#UserName').val()))) { $('#spanUserName').html('User Name already exist.'); $('#UserName').focus().addClass("red-border"); return false; } else { $('#spanUserName').html(''); $('#UserName').focus().removeClass("red-border"); }
+        if ($('#Email').val() == "") { $('#spanEmail').html('Email Required.'); $('#Email').focus().addClass("red-border"); return false; } else { $('#spanEmail').html(''); $('#Email').focus().removeClass("red-border"); }
+        if (!Common.CheckEmail($('#Email').val())) { $('#spanEmail').html('Please enter valid email address.'); $('#Email').focus().addClass("red-border"); return false; } else { $('#spanEmail').html(''); $('#Email').focus().removeClass("red-border"); }
+        if (!CheckProfileEmailAvailability($.trim($('#Email').val()), $('#MemberId').val())) { $('#spanEmail').html('Email address is not available.'); $('#Email').focus().addClass("red-border"); return false; } else { $('#spanEmail').html(''); $('#Email').focus().removeClass("red-border"); }
+
+        if ($('#Address').val() == "") { $('#spanAddress').html('Address Required.'); $('#Address').focus().addClass("red-border"); return false; } else { $('#spanAddress').html(''); $('#Address').focus().removeClass("red-border"); }
+
+        if ($('#MembershipTypeId').val() == "") { $('#spanMembershipTypeId').html('Membership Type Required.'); $('#MembershipTypeId').focus(); return false; } else { $('#spanMembershipTypeId').html(''); }
+
+        if ($('#PaymentMethodId').val() == "PayPal") {
+            if ($('#TransactionId').val() == "") { $('#spanTransactionId').html('TransactionId Required.'); $('#TransactionId').focus().addClass("red-border"); return false; } else { $('#spanTransactionId').html(''); }
+
+        }
+        if ($('#PaymentMethodId').val() == "Cash/Cheque") {
+            if ($('#PaymentBy').val() == "") { $('#spanPaymentBy').html('PaymentBy Required.'); $('#PaymentBy').focus(); return false; } else { $('#spanPaymentBy').html(''); $('#PaymentBy').focus().removeClass("red-border"); }
+            if ($('#ChequeNo').val() == "") { $('#spanChequeNo').html('ChequeNo Required.'); $('#ChequeNo').focus(); return false; } else { $('#spanChequeNo').html(''); $('#ChequeNo').focus().removeClass("red-border"); }
+            if ($('#BankName').val() == "") { $('#spanBankName').html('BankName Required.'); $('#BankName').focus(); return false; } else { $('#spanBankName').html(''); $('#BankName').focus().removeClass("red-border"); }
+            if ($('#ChequeDate').val() == "") { $('#spanChequeDate').html('ChequeDate Required.'); $('#ChequeDate').focus(); return false; } else { $('#spanChequeDate').html(''); $('#ChequeDate').focus().removeClass("red-border"); }
+        }
+
+
+        //var SpouseSkils = Common.GetCheckBoxValue('ItemValue');
+        //if (SpouseSkils == "") {
+        //    alert("Please select atleast one item From Interested List.");
+        //    return false;
+        //}
+
+        //else {
+        //    $('#SpouseSkils').val(SpouseSkils);
+        //}
+         
+        return true;
+    }
+</script>
+<script type="text/javascript">
+    $(function () {
+        $(".ui-accordion").accordion({
+            collapsible: true,
+            heightStyle: "content"
+        });
+
+        // date picker
+        $(function () {
+            $(function () {
+                $(".datepicker").datepicker({
+                    altField: "#alternate",
+                    altFormat: "DD, d MM, yy"
+                });
+            });
+        });
+    });
+    $(document).ready(function () {
+        $('#MMembers').addClass('active');
+        getamount();
+        $(".Odate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+5", altField: '.Odate', altFormat: 'mm/dd/yy' });
+        $(".Edate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+5", altField: '.Edate', altFormat: 'mm/dd/yy' });
+        $(".Cdate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+5", altField: '.Cdate', altFormat: 'mm/dd/yy' });
+    });
+    function getamount() {
+        var membershipid = $('#MembershipTypeId').val();
+        $.ajax({
+            url: '@Url.Action("EditMembershipTypes", "MembershipTypes")',
+            type: 'POST',
+            data: { MembershipTypeId: membershipid },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objMembershipType = result.data;
+                    $('#payamount').html(objMembershipType.Price);
+                    $('#Amount').val(objMembershipType.Price);
+                    if (Common.ConvertDate(objMembershipType.Validity) != '1/1/1') {
+                        var Date = Common.ConvertDate(objMembershipType.Validity);
+                        $('#ExpiryDate').val(Date);
+                    } else { $('#ExpiryDate').val('Life Time'); }
+                }
+                else {
+                    alert(result.data);
+                }
+            }
+        });
+    }
+</script>
+<script>
+    function phonenochange(event) {
+        if (event.keyCode == 8 || event.keyCode == 46) {
+        }
+        else {
+            var ph = $('#HomePhone').val();
+            if (ph.length == 3) { $('#HomePhone').val(ph + '-'); }
+            if (ph.length == 7) { $('#HomePhone').val(ph + '-'); }
+        }
+    }
+
+    function phonenochange1(event) {
+        if (event.keyCode == 8 || event.keyCode == 46) {
+        }
+        else {
+            var ph = $('#MobilePhone').val();
+            if (ph.length == 3) { $('#MobilePhone').val(ph + '-'); }
+            if (ph.length == 7) { $('#MobilePhone').val(ph + '-'); }
+        }
+    }
+
+</script>
+<div class="content-header">
+    <h1>Edit Member</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "Members")"><i class="fa fa-user"></i>Members</a></li>
+        <li class="active">Edit Member</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="@Url.Action("Index", "Members")">Members</a></li>
+                <li><a class="btn"  href="@Url.Action("Index", "MembersOrders")">Orders</a></li>
+                <li><a class="btn" href="@Url.Action("Index", "MembershipTypes")">Membership Types</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="clearfix sepH_b"></div>
+    <!-- /.box-header -->
+    @using (Html.BeginForm("UpdateMember", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+            <input type="hidden" id="MembershipOrderId" name="MembershipOrderId" value="@objMemberDetails.objMembershipOrder.MembershipOrderId" />
+            <input type="hidden" id="MemberId" name="MemberId" value="@objMemberDetails.MemberId" />  
+            <input type="hidden" id="Amount" name="Amount" value="" />  
+            <input type="hidden" id="SpouseSkils" name="SpouseSkils" />
+        <input type="hidden" id="SpouseCell" name="SpouseCell" value="@objMemberDetails.SpouseCell"/>
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Personal Details </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                     <div class="col-xs-12 col-lg-3 col-sm-6">
+                          <label>Title :<span class="red-t">*</span></label>
+                    <select class="form-control" name="UserName" id="UserName" type="text">
+                            <option value="">Title</option>
+                                        <option @(objMemberDetails.UserName == "Mr." ? "selected='selected'" : "") value="Mr.">Mr.</option>
+                                        <option @(objMemberDetails.UserName == "Mrs." ? "selected='selected'" : "")  value="Ms.">Ms.</option>
+                                        <option @(objMemberDetails.UserName == "Ms." ? "selected='selected'" : "")  value="Mrs.">Mrs.</option>
+                        </select>
+                         </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>First Name :<span class="red-t">*</span></label>
+                        <input type="text" id="FirstName" name="FirstName" value="@objMemberDetails.FirstName" class="form-control" />
+                        <span class="field-validation-error" id="spanFirstName"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Last Name :</label>
+                        <input type="text" id="LastName" name="LastName" value="@objMemberDetails.LastName"  class="form-control" />
+                        <span class="field-validation-error" id="spanLastName"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Email :<span class="red-t">*</span></label>
+                        <input type="text" id="Email" name="Email" value="@objMemberDetails.Email" class="form-control" />
+                        <span class="field-validation-error" id="spanEmail"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label class="t-p5">Mobile Phone :</label>
+                        <input type="text" id="MobilePhone" name="MobilePhone" value="@objMemberDetails.MobilePhone" class="form-control" />
+                        <span class="field-validation-error" id="spanMobilePhone"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label class="t-p5">Profession :</label>
+                        <input type="text" id="Occupation" name="Occupation" value="@objMemberDetails.Occupation" class="form-control" />
+                        <span class="field-validation-error" id="spanOccupation"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Spouse Details </h3>
+            </div>
+
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Spouse Name :</label>
+                        <input type="text" id="SpouseFirstName" name="SpouseFirstName" value="@objMemberDetails.SpouseFirstName" class="form-control" />
+                        <span class="field-validation-error" id="spanSpouseFirstName"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label class="t-p5 font12">Profession :</label>
+                        <input type="text" id="SpouseOccupation" name="SpouseOccupation" value="@objMemberDetails.SpouseOccupation" class="form-control" />
+                        <span class="field-validation-error"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Contact Details </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>State:</label>
+                        <input type="text" id="State" name="State" value="@objMemberDetails.State"  class="form-control" />
+                        <span class="field-validation-error" id="spanState"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Home Phone:</label>
+                        <input type="text" id="HomePhone" name="HomePhone" value="@objMemberDetails.HomePhone" class="form-control" />
+                        <span class="field-validation-error" id="spanHomePhone"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>City: </label>
+                        <input type="text" id="City" name="City"  value="@objMemberDetails.City" class="form-control" />
+                        <span class="field-validation-error" id="spanCity"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Zip Code:</label>
+                        <input type="text" id="ZipCode" name="ZipCode" onkeypress="return Common.isNumberKey(event);" maxlength="6" value="@objMemberDetails.ZipCode" class="form-control" />
+                        <span class="field-validation-error" id="spanZipCode"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label class="t-p5">Mobile Phone </label>
+                        <input type="text" id="EMobilePhone" name="MobilePhone" class="form-control" />
+                        <span class="field-validation-error"></span>
+                    </div>
+                     <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label class="t-p5">Reffered By </label>
+                        <input type="text" id="ReferredBy" name="ReferredBy" value="@objMemberDetails.ReferredBy"  class="form-control" />
+                        <span class="field-validation-error"></span>
+                    </div>
+                     <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label class="t-p5">Fax </label>
+                        <input type="text" id="Fax" name="Fax" value="@objMemberDetails.Fax" class="form-control" />
+                        <span class="field-validation-error"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Address1:<span class="red-t">*</span></label>
+                        <textarea type="text" id="Address" name="Address" class="form-control">@objMemberDetails.Address</textarea>
+                        <span class="field-validation-error" id="spanAddress"></span>
+                    </div>
+                     <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Address2:<span class="red-t">*</span></label>
+                        <textarea type="text" id="Address2" name="Address2" class="form-control">@objMemberDetails.Address</textarea>
+                        <span class="field-validation-error" id="spanAddress2"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Comments:</label>
+                        <textarea type="text" id="Comments" name="Comments" class="form-control">@objMemberDetails.Comments</textarea>
+                        <span class="field-validation-error"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+          <hr class="mN" />
+                 <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Children Details</h3>
+            </div>
+                            <table cellspacing="0" cellpadding="0" border="0" class="tbl membership" width="800">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <table id="childinfo" name="childinfo" width="650" cellspacing="0" cellpadding="0" border="0" class="table table-hover span9 omb table_vam table-black tvm">
+                                                <thead>
+                                                    <tr  style="background-color:#000;">
+                                                        <th width="180" align="center" style="color:#fff;">Name</th>
+                                                        <th width="180" align="center" style="color:#fff;">Age</th>
+
+                                                        <th width="100" align="center" style="color:#fff;"> <input type="button" onclick="javascript: addRow();" name="add-child" class="btn" value="Add child"></th>
+                                                        
+
+                                                    </tr>
+                                                   @if (objMemberDetails.lstChildrenInfo != null && objMemberDetails.lstChildrenInfo.Count != 0)
+                                                   {
+                                                       Int64 i = 0;
+                                                       foreach (var Item in objMemberDetails.lstChildrenInfo)
+                                                       {
+                                                              <input id="ChildrenInfoId-@(i)" name="[@(i)].ChildrenInfoId" value="@(Item.ChildrenInfoId)" type="hidden"/>
+                                                        <tr>
+                                                            <td width="180">
+                                                               <input type="text" value="@Item.FirstName" id="FirstName-@i" name="[@i].FirstName" class="form-control b-m0" /></td>
+                                                            <td width="110" align="left">
+                                                                 <input type="text"value="@Item.Age" id="Age-@i" name="[@i].Age" maxlength="2" onkeypress="return Common.isNumberKey(event);" class="form-control b-m0" />
+                                                            <td width="180" align="left">
+                                                               <a class="pagedelete t-p10" href="@Url.Action("DeleteChildInfo", "Members", new { ChildInfoId = @Item.ChildrenInfoId, MemberId = Item.MemberId })" onclick="return confirm('Do you want to delete this item.')" title="Delete"><i class="fa fa-trash-o"></i></a></td>
+                                                            
+                                                        </tr>
+                                                           i++;
+                                                       }
+
+                                                   }
+                                                   else
+                                                   {
+                                                      <tr>
+                                                            <td width="180">
+                                                               <input type="text" value="" id="FirstName-0" name="[0].FirstName" class="form-control b-m0" /></td>
+                                                            <td width="110" align="left">
+                                                                 <input type="text"value="" id="Age-0" name="[0].Age" maxlength="2" onkeypress="return Common.isNumberKey(event);" class="form-control b-m0" />
+                                                            <td width="180" align="left"></td>
+                                                        </tr>
+                                                   }
+
+                                                </thead>
+                                            </table>
+
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                <!-- end personal info form -->
+            </div>
+        
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Latest Order Details </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Membership  Type : <span class="red-t">*</span></label>
+                        <select class="form-control" name="MembershipTypeId" id="MembershipTypeId" onchange="getamount();">
+                            @if (lstMembershipType != null)
+                            {
+                                <option value="">Select</option>
+                                foreach (var item in lstMembershipType)
+                                { 
+                                <option @(item.MembershipTypeId == objMemberDetails.MembershipTypeId ? "selected=selected" : "")  value="@item.MembershipTypeId">@item.MembershipType</option>
+                                }
+                            }
+                        </select>
+                        <span class="field-validation-error" id="spanMembershipTypeId"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Transaction Id  :</label>
+                        <input type="text" value="@objMemberDetails.objMembershipOrder.TransactionId" id="TransactionId" class="form-control" name="TransactionId">
+                        <span class="field-validation-error"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Payment Method :</label>
+                        <select class="form-control" name="PaymentMethodId" id="PaymentMethodId">
+                            @if (lstPaymentMethod != null)
+                            {
+                                <option value="">Select</option>
+                                foreach (var item in lstPaymentMethod)
+                                { 
+                                <option @(item.PaymentMethodId == objMemberDetails.objMembershipOrder.PaymentMethodId ? "selected=selected" : "") value="@item.PaymentMethodId">@item.PaymentMethod</option>
+                                }
+                            }
+                        </select>
+                        <span class="field-validation-error"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>
+                            Payment By (Already Paid) :</label>
+                        <input type="text" class="form-control" id="PaymentBy" name="PaymentBy" value="@objMemberDetails.objMembershipOrder.PaymentBy">
+                        <span class="field-validation-error" id="spanPaymentBy"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Expiry Date :</label>
+                        <input type="text" class="form-control" id="ExpiryDate" readonly="true" value="@(objMemberDetails.objMembershipOrder.ExpiryDate == DateTime.MinValue ? "" : objMemberDetails.objMembershipOrder.ExpiryDate.ToString("MM/dd/yyyy"))" name="ExpiryDate">
+                        <span class="field-validation-error"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <div>
+                            <label>&nbsp;</label>
+                        </div>
+                        <label>Amount :</label>
+                        $ <span id="payamount"></span>
+                    </div>
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Payment Status :</label>
+                        <select class="form-control" name="PaymentStatusId" id="PaymentStatusId">
+                            @if (lstPaymentStatus != null)
+                            {
+                                <option value="">Select</option>
+                                foreach (var item in lstPaymentStatus)
+                                { 
+                                <option @(item.PaymentStatusId == objMemberDetails.objMembershipOrder.PaymentStatusId ? "selected=selected" : "") value="@item.PaymentStatusId">@item.PaymentStatus1</option>
+                                }
+                            }
+                        </select>
+                        <span class="field-validation-error"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>User Comment :</label>
+                        <textarea class="form-control" id="UserComment" name="UserComment">@objMemberDetails.objMembershipOrder.UserComment</textarea>
+                        <span class="field-validation-error"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Admin Comment :</label>
+                        <textarea type="text" value="" class="form-control" id="AdminComment" name="AdminComment">@objMemberDetails.objMembershipOrder.AdminComment</textarea>
+                        <span class="field-validation-error"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+                         
+        <!-- end other details form -->
+        <div class="box">
+            <div class="box-body text-right">
+                <input type="submit" value="Submit" onclick="return Validate()" name="send" class="button2 btn btn-primary">
+                <a class="btn btn-info" href="@Url.Action("Index", "Members")">Cancel</a>
+            </div>
+        </div>
+    }
+</div>
+<script type="text/javascript">
+    $(function () {
+        $(".ui-accordion").accordion({
+            collapsible: true,
+            heightStyle: "content"
+        });
+
+        // date picker
+        $(function () {
+            $(function () {
+                $(".datepicker").datepicker({
+                    altField: "#alternate",
+                    altFormat: "DD, d MM, yy"
+                });
+            });
+        });
+    });
+    $(document).ready(function () {
+
+        $(".Odate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altField: '.Odate', altFormat: 'mm/dd/yy' });
+        $(".Edate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altField: '.Edate', altFormat: 'mm/dd/yy' });
+        $(".Cdate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altField: '.Cdate', altFormat: 'mm/dd/yy' });
+    });
+
+</script>
+

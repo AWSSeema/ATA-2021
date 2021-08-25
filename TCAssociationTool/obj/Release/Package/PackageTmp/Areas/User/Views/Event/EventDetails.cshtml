@@ -1,0 +1,46 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+    var objEvents = (TCAssociationTool.Entities.Events)ViewBag.objEvents;
+
+    var Type = ViewBag.Type;
+
+    ViewBag.Title = TCAssociationTool.BLL.Common.DecodeURL(TCAssociationTool.BLL.Common.UppercaseFirst(ViewBag.EventName)) + " Details - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+
+    var imglocNormal = System.Configuration.ConfigurationManager.AppSettings["adminimgurl"] + "events/banners/";
+
+    var imglocEvent = System.Configuration.ConfigurationManager.AppSettings["adminimgurl"] + "events/banners/";
+}
+
+            <article class="clearfix t-m0 l-h28 t-t-u Impact font26 evesec-tex letespa1 b-m25 tabhorizontal-b-m10 mobile-b-m5">@objEvents.EventName<i class="inertitsid-img l-m10 mobile-hide">&nbsp;</i>
+                @if (objEvents.IsRegistration == true && objEvents.RegistrationStartDate.Date <= DateTime.UtcNow.Date && objEvents.RegistrationEndDate.Date >= DateTime.UtcNow.Date)
+                        {
+                <span class="clearfix r-m2 tabhorizontal-pull-n tabhorizontal-t-c tabhorizontal-r-m0 tabhorizontal-t-m5 dis-in pull-right">
+                                                            <a href="@Url.Action("EventRegistration", "Event", new { EventName = TCAssociationTool.BLL.Common.EncodeURL(objEvents.EventName), eid = objEvents.EventId })" style="background: #38417f;" class="clearfix t-b-p10 donat-gren-bg Roboto-Medium font13 white-t l-h14 dis-in t-t-u l-r-p10 border-radius5"><i>&nbsp;</i> Buy a Ticket</a>
+                                                        </span>
+                 }
+            </article>
+             <article class="clearfix t-p0"> 
+<article class="clearfix">
+<article class="clearfix tabhorizontal-p15 tabhorizontal-minheight0">
+             <article class="clearfix white-bg l-r-p30 b-m15 border-b border-t dkgray-border3 t-b-p10 tablet-l-r-p10 tabhorizontal-l-r-p15">
+                <h1 class="clearfix l-h24 Muli red-t font18 t-b-m0">Event Name: <span class="black-t latobold_italic font16">@objEvents.EventName</span></h1>
+                <article class="clearfix dis-b Muli font18 t-m0">
+                             <span class="red-t">Location:<span class="black-t latobold_italic font16"> @(objEvents.Location == null ? "N/A" : objEvents.Location)</span></span>
+                 <span class="green-t mobile-r-p0 Muli pull-right mobilev-pull-n t-m0 dis-b"><span class="red-t font18">Event On:</span>
+                          <span class="green-t font-w-b latobold_italic font16"> @(objEvents.StartDate == DateTime.MinValue ? "N/A" : objEvents.StartDate.ToString("MMMM dd, yyyy"))</span></span></article>
+                          </article>
+ @if (objEvents.EventDetails != null && objEvents.EventDetails.Trim() != "")
+            {
+                @Html.Raw(objEvents.EventDetails.Replace("src=\"Content/images/", "src=\"Content/User/images/").Replace("src=\"/Content/uploads/", "src=\"" + System.Configuration.ConfigurationManager.AppSettings["usersiteurl"].ToString() + "Content/uploads/"))
+                        
+            }
+            else
+            {
+                <h3 class="clearfix m0 AlexBrush-Regular font56 presedname-t tp10 tabhorizontal-t-p30 tabhorizontal-b-p20 t-c l-h34 mobile-font45 mobile-l-h28 mobile-t-b-p30">Content Will Update Soon..</h3>
+
+            }
+
+        </article>
+    </article>
+</article>
+           

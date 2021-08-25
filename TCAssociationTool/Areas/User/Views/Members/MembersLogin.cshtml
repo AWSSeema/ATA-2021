@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "MembersLogin";
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+}
+<article class="clearfix inner-wrapper">
+    <article class="clearfix l-r-p20 white-bg b-p20 mobile-l-r-p10 mobile-b-p10">
+        <article class="clearfix border-t presebor-col b-p3"></article>
+        <article class="clearfix presed-bac-bg l-r-p35 t-b-p25 premod-botbor tabhorizontal-l-r-p10 tabhorizontal-t-p0 inconminhei">
+            <h4 class="clearfix m0 l-h24 Montserrat-SemiBold font32 orang-t mobile-font24 tabhorizontal-t-p10">Members Login </h4>
+            <img src="Content/images/presid-yel-bor.jpg" class="t-b-m15 tabhorizontal-t-b-m10 mobile-t-b-m5" alt="Border" width="373" height="1">
+
+            <p>TASA would like members to update their information as needed basis so as to receive the latest information and other event notifications. You need your e-mail address and a password (provided by TASA) to make these changes. Should you have any questions or would like your password, please send e-mail to TASA at<a href="mailto:help@tasatexas.org" class="red-t"> help@tasatexas.org</a></p>
+
+            <article class="l-r-m-auto white-bg p30 mobile-p10 border11 shadow" style="max-width: 400px;">
+                <article class="clearfix white-bg border-radius shadow-l">
+                    <article id="failedmsg" class="clearfix hide b-m10 red-t t-c border shadow1 p5 Montserrat-Medium font14"></article>
+                    <input type="hidden" value="profile.html" id="ReturnUrl" name="ReturnUrl">
+                    <article class="clearfix t-c">
+                        <article class="clearfix t-m5 position-r">
+                            <label class="font13 lowd-t1 Muli t-l t-m5n">Email <span class="red-t">* </span></label>
+                            <input class="form-control profile-form" style="min-height: 47px; border-color: #dbdbdb!important;" name="Email" id="Email1" type="text">
+                            <span class="errormsg" id="spanEmail1"></span>
+                        </article>
+                        <article class="clearfix t-m5 position-r">
+                            <label class="font13 lowd-t1 Muli t-b-m0 dk-t t-l">Password <span class="red-t">* </span></label>
+                            <input class="form-control profile-form" style="min-height: 47px; border-color: #dbdbdb!important;" name="Password" id="Password1" type="password">
+                            <span class="errormsg" id="spanPassword1"></span>
+                        </article>
+                        <article class="clearfix t-l t-m0">
+                        </article>
+                        <article class="clearfix t-m5">
+                            <input class="t-t-u Montserrat-Regular font20 l-r-p30 t-b-p10 btn-block" style="color: #fff; background-color: #ff7001; border:#097c11;" value="Login" type="submit" onclick="PostLogin();">
+                        </article>
+                        <label class="b-m0 Muli-Light font14 t-p10 b-p7"><a class="" href="/reset-password.html" style="color: #ea3d6b;">Forgot Password?</a></label>
+
+                        <article class="clearfix border-t dashborder-t das-border t-p10 t-c mobile-b-p20">
+                        <label class="t-b-m0 font14 Muli-Light t-p0 gray3-t mobile-t-p0">Don’t have a credentials to login ?</label>
+                        <article class="clearfix dis-in t-m15"> <a class="t-t-u Poppins-Regular font14 l-r-p30 t-b-p8 border-radius" style="border: #fc7113 1px solid; color: #fc7113; border-radius: 25px; letter-spacing: 0.5px;" href="member-registration.html">Create an Account</a> </article>
+                    </article>
+                    </article>
+                </article>
+            </article>
+        </article>
+    </article>
+</article>

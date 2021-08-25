@@ -1,0 +1,47 @@
+﻿@using System.Configuration;
+@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+    string Category = ViewBag.Category;
+    var imgloc = ConfigurationManager.AppSettings["adminimgurl"] + "news/";
+    List<TCAssociationTool.Entities.News> lstNews = ViewBag.NewsList;    
+}
+
+<div id="prolist">
+    @if (Total == -1)
+    {
+        <div class="p100 t-c">Sorry failed processing your request.</div> 
+    }
+    else
+    {
+        if (lstNews != null && lstNews.Count != 0)
+        {
+        
+<ul class="clearfix m0 list-pn news-list">
+                @foreach (var item in lstNews)
+            {
+              <li>
+              <section class="">
+<section class="clearfix p20 mobilev-p10 tabhorizontal-p15">
+<article class="clearfix r-p20 pull-left tabhorizontal-r-p15 link-hover-black mobile-t-c mobile-dis-b mobile-r-p10 mobile-b-p10"><span class="thumbnail b-m0 mobile-hide"><img width="200" border="0" height="105" style="width:100px;" src="@TCAssociationTool.BLL.Common.ValidateImage((imgloc + item.ImageUrl), "Content/User/images/user-icon1.png")" class="width100" alt="IMG"></span> </article>
+                 <article class="clearfix Poppins-Regular font13 dkgray-t2 l-h22">
+<h2 class="ralewaysemibold font18 l-h24 dkpink-t t-m0 tabhorizontal-font18">@item.Title<span class="brown-t font12 pull-right latobold">@*<span class="yellow-t2 font13">Posted on:</span> @item.PostDate</span>*@</h2>
+                  
+                         @Html.Raw(item.NewsText)
+                      </article>  
+                </section>
+              </section>
+              </li>
+                }
+               </ul>
+         }
+        else
+        {
+         <h3 class="red-t Poppins-SemiBold font24 tbp20 t-c mobile-font15"> No News Found</h3>
+        }
+    }
+</div>                               

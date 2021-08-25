@@ -1,0 +1,77 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+    ViewBag.Title = "DonarsList";
+
+    var lstDonors = (List<TCAssociationTool.Entities.Donors>)ViewBag.lstDonors;
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        PagerClickBind();
+    });
+    </script>
+
+<article class="clearfix l-r-p40 t-b-p5 white-bg tabhorizontal-l-r-p10">
+    <article class="clearfix part-row">
+        <article class="clearfix part-9">
+            <h2 class="clearfix font30 Anton mobile-font20 mobile-t-c t-p8 dkpink-t tabhorizontal-font28 t-m0"><span class="blue-t">Donors List</span></h2>
+        </article>
+        <article class="clearfix part-3">
+            <article class="clearfix mobile-dis-b mobile-t-c mobile-b-p5">
+                <ul class="list-pn list-f b-m0 mobile-dis-in">
+                    <li><a  href="@Url.Action("AddMember", "Members")" class=" r-m5"><img src="Content/User/images/reg.png" title="Member Registration"  width="53" height="54"/></a></li>
+   <li><a href="@Url.Action("Index", "Donation")" class=" r-m5"><img src="Content/User/images/don.png" title="DonateNow"  width="53" height="54"/></a></li>
+    <li><a href="@Url.Action("AddVolunteer", "Volunteer")"><img src="Content/User/images/mem.png" title="Volunteer Registration" width="53" height="54"/></a></li>
+                </ul>
+
+            </article>
+        </article>
+    </article>
+</article>
+ <article class="clearfix white-bg p10 t-p0">
+
+    <article class="clearfix dk-gray-bg flower-border-new">
+        <article class="clearfix l-r-p30 t-b-p40 tabhorizontal-p15 tabhorizontal-minheight0" style="min-height: 1065px;">
+                <article class="clearfix t-p20" id="divMemberDetails">
+                     <article class="clearfix overflow_x-a">
+                <article class="clearfix" style="min-width: 530px;">
+                    <table width="100%" cellspacing="0" cellpadding="0" class="table2 table-responsive font13 OpenSans-Semibold">
+                        <tbody>
+                            <tr class="t-l yello-bg">
+                                <th>S.No</th>
+                                <th>First Name </th>
+                                <th>Last Type</th>
+                                <th>Dantion Program</th>
+                                <th>Amount</th>
+                                
+                            </tr>
+                            @if (lstDonors != null && lstDonors.Count != 0)
+                            {
+                                Int64 i = 1;
+                                foreach (var item in lstDonors)
+                                {
+                                <tr>
+                                    <td align="left" style="text-align: center;">@item.RId</td>
+                                    <td align="center" valign="middle">@item.FirstName</td>
+                                    <td align="center" valign="middle">@item.LastName</td>
+                                    <td align="center" valign="middle">@item.DonationProgram</td>
+                                    <td align="center" valign="middle" class="orange-t">$@item.Amount </td>
+                                </tr>
+                                    i++;
+                                }
+                            }
+                            else
+                            {
+                             <tr>
+                <td class="norecords" colspan="7">No Records Found.</td>
+            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </article>
+            </article>
+                    </article>
+            </article>
+        </article>
+    </article>
+

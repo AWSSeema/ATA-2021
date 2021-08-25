@@ -1,0 +1,162 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    var EventType = ViewBag.EventType;    
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#MEvents').addClass('active');
+        $('.closable').append('<span id="lblclose" class="closelink" title="Close"></span>');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        PagerClickBind();
+    });
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            EventBind($(this).text());
+        });
+
+    }
+
+    function sortresult(sortcolumn) {
+
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        EventBind(1);
+    }
+
+    function EventBind(Pageno) {
+        var pageno = Common.Pageno(Pageno);
+        var search = $('#keyword').val();
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();;
+        var CategoryId = $('#EventCategoryId').val();
+
+        $.ajax({
+            url: '@Url.Action("EventsList", "Events")',
+            type: 'GET',
+            cache: false,
+            data: { search: search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items, EventType: '@EventType', EventCategoryId: CategoryId },
+            success: function (result) {
+                $('#divEventsList').html(result);
+                PagerClickBind();
+
+            }
+        });
+    }
+
+    function ClearSearch() {
+        $('#keyword').val('');
+        $('#hdnPageNo').val(1);
+        $('#EventCategoryId').val('');
+        EventBind(1);
+    }
+
+    function Delete(EventId, ImageFileName) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("EventDelete", "Events")',  // the URL of the controller action method
+                data: { EventId: EventId, ImageFileName: ImageFileName }, // optional data
+                success: function (result) {
+                    $("#divmessage").html(result.data);
+                    EventBind(1);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                },
+                error: function (req, status, error) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            });
+        }
+    }
+
+    function EventStatus(EventId) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("EventStatus", "Events")', // the URL of the controller action method
+            data: { EventId: EventId }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    $('#divmessage').html(result.data);
+                    EventBind(1);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+                else {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortorder" name="hdnsortorder" value="" type="hidden" />
+<input id="hdnsortcolumn" name="hdnsortcolumn" value="EventId" type="hidden" />
+
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Events</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active">Events</li>
+    </ol>
+</div>
+<!-- end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="clearfix sepH_b"></div>
+    <div class="box">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                @*<li class="@(EventType == "current" ? "active" : "")"><a class="@(EventType == "current" ? "btn active" : "btn")" href="@Url.Action("Index", "Events", new { EventType = "current" })">Current Events</a></li>*@
+                <li class="@(EventType == "upcoming" ? "active" : "")"><a class="@(EventType == "upcoming" ? "btn active" : "btn")" href="@Url.Action("Index", "Events", new { EventType = "upcoming" })">Upcoming Events</a></li>
+                <li class="@(EventType == "past" ? "active" : "")"><a class="@(EventType == "past" ? "btn active" : "btn")" href="@Url.Action("Index", "Events", new { EventType = "past" })">Past Events</a></li>
+            </ul>
+            <div class="clearfix sepH_b"></div>
+            <div class="clearfix box-body">
+                <div class="clearfix row">
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Search </label>
+                        <input type="text" name="keyword" id="keyword" class="form-control" value="" placeholder="Event Name" />
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <div>
+                            <label>&nbsp;</label>
+                        </div>
+                        <button class="btn btn-primary filterAction" onclick="EventBind(1);">Search</button>
+                        <a class="btn btn-info filterAction wC" onclick="ClearSearch();">Clear</a>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6 text-right">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <a data-toggle="modal" href="@Url.Action("AddEvent", "Events")" class="btn btn-danger pull-right">Add Events</a>
+                </div>
+                    </div>
+
+            </div>
+            <div id="divEventsList" class="box-body table-responsive">
+                @{Html.RenderAction("EventsList", "Events");}
+            </div>
+        </div>
+    </div>
+</div>
+

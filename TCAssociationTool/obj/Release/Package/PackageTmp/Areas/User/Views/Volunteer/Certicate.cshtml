@@ -1,0 +1,114 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";    
+
+    ViewBag.Title = "Certicate - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+
+    List<TCAssociationTool.Entities.Events> lstEvents = ViewBag.lstEvents;
+
+    Int64 EventId = 0;
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        PagerClickBind();
+    });
+
+    function Volunteerbind(Pageno) {
+        var catid = $('#VolunteerCategoryId').val();
+        var eventid = $('#EventId').val();
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = ($.trim($('#txtsearch').val()));
+        $.ajax({
+            url: '@Url.Action("FEVolunteersList", "Volunteer")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items, VolunteerCategoryId: catid, EventId: eventid },
+            success: function (result) {
+                $('#divVolunteerDetails').html(result);
+                PagerClickBind();
+            }
+        });
+
+    }
+
+    function ClearSearch() {
+        $('#EventId').val('');
+        $('#txtsearch').val('');
+        $('#divVolunteerDetails').html('<span class="font18 red-t t-c l-r-m-auto"> Please search with above criteria and get the details !!!</span>');
+    }
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            Volunteerbind();
+        });
+    }
+
+</script>
+
+<input type="hidden" value="1" id="hdnRowCount" />
+<article class="clearfix l-r-p40 t-b-p5 white-bg tabhorizontal-l-r-p10">
+    <article class="clearfix part-row">
+        <article class="clearfix part-9">
+            <h2 class="clearfix font30 Anton mobile-font20 mobile-t-c t-p8 dkpink-t tabhorizontal-font28 t-m0"><span class="blue-t">Volunteer Certificate</span></h2>
+        </article>
+        <article class="clearfix part-3">
+            <article class="clearfix mobile-dis-b mobile-t-c mobile-b-p5">
+                <ul class="list-pn list-f b-m0 mobile-dis-in">
+                    <li><a  href="@Url.Action("AddMember", "Members")" class=" r-m5"><img src="Content/User/images/reg.png" title="Member Registration"  width="53" height="54"/></a></li>
+   <li><a href="@Url.Action("Index", "Donation")" class=" r-m5"><img src="Content/User/images/don.png" title="DonateNow"  width="53" height="54"/></a></li>
+    <li><a href="@Url.Action("AddVolunteer", "Volunteer")"><img src="Content/User/images/mem.png" title="Volunteer Registration" width="53" height="54"/></a></li>
+                </ul>
+            </article>
+        </article>
+    </article>
+</article>
+
+<article class="clearfix white-bg p10 t-p0">
+
+    <article class="clearfix dk-gray-bg flower-border-new">
+        <article class="clearfix l-r-p30 t-b-p40 tabhorizontal-p15 tabhorizontal-minheight0" style="min-height: 1065px;">
+
+            <article class="clearfix l-r-m-auto" style="max-width: 800px;">
+                <article class="clearfix part-row b-p10">
+                    <article class="clearfix part-5 mobilev-l-r-p0">
+                        <article class="clearfix l-p0 tabhorizontal-l-p5 mobile-l-p0">
+                            <article class="clearfix dropdown">
+                                <select class="dropdown-select ui-select" id="EventId" name="EventId" onchange="Validate();">
+                                    <option value="">Select Events *</option>
+                                    @if (lstEvents.Count > 0)
+                                    {
+                                        foreach (var item in lstEvents)
+                                        {
+                                        <option @(item.EventId == EventId ? "selected = selected" : "") value="@(item.EventId)">@(item.EventName)</option>
+                                        }
+                                    }
+                                </select>
+                                <span class="errormsg" id="spanEventId"></span>
+                            </article>
+                        </article>
+                    </article>
+                    <article class="clearfix part-7 mobilev-l-r-p0 l-p10">
+                        <article class="clearfix box-row">
+                            <article class="clearfix box-8 mobilev-l-r-p0">
+                                <input name="txtsearch" id="txtsearch" placeholder="Search by Email" class="b-m0 form-control" type="text" />
+                            </article>
+                            <article class="box-2 mobilev-t-r">
+                                <input class="btn btn-danger btn-large p15 l-h0 t-m4 l-m5" type="submit" value="Search" onclick="Volunteerbind();">
+                            </article>
+                            <article class="box-2 l-p5 mobilev-t-r">
+                                <input class="btn btn-inverse btn-large p15 OpenSans-Semibold l-h0 m5" type="submit" value="Clear" onclick="ClearSearch();">
+                            </article>
+                        </article>
+                    </article>
+                </article>
+                <article class="clearfix t-p20" id="divVolunteerDetails">
+                    <span class="font18 red-t t-c l-r-m-auto"> Please search with above criteria and get the details !!!</span>
+                </article>
+            </article>
+        </article>
+    </article>
+
+</article>

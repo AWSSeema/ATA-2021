@@ -1,0 +1,120 @@
+﻿@{
+    ViewBag.Title = "AddMailTemplate";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.News objNews = ViewBag.objNews;
+}
+
+<script type="text/javascript">
+    function Validate() {
+        var return_val = true;
+        //if ($('#Title').val() == '') { $('#Title').addClass("validate"); return_val = false; } else { $('#Title').removeClass("validate"); }
+        //if ($('#Type').val() == '') { $('#Type').addClass("validate"); return_val = false; } else { $('#Type').removeClass("validate"); }
+        //if ($('#PostDate').val() == '') { $('#PostDate').addClass("validate"); return_val = false; } else { $('#PostDate').removeClass("validate"); }
+        //if ($('#OrderNo').val() == '') { $('#OrderNo').addClass("validate"); return_val = false; } else { $('#OrderNo').removeClass("validate"); }
+
+        if ($.trim($('#Title').val()) == '') { document.getElementsByName('Title')[0].placeholder = 'Title Required'; $('#Title').focus().addClass("validate"); return false; } else { $('#Title').focus().removeClass("validate"); }
+      //  if ($.trim($('#Type').val()) == '') { document.getElementsByName('Type')[0].placeholder = 'Type Required'; $('#Type').focus().addClass("validate"); return false; } else { $('#Type').focus().removeClass("validate"); }
+        if ($.trim($('#PostDate').val()) == '') { document.getElementsByName('PostDate')[0].placeholder = 'PostDate Required'; $('#PostDate').focus().addClass("validate"); return false; } else { $('#PostDate').focus().removeClass("validate"); }
+        if ($.trim($('#OrderNo').val()) == '') { document.getElementsByName('OrderNo')[0].placeholder = 'Order No Required'; $('#OrderNo').focus().addClass("validate"); return false; } else { $('#OrderNo').focus().removeClass("validate"); }
+    
+        if ($('#ImageUrl').val() != "") {
+            if (!Common.isImage($('#ImageUrl').val())) { $('#spanfile').html('Sorry image is invalid. Only allowed extensions are:<b>jpg, png, PNG, gif, jpeg, JPEG</b>.'); $('#ImageUrl').focus(); return false; } else { $('#spanfile').html(''); }
+        }
+        if (CKEDITOR.instances.Description.getData() == "") { $('#Description'); $('#spanDescription').html('Required.'); return_val = false; } else { $('#Description').val(CKEDITOR.instances.Description.getData()); $('#spanDescription').html(''); }
+        return return_val;
+    }
+
+    function ResetValidateClass() {
+        $('#Title').removeClass("validate");
+        $('#Editor').removeClass("validate");
+        $('#OrderNo').removeClass("validate");
+    }
+
+    $(document).ready(function () {
+        $('#wNews').addClass('active');
+        $('#Others').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
+    });
+</script>
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>News</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "News")"><i class="fa fa-print"></i>News</a></li>
+        <li class="active">Edit News</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box validation">
+        <!-- /.box-header -->
+        <div class="box-header">
+            <h3 class="box-title dis-in">Edit News </h3>
+        </div>
+        @using (Html.BeginForm("Save", "News", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input type="hidden"  name="NewsId" id="NewsId" value="@objNews.NewsId"/>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Title <span class="red-t">*</span></label>
+                        <input type="text"  class="form-control" value="@objNews.Title" name="Title" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="Title">
+                    </div> 
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Post Date <span class="red-t">*</span></label>
+                        <input type="text"  class="form-control date" value="@objNews.PostDate.ToString("dd-MM-yyyy")" id="PostDate" name="PostDate" />
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Order No <span class="red-t">*</span></label>
+                        <input type="text" class="form-control" id="OrderNo" value="@objNews.OrderNo" maxlength="3" name="OrderNo" onkeypress="return Common.isNumberKey(event);">
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Image </label>
+                        <input type="file" name="ImageUrl" id="ImageUrl" />
+                        <span id="spanfile" class="red-t"></span>
+                    </div>
+                </div>
+            </div> 
+            
+            <div class='box-body'>
+                <label>Description </label>
+                <textarea rows="10" placeholder="Description *" name="NewsText" id="Description" cols="80" style="visibility: hidden; display: none;">@objNews.NewsText</textarea><br />
+                <span class="field-validation-error" id="spanDescription"></span>
+                <script type="text/javascript">
+                    CKEDITOR.replace('Description', { contentsCss: '../css/editor.css' });
+                </script>
+            </div>
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body text-right">
+                    <input type="submit" onclick="return Validate()" class="btn btn-primary" id="add" value="Submit" name="add">
+                    <a class="btn btn-info" href="@Url.Action("Index", "News")">Cancel</a>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        }
+        <!-- /.box-body -->
+    </div>
+    <!-- /.content -->
+</div>
+

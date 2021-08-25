@@ -1,0 +1,114 @@
+﻿@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+    List<TCAssociationTool.Entities.Photos> lstPhotos = ViewBag.lstPhotosLst;
+    var location = System.Configuration.ConfigurationManager.AppSettings["baseurl"] + "Content/photogallery/thumbphoto/";
+    var imglocNormal = System.Configuration.ConfigurationManager.AppSettings["baseurl"] + "Content/photogallery/normalphoto/";
+
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    }      
+      
+}
+ 
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#MWebsite').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    })
+
+    function DeleteAll() {
+        Id = Common.GetCheckBoxValue('checkbox')
+        if (validate(Id)) {
+            var val1 = confirm("Do you want to delete for selected items?");
+            if (val1) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("PhotoDeleteAll", "PhotoGallery")', // the URL of the controller action method
+                    data: { PhotoIds: Id }, // optional data
+                    success: function (result) {
+                        $("#divmessage").html(result.data);
+                        $('#divmessage').show();
+                        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                        PhotosBind($('#hdnPageNo').val());
+                    },
+                    error: function (req, status, error) {
+                        $("#divmessage").html(result.data);
+                        $('#divmessage').show();
+                        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    }
+                });
+            }
+        }
+    }
+
+    function validate(Id) {
+        if (Id == "") {
+            alert("Please select atleast one Item.");
+            return false;
+        }
+        return true;
+    }
+
+</script>
+
+ @if (Total == -1)
+       {
+    <div class="norecords">Sorry failed processing your request.</div> 
+       }
+else
+{
+            var i = 1;
+                <div>
+                    <input type="button" class="btn" onclick="DeleteAll()" value="Delete Selected Items" name="delete" id="delete">
+                </div>
+     <div style="clear:none; margin-bottom:20px;"></div>
+                <div class="clearfix">
+                    <div class="row">
+                        @if (lstPhotos.Count != 0)
+                        {
+                            foreach (var item in lstPhotos)
+                            { 
+                            <div class="col-xs-12 col-lg-2 col-sm-6">
+                                <a href='@(imglocNormal + item.ImageUrl)' class='lightview' data-lightview-group='example'>
+                                    <img alt="@item.CategoryName" title="@item.CategoryName" src="@TCAssociationTool.BLL.Common.ValidateImage((location + item.ImageUrl), location + "no-image.png")">
+                                </a>
+                                <p>
+                                    <input type="checkbox" class="m-t8" name="checkbox" id="checkbox-@i" value= "@{@item.PhotoId}" />
+                                    
+                                    <a title="Edit" href="@Url.Action("PhotoEdit", "PhotoGallery", new { PhotoId = item.PhotoId })" ><i class="fa fa-pencil-square-o"></i></a>
+                                    @if (userRole.Contains("SuperAdmin"))
+                    {
+                                    <a id="12" class="picturedelete" onclick="javascript:Delete(@item.PhotoId,'@item.ImageUrl');"><i class="fa fa-trash-o"></i></a>
+                                    }
+                                </p>
+                            </div>
+                                i++;
+                            }
+                        }
+                        else
+                        {
+                            <div class="norecords">No Photos Found.</div>
+                        }
+                    </div>
+                </div>
+
+            
+        }
+
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.pageno, "pagination pagination-centered"))

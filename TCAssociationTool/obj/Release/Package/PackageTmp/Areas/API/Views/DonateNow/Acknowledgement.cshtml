@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "Acknowledgement - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+    Layout = "~/Areas/API/Views/Shared/_MainLayout.cshtml";
+}
+
+<article class="clearfix l-r-p40 white-bg tabhorizontal-l-r-p10">
+@* <article class="clearfix part-row">
+  <article class="clearfix part-9">
+<h2 class="clearfix font30 Anton mobile-font20 mobile-t-c t-p8 dkpink-t tabhorizontal-font28 t-m0"><span class="blue-t">Thanks for your </span> Donation </h2>
+  </article>
+    <article class="clearfix part-3">
+    <article class="clearfix mobile-dis-b mobile-t-c mobile-b-p5">  <ul class="list-pn list-f b-m0 mobile-dis-in">
+ <li><a  href="@Url.Action("AddMember", "Members")" class=" r-m5"><img src="Content/User/images/reg.png" title="Member Registration"  width="53" height="54"/></a></li>
+   <li><a href="@Url.Action("Index", "Donation")" class=" r-m5"><img src="Content/User/images/don.png" title="DonateNow"  width="53" height="54"/></a></li>
+     <li><a href="@Url.Action("AddVolunteer", "Volunteer")"><img src="Content/User/images/mem.png" title="Volunteer Registration" width="53" height="54"/></a></li>
+  </ul>
+
+  </article></article>
+ </article>*@
+ </article>
+ <article class="clearfix white-bg p10 t-p0"> 
+<article class="clearfix dk-gray-bg flower-border-new"> 
+<article class="clearfix l-r-p30 t-b-p40 tabhorizontal-p15 tabhorizontal-minheight0" style="min-height:900px;"> 
+<article class="clearfix tbp7 mobilev-t-p5 tablet-t-p5">
+                 <article class="clearfix l-r-m-auto t-c t-p0 b-p20 tabhorizontal-t-b-p30 mobile-t-b-p15" style="max-width:600px;">
+<img src="Content/User/images/thankyou2.png" alt="Thank You For Registration" title="Thank You" width="210" height="209" border="0" /></article>
+              <h1 class="font30 blue-t t-p20 t-b-m0 poppins-medium b-p10 tablet-font28 mobile-font22 mobile-t-m10 tablet-t-m15 mobile-b-p0 t-c l-h18">Thanks for Your Donation !!!</h1>
+        <h3 align="center" class="black-t font19 l-h18 muliregular b-m0 tablet-font18 mobilev-font16">Your details has been submitted to administrator for approval.</h3>
+        <article class="clearfix dashborder-b border-b l-r-m-auto" style="max-width:750px;">&nbsp;</article>
+        
+       <article style="max-width:500px;" class="clearfix t-p5 l-r-m-auto">
+          <article class="sm-row font14">
+            <article class="sm-6 mobilev-t-c b-p10 mobile-b-p0 tablet-b-p5">
+              <h3 class="black-t font18 t-m0 b-m5 t-p5 poppins-regular">Your Details</h3>
+               @ViewBag.AddressName<br />
+                        @ViewBag.AddressStreet
+                        @ViewBag.AddressCity
+                        @ViewBag.AddressState 
+                        @ViewBag.AddressCountry<br />
+                        @ViewBag.AddressZip<br />
+              <a class="black-t" href="mailto:@(ViewBag.PayerEmail)">@ViewBag.PayerEmail</a> </article>
+            <article class="sm-6 mobilev-t-c">
+                <h3 class="black-t font18 t-m0 b-m5 t-p5 poppins-regular">Payment Received By</h3>
+                @System.Configuration.ConfigurationManager.AppSettings["ApplicationName"]<br>
+                <a class="red-t" href="mailto:@(ViewBag.ReceiverEmail)">@(ViewBag.ReceiverEmail)</a>
+            </article>
+          </article>
+        </article>
+         <article class="clearfix dashborder-t border-t t-m5 tablet-t-m5 l-r-m-auto t-p10" style="max-width:700px;"> 
+          <article class="clearfix t-p0 border grayborder table-responsive t-m10">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="table table-hover table-bordered poppins-regular gray-t font13 m0">
+              <tbody>
+                <tr>
+                  <th width="22%">Date - Time</th>
+                  <th width="29%">Transaction Number</th>
+                  <th width="25%">Summary</th>
+                  <th width="13%">Status</th>
+                  <th width="11%" class="text-right">Amount</th>
+                </tr>
+                <tr>
+                    <td>@ViewBag.PaymentDate</td>
+                  <td>@ViewBag.TransactionId</td>
+                  <td>@System.Configuration.ConfigurationManager.AppSettings["ApplicationName"]</td>
+                  <td>@ViewBag.PaymentStatus</td>
+                  <td>$ @ViewBag.GrossTotal</td>
+                </tr>
+              </tbody>
+            </table>
+          </article> 
+          </article>
+        </article>
+</article>     
+</article>
+</article>

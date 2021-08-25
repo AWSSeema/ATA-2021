@@ -1,0 +1,193 @@
+﻿@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+    List<TCAssociationTool.Entities.Videos> lstVideosLst = ViewBag.lstVideosLst;
+    var location = System.Configuration.ConfigurationManager.AppSettings["adminsiteurl"] + "Content/Admin/Videogallery/thumb/";
+
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    } 
+      
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {  
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+
+    function VideoStatus(VideoId) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("VideoStatus", "VideoGallery")', // the URL of the controller action method
+            data: { VideoId: VideoId }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    VideosBind($('#hdnPageNo').val());
+                }
+                else {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+    function UpdateDisplayOrder(j, VideoId) {
+        var DisplayOrder = parseInt($('#DisplayOrder' + j).val());
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("VideoDisplayOrder", "VideoGallery")',
+            data: { DisplayOrder: DisplayOrder, VideoId: VideoId },
+            success: function (result) {
+                var div = '';
+                if (result.ok) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    VideosBind(1);
+                }
+                else {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+</script>
+
+        @if (Total == -1)
+        {
+            <div class="norecords">Sorry failed processing your request.</div> 
+        }
+        else
+        {
+            var i = 1;
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                    <tr>
+                        <td>
+                            <table width="100%" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th width="4%" style="text-align:center;">S.No.</th>
+                                         <th width="20%">
+                                            <a onclick="javascript:sortresult('CategoryName');" class="white-t-u">
+                                                Gallery @if (sortcolumn == "CategoryName")
+            {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                                            </a>
+                                        </th>
+                                        <th width="20%">
+                                            <a onclick="javascript:sortresult('Heading');" class="white-t-u">
+                                                Heading @if (sortcolumn == "Heading")
+            {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                                            </a>
+                                        </th>                                       
+                                        <th width="5%" style="text-align:center;">#</th>
+                                        <th width="8%" style="text-align:center;">
+                                            <a onclick="javascript:sortresult('DisplayOrder');" class="white-t-u">
+                                                Order No @if (sortcolumn == "DisplayOrder")
+            {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                                            </a>
+
+
+                                        <th width="8%">
+                                            <a onclick="javascript:sortresult('IsActive');" class="white-t-u">
+                                                Status @if (sortcolumn == "IsActive")
+            {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                                            </a>
+                                        <th width="7%" style="text-align:center;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (lstVideosLst.Count != 0)
+                                    {
+                                        int j = 0;
+                                        foreach (var item in lstVideosLst)
+                                        {  
+                                    <tr>
+                                        <td style="text-align:center;">@item.RId</td>
+                                        <td>@item.CategoryName</td>
+                                        <td style="text-align: left">@item.Heading</td>                                        
+                                        <td style="text-align:center;">
+                                            <a href="http://www.youtube.com/v/@(item.VideoUrl)?autoplay=1" class="lightview red-t" data-lightview-group='example2' data-lightview-title="@item.Heading">
+                                                <img alt="@item.Heading" title="@item.Heading" height="32" width="32" src="Content/Admin/images/youtube.png">
+                                            </a>
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <input type="text" class="t-c" style="width:50px;" maxlength="3" id="DisplayOrder@(j)" value="@item.DisplayOrder" onkeypress="return Common.isNumberKey(event)" />
+                                            <a class="t-c" onclick="UpdateDisplayOrder(@j,@item.VideoId);" title="Update"><i class="fa fa-fw fa-refresh"></i></a>
+
+                                        </td>
+
+                                        <td>
+                                            @{
+            var isactive = "";
+            var active = "";
+            var disable = "";
+            if (item.IsActive == true)
+            {
+                isactive = "Active";
+                disable = "style=\"cursor: pointer;\" onclick=\"javascript:VideoStatus(" + item.VideoId + ");\"";
+            }
+            else
+            {
+                isactive = "Disabled";
+                active = "style=\"cursor: pointer;\" onclick=\"javascript:VideoStatus(" + item.VideoId + ");\"";
+            }
+                                    <div class="admin-active">
+                                        @isactive
+                                    <ul>
+                                        <li><a @Html.Raw(active)>Active</a></li>
+                                        <li><a @Html.Raw(disable)>Disabled</a></li>
+                                    </ul>
+                                    </div>
+                                            }
+                                        </td>
+                                        <td align="center">
+                                            <a title="Edit" href="@Url.Action("VideoEdit", "VideoGallery", new { VideoId = item.VideoId })"><i class="fa fa-pencil-square-o"></i></a>
+                                            @if (userRole.Contains("SuperAdmin"))
+        {
+                                    <a title="Delete" id="159" class="videodelete" onclick="javascript:Delete(@item.VideoId);"><i class="fa fa-trash-o"></i></a>
+}
+                                        </td>
+                                    </tr>
+                                            i++;
+                                            j++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td class="norecords" colspan="7">No Videos Found.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+ 
+
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.pageno, "pagination pagination-centered"))

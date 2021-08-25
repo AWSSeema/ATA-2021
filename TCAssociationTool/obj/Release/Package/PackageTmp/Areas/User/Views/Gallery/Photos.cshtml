@@ -1,0 +1,107 @@
+﻿@{
+    ViewBag.Title = "Album - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+    var lstPhoto = (List<TCAssociationTool.Entities.Photos>)ViewBag.lstPhotos;
+    var lstPhotoCategories = (List<TCAssociationTool.Entities.PhotoCategories>)ViewBag.lstPhotoCategories;
+
+    var imglocNormal = System.Configuration.ConfigurationManager.AppSettings["adminimgurl"] + "photogallery/normalphoto/";
+
+    var imglocNormal1 = System.Configuration.ConfigurationManager.AppSettings["adminimgurl"] + "photogallery/thumbphoto/";
+    ViewBag.heading = "Gallery";
+
+    Int64 PageId = 0;
+    int Status = 0;
+    TCAssociationTool.BLL.InnerPages _InnerPages = new TCAssociationTool.BLL.InnerPages();
+    TCAssociationTool.Entities.InnerPages objInnerPages = _InnerPages.GetInnerPagesListById(PageId, "Media Page Content", ref Status);
+
+    var Year = ViewBag.Year;
+}
+<script type="text/javascript">
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            PhotosBind($(this).text());
+        });
+    }
+
+    function PhotosBind() {
+        var Year = $('#Sort').val();
+        var url = '@System.Configuration.ConfigurationManager.AppSettings["baseurl"]' + Year + '/photo-gallery.html';
+        window.location.href = url;
+    }
+    </script>
+                <article class="clearfix t-m0 l-h28 t-t-u Impact font26 evesec-tex letespa1 b-m25 tabhorizontal-b-m10 mobile-b-m5">Gallery<i class="inertitsid-img l-m10 mobile-hide">&nbsp;</i>
+                    
+                </article>
+                
+<article class="clearfix t-c">
+    <span class="clearfix dropdown b-m0 r-m20 t-m10" style="max-width: 120px; max-height: 50px;background-color: #fff;">
+                    <select class="dropdown-select ui-select" id="Sort" onchange="PhotosBind();">
+                        @for (int i = (DateTime.Now.Year); i >= (DateTime.Now.Year - 15); i--)
+                        {
+                            <option @(Year == i.ToString() ? "selected=selected" : "") value="@i">@i</option>
+                        }
+                    </select>
+                </span>
+</article>
+ @if (lstPhotoCategories != null && lstPhotoCategories.Count != 0 && lstPhoto.Count != 0)
+ {
+     foreach (var PhotoCategory in lstPhotoCategories)
+     {
+         if (PhotoCategory.CategoryName != "Media Coverage")
+         {
+
+             if (lstPhoto != null && lstPhoto.Count != 0)
+             {
+                <article class="t-p40 b-p25">
+                  <article class="clearfix white-bg l-r-m-auto t-b-p10 border-radius50 shadow" style="max-width:390px;">
+                    <h2 class="m0 t-c Montserrat-SemiBold pink-t font20 letespa1 mobile-font16">@PhotoCategory.CategoryName</h2>
+                  </article>
+                </article>
+                <ul class="clearfix m0 list-f list-pn gallelis-li2 mobile-b-p15">
+                     @foreach (var item in lstPhoto)
+                     {
+                         if (item.PhotoCategoryId == PhotoCategory.PhotoCategoryId)
+                         {
+                  <li>
+                    <article class="clearfix">
+                         @if (item.AlbumLink != "")
+                         {
+                                    <a href="@item.AlbumLink" target="_blank">
+                                        <img src="@TCAssociationTool.BLL.Common.ValidateImage((imglocNormal + item.ImageUrl), imglocNormal + "no-image.jpg")" class="width100 p4" alt="" width="260" height="190" border="0" style="min-height:190px; max-height:190px; overflow:hidden;"></a>
+                         }
+                         else
+                         {
+                                    <a href="@TCAssociationTool.BLL.Common.ValidateImage((imglocNormal + item.ImageUrl), imglocNormal + "no-image.jpg")" data-fancybox-group="5" class="fancybox">
+                                        <img src="@TCAssociationTool.BLL.Common.ValidateImage((imglocNormal + item.ImageUrl), imglocNormal + "no-image.jpg")" class="width100 p4" width="260" height="190" border="0" title="@item.ImageDescription" alt="@item.ImageDescription" style="min-height:190px; max-height:190px; overflow:hidden;" /></a>
+                         }
+                       
+                    </article>
+                    <h2 class="m0 Roboto-Medium font17 l-p15 l-h22 t-p8 b-p10">
+                        <a class="evesec-tex">@item.ImageDescription</a></h2>
+                  </li>
+                         }
+                     }
+                </ul>
+     <a target="_blank" href="@Url.Action("PhotosList", "Gallery", new { CategoryName = TCAssociationTool.BLL.Common.EncodeURL(PhotoCategory.CategoryName) })">
+                    <article class="clearfix border-radius13 f-r" style="background-color: #ffdc7c;">
+                        <h3 class="clearfix m0 l-h10 Roboto-Medium t-t-u font11 t-b-p10 l-r-p20 font-w-b" style="letter-spacing: 2px; color: #f00a39;">View All</h3>
+                    </article>
+                </a>
+             }
+         }
+     }
+ }
+ else
+ {
+                <h3 class="clearfix m0 AlexBrush-Regular font56 red-t tp10 tabhorizontal-t-p30 tabhorizontal-b-p20 t-c l-h34 mobile-font45 mobile-l-h28 mobile-t-b-p30">No Photos Found..,</h3>
+ }
+                
+                @*<ul class="clearfix m0 list-f list-pn gallelis-li2 mobile-b-p15">
+                  <li>
+                    <article class="clearfix"><a href="Content/pdf/TLCA Tax and Energy Savings Seminar onTeluguPeople.pdf" target="_blank"><img src="Content/images/TPLogo_Spaced.jpg" alt="" class="width100 p4" width="" height=""/></a></article>
+                    <h2 class="m0 Roboto-Medium font17 l-p15 l-h22 t-p8 b-p10"><a href="Content/pdf/TLCA Tax and Energy Savings Seminar onTeluguPeople.pdf" target="_blank" class="evesec-tex">TLCA - International Tax (IFRS) & Energy Savings Seminar </a></h2>
+                  </li>
+                </ul>*@
+                <!------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+             

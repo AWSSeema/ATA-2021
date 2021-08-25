@@ -1,0 +1,155 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+    ViewBag.Title = "Feed back - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+
+    var objAppInfo = (TCAssociationTool.Entities.AppInfo)ViewBag.objAppInfo;
+}
+
+<script>
+    $(document).ready(function () {
+        $("#Phone").mask("(999) 999-9999");
+        $('.closable').append('<span id="lblclose" class="closelink" title="Close"></span>');
+        $('.closelink').click(function () {
+            $(this).parent().fadeOut('600', function () { $(this).remove(); });
+        });
+        $('#MFeedback').addClass('active');
+        $('#Icontact').addClass('active');
+        $("#SubmissionDate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-10:+10", altFormat: 'mm/dd/yy' });
+    });
+
+    //function mobileonchange(event) {
+    //    var phone = $('#Phone').val();
+    //    if (phone.length == 3) { $('#Phone').val(phone + '-'); }
+    //    else if (phone.length == 7) { $('#Phone').val(phone + '-'); }
+    //}
+
+    function EFValidate() {
+        if ($.trim($('#FirstName').val()) == "") { $('#FirstName').focus().addClass("validate"); $('#spanFirstName').show().html('Name Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanFirstName').hide().html(''); $('#FirstName').removeClass("validate"); }
+       
+        if ($.trim($('#Email').val()) == '') { $('#Email').focus().addClass('redborder'); $('#spanEmail').show().html('Email Id Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; }
+        else {
+            $('#spanEmail').hide().html(''); $('#Email').removeClass('redborder');
+            if (!Common.CheckEmail($.trim($('#Email').val()))) { $('#spanEmail').show().html('Please enter valid email. <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#Email').focus().addClass("redborder"); return false; } else { $('#spanEmail').hide().html(''); $('#Email').removeClass('redborder'); }
+        }
+       
+        if ($.trim($('#Message').val()) == "") { $('#Message').focus().addClass("validate"); $('#spanMessage').show().html('Comment Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanMessage').hide().html(''); $('#Message').removeClass("validate"); }
+
+        return true;
+    }
+
+    function closeValidation(field) {
+        $(field).parent().hide();
+    }
+
+
+    var specialKeys = new Array();
+    specialKeys.push(8); //Backspace
+    specialKeys.push(9); //Tab
+    specialKeys.push(32); //Space
+    specialKeys.push(46); //Delete
+    specialKeys.push(36); //Home
+    specialKeys.push(35); //End
+    specialKeys.push(37); //Left
+    specialKeys.push(39); //Right
+
+
+    function onlyAlphabets(e, t) {
+        try {
+            if (window.event) {
+                var charCode = window.event.keyCode;
+            }
+            else if (e) {
+                var charCode = e.which;
+            }
+            else { return true; }
+            if ((charCode == 32) || (charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (specialKeys.indexOf(e.keyCode) != -1 && e.charCode != e.keyCode))
+                return true;
+            else
+                return false;
+        }
+        catch (err) {
+            alert(err.Description);
+        }
+    }
+</script>
+
+
+
+        <article class="clearfix left-block7 tabhorizontal-t-m41">
+            <article class="clearfix white-bg p20 tabhorizontal-p10 mobile-p5">
+                <article class="clearfix innercon-bg p30 inerwhgrymin tabhorizontal-p20 mobile-p10">
+                    <article class="clearfix t-m0 l-h28 t-t-u Impact font26 evesec-tex letespa1 b-m25 tabhorizontal-b-m10 mobile-b-m5">Feed<span class="evered-t">back</span><i class="inertitsid-img l-m10 mobile-hide">&nbsp;</i></article>
+                    <!------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+                    <p class=" mobile-t-p10">Thank you for visiting the Telugu Literary and Cultural Association website. We would love to hear from you. Please do give us your impressions of our site, and tell us what you like or don't like ..</p>
+                    <p class="b-p10">Note that what you post here will be sent only to TLCA. Please use the <a>Guest Book</a> for posting public comments.</p>
+                    <article class="white-bg l-r-m-auto shadow t-p border-radius10" style="max-width:400px;">
+                        @using (Html.BeginForm("ContactUs", "Home", FormMethod.Post, new { enctype = "multipart/form-data", @class = "validation" }))
+                        {
+                            <article class="clearfix p30 t-p15 tabhorizontal-p10 l-r-m-auto validation" style="max-width:760px;">
+                                <article class="clearfix  mobile-b-p0">
+                                    <article class=" position-r">
+                                        <article class="clearfix tabhorizontal-r-p5 mobile-r-p0">
+                                            <article class="clearfix">
+                                                <label class="Montserrat-Regular font14">Your Name<span class="red-t"> *</span></label>
+                                                <input class="form-control"  onkeypress="closeValidationOnClick(this); return onlyAlphabets(event,this);" name="Name" id="FirstName" type="text">
+                                                <span class="errormsg" id="spanFirstName"></span>
+                                            </article>
+                                        </article>
+                                    </article>
+                                    <article class="position-r">
+                                        <article class="clearfix  tabhorizontal-l-p5 mobile-l-p0">
+                                            <article class="clearfix">
+                                                <label class="Montserrat-Regular font14">Your Email <span class="red-t">*</span></label>
+                                                <input class="form-control" onkeypress="closeValidationOnClick(this);" name="Email" id="Email" type="text">
+                                                <span class="errormsg" id="spanEmail"></span>
+                                            </article>
+                                        </article>
+                                    </article>
+                                </article>
+                                <article class=" mobile-l-p0 clearfix">
+                                    <article class=" position-r">
+                                        <article class="clearfix tablet-l-p5 mobile-l-p0">
+                                            <article class="clearfix">
+                                                <label class="Montserrat-Regular font14">Comment</label>
+                                                <textarea cols="2" rows="2" name="Description" id="Message" onkeypress="closeValidationOnClick(this);" class="form-control b-m10" style="border-radius:2px;"></textarea>
+                                                <span class="errormsg" id="spanMessage"></span>
+                                            </article>
+                                        </article>
+                                    </article>
+                                </article>
+                                <input type="hidden" name="Field1" id="Field1" value="Feedback">
+
+                                <article class="clearfix font13 Montserrat-Regular l-h24 tabhorizontal-p10">
+                                    <article class="clearfix  part-row mobile-t-b-p10">
+                                        <article class="part-5">
+                                            <article class="clearfix r-p10 tabhorizontal-r-p5 mobilev-r-p0 position-r">
+                                                <article class="clearfix">
+                                                    <label for="Security Code Montserrat-Regular">Enter the Code <span class="red-t">*</span></label>
+                                                    <input class="form-control" onkeypress="ResetValidateClass();" onchange="EFValidate();" id="txtCaptcha" name="DCaptcha" type="text">
+                                                </article>
+                                                <span class="errormsg" id="spantxtCaptcha"></span>
+                                            </article>
+                                        </article>
+                                        <article class="part-7 mobile-t-c tabhorizontal-t-c l-p7 mobile-t-m0">
+                                            <label class="t-p25 tabhorizontal-t-p5"></label>
+                                            <article class="clearfix l-p10 tabhorizontal-l-p5 mobilev-l-p0  tabhorizontal-t-p20"> <img alt="Captcha" id="CUcaptcha" src="Content/images/ShowCaptchaImage.gif" style="min-height:38px!important;" width="91" height="33" border="0"> <span class="l-p10 mobilev-l-p0"> <a href="javascript:CreloadCaptcha();"> <img src="Content/User/images/refresh.png" alt="Refresh" width="33" height="33" border="0"> </a> </span> </article>
+                                        </article>
+
+                                    </article>
+                                </article>
+                                <article class="clearfix t-p10 mobile-t-c t-c">
+                                    <input value="SUBMIT" onclick="return EFValidate();" class="btn btn-danger btn-sm btn-block font18 l-r-p15 t-b-p7 t-t-u" style="max-width:120px;background-color: #ff811b;/*! text-align: center; */" type="submit">
+                                </article>
+                            </article>
+                        }
+                    </article>
+                    <ul class="clearfix list-pn members-list6 font16 Roboto-Medium letespa1 t-p10">
+                        <li><a href="#" class="">Guestbook:</a> For public comments </li>
+                        <li><a href="#" class="">Feedback:</a> For comments to Webmaster or TLCA </li>
+                        <li>Contact a member (for members who give permission for this service): Send email to registered members of TLCA without knowing their email address (This feature not yet functional) </li>
+                    </ul>
+                    <!------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+                </article>
+            </article>
+        </article>
+    

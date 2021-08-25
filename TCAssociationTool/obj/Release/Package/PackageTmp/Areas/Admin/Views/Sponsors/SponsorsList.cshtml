@@ -1,0 +1,183 @@
+﻿@using System.Configuration;
+@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+     
+    var imglocNormal = ConfigurationManager.AppSettings["baseurl"] + "Content/Sponsors/";
+    List<TCAssociationTool.Entities.Sponsors> lstSponsorsList = ViewBag.lstSponsorsList;    
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('#MWebsite').addClass('active'); 
+    });
+
+    function SponsorStatus(SponsorId) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SponsorStatus", "Sponsors")', // the URL of the controller action method
+            data: { SponsorId: SponsorId }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    Onload(1);
+                    $('#divmessage').html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+                else {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+    function DeleteSponsor(Id, BannerUrl) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteSponsor", "Sponsors")',  // the URL of the controller action method
+                data: { SponsorId: Id, BannerUrl: BannerUrl }, // optional data
+                success: function (result) {
+                    if (result.ok) {
+                        $("#divmessage").html(result.data);
+                        Onload(1);
+                        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    }
+                    else {
+                        $("#divmessage").val(result.data);
+                        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    }
+                },
+            });
+        }
+    }
+
+    function SponsorDisplayOrder(i, SponsorId) {
+        var DisplayOrder = parseInt($('#DisplayOrder' + i).val());
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SponsorDisplayOrder", "Sponsors")',
+            data: { DisplayOrder: DisplayOrder, SponsorId: SponsorId },
+            success: function (result) {
+                var div = '';
+                if (result.ok) {
+                    $("#divmessage").html(result.data);
+                    Onload(1);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+                else {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+</script>
+<link rel="stylesheet" type="text/css" href="Content/Admin/lib/lightview/css/lightview/lightview.css" />
+<script type="text/javascript" src="Content/Admin/lib/lightview/js/spinners/spinners.js"></script>
+<script type="text/javascript" src="Content/Admin/lib/lightview/js/lightview/lightview.js"></script>
+
+
+@if (Total == -1)
+{
+    <div class="norecords">Sorry failed processing your request.</div> 
+}
+else
+{
+    <table width="100%" cellspacing="0" cellpadding="0" border="0">
+        <tbody>
+            <tr>
+                <td>
+                    <table width="100%" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th width="7%" style="text-align: center">S No.</th>
+                                  <th width="25%">
+                                    <a onclick="javascript:sortresult('CategoryName');" class="white-t-u">Category @if (sortcolumn == "CategoryName")
+                                                                                                                   {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a>
+                                </th>
+                                <th width="20%" style="text-align: center"><a onclick="javascript:sortresult('Heading');" class="white-t-u">Heading @if (sortcolumn == "Heading")
+                                                                                                                                                    {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a></th>                              
+                                <th width="12%" style="text-align: center">Posted By</th>
+                                <th width="15%" style="text-align: center">Posted Date</th>
+                                <th width="10%" style="text-align: center">OrderNo</th>
+                                <th width="20%" style="text-align: center">Status</th>
+                                <th width="10%" style="text-align: center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (lstSponsorsList.Count != 0)
+                            {
+                                int i = 0;
+                                foreach (var item in lstSponsorsList)
+                                { 
+                                <tr>
+                                    <td style="text-align: center">@item.RId</td>
+                                    <td>@item.CategoryName</td>
+                                    <td style="text-align: center">
+                                        <img width="80px" style="min-height:30px; max-height:30px; overflow:hidden;" alt="@item.CategoryName" title="@item.CategoryName"  src="@TCAssociationTool.BLL.Common.ValidateImage((imglocNormal + item.LogoUrl), imglocNormal + "no-image.png")" class="borwhite5 border-radius shadow" />
+                                    </td>                                    
+                                    <td class="t-t-c" style="text-align: center">@item.InsertedBy</td>
+                                    <td style="text-align: center">@item.InsertedTime.ToString("dd-MM-yyyy")</td>
+
+                                    <td style="text-align: center">
+                                        <input type="text" maxlength="3" style="width:50px;" id="DisplayOrder@(i)" value="@item.DisplayOrder" onkeypress ="return Common.isNumberKey(event)"/>
+                                        <a onclick="SponsorDisplayOrder(@i,@item.SponsorId);" title="Update"><i class="fa fa-fw fa-refresh"></i></a>
+
+                                    </td>
+
+                                    <td>
+                                        @{
+                                    var isactive = "";
+                                    var active = "";
+                                    var disable = "";
+                                    if (item.IsActive == true)
+                                    {
+                                        isactive = "Active";
+                                        disable = "style=\"cursor: pointer;\" onclick=\"javascript:SponsorStatus(" + item.SponsorId + ");\"";
+                                    }
+                                    else
+                                    {
+                                        isactive = "Disabled";
+                                        active = "style=\"cursor: pointer;\" onclick=\"javascript:SponsorStatus(" + item.SponsorId + ");\"";
+                                    }
+                                            <div class="admin-active">@isactive
+                                                <ul>
+                                                    <li><a @Html.Raw(active) >Active</a></li>
+                                                    <li><a @Html.Raw(disable) >Disabled</a></li>
+                                                </ul>
+                                            </div>      
+                                        }
+                                    </td>
+                                    <td style="text-align: center"><a title="Edit" onclick="EditSponsor(@item.SponsorId)"><i class="fa fa-pencil-square-o"></i></a>
+                                        <a title="Delete" id="159" class="DeleteSponsor" onclick="javascript:DeleteSponsor(@item.SponsorId,'@item.LogoUrl');"><i class="fa fa-trash-o"></i></a>
+                                    </td>
+                                </tr>
+                                    i++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td class="norecords" colspan="7">No Sponsors Found.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}
+
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.pageno, "pagination pagination-centered"))

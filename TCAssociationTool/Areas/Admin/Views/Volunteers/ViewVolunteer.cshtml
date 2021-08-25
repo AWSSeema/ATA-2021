@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "AddDetails";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.Volunteers objVolunteer = ViewBag.objVolunteers;
+}
+<script>
+     
+    $(document).ready(function () {
+        $('#wVolunteers').addClass('active');
+        $('#Others').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');  
+    });
+
+    
+         
+
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>View Volunteer </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index","Home")"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="@Url.Action("Index", "Volunteer")"><i class="fa fa-file-text-o"></i>Volunteers</a></li>
+        <li class="active"><i class="fa fa-file-text-o"></i> View Volunteer</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="clearfix sepH_b"></div> 
+        <div class="box validation">
+            <div class="box-header">
+                
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>First Name : </label>
+                         @objVolunteer.FirstName
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Last Name : </label>
+                        @objVolunteer.LastName
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Email : </label>
+                        @objVolunteer.Email
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Mobile No : </label>
+                        @objVolunteer.PhoneNo
+                    </div>
+                     <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Volunteer Category : </label>
+                        @(objVolunteer.CategoryName !=  null && objVolunteer.CategoryName != "" ? objVolunteer.CategoryName : "N/A")
+                    </div>
+                     <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Event: </label>
+                        @(objVolunteer.EventName !=  null && objVolunteer.EventName != "" ? objVolunteer.EventName : "N/A" )
+                    </div>
+                     <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Mobile No : </label>
+                        @objVolunteer.PhoneNo
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Address : </label>
+                        @objVolunteer.Address
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Comment : </label>
+                        @objVolunteer.Comments
+                    </div>
+                </div>
+            </div> 
+        </div> 
+        <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body text-right"> 
+                <a class="btn btn-info" href="@Url.Action("Index", "Volunteers")">Cancel</a>
+            </div>
+            <!-- /.box-body -->
+        </div> 
+  
+</div>
+
+
+
