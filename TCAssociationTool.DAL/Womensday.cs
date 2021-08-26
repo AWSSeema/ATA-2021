@@ -105,9 +105,10 @@ namespace TCAssociationTool.DAL
             return dt;
         }
 
-        public DataTable GetWomensdayById(Int64 Id, ref int status)
+     
+        public DataSet GetWomensdayById(Int64 Id, ref int Status)
         {
-            DataTable dt = null;
+            DataSet dt = null;
             try
             {
                 _sqlP = new[]
@@ -116,8 +117,8 @@ namespace TCAssociationTool.DAL
                     new SqlParameter("@QStatus",0)
                 };
                 _sqlP[1].Direction = System.Data.ParameterDirection.Output;
-                dt = _dbAccess.GetDataTable("WomensdayGetById", ref _sqlP);
-                status = Convert.ToInt32(_sqlP[1].Value);
+                dt = _dbAccess.GetDataSet("WomensdayGetById", ref _sqlP);
+                Status = Convert.ToInt32(_sqlP[1].Value);
             }
             catch (Exception ex)
             {
@@ -125,6 +126,8 @@ namespace TCAssociationTool.DAL
             }
             return dt;
         }
+
+
 
         public Int64 DeleteWomensday(Int64 Id)
         {

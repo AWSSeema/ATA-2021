@@ -186,6 +186,7 @@
     <Compile Include="Areas\Admin\Controllers\VolunteerCategoriesController.cs" />
     <Compile Include="Areas\Admin\Controllers\VolunteersController.cs" />
     <Compile Include="Areas\Admin\Controllers\WebsiteBannersController.cs" />
+    <Compile Include="Areas\Admin\Controllers\WomensdayController.cs" />
     <Compile Include="Areas\Admin\Controllers\WomensdayLocationsController.cs" />
     <Compile Include="Areas\Admin\Models\CaptchaImageResult.cs" />
     <Compile Include="Areas\Admin\Models\SessionClass.cs" />
@@ -2564,6 +2565,10 @@
     <Content Include="Areas\Admin\Views\Cultural\ViewCultural.cshtml" />
     <Content Include="Areas\Admin\Views\WomensdayLocations\Index.cshtml" />
     <Content Include="Areas\Admin\Views\WomensdayLocations\WomensdayLocationsList.cshtml" />
+    <Content Include="Areas\Admin\Views\Womensday\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Womensday\WomensdayList.cshtml" />
+    <Content Include="Areas\Admin\Views\Womensday\EditWomensday.cshtml" />
+    <Content Include="Areas\Admin\Views\Womensday\ViewWomensday.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
   </ItemGroup>
   <PropertyGroup>

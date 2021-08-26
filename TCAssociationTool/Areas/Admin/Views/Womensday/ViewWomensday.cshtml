@@ -1,0 +1,190 @@
+﻿@{
+    ViewBag.Title = "AddMailTemplate";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.Womensday objWomensday = ViewBag.objWomensday;
+    List<TCAssociationTool.Entities.Womensdayguests> lstWomensdayguests = ViewBag.lstWomensdayguests;
+}
+
+
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+
+<script type="text/javascript">
+    function Validate() {
+        var return_val = true;
+
+        if ($.trim($('#comments').val()) == '') { document.getElementsByName('comments')[0].placeholder = 'Required'; $('#comments').focus().addClass("validate"); return false; } else { $('#comments').focus().removeClass("validate"); }
+      
+
+        return return_val;
+    }
+
+
+
+</script>
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Womensday</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "Womensday")"><i class="fa fa-print"></i>Womensday</a></li>
+        <li class="active">View Womensday</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box validation">
+        <!-- /.box-header -->
+        <div class="box-header">
+            <h3 class="box-title dis-in">View Womensday </h3>
+        </div>
+        @using (Html.BeginForm("WomensdayCommentUpdate", "Womensday", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input type="hidden" name="Id" id="Id" value="@objWomensday.Id" />
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Title </label>
+                        @objWomensday.firstname
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Lat Name </label>
+                        @objWomensday.lastname
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Email </label>
+                        email
+                    </div>
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Phone </label>
+                        @objWomensday.phone
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="box-body">
+                <div class="row">
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>City </label>
+                        @objWomensday.city
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>State </label>
+                        @objWomensday.state
+                    </div>
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Location </label>
+                        @objWomensday.location
+                    </div>
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Amount </label>
+                        @objWomensday.amount
+                    </div>
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Date  Sent </label>
+                        @objWomensday.datesent.ToString("dd/MM/yyyy")
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="box validation">
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Other Guests Details : </h3>
+                </div>
+                <div id="divClassifiedRegistrationTypes">
+                    @if (lstWomensdayguests != null && lstWomensdayguests.Count != 0)
+                    {
+                        int i = 0;
+                        <table width="100%" class="table table-bordered table-hover">
+                            <tbody>
+                                <tr>
+                                    <th width="20%">First Name</th>
+                                    <th width="15%">Last Name</th>
+                                    <th width="15%">Email</th>
+
+                                </tr>
+                                @foreach (var item in lstWomensdayguests)
+                                {
+                                    <tr id="view-@item.Id">
+                                        <td width="20%">
+                                            <label>@item.firstname</label>
+                                        </td>
+                                        <td width="15%">
+                                            <label>@item.lastname</label>
+                                        </td>
+                                        <td width="15%">
+                                            <label>@item.email</label>
+                                        </td>
+
+                                    </tr>
+                                    i++;
+                                }
+                            </tbody>
+                        </table>
+                    }
+
+                    else
+                    {
+                        <table width="100%" class="table table-bordered table-hover" id="tableRegistrationType">
+                            <tbody>
+                                <tr>
+                                    <th width="20%">First Name</th>
+                                    <th width="15%">Last Name</th>
+                                    <th width="15%">Email</th>
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+
+                    }
+                </div>
+
+              
+            </div>
+
+
+            <div class="box-body">
+                <div class="row">
+
+
+
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Admin Comments </label>
+                        <textarea id="comments" name="comments" class="form-control">@objWomensday.comments</textarea>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body text-right">
+                    <input type="submit" onclick="return Validate()" class="btn btn-primary" id="add" value="Submit" name="add">
+                    <a class="btn btn-info" href="@Url.Action("Index", "Womensday")">Cancel</a>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        }
+        <!-- /.box-body -->
+    </div>
+    <!-- /.content -->
+</div>
+

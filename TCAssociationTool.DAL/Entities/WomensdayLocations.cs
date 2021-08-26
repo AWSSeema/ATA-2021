@@ -26,9 +26,29 @@ namespace TCAssociationTool.Entities
 
         public Int64 event_id { get; set; }
 
+        public Womensdayguests objWomensdayguests = new Womensdayguests();
+
+    }
+
+
+    public class Womensdayguests
+    {
+        public Int64 Id { get; set; }
+        public Int64 RId { get; set; }
+        public Int64 wid { get; set; }
+        public string firstname { get; set; }
+        public string lastname { get; set; }
+        public string email { get; set; }
+     
+
 
 
     }
+
+
+  
+
+
     public class WomensdayLocations
     {
         public Int64 Id { get; set; }

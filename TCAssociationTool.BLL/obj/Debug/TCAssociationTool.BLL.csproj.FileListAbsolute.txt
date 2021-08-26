@@ -69,3 +69,14 @@ D:\Development\Projects\ATA (2)\ATA\TeluguAssociationTool\TCAssociationTool.BLL\
 D:\Development\Projects\ATA (2)\ATA\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\Newtonsoft.Json.dll
 D:\Development\Projects\ATA (2)\ATA\TeluguAssociationTool\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.pdb
 D:\Development\Projects\ATA (2)\ATA\TeluguAssociationTool\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csproj.CopyComplete
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.BLL.dll
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.BLL.pdb
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\bin\Debug\SendGrid.dll
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.dll
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\bin\Debug\Newtonsoft.Json.dll
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\bin\Debug\TCAssociationTool.DAL.pdb
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csproj.AssemblyReference.cache
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csproj.CoreCompileInputs.cache
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.csproj.CopyComplete
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.dll
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\obj\Debug\TCAssociationTool.BLL.pdb
