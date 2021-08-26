@@ -51,6 +51,7 @@
     <Compile Include="CommitteeMembers.cs" />
     <Compile Include="Committees.cs" />
     <Compile Include="Cultural.cs" />
+    <Compile Include="CulturalRegistrations.cs" />
     <Compile Include="DBAccess.cs" />
     <Compile Include="DonationCategories.cs" />
     <Compile Include="Donors.cs" />
@@ -60,11 +61,13 @@
     <Compile Include="Entities\CommitteeMembers.cs" />
     <Compile Include="Entities\Committees.cs" />
     <Compile Include="Entities\Cultural.cs" />
+    <Compile Include="Entities\CulturalRegistrations.cs" />
     <Compile Include="Entities\CurrencyCodes.cs" />
     <Compile Include="Entities\DonationCategories.cs" />
     <Compile Include="Entities\Donors.cs" />
     <Compile Include="Entities\Enquiries.cs" />
     <Compile Include="Entities\EventCategories.cs" />
+    <Compile Include="Entities\EventForm.cs" />
     <Compile Include="Entities\EventRegistrationCounts.cs" />
     <Compile Include="Entities\EventRegistrationTypes.cs" />
     <Compile Include="Entities\Events.cs" />
@@ -97,6 +100,7 @@
     <Compile Include="Entities\WebsiteBanners.cs" />
     <Compile Include="Entities\WomensdayLocations.cs" />
     <Compile Include="EventCategories.cs" />
+    <Compile Include="EventForm.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Flyers.cs" />
     <Compile Include="Golf2021.cs" />

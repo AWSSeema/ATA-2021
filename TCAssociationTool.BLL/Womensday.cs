@@ -41,6 +41,13 @@ namespace TCAssociationTool.BLL
             return _status;
         }
 
+        public Int64 WomensdayDeleteAll(string Id)
+        {
+            Int64 _status = 0;
+            _status = _Womensday.WomensdayDeleteAll(Id);
+            return _status;
+        }
+
 
 
         #endregion

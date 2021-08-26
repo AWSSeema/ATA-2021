@@ -25,7 +25,7 @@
 
 <script type="text/javascript">
 
-   
+
     function DeleteVaccinations(Id, ImageUrl) {
         var val2 = confirm("Do you want to delete this record?");
         if (val2) {
@@ -46,6 +46,34 @@
                 },
             });
         }
+    }
+
+     function DeleteAll() {
+        Id = Common.GetCheckBoxValue('checkbox')
+        if (validate(Id)) {
+            var val1 = confirm("Do you want to delete for selected Item?");
+            if (val1) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("VaccinationsDeleteAll", "Vaccinations")', // the URL of the controller action method
+                    data: { Id: Id }, // optional data
+                        success: function (result) {
+                            $("#divmessage").html(result.data);
+                            $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+
+                            $('#divmessage').show();
+                            VaccinationsBind($('#hdnPageNo').val());
+                        },
+                        error: function (req, status, error) {
+                            $("#divmessage").html(result.data);
+                            $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            $('#divmessage').show();
+                        }
+                    });
+                }
+            }
     }
 
     function Select(check) {

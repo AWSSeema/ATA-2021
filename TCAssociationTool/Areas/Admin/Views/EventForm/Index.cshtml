@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+    List<TCAssociationTool.Entities.Events> lstEvents = ViewBag.lstEvents;
     var userRole = "";
 
     HttpContext ctx = HttpContext.Current;
@@ -14,16 +15,19 @@
         authTicket = FormsAuthentication.Decrypt(authCookie.Value);
         userRole = authTicket.UserData;
     }
+
 }
 
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('#wWomensday').addClass('active');
+        $('#wEventForm').addClass('active');
         $('#Others').addClass('active');
         $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
         $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
-        $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
+       // $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
+        $("#StartDate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
+        $("#EndDate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
 
         PagerClickBind();
     });
@@ -31,24 +35,25 @@
     function sortresult(sortcolumn) {
         $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
         $('#hdnsortcolumn').val(sortcolumn);
-        WomensdayBind(1);
+        EventFormBind(1);
     }
 
-    function WomensdayBind(Pageno) {
+    function EventFormBind(Pageno) {
+
         var pageno = Common.Pageno(Pageno);
         var sortcolumn = $('#hdnsortcolumn').val();
         var sortorder = $('#hdnsortorder').val();
         var items = $('#txtitems').val();
         var Search = $('#keyword').val().trim();
-        var location = $('#location').val().trim();
-
+        var eventid = $('#eventid').val().trim();
+       
         $.ajax({
-            url: '@Url.Action("WomensdayList", "Womensday")',
+            url: '@Url.Action("EventFormList", "EventForm")',
             type: 'GET',
             cache: false,
-            data: { location:location,Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items },
+            data: { eventid: eventid,Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items },
             success: function (result) {
-                $('#divWomensday').html(result);
+                $('#divEventForm').html(result);
                 PagerClickBind();
             }
         });
@@ -56,10 +61,12 @@
 
     function PagerClickBind() {
         $(".pagination a").bind("click", function () {
-            WomensdayBind($(this).text());
+            EventFormBind($(this).text());
         });
     }
 
+
+ 
     function validate(Id) {
         if (Id == "") {
             alert("Please select atleast one Item.");
@@ -69,22 +76,15 @@
     }
 
 
-    function ExporttoExcel() {
-        var sortcolumn = $('#hdnsortcolumn').val();
-        var sortorder = $('#hdnsortorder').val();
-        var Search = $('#keyword').val().trim();
-        var location = $('#location').val();
-    
-
-        window.location.href = "Admin/Womensday/WomensdayExporttoExcel?Search=" + Search + "&location=" + location +  "&SortColumn=" + sortcolumn + "&SortOrder=" + sortorder;
-
-    }
 
     function ClearSearch() {
         $('#keyword').val('');
-        $('#location').val('');
-        WomensdayBind(1);
+        $('#StartDate').val('');
+        $('#EndDate').val('');
+        EventFormBind(1);
     }
+
+
 </script>
 <input type="hidden" id="hdnimgvalidate" value="0" />
 <input id="hdnPageNo" type="hidden" value="1" />
@@ -93,10 +93,10 @@
 
 <!-- breadcumb -->
 <div class="content-header">
-    <h1>Womensday </h1>
+    <h1>Registrations </h1>
     <ol class="breadcrumb">
         <li><a href="@Url.Action("Index","Home")"><i class="fa fa-dashboard"></i>Home</a></li>
-        <li class="active"><i class="fa fa-tasks"></i>Womensday</li>
+        <li class="active"><i class="fa fa-tasks"></i>Registrations</li>
     </ol>
 </div>
 <!--end breadcumb -->
@@ -115,51 +115,40 @@
             <div class="clearfix row">
                 <div class="col-xs-12 col-lg-3 col-sm-6">
                     <label>Search</label>
-                    <input type="text" placeholder="Member Name/First  Name /Last Name" name="keyword" id="keyword" class="form-control" />
+                    <input type="text" placeholder="Name/Email/Phone" name="keyword" id="keyword" class="form-control" />
                 </div>
                 <div class="col-xs-4 col-lg-3 col-sm-6">
-                    <label>Location</label>
-                    <select class="form-control" name="location" id="location">
-                        <option value="">--Select--</option>
-                        <option value="Atlanta"> Atlanta</option>
-                        <option value="Austin"> Austin</option>
-                        <option value="Boston"> Boston</option>
-                        <option value="Chicago Land"> Chicago Land</option>
-                        <option value="Dallas"> Dallas</option>
-                        <option value="DC Metro"> DC Metro</option>
-                        <option value="Delaware"> Delaware</option>
-                        <option value="Detroit"> Detroit</option>
-                        <option value="Los Angeles"> Los Angeles</option>
-                        <option value="Maryland"> Maryland</option>
-                        <option value="Nashville"> Nashville</option>
-                        <option value="New England"> New England</option>
-                        <option value="New Jersey"> New Jersey</option>
-                        <option value="Orlando"> Orlando</option>
-                        <option value="Raleigh"> Raleigh</option>
-                        <option value="Richmond"> Richmond</option>
-                        <option value="Seattle"> Seattle</option>
-                        <option value="Washington DC"> Washington DC</option>
+                    <label>Event</label>
+                    <select class="form-control" name="eventid" id="eventid">
+                        @if (lstEvents != null)
+                        {
+                            <option value="">Select</option>
+                            foreach (var item in lstEvents)
+                            {
+                                <option value="@item.EventId">@item.EventName</option>
+                            }
+                        }
                     </select>
                 </div>
-                <div class="col-xs-12 col-lg-6 col-sm-6">
+
+                <div class="col-xs-12 col-lg-4 col-sm-6">
                     <div>
                         <label>&nbsp;</label>
                     </div>
-                    <button class="btn btn-primary" type="submit" onclick="WomensdayBind(1);">Search</button>
+                    <button class="btn btn-primary" type="submit" onclick="EventFormBind(1);">Search</button>
                     <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
-                    <a data-toggle="modal" href="@Url.Action("AddWomensday", "Womensday")" class="btn btn-danger pull-right">Add Womensday</a>
-                    <a class="btn btn-danger pull-right r-m10" onclick="ExporttoExcel();">Export to Excel</a>
-
+                    @*<a data-toggle="modal" href="@Url.Action("AddEventForm", "EventForm")" class="btn btn-danger pull-right">Add EventForm</a>*@
                     @if (userRole.Contains("SuperAdmin"))
                     {
-                        <a class="btn btn-danger pull-right r-m10" id="delete" onclick="DeleteAll();">Delete </a>
+                        <a class="btn btn-danger pull-right r-m10" id="deletemembers" onclick="DeleteAll();">Delete</a>
                     }
                 </div>
             </div>
         </div>
-        <div id="divWomensday" class="box-body table-responsive">
-            @{Html.RenderAction("WomensdayList", "Womensday");}
+        <div id="divEventForm" class="box-body table-responsive">
+            @{Html.RenderAction("EventFormList", "EventForm");}
         </div>
 
     </div>
 </div>
+

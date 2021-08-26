@@ -2,13 +2,25 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+    var userRole = "";
+
+    HttpContext ctx = HttpContext.Current;
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+        userRole = authTicket.UserData;
+    }
 
 }
 
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('#wGolf2021').addClass('active');
+        $('#wCulturalRegistrations').addClass('active');
         $('#Others').addClass('active');
         $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
         $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
@@ -22,10 +34,11 @@
     function sortresult(sortcolumn) {
         $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
         $('#hdnsortcolumn').val(sortcolumn);
-        Golf2021Bind(1);
+        CulturalRegistrationsBind(1);
     }
 
-    function Golf2021Bind(Pageno) {
+    function CulturalRegistrationsBind(Pageno) {
+
         var pageno = Common.Pageno(Pageno);
         var sortcolumn = $('#hdnsortcolumn').val();
         var sortorder = $('#hdnsortorder').val();
@@ -33,14 +46,16 @@
         var Search = $('#keyword').val().trim();
         var StartDate = $('#StartDate').val().trim();
         var EndDate = $('#EndDate').val().trim();
+        var ItemType = $('#ItemType').val().trim();
+
 
         $.ajax({
-            url: '@Url.Action("Golf2021List", "Golf2021")',
+            url: '@Url.Action("CulturalRegistrationsList", "CulturalRegistrations")',
             type: 'GET',
             cache: false,
-            data: { StartDate: StartDate, EndDate:EndDate,Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items },
+            data: { ItemType:ItemType,StartDate: StartDate, EndDate: EndDate,Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items },
             success: function (result) {
-                $('#divGolf2021').html(result);
+                $('#divCulturalRegistrations').html(result);
                 PagerClickBind();
             }
         });
@@ -48,10 +63,19 @@
 
     function PagerClickBind() {
         $(".pagination a").bind("click", function () {
-            Golf2021Bind($(this).text());
+            CulturalRegistrationsBind($(this).text());
         });
     }
 
+
+
+    function validate(Id) {
+        if (Id == "") {
+            alert("Please select atleast one Item.");
+            return false;
+        }
+        return true;
+    }
 
     function ExporttoExcel() {
         var sortcolumn = $('#hdnsortcolumn').val();
@@ -59,20 +83,23 @@
         var Search = $('#keyword').val().trim();
         var EndDate = $('#EndDate').val();
         var StartDate = $('#StartDate').val();
-       
+        var ItemType = $('#ItemType').val();
 
-        window.location.href = "Admin/Golf2021/Golf2021ExporttoExcel?Search=" + Search + "&StartDate=" + StartDate + "&EndDate=" + EndDate +  "&SortColumn=" + sortcolumn + "&SortOrder=" + sortorder ;
+
+        window.location.href = "Admin/CulturalRegistrations/CulturalRegistrationsExporttoExcel?Search=" + Search + "&ItemType=" + ItemType +"&StartDate=" + StartDate + "&EndDate=" + EndDate + "&SortColumn=" + sortcolumn + "&SortOrder=" + sortorder;
 
     }
-
 
     function ClearSearch() {
+        $('#keyword').val('');
         $('#StartDate').val('');
         $('#EndDate').val('');
-        $('#keyword').val('');
-        $('#Type').val('');
-        Golf2021Bind(1);
+        $('#ItemType').val('');
+
+        CulturalRegistrationsBind(1);
     }
+
+
 </script>
 <input type="hidden" id="hdnimgvalidate" value="0" />
 <input id="hdnPageNo" type="hidden" value="1" />
@@ -81,10 +108,10 @@
 
 <!-- breadcumb -->
 <div class="content-header">
-    <h1>Golf 2021 </h1>
+    <h1>Cultural Registrations </h1>
     <ol class="breadcrumb">
         <li><a href="@Url.Action("Index","Home")"><i class="fa fa-dashboard"></i>Home</a></li>
-        <li class="active"><i class="fa fa-tasks"></i>Golf 2021</li>
+        <li class="active"><i class="fa fa-tasks"></i>Cultural Registrations</li>
     </ol>
 </div>
 <!--end breadcumb -->
@@ -106,8 +133,27 @@
                     <input type="text" placeholder="Name/Email/Phone" name="keyword" id="keyword" class="form-control" />
                 </div>
 
-                <div class="col-xs-12 col-lg-5 col-sm-6">
-                    <label>Date of Registration</label>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Item Type </label>
+                    <select class="form-control" name="ItemType" id="ItemType">
+                        <option value="">All</option>
+                        <option value="Folk Song">Folk Song</option>
+                        <option value="Folk Dance">Folk Dance</option>
+                        <option value="Mimicry">Mimicry</option>
+                        <option value="Drama">Drama</option>
+                        <option value="Skits">Skits</option>
+                        <option value="Classical Dance">Classical Dance</option>
+                        <option value="Movie Dance"> Movie Dance</option>
+                        <option value="Classical Song">Classical Song</option>
+                        <option value="Karaoke">Karaoke</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+              
+
+                <div class="col-xs-12 col-lg-6 col-sm-6">
+                    <label>Start Date /End Date</label>
                     <div class="clearfix row">
                         <div class="col-xs-12 col-lg-6 col-sm-6">
                             <div class="input-group">
@@ -123,20 +169,23 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="col-xs-12 col-lg-4 col-sm-6">
+                <div class="col-xs-12 col-lg-12 col-sm-6">
                     <div>
                         <label>&nbsp;</label>
                     </div>
-                    <button class="btn btn-primary" type="submit" onclick="Golf2021Bind(1);">Search</button>
+                    <button class="btn btn-primary" type="submit" onclick="CulturalRegistrationsBind(1);">Search</button>
                     <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
                     <a class="btn btn-danger pull-right r-m10" onclick="ExporttoExcel();">Export to Excel</a>
-                    @*<a data-toggle="modal" href="@Url.Action("AddGolf2021", "Golf2021")" class="btn btn-danger pull-right">Add Golf2021</a>*@
+
+                    @if (userRole.Contains("SuperAdmin"))
+                    {
+                        <a class="btn btn-danger pull-right r-m10" id="deletemembers" onclick="DeleteAll();">Delete</a>
+                    }
                 </div>
             </div>
         </div>
-        <div id="divGolf2021" class="box-body table-responsive">
-            @{Html.RenderAction("Golf2021List", "Golf2021");}
+        <div id="divCulturalRegistrations" class="box-body table-responsive">
+            @{Html.RenderAction("CulturalRegistrationsList", "CulturalRegistrations");}
         </div>
 
     </div>

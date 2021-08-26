@@ -188,6 +188,39 @@ namespace TCAssociationTool.Areas.Admin.Controllers
             return Json(new { ok = _bool, data = str });
         }
 
-    
+
+        [HttpPost]
+        [Models.SessionClass.SessionExpireFilter]
+        public JsonResult VaccinationsDeleteAll(string Id)
+        {
+            string str = "";
+            bool _bool = true;
+
+            try
+            {
+                Int64 _status = _Vaccinations.VaccinationsDeleteAll(Id);
+                switch (_status)
+                {
+                    case 1:
+
+
+                        str = "<div class=\"alert alert-success alert-dismissable\">Record Deleted Successfully</div>";
+                        _bool = true;
+                        break;
+                    case -1:
+                        str = "<div class=\"alert alert-danger alert-dismissable\">Failed deleting Vaccinations.</div>";
+                        _bool = false;
+                        break;
+                }
+            }
+            catch
+            {
+                str = "<div class=\"alert alert-danger alert-dismissable\">Failed transaction.</div>";
+                _bool = false;
+            }
+            return Json(new { ok = _bool, data = str });
+        }
+
+
     }
 }

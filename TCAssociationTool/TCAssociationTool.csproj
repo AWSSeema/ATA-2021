@@ -158,10 +158,12 @@
     <Compile Include="Areas\Admin\Controllers\CommitteeMemberController.cs" />
     <Compile Include="Areas\Admin\Controllers\CommitteesController.cs" />
     <Compile Include="Areas\Admin\Controllers\CulturalController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CulturalRegistrationsController.cs" />
     <Compile Include="Areas\Admin\Controllers\DonationCategoriesController.cs" />
     <Compile Include="Areas\Admin\Controllers\DonorsController.cs" />
     <Compile Include="Areas\Admin\Controllers\EnquiryController.cs" />
     <Compile Include="Areas\Admin\Controllers\ErrorController.cs" />
+    <Compile Include="Areas\Admin\Controllers\EventFormController.cs" />
     <Compile Include="Areas\Admin\Controllers\EventRegistrationsController.cs" />
     <Compile Include="Areas\Admin\Controllers\EventsController.cs" />
     <Compile Include="Areas\Admin\Controllers\FlyersController.cs" />
@@ -2569,6 +2571,14 @@
     <Content Include="Areas\Admin\Views\Womensday\WomensdayList.cshtml" />
     <Content Include="Areas\Admin\Views\Womensday\EditWomensday.cshtml" />
     <Content Include="Areas\Admin\Views\Womensday\ViewWomensday.cshtml" />
+    <Content Include="Areas\Admin\Views\EventForm\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\EventForm\EventFormList.cshtml" />
+    <Content Include="Areas\Admin\Views\EventForm\EditEventForm.cshtml" />
+    <Content Include="Areas\Admin\Views\EventForm\ViewEventForm.cshtml" />
+    <Content Include="Areas\Admin\Views\CulturalRegistrations\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\CulturalRegistrations\CulturalRegistrationsList.cshtml" />
+    <Content Include="Areas\Admin\Views\CulturalRegistrations\EditCulturalRegistrations.cshtml" />
+    <Content Include="Areas\Admin\Views\CulturalRegistrations\ViewCulturalRegistrations.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
   </ItemGroup>
   <PropertyGroup>

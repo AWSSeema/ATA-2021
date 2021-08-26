@@ -143,7 +143,28 @@ namespace TCAssociationTool.DAL
             return _status;
         }
 
-    
-     
+        public Int64 VaccinationsDeleteAll(string Id)
+        {
+            Int64 _status = 0;
+            try
+            {
+                _sqlP = new[]
+                {
+                    new SqlParameter("@Id",Id),
+                    new SqlParameter("@QStatus",0)
+                };
+                _sqlP[1].Direction = System.Data.ParameterDirection.Output;
+                _dbAccess.SP_ExecuteScalar("VaccinationsDeleteAll", ref _sqlP);
+                _status = Convert.ToInt64(_sqlP[1].Value);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return _status;
+        }
+
+
+
     }
 }

@@ -10,29 +10,31 @@ using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using ClosedXML.Excel;
-
 namespace TCAssociationTool.Areas.Admin.Controllers
 {
-    public class WomensdayController : Controller
+    public class CulturalRegistrationsController : Controller
     {
-        BLL.Womensday _Womensday = new BLL.Womensday();
-        Entities.Womensday objWomensday = new Entities.Womensday();
-        DAL.Womensday _DWomensday = new DAL.Womensday();
-        [Models.SessionClass.SessionExpireFilter]
+        BLL.CulturalRegistrations _CulturalRegistrations = new BLL.CulturalRegistrations();
+        Entities.CulturalRegistrations objCulturalRegistrations = new Entities.CulturalRegistrations();
+        DAL.CulturalRegistrations _DCulturalRegistrations = new DAL.CulturalRegistrations();
+       
+        [Areas.Admin.Models.SessionClass.SessionExpireFilter]
         public ActionResult Index()
         {
+        
+
             return View();
         }
 
         [Models.SessionClass.SessionExpireFilter]
-        public ActionResult WomensdayList(string location="",string Search = "", string SortColumn = "Id", string SortOrder = "Desc", int PageNo = 1, int Items = 20)
+        public ActionResult CulturalRegistrationsList(string ItemType="", string StartDate="", string EndDate="", string Search = "", string SortColumn = "Id", string SortOrder = "Desc", int PageNo = 1, int Items = 20)
         {
             int Total = 0;
-            List<Entities.Womensday> lstWomensday = new List<Entities.Womensday>();
+            List<Entities.CulturalRegistrations> lstCulturalRegistrations = new List<Entities.CulturalRegistrations>();
             try
             {
                 string Sort = (SortColumn != "" ? SortColumn + " " + SortOrder : "");
-                lstWomensday = _Womensday.GetWomensdayListByVariable(location,Search, Sort, PageNo, Items, ref Total);
+                lstCulturalRegistrations = _CulturalRegistrations.GetCulturalRegistrationsListByVariable(ItemType,StartDate, EndDate, Search, Sort, PageNo, Items, ref Total);
             }
             catch
             {
@@ -41,25 +43,22 @@ namespace TCAssociationTool.Areas.Admin.Controllers
             ViewBag.pageno = PageNo;
             ViewBag.items = Items;
             ViewBag.total = Total;
-            ViewBag.lstWomensday = lstWomensday;
+            ViewBag.lstCulturalRegistrations = lstCulturalRegistrations;
             ViewBag.sortcolumn = SortColumn;
             ViewBag.sortorder = SortOrder;
             return View();
         }
 
         [Models.SessionClass.SessionExpireFilter]
-        public ActionResult EditWomensday(Int64 Id)
+        public ActionResult EditCulturalRegistrations(Int64 Id)
         {
             try
             {
                 int status = 0;
-                List<Entities.Womensdayguests> lstWomensdayguests = new List<Entities.Womensdayguests>();
-
-                objWomensday = _Womensday.GetWomensdayById(Id,ref  lstWomensdayguests, ref status);
-                if (status != -1 && objWomensday != null)
+                objCulturalRegistrations = _CulturalRegistrations.GetCulturalRegistrationsById(Id, ref status);
+                if (status != -1 && objCulturalRegistrations != null)
                 {
-                    ViewBag.objWomensday = objWomensday;
-                    ViewBag.lstWomensdayguests = lstWomensdayguests;
+                    ViewBag.objCulturalRegistrations = objCulturalRegistrations;
                 }
                 else
                 {
@@ -74,24 +73,20 @@ namespace TCAssociationTool.Areas.Admin.Controllers
             return View();
         }
 
-
         [Models.SessionClass.SessionExpireFilter]
-        public ActionResult ViewWomensday(Int64 Id)
+        public ActionResult ViewCulturalRegistrations(Int64 Id)
         {
             try
             {
                 int status = 0;
-                List<Entities.Womensdayguests> lstWomensdayguests = new List<Entities.Womensdayguests>();
-
-                objWomensday = _Womensday.GetWomensdayById(Id, ref lstWomensdayguests, ref status);
-                if (status != -1 && objWomensday != null)
+                objCulturalRegistrations = _CulturalRegistrations.GetCulturalRegistrationsById(Id, ref status);
+                if (status != -1 && objCulturalRegistrations != null)
                 {
-                    ViewBag.objWomensday = objWomensday;
-                    ViewBag.lstWomensdayguests = lstWomensdayguests;
+                    ViewBag.objCulturalRegistrations = objCulturalRegistrations;
                 }
                 else
                 {
-                    TempData["message"] = "<div class=\"alert alert-danger alert-dismissable\">Failed processing your request.</div>";
+                    TempData["message"] = "<div class=\"alert alert-danger alert-dismissable\">Failed</div>";
                 }
 
             }
@@ -102,9 +97,8 @@ namespace TCAssociationTool.Areas.Admin.Controllers
             return View();
         }
 
-
         [Models.SessionClass.SessionExpireFilter]
-        public ActionResult AddWomensday()
+        public ActionResult AddCulturalRegistrations()
         {
             return View();
         }
@@ -112,13 +106,16 @@ namespace TCAssociationTool.Areas.Admin.Controllers
         [Models.SessionClass.SessionExpireFilter]
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult InsertWomensday(Entities.Womensday objWomensday)
+        public ActionResult InsertCulturalRegistrations(Entities.CulturalRegistrations objCulturalRegistrations)
         {
             try
             {
+                objCulturalRegistrations.date_created = DateTime.UtcNow;
+                objCulturalRegistrations.date_modified = DateTime.UtcNow;
+                objCulturalRegistrations.status2 = false;
 
+                Int64 _status = _CulturalRegistrations.InsertCulturalRegistrations(objCulturalRegistrations);
 
-                Int64 _status = _Womensday.InsertWomensday(objWomensday);
                 if (_status != -1)
                 {
 
@@ -130,7 +127,7 @@ namespace TCAssociationTool.Areas.Admin.Controllers
                     {
                         TempData["message"] = "<div class=\"alert alert-success alert-dismissable\">Changes has been Updated Successfully</div>";
                     }
-                    return RedirectToAction("Index", "Womensday");
+                    return RedirectToAction("Index", "CulturalRegistrations");
 
                 }
             }
@@ -138,27 +135,29 @@ namespace TCAssociationTool.Areas.Admin.Controllers
             {
                 TempData["message"] = "<div class=\"alert alert-danger alert-dismissable\">Failed transaction.</div>";
             }
-            return RedirectToAction("Index", "Womensday");
+            return RedirectToAction("Index", "CulturalRegistrations");
         }
+
+
 
         [Models.SessionClass.SessionExpireFilter]
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult WomensdayCommentUpdate(Entities.Womensday objWomensday)
+        public ActionResult CulturalRegistrationsCommentUpdate(Entities.CulturalRegistrations objCulturalRegistrations)
         {
             try
             {
+               
+                Int64 _status = _CulturalRegistrations.CulturalRegistrationsCommentUpdate(objCulturalRegistrations);
 
-
-                Int64 _status = _Womensday.WomensdayUpdateComments(objWomensday);
                 if (_status != -1)
                 {
 
-                    if (_status == 2)
+                    if (_status == 1)
                     {
-                        TempData["message"] = "<div class=\"alert alert-success alert-dismissable\">Updated Comment Successfully</div>";
+                        TempData["message"] = "<div class=\"alert alert-success alert-dismissable\">Comment has been Updated Successfully</div>";
                     }
-                    return RedirectToAction("Index", "Womensday");
+                    return RedirectToAction("Index", "CulturalRegistrations");
 
                 }
             }
@@ -166,8 +165,10 @@ namespace TCAssociationTool.Areas.Admin.Controllers
             {
                 TempData["message"] = "<div class=\"alert alert-danger alert-dismissable\">Failed transaction.</div>";
             }
-            return RedirectToAction("Index", "Womensday");
+            return RedirectToAction("Index", "CulturalRegistrations");
         }
+
+
 
 
         [HttpPost]
@@ -179,7 +180,7 @@ namespace TCAssociationTool.Areas.Admin.Controllers
 
             try
             {
-                Int64 _status = _Womensday.DeleteWomensday(Id);
+                Int64 _status = _CulturalRegistrations.DeleteCulturalRegistrations(Id);
                 switch (_status)
                 {
                     case 1:
@@ -189,7 +190,7 @@ namespace TCAssociationTool.Areas.Admin.Controllers
                         _bool = true;
                         break;
                     case -1:
-                        str = "<div class=\"alert alert-danger alert-dismissable\">Failed deleting Womensday.</div>";
+                        str = "<div class=\"alert alert-danger alert-dismissable\">Failed deleting CulturalRegistrations.</div>";
                         _bool = false;
                         break;
                 }
@@ -204,20 +205,21 @@ namespace TCAssociationTool.Areas.Admin.Controllers
 
 
         [HttpPost]
-        public JsonResult WomensdayDeleteAll(string Id)
+        [Areas.Admin.Models.SessionClass.SessionExpireFilter]
+        public JsonResult CulturalRegistrationsStatus(Int64 id)
         {
             string str = "";
             try
             {
-                Int64 _status = _Womensday.WomensdayDeleteAll(Id);
+                Int64 _status = _CulturalRegistrations.UpdateCulturalRegistrationsStatus(id);
                 if (_status == 1)
                 {
-                    str = "<div class=\"alert alert-success alert-dismissable\">Records Deleted Successfully</div>";
+                    str = "<div class=\"alert alert-success alert-dismissable\">Updated Status Successfully</div>";
                     return Json(new { ok = true, data = str });
                 }
                 else
                 {
-                    str = "<div class=\"error-alert closable\">Failed deleting members.</div>";
+                    str = "<div class=\"alert alert-danger alert-dismissable\">Failed updating status</div>";
                     return Json(new { ok = false, data = str });
                 }
             }
@@ -228,22 +230,56 @@ namespace TCAssociationTool.Areas.Admin.Controllers
             }
         }
 
-        public void WomensdayExporttoExcel(string Search = "", string location = "", string SortColumn = "Id", string SortOrder = "DESC")
+
+
+        [HttpPost]
+        [Models.SessionClass.SessionExpireFilter]
+        public JsonResult CulturalRegistrationsDeleteAll(string Id)
+        {
+            string str = "";
+            bool _bool = true;
+
+            try
+            {
+                Int64 _status = _CulturalRegistrations.CulturalRegistrationsDeleteAll(Id);
+                switch (_status)
+                {
+                    case 1:
+
+
+                        str = "<div class=\"alert alert-success alert-dismissable\">Record Deleted Successfully</div>";
+                        _bool = true;
+                        break;
+                    case -1:
+                        str = "<div class=\"alert alert-danger alert-dismissable\">Failed deleting CulturalRegistrations.</div>";
+                        _bool = false;
+                        break;
+                }
+            }
+            catch
+            {
+                str = "<div class=\"alert alert-danger alert-dismissable\">Failed transaction.</div>";
+                _bool = false;
+            }
+            return Json(new { ok = _bool, data = str });
+        }
+
+        public void CulturalRegistrationsExporttoExcel(string Search = "", string ItemType="",string StartDate="", string EndDate="", string SortColumn = "Id", string SortOrder = "DESC")
         {
             string Sort = (SortColumn != "" ? SortColumn + " " + SortOrder : "");
             try
             {
-                DataTable dtUni = _DWomensday.ExportWomensdayList(Search, location, Sort);
+                DataTable dtUni = _DCulturalRegistrations.ExportCulturalRegistrationsList(Search, ItemType, StartDate, EndDate, Sort);
 
                 using (XLWorkbook wb = new XLWorkbook())
                 {
-                    wb.Worksheets.Add(dtUni, "Womensday-Registration-Export");
+                    wb.Worksheets.Add(dtUni, "Cultural-Registration-Export");
 
                     Response.Clear();
                     Response.Buffer = true;
                     Response.Charset = "";
                     Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    Response.AddHeader("content-disposition", "attachment;filename=Womensday-Registration-Export-" + DateTime.UtcNow.ToString("MM-dd-yyyy") + ".xlsx");
+                    Response.AddHeader("content-disposition", "attachment;filename=Cultural-Registration-Export-" + DateTime.UtcNow.ToString("MM-dd-yyyy") + ".xlsx");
                     using (MemoryStream MyMemoryStream = new MemoryStream())
                     {
                         wb.SaveAs(MyMemoryStream);

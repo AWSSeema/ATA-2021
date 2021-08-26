@@ -149,5 +149,53 @@ namespace TCAssociationTool.DAL
             }
             return _status;
         }
+
+
+        public Int64 WomensdayDeleteAll(string Id)
+        {
+            Int64 _status = 0;
+            try
+            {
+                _sqlP = new[]
+                {
+                    new SqlParameter("@Id",Id),
+                    new SqlParameter("@QStatus",0)
+                };
+                _sqlP[1].Direction = System.Data.ParameterDirection.Output;
+                _dbAccess.SP_ExecuteScalar("WomensdayDeleteAll", ref _sqlP);
+                _status = Convert.ToInt64(_sqlP[1].Value);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return _status;
+        }
+
+        public DataTable ExportWomensdayList(string Search, string location,  string Sort)
+        {
+            DataTable dt = null;
+            int Total = 0;
+            try
+            {
+                _sqlP = new[]
+                {
+
+                    new SqlParameter("@location",location),
+                    new SqlParameter("@Search",Search),
+                    new SqlParameter("@Sort",Sort),
+                    new SqlParameter("@Total",Total)
+                };
+
+                _sqlP[3].Direction = System.Data.ParameterDirection.Output;
+                dt = _dbAccess.GetDataTable("ExportWomensdayGetList", ref _sqlP);
+                Total = Convert.ToInt32(_sqlP[3].Value);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

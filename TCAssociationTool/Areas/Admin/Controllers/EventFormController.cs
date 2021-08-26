@@ -1,38 +1,45 @@
-﻿using TCAssociationTool.BLL;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Web;
-using System.Web.Helpers;
 using System.Web.Mvc;
-using ClosedXML.Excel;
 
 namespace TCAssociationTool.Areas.Admin.Controllers
 {
-    public class WomensdayController : Controller
+    public class EventFormController : Controller
     {
-        BLL.Womensday _Womensday = new BLL.Womensday();
-        Entities.Womensday objWomensday = new Entities.Womensday();
-        DAL.Womensday _DWomensday = new DAL.Womensday();
-        [Models.SessionClass.SessionExpireFilter]
+        BLL.EventForm _EventForm = new BLL.EventForm();
+        Entities.EventForm objEventForm = new Entities.EventForm();
+        DAL.EventForm _DEventForm = new DAL.EventForm();
+        List<Entities.Events> lstEvents  = new List<Entities.Events>();
+        BLL.Events _Events = new BLL.Events();
+
+        [Areas.Admin.Models.SessionClass.SessionExpireFilter]
         public ActionResult Index()
         {
+            int status = 0;
+            try
+            {
+                lstEvents = _Events.GetEventsList(ref status);
+            }
+            catch
+            {
+                TempData["message"] = "<div class=\"alert alert-danger alert-dismissable\">Failed transaction.</div>";
+            }
+            ViewBag.lstEvents = lstEvents;
+         
             return View();
         }
 
         [Models.SessionClass.SessionExpireFilter]
-        public ActionResult WomensdayList(string location="",string Search = "", string SortColumn = "Id", string SortOrder = "Desc", int PageNo = 1, int Items = 20)
+        public ActionResult EventFormList(Int64 eventid=0, string Search = "", string SortColumn = "Id", string SortOrder = "Desc", int PageNo = 1, int Items = 20)
         {
             int Total = 0;
-            List<Entities.Womensday> lstWomensday = new List<Entities.Womensday>();
+            List<Entities.EventForm> lstEventForm = new List<Entities.EventForm>();
             try
             {
                 string Sort = (SortColumn != "" ? SortColumn + " " + SortOrder : "");
-                lstWomensday = _Womensday.GetWomensdayListByVariable(location,Search, Sort, PageNo, Items, ref Total);
+                lstEventForm = _EventForm.GetEventFormListByVariable(eventid, Search, Sort, PageNo, Items, ref Total);
             }
             catch
             {
@@ -41,25 +48,22 @@ namespace TCAssociationTool.Areas.Admin.Controllers
             ViewBag.pageno = PageNo;
             ViewBag.items = Items;
             ViewBag.total = Total;
-            ViewBag.lstWomensday = lstWomensday;
+            ViewBag.lstEventForm = lstEventForm;
             ViewBag.sortcolumn = SortColumn;
             ViewBag.sortorder = SortOrder;
             return View();
         }
 
         [Models.SessionClass.SessionExpireFilter]
-        public ActionResult EditWomensday(Int64 Id)
+        public ActionResult EditEventForm(Int64 Id)
         {
             try
             {
                 int status = 0;
-                List<Entities.Womensdayguests> lstWomensdayguests = new List<Entities.Womensdayguests>();
-
-                objWomensday = _Womensday.GetWomensdayById(Id,ref  lstWomensdayguests, ref status);
-                if (status != -1 && objWomensday != null)
+                objEventForm = _EventForm.GetEventFormById(Id, ref status);
+                if (status != -1 && objEventForm != null)
                 {
-                    ViewBag.objWomensday = objWomensday;
-                    ViewBag.lstWomensdayguests = lstWomensdayguests;
+                    ViewBag.objEventForm = objEventForm;
                 }
                 else
                 {
@@ -74,24 +78,20 @@ namespace TCAssociationTool.Areas.Admin.Controllers
             return View();
         }
 
-
         [Models.SessionClass.SessionExpireFilter]
-        public ActionResult ViewWomensday(Int64 Id)
+        public ActionResult ViewEventForm(Int64 Id)
         {
             try
             {
                 int status = 0;
-                List<Entities.Womensdayguests> lstWomensdayguests = new List<Entities.Womensdayguests>();
-
-                objWomensday = _Womensday.GetWomensdayById(Id, ref lstWomensdayguests, ref status);
-                if (status != -1 && objWomensday != null)
+                objEventForm = _EventForm.GetEventFormById(Id, ref status);
+                if (status != -1 && objEventForm != null)
                 {
-                    ViewBag.objWomensday = objWomensday;
-                    ViewBag.lstWomensdayguests = lstWomensdayguests;
+                    ViewBag.objEventForm = objEventForm;
                 }
                 else
                 {
-                    TempData["message"] = "<div class=\"alert alert-danger alert-dismissable\">Failed processing your request.</div>";
+                    TempData["message"] = "<div class=\"alert alert-danger alert-dismissable\">Failed</div>";
                 }
 
             }
@@ -102,9 +102,8 @@ namespace TCAssociationTool.Areas.Admin.Controllers
             return View();
         }
 
-
         [Models.SessionClass.SessionExpireFilter]
-        public ActionResult AddWomensday()
+        public ActionResult AddEventForm()
         {
             return View();
         }
@@ -112,13 +111,15 @@ namespace TCAssociationTool.Areas.Admin.Controllers
         [Models.SessionClass.SessionExpireFilter]
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult InsertWomensday(Entities.Womensday objWomensday)
+        public ActionResult InsertEventForm(Entities.EventForm objEventForm)
         {
             try
             {
+                objEventForm.datesent = DateTime.UtcNow;
+                objEventForm.status2 = false;
 
-
-                Int64 _status = _Womensday.InsertWomensday(objWomensday);
+                Int64 _status = _EventForm.InsertEventForm(objEventForm);
+              
                 if (_status != -1)
                 {
 
@@ -130,7 +131,7 @@ namespace TCAssociationTool.Areas.Admin.Controllers
                     {
                         TempData["message"] = "<div class=\"alert alert-success alert-dismissable\">Changes has been Updated Successfully</div>";
                     }
-                    return RedirectToAction("Index", "Womensday");
+                    return RedirectToAction("Index", "EventForm");
 
                 }
             }
@@ -138,27 +139,31 @@ namespace TCAssociationTool.Areas.Admin.Controllers
             {
                 TempData["message"] = "<div class=\"alert alert-danger alert-dismissable\">Failed transaction.</div>";
             }
-            return RedirectToAction("Index", "Womensday");
+            return RedirectToAction("Index", "EventForm");
         }
+
+
 
         [Models.SessionClass.SessionExpireFilter]
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult WomensdayCommentUpdate(Entities.Womensday objWomensday)
+        public ActionResult EventFormCommentUpdate(Entities.EventForm objEventForm)
         {
             try
             {
+                objEventForm.datesent = DateTime.UtcNow;
+                objEventForm.status2 = false;
 
+                Int64 _status = _EventForm.EventFormCommentUpdate(objEventForm);
 
-                Int64 _status = _Womensday.WomensdayUpdateComments(objWomensday);
                 if (_status != -1)
                 {
 
-                    if (_status == 2)
+                    if (_status == 1)
                     {
-                        TempData["message"] = "<div class=\"alert alert-success alert-dismissable\">Updated Comment Successfully</div>";
+                        TempData["message"] = "<div class=\"alert alert-success alert-dismissable\">Comment has been Updated Successfully</div>";
                     }
-                    return RedirectToAction("Index", "Womensday");
+                    return RedirectToAction("Index", "EventForm");
 
                 }
             }
@@ -166,8 +171,10 @@ namespace TCAssociationTool.Areas.Admin.Controllers
             {
                 TempData["message"] = "<div class=\"alert alert-danger alert-dismissable\">Failed transaction.</div>";
             }
-            return RedirectToAction("Index", "Womensday");
+            return RedirectToAction("Index", "EventForm");
         }
+
+
 
 
         [HttpPost]
@@ -179,7 +186,7 @@ namespace TCAssociationTool.Areas.Admin.Controllers
 
             try
             {
-                Int64 _status = _Womensday.DeleteWomensday(Id);
+                Int64 _status = _EventForm.DeleteEventForm(Id);
                 switch (_status)
                 {
                     case 1:
@@ -189,7 +196,7 @@ namespace TCAssociationTool.Areas.Admin.Controllers
                         _bool = true;
                         break;
                     case -1:
-                        str = "<div class=\"alert alert-danger alert-dismissable\">Failed deleting Womensday.</div>";
+                        str = "<div class=\"alert alert-danger alert-dismissable\">Failed deleting EventForm.</div>";
                         _bool = false;
                         break;
                 }
@@ -204,20 +211,21 @@ namespace TCAssociationTool.Areas.Admin.Controllers
 
 
         [HttpPost]
-        public JsonResult WomensdayDeleteAll(string Id)
+        [Areas.Admin.Models.SessionClass.SessionExpireFilter]
+        public JsonResult EventFormStatus(Int64 id)
         {
             string str = "";
             try
             {
-                Int64 _status = _Womensday.WomensdayDeleteAll(Id);
+                Int64 _status = _EventForm.UpdateEventFormStatus(id);
                 if (_status == 1)
                 {
-                    str = "<div class=\"alert alert-success alert-dismissable\">Records Deleted Successfully</div>";
+                    str = "<div class=\"alert alert-success alert-dismissable\">Updated Status Successfully</div>";
                     return Json(new { ok = true, data = str });
                 }
                 else
                 {
-                    str = "<div class=\"error-alert closable\">Failed deleting members.</div>";
+                    str = "<div class=\"alert alert-danger alert-dismissable\">Failed updating status</div>";
                     return Json(new { ok = false, data = str });
                 }
             }
@@ -228,36 +236,38 @@ namespace TCAssociationTool.Areas.Admin.Controllers
             }
         }
 
-        public void WomensdayExporttoExcel(string Search = "", string location = "", string SortColumn = "Id", string SortOrder = "DESC")
+
+
+        [HttpPost]
+        [Models.SessionClass.SessionExpireFilter]
+        public JsonResult EventFormDeleteAll(string Id)
         {
-            string Sort = (SortColumn != "" ? SortColumn + " " + SortOrder : "");
+            string str = "";
+            bool _bool = true;
+
             try
             {
-                DataTable dtUni = _DWomensday.ExportWomensdayList(Search, location, Sort);
-
-                using (XLWorkbook wb = new XLWorkbook())
+                Int64 _status = _EventForm.EventFormDeleteAll(Id);
+                switch (_status)
                 {
-                    wb.Worksheets.Add(dtUni, "Womensday-Registration-Export");
+                    case 1:
 
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.Charset = "";
-                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    Response.AddHeader("content-disposition", "attachment;filename=Womensday-Registration-Export-" + DateTime.UtcNow.ToString("MM-dd-yyyy") + ".xlsx");
-                    using (MemoryStream MyMemoryStream = new MemoryStream())
-                    {
-                        wb.SaveAs(MyMemoryStream);
-                        MyMemoryStream.WriteTo(Response.OutputStream);
-                        Response.Flush();
-                        Response.End();
-                    }
+
+                        str = "<div class=\"alert alert-success alert-dismissable\">Record Deleted Successfully</div>";
+                        _bool = true;
+                        break;
+                    case -1:
+                        str = "<div class=\"alert alert-danger alert-dismissable\">Failed deleting EventForm.</div>";
+                        _bool = false;
+                        break;
                 }
             }
             catch
             {
-                TempData["message"] = "<div class=\"alert alert-danger alert-dismissable\">Failed transaction.</div>";
+                str = "<div class=\"alert alert-danger alert-dismissable\">Failed transaction.</div>";
+                _bool = false;
             }
+            return Json(new { ok = _bool, data = str });
         }
-
     }
 }

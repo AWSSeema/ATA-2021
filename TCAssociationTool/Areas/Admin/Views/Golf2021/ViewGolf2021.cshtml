@@ -56,7 +56,7 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-xs-12 col-lg-3 col-sm-6">
-                            <label>Player Type </label>
+                            <label>Player Type : </label>
                             @objGolf2021.playertype
                         </div>
                         <div class="col-xs-12 col-lg-3 col-sm-6">
@@ -64,54 +64,75 @@
                             @objGolf2021.amount
                         </div>
                         <div class="col-xs-12 col-lg-3 col-sm-6">
-                            <label>Ip Address </label>
+                            <label>Ip Address :</label>
                             @objGolf2021.ip_address
                         </div>
 
                         <div class="col-xs-12 col-lg-3 col-sm-6">
-                            <label>Name </label>
+                            <label>Name :</label>
                             @objGolf2021.player1_name
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-xs-12 col-lg-3 col-sm-6">
-                            <label>Phone </label>
+                            <label>Phone :</label>
                             @objGolf2021.player1_phone
                         </div>
                         <div class="col-xs-12 col-lg-3 col-sm-6">
                             <label>Email</label>
                             @objGolf2021.player1_email
                         </div>
+                        @*<div class="col-xs-12 col-lg-3 col-sm-6">
+            <label>T Shirt :</label>
+            @objGolf2021.player1_tshirt
+        </div>*@
+
                         <div class="col-xs-12 col-lg-3 col-sm-6">
-                            <label>T Shirt </label>
-                            @objGolf2021.player1_tshirt
+                            <label>Sponsorship : </label>
+                            @objGolf2021.sponsorship
                         </div>
 
                         <div class="col-xs-12 col-lg-3 col-sm-6">
-                            <label>Sponsorship </label>
-                            @objGolf2021.sponsorship
+                            <label>Payment Status : </label>
+                            @objGolf2021.PaymentStauts
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-xs-12 col-lg-3 col-sm-6">
-                            <label>Payment Status </label>
-                            @objGolf2021.PaymentStauts
-                        </div>
+
                         <div class="col-xs-12 col-lg-3 col-sm-6">
                             <label>Payment Method</label>
                             @objGolf2021.payment_method
                         </div>
                         <div class="col-xs-12 col-lg-3 col-sm-6">
-                            <label>Card No </label>
+                            <label>Card No :</label>
                             @objGolf2021.cardno
                         </div>
 
                         <div class="col-xs-12 col-lg-3 col-sm-6">
-                            <label>Payment Response </label>
+                            <label>Payment Response :</label>
                             @objGolf2021.payment_response
                         </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Date Sent :</label>
+                            @objGolf2021.created_at.ToString("dd/MM/yyy")
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                    
+
+
+                        <div class="col-xs-12 col-lg-4 col-sm-6">
+                            <label>Comments :</label>
+                            <textarea id="comments" name="comments" class="form-control">@objGolf2021.comments</textarea>
+
+                        </div>
+
                     </div>
 
                 </div>
@@ -120,9 +141,9 @@
 
 
 
-            <div class="box">
+            <!--<div class="box">-->
                 <!-- /.box-header -->
-                <div class="box-header">
+                <!--<div class="box-header">
                     <h3 class="box-title dis-in">Player2 Details </h3>
                 </div>
 
@@ -155,9 +176,9 @@
             </div>
 
 
-            <div class="box">
+            <div class="box">-->
                 <!-- /.box-header -->
-                <div class="box-header">
+                <!--<div class="box-header">
                     <h3 class="box-title dis-in">Player3 Details </h3>
                 </div>
 
@@ -188,9 +209,9 @@
                 </div>
 
             </div>
-            <div class="box">
+            <div class="box">-->
                 <!-- /.box-header -->
-                <div class="box-header">
+                <!--<div class="box-header">
                     <h3 class="box-title dis-in">Player4 Details </h3>
                 </div>
 
@@ -220,40 +241,10 @@
 
                 </div>
 
-            </div>
+            </div>-->
 
 
-            <div class="box">
-                <!-- /.box-header -->
-                <div class="box-header">
-                    <h3 class="box-title dis-in">Other Details </h3>
-                </div>
-
-                <div class="box-body">
-                    <div class="row">
-
-                        <div class="col-xs-12 col-lg-3 col-sm-6">
-                            <label>IP </label>
-                            @objGolf2021.ip
-                        </div>
-
-                        <div class="col-xs-12 col-lg-3 col-sm-6">
-                            <label>Vcode </label>
-                            @objGolf2021.vcode
-                        </div>
-
-                        <div class="col-xs-12 col-lg-4 col-sm-6">
-                            <label>Comments </label>
-                            <textarea id="comments" name="comments" class="form-control">@objGolf2021.comments</textarea>
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-            </div>
+          
 
 
             <div class="box">

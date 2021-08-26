@@ -179,14 +179,15 @@
                 <!-- sidebar menu: : style can be found in sidebar.less -->
                 <ul class="sidebar-menu">
                     @if (userRole.Contains("SuperAdmin") || userRole.Contains("SubAdmin"))
-                    { 
+                    {
                         <li class="treeview" id="WebPages">
                             <a><i class="fa fa-bars"></i><span>Menu Pages</span> <i class="fa fa-angle-left pull-right"></i></a>
                             <ul class="treeview-menu">
                                 <li id="wInnerPageCategories"><a href="@Url.Action("Index", "InnerPageMaster")"><i class="fa fa-angle-double-right"></i>Menu Items</a></li>
                                 <li id="wInnerPages"><a href="@Url.Action("Index", "InnerPages")"><i class="fa fa-angle-double-right"></i><span>Menu Pages</span></a> </li>
                             </ul>
-                        </li> 
+                        </li>
+
                         <li id="MEvents"><a href="@Url.Action("Index", "Events",new { EventType = "upcoming"})"><i class="fa fa-calendar"></i><span>Events</span></a> </li>
                         <li id="wCommittiees"><a href="@Url.Action("Index", "CommitteeMaster")"><i class="fa fa-file-text-o"></i>Committees</a></li>
                         <li class="treeview" id="wMembers">
@@ -197,29 +198,37 @@
                                 <li id="wMembersOrders"><a href="@Url.Action("Index", "MembersOrders")"><i class="fa fa-users"></i><span>Members Orders </span></a></li>
                             </ul>
                         </li>
-                          <li class="treeview" id="Volunteers">
+                        <li class="treeview" id="Volunteers">
                             <a><i class="fa fa-bars"></i><span>Volunteers</span> <i class="fa fa-angle-left pull-right"></i></a>
                             <ul class="treeview-menu">
                                 <li id="wVolunteerCategories"><a href="@Url.Action("Index", "VolunteerCategories")"><i class="fa fa-file-text-o"></i>Volunteer Categories</a></li>
                                 <li id="wVolunteers"><a href="@Url.Action("Index", "Volunteers")"><i class="fa fa-file-text-o"></i><span>Volunteers </span></a></li>
                             </ul>
-                        </li> 
+                        </li>
 
-                        
+
+
+
+
                         <li class="treeview" id="Gallery">
                             <a><i class="fa fa-bars"></i><span>Gallery</span> <i class="fa fa-angle-left pull-right"></i></a>
                             <ul class="treeview-menu">
                                 <li id="wPhotoGallery"><a href="@Url.Action("Index", "PhotoGallery")"><i class="fa fa-picture-o"></i><span>Photo Gallery </span></a></li>
-                                <li id="wVideoGallery"><a href="@Url.Action("Index", "VideoGallery")"><i class="fa fa-youtube-play"></i><span>Video Gallery </span></a></li>                                
+                                <li id="wVideoGallery"><a href="@Url.Action("Index", "VideoGallery")"><i class="fa fa-youtube-play"></i><span>Video Gallery </span></a></li>
                             </ul>
                         </li>
                         <li id="wSponsors"><a href="@Url.Action("Index", "Sponsors")"><i class="fa fa-file-text-o"></i><span>Sponsors</span></a></li>
-                        
+                        <li id="wScholarships"><a href="@Url.Action("Index", "Scholarships")"><i class="fa fa-file-text-o"></i><span>Scholarships</span></a></li>
+
+                        <li id="wGolf2021"><a href="@Url.Action("Index", "Golf2021")"><i class="fa fa-file-text-o"></i><span>Golf 2021</span></a></li>
+
+                        <li id="wVaccinations"><a href="@Url.Action("Index", "Vaccinations")"><i class="fa fa-file-text-o"></i><span>Vaccinations</span></a></li>
+
                         <li class="treeview" id="Banners">
                             <a><i class="fa fa-bars"></i><span>Banners</span> <i class="fa fa-angle-left pull-right"></i></a>
                             <ul class="treeview-menu">
                                 <li id="wThemeBanners"><a href="@Url.Action("Index", "WebsiteBanners")"><i class="fa fa-th-large"></i><span>Website Banners</span></a> </li>
-                               @* <li id="wFlyers"><a href="@Url.Action("Index", "Flyers")"><i class="fa fa-file-text-o"></i><span>PopUp Pages</span></a></li> *@
+                                @* <li id="wFlyers"><a href="@Url.Action("Index", "Flyers")"><i class="fa fa-file-text-o"></i><span>PopUp Pages</span></a></li> *@
                             </ul>
                         </li>
                         <li class="treeview" id="Settings">
@@ -235,7 +244,8 @@
                                 <li id="wDonationCategories"><a href="@Url.Action("Index", "DonationCategories")"><i class="fa fa-money"></i>Donor Categories</a></li>
                                 <li id="wDonors"><a href="@Url.Action("Index", "Donors")"><i class="fa fa-money"></i><span>Donor </span></a></li>
                             </ul>
-                        </li> 
+                        </li>
+
                         <li class="treeview" id="Others">
                             <a><i class="fa fa-bars"></i><span>Others</span> <i class="fa fa-angle-left pull-right"></i></a>
                             <ul class="treeview-menu">
@@ -245,10 +255,11 @@
                                 <li id="wNewsLetters"><a href="@Url.Action("Index", "NewsLetter")"><i class="fa fa-file-text-o"></i><span>News Letters </span></a></li>
                                 @*<li id="wVolunteers"><a href="@Url.Action("Index", "Volunteers")"><i class="fa fa-file-text-o"></i><span>Volunteers </span></a></li>*@
                             </ul>
-                        </li> 
+                        </li>
+
                         if (userRole.Contains("SuperAdmin"))
                         {
-                        <li id="wSendmail"><a href="@Url.Action("SendMail", "Home")"><i class="fa fa-envelope-o"></i><span>Send Mail</span></a> </li>
+                            <li id="wSendmail"><a href="@Url.Action("SendMail", "Home")"><i class="fa fa-envelope-o"></i><span>Send Mail</span></a> </li>
                         }
                     }
                 </ul>
