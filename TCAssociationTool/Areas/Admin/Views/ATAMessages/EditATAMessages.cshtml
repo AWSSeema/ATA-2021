@@ -1,0 +1,165 @@
+﻿@using System.Configuration;
+@{
+    ViewBag.Title = "AddDetails";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    var objATAMessages = (TCAssociationTool.Entities.ATAMessages)ViewBag.objATAMessages;
+    var imgloc = ConfigurationManager.AppSettings["baseurl"] + "Content/ATAMessages/";
+
+}
+
+
+<!-- Fonts -->
+
+<script type="text/javascript">
+
+    function Validate() {
+
+        if ($('#heading').val() == "") { $('#heading').addClass("validate"); return false; } else { $('#heading').focus().removeClass("validate"); }
+        if ($('#shortdesc').val() == "") { $('#shortdesc').addClass("validate"); return false; } else { $('#shortdesc').focus().removeClass("validate"); }
+
+        return true;
+    }
+
+</script>
+<script type="text/javascript">
+    $(function () {
+        $(".ui-accordion").accordion({
+            collapsible: true,
+            heightStyle: "content"
+        });
+
+        // date picker
+        $(function () {
+            $(function () {
+                $(".datepicker").datepicker({
+                    altField: "#alternate",
+                    altFormat: "DD, d MM, yy"
+                });
+            });
+        });
+    });
+    $(document).ready(function () {
+        getamount();
+        $(".Odate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altField: '.Odate', altFormat: 'mm/dd/yy' });
+        $(".Edate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altField: '.Edate', altFormat: 'mm/dd/yy' });
+        $(".Cdate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altField: '.Cdate', altFormat: 'mm/dd/yy' });
+        $('#MATA Messagess').addClass('active');
+    });
+
+</script>
+<input type="hidden" value="1" id="hdnRowCount" />
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Edit ATA Messages</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "ATAMessages")"><i class="fa fa-user"></i>ATA Messages</a></li>
+        <li class="active">Edit ATA Messages</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li><a href="@Url.Action("Index", "ATA Messages")">Community News</a></li>
+                <li class="active"><a class="btn" href="@Url.Action("Index", "ATAMessages")">ATA Messages</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="clearfix sepH_b"></div>
+    <!-- /.box-header -->
+    @using (Html.BeginForm("AddATAMessages", "ATAMessages", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="hidden" id="MemberId" name="id" value="@objATAMessages.id" />
+
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">ATA Messages Details </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Heading  :<span class="red-t">*</span></label>
+                        <input type="text" id="heading" name="heading" class="form-control" value="@objATAMessages.heading"/>
+                        <span class="field-validation-error" id="spanheading"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Attachment  : <span class="red-t"></span></label>
+                        <input type="file" name="attachment" id="attachment" />
+                        <a href="@(imgloc + objATAMessages.attachment)" target="_blank">View File</a>
+                    </div>
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Page Redirect URL : <span class="red-t"></span></label>
+                        <input type="text" id="pageurl" name="pageurl" class="form-control" value="@objATAMessages.pageurl"/>
+                        <span class="field-validation-error" id="spanpageurl"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Target </label>
+                        <select name="target" class="form-control" id="target" onclick="ResetValidateClass();">
+                            <option value="">--Select--</option>
+                            <option @(objATAMessages.target == "_blank" ? "selected=selected" : "") value="_blank">_blank</option>
+                            <option @(objATAMessages.target == "_parent" ? "selected=selected" : "") value="_parent">_parent</option>
+                        </select>
+                    </div>
+
+
+                </div>
+                <div class="row">
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Short Description : <span class="red-t">*</span></label>
+                        <textarea id="shortdesc" name="shortdesc" class="form-control">@objATAMessages.shortdesc</textarea>
+                        <span class="field-validation-error" id="spanshortdesc"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label class="t-p5">Order No  :<span class="red-t"></span></label>
+                        <input type="text" id="orderno" name="orderno" class="form-control" value="@objATAMessages.orderno" />
+                        <span class="field-validation-error" id="spanorderno"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- end other details form -->
+        <div class="box">
+            <div class="box-body text-right">
+                <input type="submit" value="Submit" onclick="return Validate()" name="send" class="button2 btn btn-primary">
+                <a class="btn btn-info" href="@Url.Action("Index", "ATAMessages")">Cancel</a>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    var _URL = window.URL || window.webkitURL;
+    $("#file").change(function (e) {
+        var file, img;
+        if ((file = this.files[0])) {
+            img = new Image();
+            img.onload = function () {
+                if (this.width == 350 && this.height == 250) {
+                    $('#hdnimgvalidate').val('1');
+                }
+                else {
+                    $('#hdnimgvalidate').val('0');
+                }
+            };
+            img.src = _URL.createObjectURL(file);
+        }
+    });
+
+</script>

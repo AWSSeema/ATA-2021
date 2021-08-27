@@ -1,0 +1,294 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    var catlist = (List<TCAssociationTool.Entities.Categories>)ViewBag.catlist;
+    List<TCAssociationTool.Entities.SubCategories> lstSubCategories = ViewBag.lstSubCategories;
+    var catid = ViewBag.catid;
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#wCategories').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        PagerClickBind();
+
+    });
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            SubCategoriesBind($(this).text());
+        });
+    }
+
+    function sortresult(sortcolumn) {
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        SubCategoriesBind(1);
+    }
+
+    function Add() {
+        clearsubCategories();
+        $('#AddSubCategory').modal('show');
+        $('#lbltitle').html('Add Sub Category');
+    }
+
+    function clearsubCategories() {
+        $('#id').val('');
+        $('#catname').val('');
+        $('#catid').val('');
+        $('#orderno').val('');
+        $('#pageurl').val('');
+        $('#spanCategoryName').html('');
+        $("#AddCategories").dialog("close");
+        $('#catname').focus().removeClass("validate");
+        $('#catid').focus().removeClass("validate");
+
+    }
+
+
+    function SubCategoriesBind(Pageno) {
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = $('#keyword').val().trim();
+       
+
+        $.ajax({
+            url: '@Url.Action("SubCategoriesList", "SubCategories")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items, catid: catid },
+            success: function (result) {
+                $('#divDetails').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+    function CategoriesView(id) {
+
+        $.ajax({
+            url: '@Url.Action("ViewCategory", "Categories")',
+            type: 'POST',
+            data: { CategoryId: CategoryId },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objCategories = result.data;
+                    $('#Vlbltitle').html('View  Category');
+                    $('#VlblName').val(objCategories.CategoryName);
+                    $('#VlblOrder').val(objCategories.OrderNo);
+                    $('#CategoriesView').modal('show');
+                }
+                else {
+                    alert(result.data);
+                }
+            }
+        });
+    }
+
+    function SubCategoriesEdit(id) {
+        $.ajax({
+            url: '@Url.Action("EditSubCategories", "SubCategories")',
+            type: 'POST',
+            data: { id: id },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objCategories = result.data;
+                    $('#id').val(objCategories.id);
+                    $('#scname').val(objCategories.scname);
+                    $('#catid').val(objCategories.catid);
+                    $('#orderno').val(objCategories.orderno);
+                    $('#pageurl').val(objCategories.pageurl);
+                    $('#lbltitle').html('Edit Sub Category');
+
+                    $('#scname').focus().removeClass("validate");
+                    $('#catid').focus().removeClass("validate");
+                    $('#AddSubCategory').modal('show');
+                }
+                else {
+                    alert(result.data);
+                }
+            }
+        });
+    }
+
+
+
+    function Delete(id) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteSubCategories", "SubCategories")',  // the URL of the controller action method
+                data: { id: id }, // optional data
+                success: function (result) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    SubCategoriesBind($('#hdnPageNo').val());
+                },
+                error: function (req, status, error) {
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $("#divmessage").html(result.data);
+                }
+            });
+        }
+    }
+
+    function Validate() {
+
+        //Account Information
+        if ($.trim($('#scname').val()) == '') { document.getElementsByName('scname')[0].placeholder = 'Category Name Required'; $('#scname').focus().addClass("validate"); return false; } else { $('#scname').focus().removeClass("validate"); }
+        if ($.trim($('#catid').val()) == '') { document.getElementsByName('catid')[0].placeholder = 'Category Name Required'; $('#catid').focus().addClass("validate"); return false; } else { $('#catid').focus().removeClass("validate"); }
+
+        return true;
+    }
+    function ResetValidateClass() {
+        $('#CategoryName').removeClass("validate");
+    }
+    function ClearSearch() {
+        $('#keyword').val('');
+        SubCategoriesBind(1);
+    }
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="datemodified" />
+<input id="hdnsortorder" type="hidden" value="DESC" />
+
+<!-- breadcumb -->
+
+
+<div class="content-header">
+    <h1>Sub Categories</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active">Sub Categories</li>
+    </ol>
+</div>
+
+<!--end breadcumb -->
+
+<div class="content">
+    <!-- Main content -->
+
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-4 col-sm-6">
+                    <label>Search</label>
+                    <input type="text" placeholder="Sub Category Name" name="keyword" id="keyword" class="form-control" />
+                </div>
+                <div class="col-xs-12 col-lg-8 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <button class="btn btn-primary" type="submit" onclick="SubCategoriesBind(1);">Search</button>
+                    <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
+                    <a data-toggle="modal" href="@Url.Action("Index","Categories")" class="btn btn-danger pull-right">Back To Categories</a>
+                    <a data-toggle="modal" onclick="Add();" class="btn btn-danger pull-right r-m10">Add Sub Category</a>
+                </div>
+            </div>
+        </div>
+        <div id="divDetails" class="box-body table-responsive">
+            @{Html.RenderAction("SubCategoriesList", "SubCategories");}
+        </div>
+
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="AddSubCategory" tabindex="-1" role="dialog" aria-hidden="true">
+    @using (Html.BeginForm("AddSubCategories", "SubCategories", FormMethod.Post, new { style = "margin-bottom:0" }))
+    {
+        <input type="hidden" id="id" name="id" value="0" />
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span id="lbltitle"></span></h4>
+                </div>
+                <div class="modal-body validation">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Category Name :<span class="red-t">*</span></label>
+                            <input type="text" id="scname" name="scname" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="" value="" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Category : <span class="red-t">*</span></label>
+                            <select name="catid" id="catid" class="form-control">
+                                <option value="">-- Select --</option>
+                                @if (catlist != null)
+                                {
+                                    foreach (var item in catlist)
+                                    {
+                                        <option value="@item.id">@item.catname</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Order No :</label>
+                            <input type="text" id="orderno" name="orderno" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="" value="" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Page URL : </label>
+                            <input type="text" id="pageurl" name="pageurl" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="" value="" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer clearfix">
+                    <input type="submit" onclick="return Validate();" value="Submit" class="btn btn-danger">
+                    <a class="btn btn-primary pull-left" data-dismiss="modal">Cancel</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="modal fade" id="CategoriesView" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><span id="Vlbltitle"></span></h4>
+            </div>
+            <div class="modal-body validation">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-12">
+                        <label>Category Name :</label>
+                        <span id="VlblName"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-lg-12">
+                        <label>Order No </label>
+                        <span id="VlblOrder"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer clearfix">
+
+                <a class="btn btn-primary pull-left" data-dismiss="modal">Cancel</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+

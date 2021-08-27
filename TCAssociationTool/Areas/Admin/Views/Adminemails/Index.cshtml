@@ -1,0 +1,256 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#wAdminemails').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $("#expire_date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
+
+        PagerClickBind();
+
+    });
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            AdminemailsBind($(this).text());
+        });
+    }
+
+    function sortresult(sortcolumn) {
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        AdminemailsBind(1);
+    }
+
+    function Add() {
+        clearAdminemails();
+        $('#AddCategory').modal('show');
+        $('#lbltitle').html('Add Admin Emails');
+    }
+
+    function clearAdminemails() {
+        $('#id').val('');
+        $('#name').val('');
+        $('#email').val('');
+        $('#designation').val('');
+        $('#spanCategoryName').html('');
+        $("#AddAdminemails").dialog("close");
+        $('#name').focus().removeClass("validate");
+        $('#email').focus().removeClass("validate");
+        $('#designation').focus().removeClass("validate");
+
+    }
+
+
+    function AdminemailsBind(Pageno) {
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = $('#keyword').val().trim();
+
+
+        $.ajax({
+            url: '@Url.Action("AdminemailsList", "Adminemails")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items },
+            success: function (result) {
+                $('#divDetails').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+
+
+    function AdminemailsEdit(Id) {
+        $.ajax({
+            url: '@Url.Action("EditAdminemails", "Adminemails")',
+            type: 'POST',
+            data: { Id: Id },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objAdminemails = result.data;
+                    $('#Id').val(objAdminemails.Id);
+                    $('#name').val(objAdminemails.name);
+                    $('#email').val(objAdminemails.email);
+                    $('#designation').val(objAdminemails.designation);
+
+                    if (objAdminemails.ismembership == true) {
+                        document.getElementById("ismembership").checked = true;
+                        $('.icheckbox_minimal').addClass('checked');
+                    }
+
+                    if (objAdminemails.isdonation == true) {
+                        document.getElementById("isdonation").checked = true;
+                        $('.icheckbox_minimal').addClass('checked');
+                    }
+
+                  
+                    $('#lbltitle').html('Edit Admin Emails');
+
+                    $('#catname').focus().removeClass("validate");
+                    $('#AddCategory').modal('show');
+                }
+                else {
+                    alert(result.data);
+                }
+            }
+        });
+    }
+
+
+
+    function Delete(id) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteAdminemails", "Adminemails")',  // the URL of the controller action method
+                data: { id: id }, // optional data
+                success: function (result) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    AdminemailsBind($('#hdnPageNo').val());
+                },
+                error: function (req, status, error) {
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $("#divmessage").html(result.data);
+                }
+            });
+        }
+    }
+
+    function Validate() {
+
+        //Account Information
+        if ($.trim($('#name').val()) == '') { document.getElementsByName('name')[0].placeholder = 'Category Name Required'; $('#name').focus().addClass("validate"); return false; } else { $('#name').focus().removeClass("validate"); }
+        if ($.trim($('#email').val()) == '') { document.getElementsByName('email')[0].placeholder = 'Category Name Required'; $('#email').focus().addClass("validate"); return false; } else { $('#email').focus().removeClass("validate"); }
+        if ($.trim($('#designation').val()) == '') { document.getElementsByName('designation')[0].placeholder = 'Category Name Required'; $('#designation').focus().addClass("validate"); return false; } else { $('#designation').focus().removeClass("validate"); }
+
+        return true;
+    }
+    function ResetValidateClass() {
+        $('#CategoryName').removeClass("validate");
+    }
+    function ClearSearch() {
+        $('#keyword').val('');
+        AdminemailsBind(1);
+    }
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="created_at" />
+<input id="hdnsortorder" type="hidden" value="DESC" />
+
+<!-- breadcumb -->
+
+
+<div class="content-header">
+    <h1>Admin Emails</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active">Admin Emails</li>
+    </ol>
+</div>
+
+<!--end breadcumb -->
+
+<div class="content">
+    <!-- Main content -->
+
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Search</label>
+                    <input type="text" placeholder="" name="keyword" id="keyword" class="form-control" />
+                </div>
+                <div class="col-xs-12 col-lg-9 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <button class="btn btn-primary" type="submit" onclick="AdminemailsBind(1);">Search</button>
+                    <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
+                    <a data-toggle="modal" onclick="Add();" class="btn btn-danger pull-right">Add </a>
+                </div>
+            </div>
+        </div>
+        <div id="divDetails" class="box-body table-responsive">
+            @{Html.RenderAction("AdminemailsList", "Adminemails");}
+        </div>
+
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="AddCategory" tabindex="-1" role="dialog" aria-hidden="true">
+    @using (Html.BeginForm("AddAdminemails", "Adminemails", FormMethod.Post, new { style = "margin-bottom:0" }))
+    {
+        <input type="hidden" id="Id" name="Id" value="0" />
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span id="lbltitle"></span></h4>
+                </div>
+                <div class="modal-body validation">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Name<span class="red-t">*</span></label>
+                            <input type="text" id="name" name="name" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="" value="" class="form-control">
+                        </div>
+
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Email<span class="red-t">*</span></label>
+                            <input type="text" id="email" name="email" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="" value="" class="form-control">
+                        </div>
+
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Designation<span class="red-t">*</span></label>
+                            <input type="text" id="designation" name="designation" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="" value="" class="form-control">
+                        </div>
+
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Is Send Membership Details Mail: </label>
+                            <label class="part-2"><input type="checkbox" id="ismembership" class="ismembership" name="ismembership" value="true" /> @*<span>IsHome</span>*@</label>
+
+                       </div>
+
+                        <div class="col-xs-12 col-lg-12">
+                            <label> Is Send Donation Details Mail:</label>
+                            <label class="part-2"><input type="checkbox" id="isdonation" class="isdonation" name="isdonation" value="true" /> @*<span>IsHome</span>*@</label>
+
+                        </div>
+
+                       
+
+                    </div>
+
+                  
+                </div>
+                <div class="modal-footer clearfix">
+                    <input type="submit" onclick="return Validate();" value="Submit" class="btn btn-danger">
+                    <a class="btn btn-primary pull-left" data-dismiss="modal">Cancel</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

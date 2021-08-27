@@ -51,12 +51,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adminemails.cs" />
     <Compile Include="AppInfo.cs" />
+    <Compile Include="ATAMessages.cs" />
     <Compile Include="BluePay.cs" />
+    <Compile Include="Categories.cs" />
     <Compile Include="CommitteeCategories.cs" />
     <Compile Include="CommitteeMembers.cs" />
     <Compile Include="Committees.cs" />
     <Compile Include="Common.cs" />
+    <Compile Include="CommunityNews.cs" />
     <Compile Include="Cultural.cs" />
     <Compile Include="CulturalRegistrations.cs" />
     <Compile Include="DonationCategories.cs" />
@@ -70,6 +74,7 @@
     <Compile Include="Greetings.cs" />
     <Compile Include="InnerPageCategories.cs" />
     <Compile Include="InnerPages.cs" />
+    <Compile Include="LafitnessVouchers.cs" />
     <Compile Include="MailTemplates.cs" />
     <Compile Include="Members.cs" />
     <Compile Include="MembershipTypes.cs" />
@@ -83,6 +88,8 @@
     <Compile Include="Scholarships.cs" />
     <Compile Include="SponsorCategories.cs" />
     <Compile Include="Sponsors.cs" />
+    <Compile Include="SubCategories.cs" />
+    <Compile Include="Ticket.cs" />
     <Compile Include="Users.cs" />
     <Compile Include="Vaccinations.cs" />
     <Compile Include="VideoCategories.cs" />

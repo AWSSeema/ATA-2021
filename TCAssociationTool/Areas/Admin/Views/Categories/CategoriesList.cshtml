@@ -1,0 +1,109 @@
+﻿@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+    List<TCAssociationTool.Entities.Categories> lstCategories = ViewBag.lstCategories;
+
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    }
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+
+   
+</script>
+
+
+
+<div class="row-fluid">
+    <div class="span12">
+        @if (Total == -1)
+        {
+            <div class="norecords">Sorry failed processing your request.</div>
+        }
+        else
+        {
+            <table width="100%" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th width="5%" style="text-align:center">S.No.</th>
+
+                        <th>
+                            <a onclick="javascript:sortresult('CategoryName');" class="white-t-u">
+                                Category Name @if (sortcolumn == "CategoryName")
+                                {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                            </a>
+                        </th>
+                        <th width="25%">
+                            <a onclick="javascript:sortresult('');" class="white-t-u">
+                                Category Items
+                            </a>
+                        </th>
+                        
+                        <th width="10%" style="text-align:center;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (lstCategories.Count != 0)
+                    {
+                        int i = 0;
+                        foreach (var item in lstCategories)
+                        {
+                    <tr>
+                        <td style="text-align:center">@item.RId</td>
+                        <td style="text-align: left">@item.catname</td>
+                        <td style="text-align: left">
+                            <a href="@Url.Action("Index", "SubCategories", new {catid = item.id})" class="red-t" style="text-decoration:underline;">Category Items</a>
+
+                        </td>
+
+
+
+                        <td style="text-align:center;">
+                            <a onclick="CategoriesEdit(@item.id);" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>
+                            @if (userRole.Contains("SuperAdmin"))
+                            {
+                                //if (item.VolunteerCount == 0)
+                                //{
+                                    <a class="themedelete" onclick="javascript:Delete(@item.id);" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>
+                                @*}
+                                else
+                                {
+                                    <a title="This category have @item.VolunteerCount Donors" class="disable-alpha"><i class="fa fa-trash-o"></i></a>
+                                }*@
+                            }
+                        </td>
+                    </tr>
+                            i++;
+                        }
+
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="norecords" colspan="9">No Records Found.</td>
+                        </tr>
+                    }
+            </table>
+        }
+    </div>
+</div>
+
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.pageno, "pagination pagination-centered"))

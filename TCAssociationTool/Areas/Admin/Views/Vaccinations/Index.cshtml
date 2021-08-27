@@ -40,7 +40,9 @@
         var sortorder = $('#hdnsortorder').val();
         var items = $('#txtitems').val();
         var Search = $('#keyword').val().trim();
-      
+
+
+
         $.ajax({
             url: '@Url.Action("VaccinationsList", "Vaccinations")',
             type: 'GET',

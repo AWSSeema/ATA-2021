@@ -153,10 +153,14 @@
   <ItemGroup>
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AdminemailsController.cs" />
     <Compile Include="Areas\Admin\Controllers\ApplicationSettingsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ATAMessagesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CategoriesController.cs" />
     <Compile Include="Areas\Admin\Controllers\CommitteeMasterController.cs" />
     <Compile Include="Areas\Admin\Controllers\CommitteeMemberController.cs" />
     <Compile Include="Areas\Admin\Controllers\CommitteesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CommunityNewsController.cs" />
     <Compile Include="Areas\Admin\Controllers\CulturalController.cs" />
     <Compile Include="Areas\Admin\Controllers\CulturalRegistrationsController.cs" />
     <Compile Include="Areas\Admin\Controllers\DonationCategoriesController.cs" />
@@ -172,6 +176,7 @@
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\InnerPageMasterController.cs" />
     <Compile Include="Areas\Admin\Controllers\InnerPagesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\LafitnessVouchersController.cs" />
     <Compile Include="Areas\Admin\Controllers\MailTemplatesController.cs" />
     <Compile Include="Areas\Admin\Controllers\MembersController.cs" />
     <Compile Include="Areas\Admin\Controllers\MembershipTypesController.cs" />
@@ -182,6 +187,8 @@
     <Compile Include="Areas\Admin\Controllers\PhotoGalleryController.cs" />
     <Compile Include="Areas\Admin\Controllers\ScholarshipsController.cs" />
     <Compile Include="Areas\Admin\Controllers\SponsorsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SubCategoriesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\TicketController.cs" />
     <Compile Include="Areas\Admin\Controllers\UsersController.cs" />
     <Compile Include="Areas\Admin\Controllers\VaccinationsController.cs" />
     <Compile Include="Areas\Admin\Controllers\VideoGalleryController.cs" />
@@ -2579,6 +2586,26 @@
     <Content Include="Areas\Admin\Views\CulturalRegistrations\CulturalRegistrationsList.cshtml" />
     <Content Include="Areas\Admin\Views\CulturalRegistrations\EditCulturalRegistrations.cshtml" />
     <Content Include="Areas\Admin\Views\CulturalRegistrations\ViewCulturalRegistrations.cshtml" />
+    <Content Include="Areas\Admin\Views\Ticket\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Ticket\TicketList.cshtml" />
+    <Content Include="Areas\Admin\Views\Ticket\EditTicket.cshtml" />
+    <Content Include="Areas\Admin\Views\Ticket\ViewTicket.cshtml" />
+    <Content Include="Areas\Admin\Views\ATAMessages\AddATAMessages.cshtml" />
+    <Content Include="Areas\Admin\Views\ATAMessages\ATAMessagesList.cshtml" />
+    <Content Include="Areas\Admin\Views\ATAMessages\EditATAMessages.cshtml" />
+    <Content Include="Areas\Admin\Views\ATAMessages\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Categories\CategoriesList.cshtml" />
+    <Content Include="Areas\Admin\Views\Categories\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\CommunityNews\AddCommunityNews.cshtml" />
+    <Content Include="Areas\Admin\Views\CommunityNews\CommunityNewsList.cshtml" />
+    <Content Include="Areas\Admin\Views\CommunityNews\EditCommunityNews.cshtml" />
+    <Content Include="Areas\Admin\Views\CommunityNews\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SubCategories\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SubCategories\SubCategoriesList.cshtml" />
+    <Content Include="Areas\Admin\Views\LafitnessVouchers\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\LafitnessVouchers\LafitnessVouchersList.cshtml" />
+    <Content Include="Areas\Admin\Views\Adminemails\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Adminemails\AdminemailsList.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
   </ItemGroup>
   <PropertyGroup>

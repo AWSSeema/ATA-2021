@@ -1,0 +1,136 @@
+﻿@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+    List<TCAssociationTool.Entities.SubCategories> lstSubCategories = ViewBag.lstSubCategories;
+
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    }
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+
+    function UpdateOrderNo(i, id) {
+        var orderno = parseInt($('#OrderNo' + i).val());
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubCategoryDisplayOrder", "SubCategories")',
+            data: { orderno: orderno, id: id },
+            success: function (result) {
+                var div = '';
+                if (result.ok) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    SubCategoriesBind(1);
+                }
+                else {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+</script>
+
+
+
+<div class="row-fluid">
+    <div class="span12">
+        @if (Total == -1)
+        {
+            <div class="norecords">Sorry failed processing your request.</div>
+        }
+        else
+        {
+            <table width="100%" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th width="5%" style="text-align:center">S.No.</th>
+
+                        <th>
+                            <a onclick="javascript:sortresult('scname');" class="white-t-u">
+                                Sub Category Name @if (sortcolumn == "scname")
+                                {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                            </a>
+                        </th>
+                        <th width="25%">
+                            <a onclick="javascript:sortresult('catid');" class="white-t-u">
+                                Category @if (sortcolumn == "catid")
+                                {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                            </a>
+                        </th>
+                        <th width="12%">
+                            <a onclick="javascript:sortresult('orderno');" class="white-t-u">
+                                Order No @if (sortcolumn == "orderno")
+                                {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                                </a>
+                        </th>
+                        <th width="10%" style="text-align:center;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (lstSubCategories.Count != 0)
+                    {
+                        int i = 0;
+                        foreach (var item in lstSubCategories)
+                        {
+                    <tr>
+                        <td style="text-align:center">@item.RId</td>
+                        <td style="text-align: left">@item.scname</td>
+                        <td style="text-align: left">@item.catname</td>
+                        <td>
+                            <input type="text" style="width:50px;margin-bottom:0px;" maxlength="3" id="OrderNo@(i)" value="@item.orderno" onkeypress="return Common.isNumberKey(event)" />
+                            <a onclick="UpdateOrderNo(@i,@item.id);" title="Update"><i class="fa fa-fw fa-refresh"></i></a>
+
+                        </td>
+
+
+                        <td style="text-align:center;">
+                            <a onclick="SubCategoriesEdit(@item.id);" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>
+                            @if (userRole.Contains("SuperAdmin"))
+                            {
+                                //if (item.VolunteerCount == 0)
+                                //{
+                                <a class="themedelete" onclick="javascript:Delete(@item.id);" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>
+                                @*}
+                else
+                {
+                    <a title="This category have @item.VolunteerCount Donors" class="disable-alpha"><i class="fa fa-trash-o"></i></a>
+                }*@
+                            }
+                        </td>
+                    </tr>
+                            i++;
+                        }
+
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="norecords" colspan="9">No Records Found.</td>
+                        </tr>
+                    }
+            </table>
+        }
+    </div>
+</div>
+
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.pageno, "pagination pagination-centered"))

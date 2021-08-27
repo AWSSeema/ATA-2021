@@ -45,21 +45,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adminemails.cs" />
     <Compile Include="AppInfo.cs" />
+    <Compile Include="ATAMessages.cs" />
+    <Compile Include="Categories.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="CommitteeCategories.cs" />
     <Compile Include="CommitteeMembers.cs" />
     <Compile Include="Committees.cs" />
+    <Compile Include="CommunityNews.cs" />
     <Compile Include="Cultural.cs" />
     <Compile Include="CulturalRegistrations.cs" />
     <Compile Include="DBAccess.cs" />
     <Compile Include="DonationCategories.cs" />
     <Compile Include="Donors.cs" />
     <Compile Include="Enquiries.cs" />
+    <Compile Include="Entities\Adminemails.cs" />
     <Compile Include="Entities\AppInfo.cs" />
+    <Compile Include="Entities\ATAMessages.cs" />
+    <Compile Include="Entities\Categories.cs" />
     <Compile Include="Entities\CommitteeCategories.cs" />
     <Compile Include="Entities\CommitteeMembers.cs" />
     <Compile Include="Entities\Committees.cs" />
+    <Compile Include="Entities\CommunityNews.cs" />
     <Compile Include="Entities\Cultural.cs" />
     <Compile Include="Entities\CulturalRegistrations.cs" />
     <Compile Include="Entities\CurrencyCodes.cs" />
@@ -76,6 +84,7 @@
     <Compile Include="Entities\Greetings.cs" />
     <Compile Include="Entities\InnerPageCategories.cs" />
     <Compile Include="Entities\InnerPages.cs" />
+    <Compile Include="Entities\LafitnessVouchers.cs" />
     <Compile Include="Entities\MailTemplates.cs" />
     <Compile Include="Entities\Members.cs" />
     <Compile Include="Entities\MembershipTypes.cs" />
@@ -90,6 +99,7 @@
     <Compile Include="Entities\Scholarships.cs" />
     <Compile Include="Entities\SponsorCategories.cs" />
     <Compile Include="Entities\Sponsors.cs" />
+    <Compile Include="Entities\SubCategories.cs" />
     <Compile Include="Entities\Ticket.cs" />
     <Compile Include="Entities\Users.cs" />
     <Compile Include="Entities\Vaccinations.cs" />
@@ -107,6 +117,7 @@
     <Compile Include="Greetings.cs" />
     <Compile Include="InnerPageCategories.cs" />
     <Compile Include="InnerPages.cs" />
+    <Compile Include="LafitnessVouchers.cs" />
     <Compile Include="MailTemplates.cs" />
     <Compile Include="Members.cs" />
     <Compile Include="MembershipTypes.cs" />
@@ -119,6 +130,8 @@
     <Compile Include="Scholarships.cs" />
     <Compile Include="SponsorCategories.cs" />
     <Compile Include="Sponsors.cs" />
+    <Compile Include="SubCategories.cs" />
+    <Compile Include="Ticket.cs" />
     <Compile Include="Users.cs" />
     <Compile Include="Vaccinations.cs" />
     <Compile Include="VideoCategories.cs" />
