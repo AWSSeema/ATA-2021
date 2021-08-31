@@ -85,12 +85,12 @@
                         </div>
                         <div class="col-xs-12 col-lg-3 col-sm-6">
                             <label>Phone No : <span class="red-t">*</span></label>
-                            <input type="text" class="form-control" id="PhoneNo" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" value="@objCommittees.PhoneNo" name="PhoneNo">
+                            <input type="text" class="form-control" id="PhoneNo" onkeypress="return Common.isNumberKey(event); ResetValidateClass();" maxlength="12" onclick="ResetValidateClass();" value="@objCommittees.PhoneNo" name="PhoneNo">
                             <span id="spanPhoneNo" class="field-validation-error"></span>
                         </div>
                         <div class="col-xs-12 col-lg-3 col-sm-6">
                             <label>Display Order :</label>
-                            <input type="text" class="form-control" value="@objCommittees.DisplayOrder" onkeypress="return Common.isNumberKey(event);" id="DisplayOrder" name="DisplayOrder">
+                            <input type="text" class="form-control" maxlength="3" value="@objCommittees.DisplayOrder" onkeypress="return Common.isNumberKey(event);" id="DisplayOrder" name="DisplayOrder">
                         </div>
                     </div>
                     <div class="row">

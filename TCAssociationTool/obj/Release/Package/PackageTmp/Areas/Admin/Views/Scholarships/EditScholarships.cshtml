@@ -1,0 +1,592 @@
+﻿@{
+    ViewBag.Title = "AddMailTemplate";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.Scholarships objScholarships = ViewBag.objScholarships;
+    string imgurl = System.Configuration.ConfigurationManager.AppSettings["baseurl"] + "Content/documents/";
+}
+
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+
+<script type="text/javascript">
+    function Validate() {
+        var return_val = true;
+
+        if ($.trim($('#as_number').val()) == '') { document.getElementsByName('as_number')[0].placeholder = 'Required'; $('#as_number').focus().addClass("validate"); return false; } else { $('#as_number').focus().removeClass("validate"); }
+        if ($.trim($('#firstname').val()) == '') { document.getElementsByName('firstname')[0].placeholder = 'Required'; $('#firstname').focus().addClass("validate"); return false; } else { $('#firstname').focus().removeClass("validate"); }
+        if ($.trim($('#is_ata_member').val()) == '') { document.getElementsByName('is_ata_member')[0].placeholder = 'Required'; $('#is_ata_member').focus().addClass("validate"); return false; } else { $('#is_ata_member').focus().removeClass("validate"); }
+        if ($('#address').val() == "") { $('#address').html(' Required.'); $('#address').focus().addClass("red-border"); return false; } else { $('#address').html(''); $('#address').focus().removeClass("red-border"); }
+        if ($.trim($('#address2').val()) == '') { document.getElementsByName('address2')[0].placeholder = 'Required'; $('#address2').focus().addClass("validate"); return false; } else { $('#address2').focus().removeClass("validate"); }
+
+
+        return return_val;
+    }
+
+
+
+    function ResetValidateClass() {
+        $('#as_number').removeClass("validate");
+        $('#firstname').removeClass("validate");
+        $('#is_ata_member').removeClass("validate");
+        $('#address').removeClass("validate");
+        $('#address2').removeClass("validate");
+
+    }
+
+    $(document).ready(function () {
+        $('#wGolf2021').addClass('active');
+        $('#Others').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+      //  $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
+        $("#dob").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
+
+        
+    });
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Scholarships</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "Scholarships")"><i class="fa fa-print"></i>Scholarships</a></li>
+        <li class="active">Edit Scholarships</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+
+
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box validation">
+        <!-- /.box-header -->
+        <div class="box-header">
+            <h3 class="box-title dis-in">Edit Scholarships </h3>
+        </div>
+        @using (Html.BeginForm("InsertScholarships", "Scholarships", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input type="hidden" name="Id" id="Id" value="@objScholarships.Id" />
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Personal Details </h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Scholarship Number </label>
+                            <input type="text" class="form-control" name="as_number" value=" @objScholarships.as_number" onclick="ResetValidateClass();" id="as_number">
+
+
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Name </label>
+                            <input type="text" class="form-control" name="firstname" value=" @objScholarships.firstname" onclick="ResetValidateClass();" id="firstname">
+
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Is ATA Member </label>
+                            <input type="text" class="form-control" name="is_ata_member" value=" @objScholarships.is_ata_member" onclick="ResetValidateClass();" id="is_ata_member">
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Address 1 </label>
+                            <textarea id="address" name="address" class="form-control">@objScholarships.address</textarea>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Address 2 </label>
+                            <textarea id="address2" name="address2" class="form-control">@objScholarships.address2</textarea>
+
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>City</label>
+                            <input type="text" class="form-control" name="city" value=" @objScholarships.city" onclick="ResetValidateClass();" id="city">
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>State</label>
+                            <select class="form-control" name="state" id="state">
+                                <option value="">--Select--</option>
+                                <option @(objScholarships.state == "Atlanta" ? "selected='selected'" : "") value="Atlanta"> Atlanta</option>
+                                <option @(objScholarships.state == "Austin" ? "selected='selected'" : "") value="Austin"> Austin</option>
+                                <option @(objScholarships.state == "Boston" ? "selected='selected'" : "") value="Boston"> Boston</option>
+                                <option @(objScholarships.state == "Chicago Land" ? "selected='selected'" : "") value="Chicago Land"> Chicago Land</option>
+                                <option @(objScholarships.state == "Dallas" ? "selected='selected'" : "") value="Dallas"> Dallas</option>
+                                <option @(objScholarships.state == "DC Metro" ? "selected='selected'" : "") value="DC Metro"> DC Metro</option>
+                                <option @(objScholarships.state == "Delaware" ? "selected='selected'" : "") value="Delaware"> Delaware</option>
+                                <option @(objScholarships.state == "Detroit" ? "selected='selected'" : "") value="Detroit"> Detroit</option>
+                                <option @(objScholarships.state == "Los Angeles" ? "selected='selected'" : "") value="Los Angeles"> Los Angeles</option>
+                                <option @(objScholarships.state == "Maryland" ? "selected='selected'" : "") value="Maryland"> Maryland</option>
+                                <option @(objScholarships.state == "Nashville" ? "selected='selected'" : "") value="Nashville"> Nashville</option>
+                                <option @(objScholarships.state == "New England" ? "selected='selected'" : "") value="New England"> New England</option>
+                                <option @(objScholarships.state == "New Jersey" ? "selected='selected'" : "") value="New Jersey"> New Jersey</option>
+                                <option @(objScholarships.state == "Orlando" ? "selected='selected'" : "") value="Orlando"> Orlando</option>
+                                <option @(objScholarships.state == "Raleigh" ? "selected='selected'" : "") value="Raleigh"> Raleigh</option>
+                                <option @(objScholarships.state == "Richmond" ? "selected='selected'" : "") value="Richmond"> Richmond</option>
+                                <option @(objScholarships.state == "Seattle" ? "selected='selected'" : "") value="Seattle"> Seattle</option>
+                                <option @(objScholarships.state == "Washington DC" ? "selected='selected'" : "") value="Washington DC"> Washington DC</option>
+                            </select>
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Country </label>
+                            <input type="text" class="form-control" name="country" value=" @objScholarships.country" onclick="ResetValidateClass();" id="country">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Zipcode </label>
+                            <input type="text" class="form-control" name="zipcode" value=" @objScholarships.zipcode" maxlength="8" onclick="ResetValidateClass();" id="zipcode" onkeypress="return Common.isNumberKey(event);">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Permanent Address Details </h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Address1 </label>
+                            <textarea id="permanent_address" name="permanent_address" class="form-control">@objScholarships.permanent_address</textarea>
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Address2 </label>
+                            <textarea id="permanent_address2" name="permanent_address2" class="form-control">@objScholarships.permanent_address2</textarea>
+
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>City</label>
+                            <input type="text" class="form-control" name="permanent_city" value=" @objScholarships.permanent_city" onclick="ResetValidateClass();" id="permanent_city">
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>State</label>
+                            <select class="form-control" name="permanent_state" id="permanent_state">
+                                <option value="">--Select--</option>
+                                <option @(objScholarships.permanent_state == "Atlanta" ? "selected='selected'" : "") value="Atlanta"> Atlanta</option>
+                                <option @(objScholarships.permanent_state == "Austin" ? "selected='selected'" : "") value="Austin"> Austin</option>
+                                <option @(objScholarships.permanent_state == "Boston" ? "selected='selected'" : "") value="Boston"> Boston</option>
+                                <option @(objScholarships.permanent_state == "Chicago Land" ? "selected='selected'" : "") value="Chicago Land"> Chicago Land</option>
+                                <option @(objScholarships.permanent_state == "Dallas" ? "selected='selected'" : "") value="Dallas"> Dallas</option>
+                                <option @(objScholarships.permanent_state == "DC Metro" ? "selected='selected'" : "") value="DC Metro"> DC Metro</option>
+                                <option @(objScholarships.permanent_state == "Delaware" ? "selected='selected'" : "") value="Delaware"> Delaware</option>
+                                <option @(objScholarships.permanent_state == "Detroit" ? "selected='selected'" : "") value="Detroit"> Detroit</option>
+                                <option @(objScholarships.permanent_state == "Los Angeles" ? "selected='selected'" : "") value="Los Angeles"> Los Angeles</option>
+                                <option @(objScholarships.permanent_state == "Maryland" ? "selected='selected'" : "") value="Maryland"> Maryland</option>
+                                <option @(objScholarships.permanent_state == "Nashville" ? "selected='selected'" : "") value="Nashville"> Nashville</option>
+                                <option @(objScholarships.permanent_state == "New England" ? "selected='selected'" : "") value="New England"> New England</option>
+                                <option @(objScholarships.permanent_state == "New Jersey" ? "selected='selected'" : "") value="New Jersey"> New Jersey</option>
+                                <option @(objScholarships.permanent_state == "Orlando" ? "selected='selected'" : "") value="Orlando"> Orlando</option>
+                                <option @(objScholarships.permanent_state == "Raleigh" ? "selected='selected'" : "") value="Raleigh"> Raleigh</option>
+                                <option @(objScholarships.permanent_state == "Richmond" ? "selected='selected'" : "") value="Richmond"> Richmond</option>
+                                <option @(objScholarships.permanent_state == "Seattle" ? "selected='selected'" : "") value="Seattle"> Seattle</option>
+                                <option @(objScholarships.permanent_state == "Washington DC" ? "selected='selected'" : "") value="Washington DC"> Washington DC</option>
+                            </select>
+                        </div>
+                      
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Country </label>
+                            <input type="text" class="form-control" name="permanent_country" value=" @objScholarships.permanent_country" onclick="ResetValidateClass();" id="permanent_country">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> ZipCode </label>
+                            <input type="text" class="form-control" name="permanent_zipcode" maxlength="8" onkeypress="return Common.isNumberKey(event);" value=" @objScholarships.permanent_zipcode" onclick="ResetValidateClass();" id="permanent_zipcode">
+                        </div>
+
+
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Email </label>
+                            <input type="text" class="form-control" name="email" value=" @objScholarships.email" onclick="ResetValidateClass();" id="email">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Phone No </label>
+                            <input type="text" class="form-control" name="phone" value=" @objScholarships.phone" onkeypress="return Common.isNumberKey(event);" maxlength="12" onclick="ResetValidateClass();" id="phone">
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Other Details</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Date of Birth </label>
+                            <input type="text" class="form-control" name="dob" value=" @objScholarships.dob" onclick="ResetValidateClass();" id="dob">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Place of Birth </label>
+                            <input type="text" class="form-control" name="place_of_birth" value=" @objScholarships.place_of_birth" onclick="ResetValidateClass();" id="place_of_birth">
+
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Country of Citizenship</label>
+                            <input type="text" class="form-control" name="citizenship" value=" @objScholarships.citizenship" onclick="ResetValidateClass();" id="citizenship">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Name and Address of Institution Enrolled In</label>
+                            <input type="text" class="form-control" name="institution" value=" @objScholarships.institution" onclick="ResetValidateClass();" id="institution">
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Major Field of Study/Intended Profession or Degree </label>
+                            <input type="text" class="form-control" name="study" value=" @objScholarships.study" onclick="ResetValidateClass();" id="study">
+                        </div>
+
+
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Parent or Guardian Details</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Name </label>
+                            <input type="text" class="form-control" name="parent_firstname" value=" @objScholarships.parent_firstname" onclick="ResetValidateClass();" id="parent_firstname">
+
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Relationship </label>
+                            <input type="text" class="form-control" name="relationship" value=" @objScholarships.relationship" onclick="ResetValidateClass();" id="relationship">
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Address of Parent or Guardian</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Address 1 </label>
+                            <textarea id="parent_address" name="parent_address" class="form-control">@objScholarships.parent_address</textarea>
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Address 2 </label>
+                            <textarea id="parent_address2" name="parent_address2" class="form-control">@objScholarships.parent_address2</textarea>
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> City</label>
+                            <input type="text" class="form-control" name="parent_city" value=" @objScholarships.parent_city" onclick="ResetValidateClass();" id="parent_city">
+
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> State </label>
+                            <select class="form-control" name="parent_state" id="parent_state">
+                                <option value="">--Select--</option>
+                                <option @(objScholarships.parent_state == "Atlanta" ? "selected='selected'" : "") value="Atlanta"> Atlanta</option>
+                                <option @(objScholarships.parent_state == "Austin" ? "selected='selected'" : "") value="Austin"> Austin</option>
+                                <option @(objScholarships.parent_state == "Boston" ? "selected='selected'" : "") value="Boston"> Boston</option>
+                                <option @(objScholarships.parent_state == "Chicago Land" ? "selected='selected'" : "") value="Chicago Land"> Chicago Land</option>
+                                <option @(objScholarships.parent_state == "Dallas" ? "selected='selected'" : "") value="Dallas"> Dallas</option>
+                                <option @(objScholarships.parent_state == "DC Metro" ? "selected='selected'" : "") value="DC Metro"> DC Metro</option>
+                                <option @(objScholarships.parent_state == "Delaware" ? "selected='selected'" : "") value="Delaware"> Delaware</option>
+                                <option @(objScholarships.parent_state == "Detroit" ? "selected='selected'" : "") value="Detroit"> Detroit</option>
+                                <option @(objScholarships.parent_state == "Los Angeles" ? "selected='selected'" : "") value="Los Angeles"> Los Angeles</option>
+                                <option @(objScholarships.parent_state == "Maryland" ? "selected='selected'" : "") value="Maryland"> Maryland</option>
+                                <option @(objScholarships.parent_state == "Nashville" ? "selected='selected'" : "") value="Nashville"> Nashville</option>
+                                <option @(objScholarships.parent_state == "New England" ? "selected='selected'" : "") value="New England"> New England</option>
+                                <option @(objScholarships.parent_state == "New Jersey" ? "selected='selected'" : "") value="New Jersey"> New Jersey</option>
+                                <option @(objScholarships.parent_state == "Orlando" ? "selected='selected'" : "") value="Orlando"> Orlando</option>
+                                <option @(objScholarships.parent_state == "Raleigh" ? "selected='selected'" : "") value="Raleigh"> Raleigh</option>
+                                <option @(objScholarships.parent_state == "Richmond" ? "selected='selected'" : "") value="Richmond"> Richmond</option>
+                                <option @(objScholarships.parent_state == "Seattle" ? "selected='selected'" : "") value="Seattle"> Seattle</option>
+                                <option @(objScholarships.parent_state == "Washington DC" ? "selected='selected'" : "") value="Washington DC"> Washington DC</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Country </label>
+                            <input type="text" class="form-control" name="parent_country" value=" @objScholarships.parent_country" onclick="ResetValidateClass();" id="parent_country">
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> ZipCode </label>
+                            <input type="text" class="form-control" name="parent_zipcode"  onkeypress="return Common.isNumberKey(event);" maxlength="8" value=" @objScholarships.parent_zipcode" onclick="ResetValidateClass();" id="parent_zipcode">
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Email of Parent or Guardian </label>
+                            <input type="text" class="form-control" name="parent_email" value=" @objScholarships.parent_email" onclick="ResetValidateClass();" id="parent_email">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Phone of Parent or Guardian </label>
+                            <input type="text" class="form-control" name="parent_phone"  onkeypress="return Common.isNumberKey(event);" maxlength="12" value=" @objScholarships.parent_phone" onclick="ResetValidateClass();" id="parent_phone">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Occupation of Mother </label>
+                            <input type="text" class="form-control" name="mother_occupation" value=" @objScholarships.mother_occupation" onclick="ResetValidateClass();" id="mother_occupation">
+
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Occupation of Father </label>
+                            <input type="text" class="form-control" name="father_occupation" value=" @objScholarships.father_occupation" onclick="ResetValidateClass();" id="father_occupation">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Household Income </label>
+                            <input type="text" class="form-control" name="income"  onkeypress="return Common.isNumberKey(event);"  value=" @objScholarships.income" onclick="ResetValidateClass();" id="income">
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Address of Parent or Guardian</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Name of the High School </label>
+                            <input type="text" class="form-control" name="school_name" value=" @objScholarships.school_name" onclick="ResetValidateClass();" id="school_name">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> School Location </label>
+                            <input type="text" class="form-control" name="school_location" value=" @objScholarships.school_location" onclick="ResetValidateClass();" id="school_location">
+
+
+
+                        </div>
+
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Dates of Attendance </label>
+                            <input type="text" class="form-control" name="attendance" value=" @objScholarships.attendance" onclick="ResetValidateClass();" id="attendance">
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Honors, Awards and Scholarships</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Name of Award </label>
+                            <input type="text" class="form-control" name="award1_name" value=" @objScholarships.award1_name" onclick="ResetValidateClass();" id="award1_name">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Year and Duration </label>
+                            <input type="text" class="form-control" name="award1_year"  onkeypress="return Common.isNumberKey(event);"  value=" @objScholarships.award1_year" onclick="ResetValidateClass();" id="award1_year">
+
+                        </div>
+
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Name of Award </label>
+                            <input type="text" class="form-control" name="award2_name" value=" @objScholarships.award2_name" onclick="ResetValidateClass();" id="award2_name">
+
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>  Year and Duration  </label>
+                            <input type="text" class="form-control" name="award2_year" onkeypress="return Common.isNumberKey(event);"  value=" @objScholarships.award2_year" onclick="ResetValidateClass();" id="award2_year">
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Expected Cost of Tuition For Application Year </label>
+                            <input type="text" class="form-control" name="tuition_cost" value=" @objScholarships.tuition_cost" onclick="ResetValidateClass();" id="tuition_cost">
+
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Expected Cost of Housing </label>
+                            <input type="text" class="form-control" name="housing_cost" value=" @objScholarships.housing_cost" onclick="ResetValidateClass();" id="housing_cost">
+
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            Document :
+                            @if (objScholarships.documents != null && objScholarships.documents != "")
+                            {
+                                <a href="@(imgurl + objScholarships.documents)" target="_blank">Preview</a> <span>/</span><a href="@(imgurl + objScholarships.documents)" download="@objScholarships.documents">Download</a>
+                            }
+                           <input type="file" id="DocumentUrl" name="DocumentUrl">
+                        </div>
+
+
+                        
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-6 col-sm-6">
+                            <label> Extra-Curricular Activities and Community Service </label>
+                            <textarea id="extra_activities" name="extra_activities" class="form-control">@objScholarships.extra_activities</textarea>
+
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-6 col-sm-6">
+                            <label>  Brief note of your vision of ATA for the coming 6 years and next 12 years, How ATA could help the community </label>
+                            <textarea id="brief_note" name="brief_note" class="form-control">@objScholarships.brief_note</textarea>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body text-right">
+                    <input type="submit"  onclick="return Validate()" class="btn btn-primary" id="add" value="Submit" name="add">
+
+                    <a class="btn btn-info" href="@Url.Action("Index", "Scholarships")">Cancel</a>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        }
+        <!-- /.box-body -->
+    </div>
+    <!-- /.content -->
+</div>
+

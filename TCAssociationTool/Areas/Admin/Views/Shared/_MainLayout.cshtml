@@ -188,7 +188,30 @@
                             </ul>
                         </li>
 
-                        <li id="MEvents"><a href="@Url.Action("Index", "Events",new { EventType = "upcoming"})"><i class="fa fa-calendar"></i><span>Events</span></a> </li>
+                        <li class="treeview" id="MMaster">
+                            <a><i class="fa fa-bars"></i><span>Master</span> <i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="treeview-menu">
+                                <li id="wCoupons"><a href="@Url.Action("Index", "Coupons")"><i class="fa fa-angle-double-right"></i>Coupons</a></li>
+                                <li id="wLafitnessVouchers"><a href="@Url.Action("Index", "LafitnessVouchers")"><i class="fa fa-angle-double-right"></i><span>LA Fitness Vouchers</span></a> </li>
+                            </ul>
+                        </li>
+
+
+                        <li class="treeview" id="MEvents">
+                            <a><i class="fa fa-bars"></i><span>Events</span> <i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="treeview-menu">
+                                <li id="WEvents"><a href="@Url.Action("Index", "Events",new { EventType = "upcoming"})"><i class="fa fa-angle-double-right"></i><span>Events</span></a> </li>
+                                <li id="WNews"><a href="@Url.Action("Index", "News")"><i class="fa fa-angle-double-right"></i><span>News</span></a> </li>
+                                <li id="WTicket"><a href="@Url.Action("Index", "Ticket")"><i class="fa fa-angle-double-right"></i><span>Ticketing</span></a> </li>
+                                <li id="WEventForm"><a href="@Url.Action("Index", "EventForm")"><i class="fa fa-angle-double-right"></i><span>Registrations</span></a> </li>
+                                <li id="WWomensday"><a href="@Url.Action("Index", "Womensday")"><i class="fa fa-angle-double-right"></i><span>Womens Day Registrations</span></a> </li>
+                                <li id="WWomensdayLocations"><a href="@Url.Action("Index", "WomensdayLocations")"><i class="fa fa-angle-double-right"></i><span>Womensday Locations </span></a> </li>
+
+                                <li id="WCulturalRegistrations"><a href="@Url.Action("Index", "CulturalRegistrations")"><i class="fa fa-angle-double-right"></i><span>Cultural Registrations</span></a> </li>
+
+                            </ul>
+                        </li>
+
                         <li id="wCommittiees"><a href="@Url.Action("Index", "CommitteeMaster")"><i class="fa fa-file-text-o"></i>Committees</a></li>
                         <li class="treeview" id="wMembers">
                             <a><i class="fa fa-bars"></i><span>Members</span> <i class="fa fa-angle-left pull-right"></i></a>
@@ -196,20 +219,13 @@
                                 <li id="wMembershipTypes"><a href="@Url.Action("Index", "MembershipTypes")"><i class="fa fa-users"></i><span>Membership Types</span></a></li>
                                 <li id="IwMembers"><a href="@Url.Action("Index", "Members")"><i class="fa fa-users"></i><span>Members</span></a></li>
                                 <li id="wMembersOrders"><a href="@Url.Action("Index", "MembersOrders")"><i class="fa fa-users"></i><span>Members Orders </span></a></li>
-                            </ul>
-                        </li>
-                        <li class="treeview" id="Volunteers">
-                            <a><i class="fa fa-bars"></i><span>Volunteers</span> <i class="fa fa-angle-left pull-right"></i></a>
-                            <ul class="treeview-menu">
-                                <li id="wVolunteerCategories"><a href="@Url.Action("Index", "VolunteerCategories")"><i class="fa fa-file-text-o"></i>Volunteer Categories</a></li>
-                                <li id="wVolunteers"><a href="@Url.Action("Index", "Volunteers")"><i class="fa fa-file-text-o"></i><span>Volunteers </span></a></li>
+                                <li id="wAdminemails"><a href="@Url.Action("Index", "Adminemails")"><i class="fa fa-users"></i><span>Email Settings</span></a></li>
+                                <li id="wNotifications"><a href="@Url.Action("Index", "Adminemails")"><i class="fa fa-users"></i><span>Notifications</span></a></li>
                             </ul>
                         </li>
 
-
-                        <li id="wCommunityNews"><a href="@Url.Action("Index", "CommunityNews")"><i class="fa fa-file-text-o"></i><span>Community News</span></a></li>
-                        <li id="wCategories"><a href="@Url.Action("Index", "Categories")"><i class="fa fa-file-text-o"></i><span>Categories</span></a></li>
-
+                            
+                            <li id="wCommunityNews"><a href="@Url.Action("Index", "CommunityNews")"><i class="fa fa-file-text-o"></i><span>Community News</span></a></li>
 
                         <li class="treeview" id="Gallery">
                             <a><i class="fa fa-bars"></i><span>Gallery</span> <i class="fa fa-angle-left pull-right"></i></a>
@@ -218,20 +234,33 @@
                                 <li id="wVideoGallery"><a href="@Url.Action("Index", "VideoGallery")"><i class="fa fa-youtube-play"></i><span>Video Gallery </span></a></li>
                             </ul>
                         </li>
+
+
+                        <li id="wCategories"><a href="@Url.Action("Index", "Categories")"><i class="fa fa-file-text-o"></i><span>Categories</span></a></li>
+
+
+
                         <li id="wSponsors"><a href="@Url.Action("Index", "Sponsors")"><i class="fa fa-file-text-o"></i><span>Sponsors</span></a></li>
+
+                        <li class="treeview" id="Banners">
+                            <a><i class="fa fa-bars"></i><span>Theme Banners</span> <i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="treeview-menu">
+                                <li id="wThemeBanners"><a href="@Url.Action("Index", "WebsiteBanners")"><i class="fa fa-th-large"></i><span>Website Banners</span></a> </li>
+                            </ul>
+                        </li>
+
+                        <li id="WGreetings"><a href="@Url.Action("Index", "Greetings")"><i class="fa fa-file-text-o"></i><span>Greetings</span></a> </li>
+
+                        <li id="WCultural"><a href="@Url.Action("Index", "Cultural")"><i class="fa fa-file-text-o"></i><span>Cultural</span></a> </li>
+
                         <li id="wScholarships"><a href="@Url.Action("Index", "Scholarships")"><i class="fa fa-file-text-o"></i><span>Scholarships</span></a></li>
 
                         <li id="wGolf2021"><a href="@Url.Action("Index", "Golf2021")"><i class="fa fa-file-text-o"></i><span>Golf 2021</span></a></li>
 
                         <li id="wVaccinations"><a href="@Url.Action("Index", "Vaccinations")"><i class="fa fa-file-text-o"></i><span>Vaccinations</span></a></li>
 
-                        <li class="treeview" id="Banners">
-                            <a><i class="fa fa-bars"></i><span>Banners</span> <i class="fa fa-angle-left pull-right"></i></a>
-                            <ul class="treeview-menu">
-                                <li id="wThemeBanners"><a href="@Url.Action("Index", "WebsiteBanners")"><i class="fa fa-th-large"></i><span>Website Banners</span></a> </li>
-                                @* <li id="wFlyers"><a href="@Url.Action("Index", "Flyers")"><i class="fa fa-file-text-o"></i><span>PopUp Pages</span></a></li> *@
-                            </ul>
-                        </li>
+
+
                         <li class="treeview" id="Settings">
                             <a><i class="fa fa-bars"></i><span>Settings</span> <i class="fa fa-angle-left pull-right"></i></a>
                             <ul class="treeview-menu">
@@ -247,6 +276,13 @@
                             </ul>
                         </li>
 
+                        <li class="treeview" id="Volunteers">
+                            <a><i class="fa fa-bars"></i><span>Volunteers</span> <i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="treeview-menu">
+                                <li id="wVolunteerCategories"><a href="@Url.Action("Index", "VolunteerCategories")"><i class="fa fa-file-text-o"></i>Volunteer Categories</a></li>
+                                <li id="wVolunteers"><a href="@Url.Action("Index", "Volunteers")"><i class="fa fa-file-text-o"></i><span>Volunteers </span></a></li>
+                            </ul>
+                        </li>
                         <li class="treeview" id="Others">
                             <a><i class="fa fa-bars"></i><span>Others</span> <i class="fa fa-angle-left pull-right"></i></a>
                             <ul class="treeview-menu">

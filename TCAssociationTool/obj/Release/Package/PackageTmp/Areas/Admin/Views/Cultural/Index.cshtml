@@ -1,0 +1,309 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    var userRole = "";
+
+    var objMembers = (TCAssociationTool.Entities.Members)ViewBag.objMembers;
+    var lstMembershipType = (List<TCAssociationTool.Entities.MembershipTypes>)objMembers.lstMembershipType;
+    var lstPaymentMethod = (List<TCAssociationTool.Entities.PaymentMethods>)objMembers.lstPaymentMethod;
+    var lstPaymentStatus = (List<TCAssociationTool.Entities.PaymentStatus>)objMembers.lstPaymentStatus;
+
+    HttpContext ctx = HttpContext.Current;
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+        userRole = authTicket.UserData;
+    }
+
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#MEvents').addClass('active');
+        $('#WCultural').addClass('active');
+
+        $("#StartDate").inputmask("mm/dd/yyyy", { "placeholder": "mm/dd/yyyy" });
+
+        $("#EndDate").inputmask("mm/dd/yyyy", { "placeholder": "mm/dd/yyyy" });
+
+        $("[data-mask]").inputmask();
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
+        PagerClickBind();
+    });
+
+    function sortresult(sortcolumn) {
+
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        DetailsBind(1);
+    }
+
+    function ClearSearch() {
+        $('#txtsearch').val('');
+        DetailsBind(1);
+    }
+
+    function UserClear() {
+        $('#txtUserName').val('');
+        $('#txtemail').val('');
+        $('#Country').val('');
+        $('#State').val('');
+        $('#MembershipTypeId').val('');
+        $('#PaymentStatusId').val('');
+        $('#ExpiryDate').val('');
+        $('#EndDate').val('');
+        $('#StartDate').val('');
+        $('#hdnsortcolumn').val('');
+        $('#hdnsortorder').val('ASC');
+
+
+        DetailsBind(1);
+    }
+    
+
+    function ValidateProfile() {
+
+        var return_val = true;
+
+        //Account Information
+        if ($.trim($('#UserName').val()) == '') { $('#UserName').addClass("validate"); return_val = false; } else { $('#UserName').removeClass("validate"); }
+        if ($.trim($('#LastName').val()) == '') { $('#LastName').addClass("validate"); return_val = false; } else { $('#LastName').removeClass("validate"); }
+        //if (!CheckUserNameAvailability($.trim($('#UserName').val()))) { document.getElementsByName('UserName')[0].placeholder = 'User Name already exist'; $('#UserName').addClass("validate"); return_val = false; } else { $('#UserName').removeClass("validate"); }
+        if ($.trim($('#Email').val()) == '') { $('#Email').val(''); $('#Email').addClass("validate"); return_val = false; }
+        else {
+            $('#Email').removeClass("validate");
+            if (!Common.CheckEmail($.trim($('#Email').val()))) { $('#Email').val(''); document.getElementsByName('Email')[0].placeholder = 'Please enter valid email.'; $('#Email').addClass("validate"); return_val = false; }
+            else {
+                $('#Email').removeClass("validate");
+                if (!CheckEmailAvailability($.trim($('#Email').val()))) { $('#Email').val(''); document.getElementsByName('Email')[0].placeholder = 'Email address already exist.'; $('#Email').addClass("validate"); return_val = false; } else { $('#Email').removeClass("validate"); }
+            }
+        }
+
+        //if ($('#NewPassword').val() == '') { $('#spanNewPassword').html('Required.'); $('#NewPassword').addClass("red-border"); return_val = false; } else { $('#spanNewPassword').html(''); }
+        //if (!Common.ValidatePassword($('#NewPassword').val())) { $('#spanPassword').html('Please enter minimum 8 charecters (atleast one special charecter & one numeric charecter).'); $('#NewPassword').addClass("red-border"); return_val = false; } else { $('#spanPassword').html(''); }
+
+        return return_val;
+    }
+    function ResetValidateClass() {
+        $('#UserName').removeClass("validate");
+        $('#LastName').removeClass("validate");
+        $('#Email').removeClass("validate");
+    }
+    function validate(Id) {
+        if (Id == "") {
+            alert("Please select atleast one Item.");
+            return false;
+        }
+        return true;
+    }
+
+    function ClearSearch() {
+        $('#txtsearch').val('');
+        $('#MembershipTypeId').val('');
+        $('#ExpiryDate').val('');
+        $('#EndDate').val('');
+        $('#StartDate').val('');
+        $('#PaymentStatusId').val('');
+        $('#IsVolunteer').val('');
+        $('#spanStartDate').html('');
+        if ('@userRole'.indexOf('SuperAdmin') > -1) {
+        }
+        else {
+            $('#Role').val('');
+        }
+        DetailsBind(1);
+    }
+
+    function DetailsBind(Pageno) {
+
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = $('#txtsearch').val();
+        var PaymentStatusId = $('#PaymentStatusId').val();
+        var PaymentMethodId = $('#PaymentMethodId').val();
+
+        $.ajax({
+            url: '@Url.Action("CulturalList", "Cultural")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items, PaymentStatusId: PaymentStatusId, PaymentMethodId: PaymentMethodId },
+            success: function (result) {
+                $('#divDetails').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+
+    function ExporttoExcel() {
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var Search = $('#txtsearch').val().trim();
+        var EndDate = $('#EndDate').val();
+        var StartDate = $('#StartDate').val();
+        var PaymentStatusId = $('#PaymentStatusId').val();
+      /*  var PaymentMethodId = $('#PaymentMethodId').val();*/
+        //var IsVolunteer = $('#IsVolunteer').val();
+       
+        window.location.href = "Admin/Cultural/CulturalExporttoExcel?Search=" + Search + "&StartDate=" + StartDate + "&EndDate=" + EndDate + "&PaymentStatusId=" + PaymentStatusId +"&SortColumn=" + sortcolumn + "&SortOrder=" + sortorder;
+
+    }
+
+    function Delete(MemberId) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteMember", "Members")',  // the URL of the controller action method
+                data: { MemberId: MemberId }, // optional data
+                success: function (result) {
+                    $("#divmessage").html(result.data);
+                    Onload($('#hdnPageNo').val());
+                },
+                error: function (req, status, error) {
+                    $("#divmessage").html(result.data);
+                }
+            });
+        }
+    }
+
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            DetailsBind($(this).text());
+        });
+    }
+
+    function sortresult(sortcolumn) {
+
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        DetailsBind(1);
+    }
+
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="datesent" />
+<input id="hdnsortorder" type="hidden" value="DESC" />
+<input id="hdnuserid" type="hidden" value="0" />
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Cultural Competitions</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active">Cultural Competitions</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage" class="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+    </div>
+   
+    <div class="box">
+        <!-- /.box-header -->
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Search</label>
+                    <input type="text" name="txtsearch" id="txtsearch" class="form-control" placeholder="Search by name / email / phone no">
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Category</label>
+                    <select name="MembershipTypeId" id="MembershipTypeId" class="form-control">
+                        <option value="">-- Select --</option>
+                        @*@if (lstMembershipType != null)
+                        {
+                            foreach (var item in lstMembershipType)
+                            {
+                                <option value="@item.MembershipTypeId">@item.MembershipType</option>
+                            }
+                        }*@
+                    </select>
+                </div>
+
+                <div class="col-xs-12 col-lg-6 col-sm-6">
+                    <label>Date of Registration</label>
+                    <div class="clearfix row">
+                        <div class="col-xs-12 col-lg-6 col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" id="StartDate" name="StartDate" placeholder="From" class="form-control date" />
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-lg-6 col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" id="EndDate" name="EndDate" placeholder="To" class="form-control date" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Payment Status</label>
+                    <select name="PaymentStatusId" id="PaymentStatusId" class="form-control">
+                        <option value="">-- Select --</option>
+                        @if (lstPaymentStatus != null)
+                        {
+                            foreach (var item in lstPaymentStatus)
+                            {
+                                <option value="@item.PaymentStatusId">@item.PaymentStatus1</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-xs-12 col-lg-2 col-sm-6">
+                    <label>Location</label>
+                    <select name="PaymentStatusId" id="PaymentStatusId" class="form-control">
+                        <option value="">-- Select --</option>
+                        @*@if (lstPaymentStatus != null)
+            {
+                foreach (var item in lstPaymentStatus)
+                {
+                    <option value="@item.PaymentStatusId">@item.PaymentStatus1</option>
+                }
+            }*@
+                    </select>
+                </div>
+                <div class="col-xs-12 col-lg-7 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary" onclick="DetailsBind();">Search</button>
+                    <button type="button" class="btn btn-info" onclick="ClearSearch();">Clear</button>
+
+                    <a class="btn btn-danger pull-right r-m10" onclick="ExporttoExcel();">Export Details to Excel</a>
+                    @if (userRole.Contains("SuperAdmin"))
+                    {
+                        <a class="btn btn-danger pull-right r-m10" id="deletemembers" onclick="DeleteAll();">Delete Culturals</a>
+                    }
+                    <a class="btn btn-danger pull-right r-m10" onclick="MailToCulturals();">Mail To Cultural</a>
+                </div>
+            </div>
+        </div>
+        <div id="divDetails" class="box-body table-responsive">
+            @{Html.RenderAction("CulturalList", "Cultural");}
+        </div>
+    </div>
+</div>
+
+
+
+
+

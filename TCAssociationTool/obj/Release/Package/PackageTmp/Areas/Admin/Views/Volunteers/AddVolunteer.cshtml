@@ -109,7 +109,10 @@
                         <label>Phone No :</label>
                         <input type="text" onkeypress="return Common.isNumberKey(event);" maxlength="10" id="PhoneNo" onclick="ResetValidateClass();" name="PhoneNo" class="form-control">
                     </div>
-                     <div class="col-xs-12 col-lg-3 col-sm-6">
+
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
                         <label>Hours :<span class="red-t">*</span></label>
                         <input type="text" id="HoursSpent" onclick="ResetValidateClass();" name="HoursSpent" class="form-control">
                     </div>
@@ -121,7 +124,7 @@
                             {
                                 foreach (var item in lstVolunteerCategory)
                                 {
-                                <option @(item.VolunteerCategoryId == VolunteerCategoryId ? "selected = selected" : "") value="@(item.VolunteerCategoryId)">@(item.CategoryName)</option>
+                                    <option @(item.VolunteerCategoryId == VolunteerCategoryId ? "selected = selected" : "") value="@(item.VolunteerCategoryId)">@(item.CategoryName)</option>
                                 }
                             }
                         </select>
@@ -134,7 +137,7 @@
                             {
                                 foreach (var item in lstEvents)
                                 {
-                                <option @(item.EventId == EventId ? "selected = selected" : "") value="@(item.EventId)">@(item.EventName)</option>
+                                    <option @(item.EventId == EventId ? "selected = selected" : "") value="@(item.EventId)">@(item.EventName)</option>
                                 }
                             }
                         </select>
@@ -143,14 +146,16 @@
                         <label>Address :</label>
                         <textarea class="form-control" id="Address" name="Address"></textarea>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-xs-12 col-lg-3 col-sm-6">
                         <label>Comments :</label>
                         <textarea class="form-control" id="Comment" name="Comments"></textarea>
                     </div>
 
                 </div>
-             
-  </div>
+
+            </div>
         </div>
         <div class="box">
             <!-- /.box-header -->

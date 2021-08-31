@@ -41,6 +41,12 @@ namespace TCAssociationTool.BLL
             return _status;
         }
 
+        public Int64 Golf2021UpdatePaymentStatus(Int64 Id)
+        {
+            Int64 _status = 0;
+            _status = _Golf2021.Golf2021UpdatePaymentStatus(Id);
+            return _status;
+        }
 
 
         #endregion

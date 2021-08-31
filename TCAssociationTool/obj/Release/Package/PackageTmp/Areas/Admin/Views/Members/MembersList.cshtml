@@ -20,7 +20,7 @@
     }
         
 }
-<script type="text/javascript">
+    <script type="text/javascript">
     $(document).ready(function () {
         $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
         $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
@@ -37,17 +37,25 @@
                         data: { MemberId: Id }, // optional data
                         success: function (result) {
                             $("#divmessage").html(result.data);
+                            $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+
                             $('#divmessage').show();
                             Onload($('#hdnPageNo').val());
                         },
                         error: function (req, status, error) {
                             $("#divmessage").html(result.data);
+                            $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
                             $('#divmessage').show();
                         }
                     });
                 }
             }
-        }
+    }
+
+
+        
 
         function Select(check) {
             var arr = document.getElementsByName(check);
@@ -60,7 +68,7 @@
         }
 
 
-</script>
+    </script>
 
 <table width="100%" class="table table-bordered table-hover">
     <thead>
@@ -189,15 +197,17 @@
                     }
                 </td>
             </tr>
-       
+                    i++;
+                   }
+
+
             }
-        }
-        else
-        {
-            <tr>
-                <td colspan="10" class="norecords">No Members found.</td>
-            </tr>
-        }
+            else
+            {
+    <tr>
+        <td colspan="10" class="norecords">No Members found.</td>
+    </tr>
+}
         <script type="text/javascript">
             function UserStatus(MemberId) {
                 $.ajax({

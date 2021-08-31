@@ -1,0 +1,207 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+    List<TCAssociationTool.Entities.MembershipTypes> lstMembershipTypes = ViewBag.lstMembershipTypes;
+
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#MMaster').addClass('active');
+        $('#wCulturalLocations').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $("#expirydate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
+
+        PagerClickBind();
+
+    });
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            CulturalLocationsBind($(this).text());
+        });
+    }
+
+    function sortresult(sortcolumn) {
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        CulturalLocationsBind(1);
+    }
+
+    function Add() {
+      //  clearCulturalLocations();
+        $('#AddCulturalLocations').modal('show');
+        $('#lbltitle').html('Add Cultural Locations');
+    }
+
+    function clearCulturalLocations() {
+        $('#Id').val('');
+        $('#location').val('');
+        $('#adminemail').val('');
+        $('#spanCultural Locations').html('');
+        $("#AddCulturalLocations").dialog("close");
+        $('#catname').focus().removeClass("validate");
+
+    }
+
+
+    function CulturalLocationsBind(Pageno) {
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = $('#keyword').val().trim();
+
+
+        $.ajax({
+            url: '@Url.Action("CulturalLocationsList", "CulturalLocations")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items },
+            success: function (result) {
+                $('#divDetails').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+
+
+    function CulturalLocationsEdit(Id) {
+        $.ajax({
+            url: '@Url.Action("EditCulturalLocations", "CulturalLocations")',
+            type: 'POST',
+            data: { Id: Id },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objCulturalLocations = result.data;
+                    $('#Id').val(objCulturalLocations.Id);
+                    $('#location').val(objCulturalLocations.location);
+                    $('#adminemail').val(objCulturalLocations.adminemail);
+                  
+                    $('#lbltitle').html('Edit Cultural Locations');
+
+                    $('#location').focus().removeClass("validate");
+                    $('#AddCulturalLocations').modal('show');
+                }
+                else {
+                    alert(result.data);
+                }
+            }
+        });
+    }
+
+
+
+
+    function Validate() {
+
+        //Account Information
+        if ($.trim($('#location').val()) == '') { document.getElementsByName('location')[0].placeholder = 'Required'; $('#location').focus().addClass("validate"); return false; } else { $('#location').focus().removeClass("validate"); }
+        if ($.trim($('#adminemail').val()) == '') { document.getElementsByName('adminemail')[0].placeholder = 'Required'; $('#adminemail').focus().addClass("validate"); return false; } else { $('#adminemail').focus().removeClass("validate"); }
+
+        return true;
+    }
+
+
+    function ResetValidateClass() {
+        $('#Cultural Locations').removeClass("validate");
+        $('#expire_date').removeClass("validate");
+    }
+    function ClearSearch() {
+        $('#keyword').val('');
+        CulturalLocationsBind(1);
+    }
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="Id" />
+<input id="hdnsortorder" type="hidden" value="DESC" />
+
+<!-- breadcumb -->
+
+
+<div class="content-header">
+    <h1>Cultural Locations</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active">Cultural Locations</li>
+    </ol>
+</div>
+
+<!--end breadcumb -->
+
+<div class="content">
+    <!-- Main content -->
+
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Search</label>
+                    <input type="text" placeholder="Location/Email" name="keyword" id="keyword" class="form-control" />
+                </div>
+                <div class="col-xs-12 col-lg-9 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <button class="btn btn-primary" type="submit" onclick="CulturalLocationsBind(1);">Search</button>
+                    <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
+                    <a data-toggle="modal" onclick="Add();" class="btn btn-danger pull-right">Add </a>
+                </div>
+            </div>
+        </div>
+        <div id="divDetails" class="box-body table-responsive">
+            @{Html.RenderAction("CulturalLocationsList", "CulturalLocations");}
+        </div>
+
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="AddCulturalLocations" tabindex="-1" role="dialog" aria-hidden="true">
+    @using (Html.BeginForm("InsertCulturalLocations", "CulturalLocations", FormMethod.Post, new { style = "margin-bottom:0" }))
+    {
+        <input type="hidden" id="Id" name="Id" value="0" />
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span id="lbltitle"></span></h4>
+                </div>
+                <div class="modal-body validation">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Location<span class="red-t">*</span></label>
+                            <input type="text" id="location" name="location" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="" value="" class="form-control">
+                        </div>
+
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Admin Email<span class="red-t">*</span></label>
+                            <input type="text" id="adminemail" name="adminemail" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="" value="" class="form-control">
+                        </div>
+                    
+                    </div>
+
+                </div>
+                <div class="modal-footer clearfix">
+                    <input type="submit" onclick="return Validate();" value="Submit" class="btn btn-danger">
+                    <a class="btn btn-primary pull-left" data-dismiss="modal">Cancel</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

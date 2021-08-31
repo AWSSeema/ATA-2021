@@ -9,8 +9,8 @@
 
 
     List<TCAssociationTool.Entities.News> lstNews = ViewBag.lstNews;
-    var imgloc = ConfigurationManager.AppSettings["baseurl"] + "Content/Admin/news/thumbimages/";
-    var imglocNormal = ConfigurationManager.AppSettings["baseurl"] + "Content/Admin/news/normalimages/";
+    var imgloc = ConfigurationManager.AppSettings["baseurl"] + "Content/news/";
+   
 
     HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
 
@@ -100,19 +100,27 @@ else
     <table width="100%" class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th style="text-align: center;" width="5%">S.No.</th> 
+                <th style="text-align: center;" width="5%">S.No.</th>
+
+                <th style="text-align: center;" width="5%">Picture</th>
                 <th>
-                    <a onclick="javascript:sortresult('Title');" class="white-t-u">News Title @if (sortcolumn == "Title")
-                                                                                             {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a>
-                </th> 
-                <th width="10%">
-                    <a onclick="javascript:sortresult('PostDate');" class="white-t-u">Post Date @if (sortcolumn == "PostDate")
-                                                                                             {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a>
+                    <a onclick="javascript:sortresult('Title');" class="white-t-u">
+                        News Title @if (sortcolumn == "Title")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
                 </th>
                 <th width="10%">
-                    <a onclick="javascript:sortresult('OrderNo');" class="white-t-u">Order No @if (sortcolumn == "OrderNo")
-                                                                                              {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a>
-                </th> 
+                    <a onclick="javascript:sortresult('PostDate');" class="white-t-u">
+                        Post Date @if (sortcolumn == "PostDate")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                <th width="10%">
+                    <a onclick="javascript:sortresult('OrderNo');" class="white-t-u">
+                        Order No @if (sortcolumn == "OrderNo")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
                 <th width="11%">Status</th>
                 <th width="8%">Action</th>
             </tr>
@@ -123,47 +131,51 @@ else
                 int i = 0;
                 foreach (var item in lstNews)
                 { 
-                <tr valign="top">
-                    <td style="text-align: center;">@item.RId</td>
-                    <td class="t-t-c" style="text-align: left">@item.Title</td>
-                    <td class="t-t-c" style="text-align: left">@item.PostDate.ToString("dd-MM-yyyy")</td>
-                    <td>
-                        <input type="text" maxlength="3" style="width:50px;" id="OrderNo@(i)" value="@item.OrderNo" onkeypress ="return Common.isNumberKey(event)"/>
-                        <a onclick="UpdateOrderNo(@i,@item.NewsId);" title="Update"><i class="fa fa-fw fa-refresh"></i></a>
+            <tr valign="top">
+                <td style="text-align: center;">@item.RId</td>
+                <td style="text-align: center">
+                    <img width="80px"  alt="" title="" src="@TCAssociationTool.BLL.Common.ValidateImage((imgloc + item.ImageUrl), imgloc + "no-image.png")" class="borwhite5 border-radius shadow" />
+                </td>
+                <td class="t-t-c" style="text-align: left">@item.Title</td>
+                <td class="t-t-c" style="text-align: left">@item.PostDate.ToString("dd-MM-yyyy")</td>
+                <td>
+                    <input type="text" maxlength="3" style="width:50px;" id="OrderNo@(i)" value="@item.OrderNo" onkeypress="return Common.isNumberKey(event)" />
+                    <a onclick="UpdateOrderNo(@i,@item.NewsId);" title="Update"><i class="fa fa-fw fa-refresh"></i></a>
 
-                    </td>
-                    <td>
-                        @{
-                    var isactive = "";
-                    var active = "";
-                    var disable = "";
-                    if (item.IsActive == true)
-                    {
-                        isactive = "Active";
-                        disable = "style=\"cursor: pointer;\" onclick=\"javascript:NewsStatus(" + item.NewsId + ");\"";
-                    }
-                    else
-                    {
-                        isactive = "Disabled";
-                        active = "style=\"cursor: pointer;\" onclick=\"javascript:NewsStatus(" + item.NewsId + ");\"";
-                    }
-                            <div class="admin-active">@isactive
-                                <ul>
-                                    <li><a @Html.Raw(active) >Active</a></li>
-                                    <li><a @Html.Raw(disable) >Disabled</a></li>
-                                </ul>
-                            </div>      
-                        }
-                    </td>
-                    <td>
-                        <a href="@Url.Action("ViewNews", "News", new { NewsId = item.NewsId})" title="Edit" class="r-p5"><i class="fa fa-eye"></i></a>
-                        <a href="@Url.Action("EditNews", "News", new { NewsId = item.NewsId})" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>
-                        @if (userRole.Contains("SuperAdmin"))
+                </td>
+                <td>
+                    @{
+                        var isactive = "";
+                        var active = "";
+                        var disable = "";
+                        if (item.IsActive == true)
                         {
-                        <a class="themedelete" onclick="javascript:DeleteNews(@item.NewsId,'@item.ImageUrl');" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>
+                            isactive = "Active";
+                            disable = "style=\"cursor: pointer;\" onclick=\"javascript:NewsStatus(" + item.NewsId + ");\"";
                         }
-                    </td>
-                </tr>
+                        else
+                        {
+                            isactive = "Disabled";
+                            active = "style=\"cursor: pointer;\" onclick=\"javascript:NewsStatus(" + item.NewsId + ");\"";
+                        }
+                        <div class="admin-active">
+                            @isactive
+                        <ul>
+                            <li><a @Html.Raw(active)>Active</a></li>
+                            <li><a @Html.Raw(disable)>Disabled</a></li>
+                        </ul>
+                    </div>
+                    }
+                </td>
+                <td>
+                    <a href="@Url.Action("ViewNews", "News", new { NewsId = item.NewsId})" title="Edit" class="r-p5"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("EditNews", "News", new { NewsId = item.NewsId})" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>
+                    @if (userRole.Contains("SuperAdmin"))
+                    {
+                        <a class="themedelete" onclick="javascript:DeleteNews(@item.NewsId,'@item.ImageUrl');" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>
+                    }
+                </td>
+            </tr>
                     i++;
                 }
             }

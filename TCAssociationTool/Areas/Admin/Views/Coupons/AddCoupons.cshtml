@@ -1,0 +1,122 @@
+﻿@{
+    ViewBag.Title = "AddCoupons";
+
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+    List<TCAssociationTool.Entities.Coupons> lstCoupons = ViewBag.lstCoupons;
+    var cssloc = System.Configuration.ConfigurationManager.AppSettings["usersiteurl"] + "Content/front-end-style.css";
+    List<TCAssociationTool.Entities.MembershipTypes> lstMembershipTypes = ViewBag.lstMembershipTypes;
+    var MembershipTypeId = ViewBag.MembershipTypeId;
+
+
+}
+
+
+<script>
+    $(document).ready(function () {
+        $('#wCoupons').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $("#expirydate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-10:+10", altFormat: 'mm/dd/yy' });
+        $("#datemodified").datepicker({ changeMonth: true, changeYear: true, yearRange: "-10:+10", altFormat: 'mm/dd/yy' });
+
+    });
+
+    function Validate() {
+
+        if ($.trim($('#Code').val()) == '') { document.getElementsByName('Code')[0].placeholder = 'Required'; $('#Code').focus().addClass("validate"); return false; } else { $('#Code').focus().removeClass("validate"); }
+       // if ($.trim($('#DurationinDays').val()) == '') { document.getElementsByName('DurationinDays')[0].placeholder = 'Required'; $('#DurationinDays').focus().addClass("validate"); return false; } else { $('#DurationinDays').focus().removeClass("validate"); }
+      
+       
+        return true;
+    }
+    function ResetValidateClass() {
+        $('#Code').removeClass("validate");
+       }
+
+   
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Add Coupons </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Coupons")"><i class="fa fa-dashboard"></i>Coupons</a></li>
+        <li class="active">Add Coupons</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="clearfix sepH_b"></div>
+    @using (Html.BeginForm("AddCoupons", "Coupons", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Coupons Details </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Code : <span class="red-t">*</span></label>
+                        <input type="text" id="Code" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" name="Code" class="form-control">
+                    </div>
+                    @*<div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Membership Type : <span class="red-t">*</span></label>
+                        <select id="MembershipTypeId" class="form-control" name="MembershipTypeId"  onclick="ResetValidateClass();">
+                            <option value="">-- Select Category --</option>
+                            @if (lstMembershipTypes.Count > 0)
+                            {
+                                foreach (var item in lstMembershipTypes)
+                                {
+                                    <option @(MembershipTypeId == item.MembershipTypeId ? "selected='selected'" : "") value="@(item.MembershipTypeId)">@(item.MembershipType)</option>
+                                }
+                            }
+                        </select>
+                    </div>*@
+
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Membership Type : </label>
+                        <input type="text" id="membership_type" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" name="membership_type" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Discount : </label>
+                        <input type="text" id="discount" onkeypress="return Common.isNumberKey(event)" onclick="ResetValidateClass();" name="discount" class="form-control">
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Expiry Date </label>
+                        <input type="datetime" class="form-control" id="expirydate" name="expirydate" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Date Modified</label>
+                        <input type="datetime" class="form-control " id="datemodified" name="datemodified" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+                    </div>
+                   
+                </div>
+               
+            </div>
+
+            <div class="box">
+                <div class="box-body text-right">
+                    <input type="submit" value="Submit" class="btn btn-primary" onclick="return Validate();" />
+                    <a class="btn btn-info" href="@Url.Action("Index", "Coupons")">Cancel</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+

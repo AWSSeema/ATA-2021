@@ -1,0 +1,255 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+    List<TCAssociationTool.Entities.MembershipTypes> lstMembershipTypes = ViewBag.lstMembershipTypes;
+
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#MMaster').addClass('active');
+        $('#wCoupons').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $("#expirydate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
+
+        PagerClickBind();
+
+    });
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            CouponsBind($(this).text());
+        });
+    }
+
+    function sortresult(sortcolumn) {
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        CouponsBind(1);
+    }
+
+    function Add() {
+        clearCoupons();
+        $('#AddCoupon').modal('show');
+        $('#lbltitle').html('Add Coupon');
+    }
+
+    function clearCoupons() {
+        $('#id').val('');
+        $('#Coupon').val('');
+        $('#expire_date').val('');
+        $('#spanCoupon').html('');
+        $("#AddCoupons").dialog("close");
+        $('#catname').focus().removeClass("validate");
+
+    }
+
+
+    function CouponsBind(Pageno) {
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = $('#keyword').val().trim();
+
+
+        $.ajax({
+            url: '@Url.Action("CouponsList", "Coupons")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items },
+            success: function (result) {
+                $('#divDetails').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+
+
+    function CouponsEdit(Id) {
+        $.ajax({
+            url: '@Url.Action("EditCoupons", "Coupons")',
+            type: 'POST',
+            data: { Id: Id },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objCoupons = result.data;
+                    $('#Id').val(objCoupons.Id);
+                    $('#code').val(objCoupons.code);
+                    $('#membership_type').val(objCoupons.membership_type);
+                    $('#discount').val(objCoupons.discount);
+                    $('#expirydate').val(objCoupons.Eexpirydate);
+
+                    
+                  
+                    //if (Common.ConvertDate(objCoupons.expirydate) != '1/1/1') {
+                    //    var Date = Common.ConvertDate(objCoupons.expirydate);
+                    //    $('#expirydate').val(Date);
+                    //}
+                    $('#lbltitle').html('Edit Coupon');
+
+                    $('#code').focus().removeClass("validate");
+                    $('#AddCoupon').modal('show');
+                }
+                else {
+                    alert(result.data);
+                }
+            }
+        });
+    }
+
+
+
+    function Delete(Id) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteCoupons", "Coupons")',  // the URL of the controller action method
+                data: { Id: Id }, // optional data
+                success: function (result) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    CouponsBind($('#hdnPageNo').val());
+                },
+                error: function (req, status, error) {
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $("#divmessage").html(result.data);
+                }
+            });
+        }
+    }
+
+    function Validate() {
+
+        //Account Information
+        if ($.trim($('#code').val()) == '') { document.getElementsByName('code')[0].placeholder = 'Required'; $('#code').focus().addClass("validate"); return false; } else { $('#code').focus().removeClass("validate"); }
+        if ($.trim($('#discount').val()) == '') { document.getElementsByName('discount')[0].placeholder = 'Required'; $('#discount').focus().addClass("validate"); return false; } else { $('#discount').focus().removeClass("validate"); }
+
+        return true;
+    }
+  
+
+    function ResetValidateClass() {
+        $('#Coupon').removeClass("validate");
+        $('#expire_date').removeClass("validate");
+    }
+    function ClearSearch() {
+        $('#keyword').val('');
+        CouponsBind(1);
+    }
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="Id" />
+<input id="hdnsortorder" type="hidden" value="DESC" />
+
+<!-- breadcumb -->
+
+
+<div class="content-header">
+    <h1>Coupons</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active">Coupons</li>
+    </ol>
+</div>
+
+<!--end breadcumb -->
+
+<div class="content">
+    <!-- Main content -->
+
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Search</label>
+                    <input type="text" placeholder="" name="keyword" id="keyword" class="form-control" />
+                </div>
+                <div class="col-xs-12 col-lg-9 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <button class="btn btn-primary" type="submit" onclick="CouponsBind(1);">Search</button>
+                    <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
+                    <a data-toggle="modal" onclick="Add();" class="btn btn-danger pull-right">Add </a>
+                </div>
+            </div>
+        </div>
+        <div id="divDetails" class="box-body table-responsive">
+            @{Html.RenderAction("CouponsList", "Coupons");}
+        </div>
+
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="AddCoupon" tabindex="-1" role="dialog" aria-hidden="true">
+    @using (Html.BeginForm("AddCoupons", "Coupons", FormMethod.Post, new { style = "margin-bottom:0" }))
+    {
+        <input type="hidden" id="Id" name="Id" value="0" />
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span id="lbltitle"></span></h4>
+                </div>
+                <div class="modal-body validation">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Coupon code<span class="red-t">*</span></label>
+                            <input type="text" id="code" name="code" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="" value="" class="form-control">
+                        </div>
+
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Discount<span class="red-t">*</span></label>
+                            <input type="text" id="discount" name="discount" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="" value="" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Expire Date </label>
+                            <input type="text" id="expirydate" name="expirydate" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="" value="" class="form-control">
+                        </div>
+
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Membership Type</label>
+                            <select class="form-control" name="membership_type" id="membership_type">
+                                @if (lstMembershipTypes != null)
+                                {
+                                    <option value="">Select</option>
+                                    foreach (var item in lstMembershipTypes)
+                                    {
+                                        <option value="@item.MembershipType">@item.MembershipType</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                    </div>
+                </div>
+                <div class="modal-footer clearfix">
+                    <input type="submit" onclick="return Validate();" value="Submit" class="btn btn-danger">
+                    <a class="btn btn-primary pull-left" data-dismiss="modal">Cancel</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

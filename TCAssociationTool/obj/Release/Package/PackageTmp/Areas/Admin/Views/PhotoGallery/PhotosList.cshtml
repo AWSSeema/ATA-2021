@@ -93,7 +93,7 @@ else
                                     
                                     <a title="Edit" href="@Url.Action("PhotoEdit", "PhotoGallery", new { PhotoId = item.PhotoId })" ><i class="fa fa-pencil-square-o"></i></a>
                                     @if (userRole.Contains("SuperAdmin"))
-                    {
+                                   {
                                     <a id="12" class="picturedelete" onclick="javascript:Delete(@item.PhotoId,'@item.ImageUrl');"><i class="fa fa-trash-o"></i></a>
                                     }
                                 </p>

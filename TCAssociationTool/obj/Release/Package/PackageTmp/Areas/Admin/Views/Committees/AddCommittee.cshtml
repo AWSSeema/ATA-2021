@@ -82,7 +82,7 @@
                             </div>
                             <div class="col-xs-12 col-lg-3 col-sm-6">
                                 <label>Phone No :<span class="red-t">*</span></label>
-                                <input type="text" class="form-control" id="PhoneNo" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" value="" name="PhoneNo">
+                                <input type="text" class="form-control" id="PhoneNo" onkeypress="return Common.isNumberKey(event); ResetValidateClass();" maxlength="12"  value="" name="PhoneNo">
                                 <span id="spanPhoneNo" class="field-validation-error"></span>
                             </div>
                             <div class="col-xs-12 col-lg-3 col-sm-6">
@@ -108,7 +108,7 @@
 
                             <div class="col-xs-12 col-lg-3 col-sm-6">
                                 <label>Address :</label>
-                                <input rows="2" class="form-control" name="Address" id="Address"></input>
+                                <input rows="2" class="form-control" name="Address" id="Address">
                                 <span id="spanAddress" class="field-validation-error"></span>
                             </div>
                             <div class="col-xs-12 col-lg-3 col-sm-6">

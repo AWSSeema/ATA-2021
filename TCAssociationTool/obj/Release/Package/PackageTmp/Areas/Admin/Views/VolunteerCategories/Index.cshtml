@@ -48,8 +48,8 @@
         var sortcolumn = $('#hdnsortcolumn').val();
         var sortorder = $('#hdnsortorder').val();
         var items = $('#txtitems').val();
-        var Search = $('#keyword').val();
-
+        var Search = $('#keyword').val().trim();
+       
         $.ajax({
             url: '@Url.Action("VolunteerCategoriesList", "VolunteerCategories")',
             type: 'GET',
@@ -153,12 +153,16 @@
 <input id="hdnsortorder" type="hidden" value="DESC" />
 
 <!-- breadcumb -->
+
+
 <div class="content-header">
     <h1>Volunteer Categories</h1>
     <ol class="breadcrumb">
-        <li class="active"><i class="fa fa-bars"></i> Volunteer Categories</li>
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active">Volunteer Categories</li>
     </ol>
 </div>
+
 <!--end breadcumb -->
 
 <div class="content">
@@ -216,7 +220,7 @@
                      <div class="row">
                         <div class="col-xs-12 col-lg-12">
                             <label>Order No </label>
-                            <input type="text" id="OrderNo" name="OrderNo" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="Order No" value="" class="form-control">
+                            <input type="text" id="OrderNo" name="OrderNo" onkeypress="return Common.isNumberKey(event); ResetValidateClass();"  onclick="ResetValidateClass();" maxlength="3" placeholder="Order No" value="" class="form-control">
                         </div>
                     </div>
                 </div>

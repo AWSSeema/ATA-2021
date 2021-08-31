@@ -26,3 +26,13 @@ D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.BLL\obj\Release\
 D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.BLL\obj\Release\TCAssociationTool.BLL.csproj.CopyComplete
 D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.BLL\obj\Release\TCAssociationTool.BLL.dll
 D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.BLL\obj\Release\TCAssociationTool.BLL.pdb
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\bin\Release\TCAssociationTool.BLL.dll
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\bin\Release\TCAssociationTool.BLL.pdb
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\bin\Release\TCAssociationTool.DAL.dll
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\bin\Release\Newtonsoft.Json.dll
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\bin\Release\TCAssociationTool.DAL.pdb
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\obj\Release\TCAssociationTool.BLL.csproj.AssemblyReference.cache
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\obj\Release\TCAssociationTool.BLL.csproj.CoreCompileInputs.cache
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\obj\Release\TCAssociationTool.BLL.csproj.CopyComplete
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\obj\Release\TCAssociationTool.BLL.dll
+D:\Development\Projects\ATA-2021\TCAssociationTool.BLL\obj\Release\TCAssociationTool.BLL.pdb

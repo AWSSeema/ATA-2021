@@ -34,7 +34,7 @@
         var sortcolumn = $('#hdnsortcolumn').val();
         var sortorder = $('#hdnsortorder').val();
         var items = $('#txtitems').val();
-        var Search = $('#keyword').val();
+        var Search = $('#keyword').val().trim();
 
         $.ajax({
             url: '@Url.Action("CommitteesList", "Committees")',

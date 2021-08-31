@@ -1,0 +1,126 @@
+﻿@using System.Configuration;
+@{
+    ViewBag.Title = "EditDetails";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    var objCommunityNews = (TCAssociationTool.Entities.CommunityNews)ViewBag.objCommunityNews;
+    var imgloc = ConfigurationManager.AppSettings["baseurl"] + "Content/CommunityNews/normalimages/";
+    var imglocNormal = ConfigurationManager.AppSettings["baseurl"] + "Content/CommunityNews/thumbimages/";
+}
+
+
+<!-- Fonts -->
+
+
+
+<input type="hidden" value="1" id="hdnRowCount" />
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>View Community News</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "CommunityNews")"><i class="fa fa-user"></i>Community News</a></li>
+        <li class="active">View Community News</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="@Url.Action("Index", "CommunityNews")">Community News</a></li>
+                <li><a class="btn" href="@Url.Action("Index", "Community NewsOrders")">ATA Messages</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="clearfix sepH_b"></div>
+    <!-- /.box-header -->
+   
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Community News Details </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Heading  :</label>
+                        @objCommunityNews.heading
+
+                    </div>
+
+
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Page Redirect URL : <span class="red-t"></span></label>
+                        @objCommunityNews.pageurl
+
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Target </label>
+                        @objCommunityNews.target
+                    </div>
+
+
+                </div>
+                <div class="row">
+
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Short Description : </label>
+                        @objCommunityNews.shortdesc
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label class="t-p5">Order No  :</label>
+                        @objCommunityNews.orderno
+                    </div>
+
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Picture : <span class="red-t"></span></label>
+
+                        <a href="@(imglocNormal + objCommunityNews.imgsrc)" class='lightview' data-lightview-group='example' title="@objCommunityNews.heading">
+                            <img width="100%" style="max-height:40px; min-height:40px;" class="borwhite5 border-radius shadow" src="@TCAssociationTool.BLL.Common.ValidateImage((imgloc + objCommunityNews.imgsrc), imgloc + "no-image.png")" />
+                        </a>
+                    </div>
+                </div>
+
+              
+            </div>
+        </div>
+
+
+
+
+        <!-- end other details form -->
+        <div class="box">
+            <div class="box-body text-right">
+               <a class="btn btn-info" href="@Url.Action("Index", "CommunityNews")">Cancel</a>
+            </div>
+        </div>
+    
+</div>
+
+<script>
+    var _URL = window.URL || window.webkitURL;
+    $("#file").change(function (e) {
+        var file, img;
+        if ((file = this.files[0])) {
+            img = new Image();
+            img.onload = function () {
+                if (this.width == 350 && this.height == 250) {
+                    $('#hdnimgvalidate').val('1');
+                }
+                else {
+                    $('#hdnimgvalidate').val('0');
+                }
+            };
+            img.src = _URL.createObjectURL(file);
+        }
+    });
+
+</script>

@@ -30,7 +30,7 @@
 
     function EventRegistrationBind(Pageno) { 
         var pageno = Common.Pageno(Pageno);
-        var search = $('#txtsearch').val();
+        var search = $('#txtsearch').val().trim();
         var sortcolumn = $('#hdnsortcolumn').val();
         var sortorder = $('#hdnsortorder').val();
         var items = $('#txtitems').val();
@@ -72,10 +72,10 @@
             });
         }
     }
-
+    //aaaaaa
     function ExporttoExcel() {
         var EventId = '@EventId';
-        window.location.href = "EventRegistrations/EventuserExporttoExcel?Search=" + $('#txtsearch').val() + "&EventId=" + '@EventId' + "&SortColumn=" + $('#hdnsortcolumn').val() + "&SortOrder=" + $('#hdnsortorder').val() + "";
+        window.location.href = "Admin/EventRegistrations/EventuserExporttoExcel?Search=" + $('#txtsearch').val() + "&EventId=" + '@EventId' + "&SortColumn=" + $('#hdnsortcolumn').val() + "&SortOrder=" + $('#hdnsortorder').val() + "";
     }
 
 </script>

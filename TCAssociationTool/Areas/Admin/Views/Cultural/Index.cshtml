@@ -5,10 +5,10 @@
     var userRole = "";
 
     var objMembers = (TCAssociationTool.Entities.Members)ViewBag.objMembers;
-    var lstMembershipType = (List<TCAssociationTool.Entities.MembershipTypes>)objMembers.lstMembershipType;
-    var lstPaymentMethod = (List<TCAssociationTool.Entities.PaymentMethods>)objMembers.lstPaymentMethod;
+  
     var lstPaymentStatus = (List<TCAssociationTool.Entities.PaymentStatus>)objMembers.lstPaymentStatus;
 
+    List<TCAssociationTool.Entities.CulturalLocations> lstCulturalLocations = ViewBag.lstCulturalLocations;
     HttpContext ctx = HttpContext.Current;
     HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
 
@@ -24,15 +24,16 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#wCultural').addClass('active');
-        $("#StartDate").inputmask("mm/dd/yyyy", { "placeholder": "mm/dd/yyyy" });
+        $('#WCultural').addClass('active');
 
-        $("#EndDate").inputmask("mm/dd/yyyy", { "placeholder": "mm/dd/yyyy" });
+      
 
         $("[data-mask]").inputmask();
         $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
         $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
-        $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
+        $("#StartDate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
+        $("#EndDate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
+
         PagerClickBind();
     });
 
@@ -84,9 +85,7 @@
             }
         }
 
-        //if ($('#NewPassword').val() == '') { $('#spanNewPassword').html('Required.'); $('#NewPassword').addClass("red-border"); return_val = false; } else { $('#spanNewPassword').html(''); }
-        //if (!Common.ValidatePassword($('#NewPassword').val())) { $('#spanPassword').html('Please enter minimum 8 charecters (atleast one special charecter & one numeric charecter).'); $('#NewPassword').addClass("red-border"); return_val = false; } else { $('#spanPassword').html(''); }
-
+       
         return return_val;
     }
     function ResetValidateClass() {
@@ -104,12 +103,12 @@
 
     function ClearSearch() {
         $('#txtsearch').val('');
-        $('#MembershipTypeId').val('');
+        $('#category').val('');
         $('#ExpiryDate').val('');
         $('#EndDate').val('');
         $('#StartDate').val('');
-        $('#PaymentStatusId').val('');
-        $('#IsVolunteer').val('');
+        $('#PaymentStatus').val('');
+        $('#location').val('');
         $('#spanStartDate').html('');
         if ('@userRole'.indexOf('SuperAdmin') > -1) {
         }
@@ -126,14 +125,17 @@
         var sortorder = $('#hdnsortorder').val();
         var items = $('#txtitems').val();
         var Search = $('#txtsearch').val();
-        var PaymentStatusId = $('#PaymentStatusId').val();
-        var PaymentMethodId = $('#PaymentMethodId').val();
+        var StartDate = $('#StartDate').val();
+        var EndDate = $('#EndDate').val();
+        var PaymentStatus = $('#PaymentStatus').val();
+        var category = $('#category').val();
+        var location = $('#location').val();
 
         $.ajax({
             url: '@Url.Action("CulturalList", "Cultural")',
             type: 'GET',
             cache: false,
-            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items, PaymentStatusId: PaymentStatusId, PaymentMethodId: PaymentMethodId },
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items, StartDate: StartDate, EndDate: EndDate, PaymentStatus: PaymentStatus, category: category, location: location },
             success: function (result) {
                 $('#divDetails').html(result);
                 PagerClickBind();
@@ -146,13 +148,13 @@
         var sortcolumn = $('#hdnsortcolumn').val();
         var sortorder = $('#hdnsortorder').val();
         var Search = $('#txtsearch').val().trim();
-        var EndDate = $('#EndDate').val();
         var StartDate = $('#StartDate').val();
-        var PaymentStatusId = $('#PaymentStatusId').val();
-      /*  var PaymentMethodId = $('#PaymentMethodId').val();*/
-        //var IsVolunteer = $('#IsVolunteer').val();
-       
-        window.location.href = "Admin/Cultural/CulturalExporttoExcel?Search=" + Search + "&StartDate=" + StartDate + "&EndDate=" + EndDate + "&PaymentStatusId=" + PaymentStatusId +"&SortColumn=" + sortcolumn + "&SortOrder=" + sortorder;
+        var EndDate = $('#EndDate').val();
+        var PaymentStatus = $('#PaymentStatus').val();
+        var category = $('#category').val();
+        var location = $('#location').val();
+
+        window.location.href = "Admin/Cultural/CulturalExporttoExcel?Search=" + Search + "&StartDate=" + StartDate + "&EndDate=" + EndDate + "&PaymentStatus=" + PaymentStatus + "&category=" + category + "&location=" + location +"&SortColumn=" + sortcolumn + "&SortOrder=" + sortorder;
 
     }
 
@@ -215,36 +217,37 @@
         <div class="clearfix box-body">
             <div class="clearfix row">
                 <div class="col-xs-12 col-lg-3 col-sm-6">
-                    <label>Search</label>
-                    <input type="text" name="txtsearch" id="txtsearch" class="form-control" placeholder="Search by name / email / phone no">
+                    <label>Search Member </label>
+                    <input type="text" name="txtsearch" id="txtsearch" class="form-control" placeholder="Name/Email/Phone">
                 </div>
                 <div class="col-xs-12 col-lg-3 col-sm-6">
                     <label>Category</label>
-                    <select name="MembershipTypeId" id="MembershipTypeId" class="form-control">
+                    <select name="category" id="category" class="form-control">
                         <option value="">-- Select --</option>
-                        @*@if (lstMembershipType != null)
-                        {
-                            foreach (var item in lstMembershipType)
-                            {
-                                <option value="@item.MembershipTypeId">@item.MembershipType</option>
-                            }
-                        }*@
+                        <option value="ATA's Got Talent Solo"> ATA's Got Talent Solo</option>
+                        <option value="Austin"> Austin</option>
+                        <option value="ATA's Got Talent Group"> ATA's Got Talent Group</option>
+                        <option value="Mr. Miss. ATA"> Mr. Miss. ATA</option>
+                        <option value="SYE ATA Solo Singing">SYE ATA Solo Singing</option>
+                        <option value="SYE ATA Solo Dance"> SYE ATA Solo Dance</option>
+                        <option value="SYE ATA Group Dance"> SYE ATA Group Dance</option>
+
                     </select>
                 </div>
-
+               
                 <div class="col-xs-12 col-lg-6 col-sm-6">
                     <label>Date of Registration</label>
                     <div class="clearfix row">
                         <div class="col-xs-12 col-lg-6 col-sm-6">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                <input type="text" id="StartDate" name="StartDate" placeholder="From" class="form-control date" />
+                                <input type="text" id="StartDate" name="StartDate" placeholder="From" class="form-control" />
                             </div>
                         </div>
                         <div class="col-xs-12 col-lg-6 col-sm-6">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                <input type="text" id="EndDate" name="EndDate" placeholder="To" class="form-control date" />
+                                <input type="text" id="EndDate" name="EndDate" placeholder="To" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -255,7 +258,7 @@
             <div class="clearfix row">
                 <div class="col-xs-12 col-lg-3 col-sm-6">
                     <label>Payment Status</label>
-                    <select name="PaymentStatusId" id="PaymentStatusId" class="form-control">
+                    <select name="PaymentStatus" id="PaymentStatus" class="form-control">
                         <option value="">-- Select --</option>
                         @if (lstPaymentStatus != null)
                         {
@@ -266,17 +269,19 @@
                         }
                     </select>
                 </div>
+   
+
                 <div class="col-xs-12 col-lg-2 col-sm-6">
                     <label>Location</label>
-                    <select name="PaymentStatusId" id="PaymentStatusId" class="form-control">
+                    <select name="location" id="location" class="form-control">
                         <option value="">-- Select --</option>
-                        @*@if (lstPaymentStatus != null)
-            {
-                foreach (var item in lstPaymentStatus)
-                {
-                    <option value="@item.PaymentStatusId">@item.PaymentStatus1</option>
-                }
-            }*@
+                        @if (lstCulturalLocations != null)
+                        {
+                            foreach (var item in lstCulturalLocations)
+                            {
+                                <option value="@item.location">@item.location</option>
+                            }
+                        }
                     </select>
                 </div>
                 <div class="col-xs-12 col-lg-7 col-sm-6">

@@ -19,8 +19,9 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('#wWomensday').addClass('active');
-        $('#Others').addClass('active');
+       
+        $('#MEvents').addClass('active');
+        $('#WWomensday').addClass('active');
         $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
         $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
         $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
@@ -152,7 +153,7 @@
 
                     @if (userRole.Contains("SuperAdmin"))
                     {
-                        <a class="btn btn-danger pull-right r-m10" id="delete" onclick="DeleteAll();">Delete </a>
+                <a class="btn btn-danger pull-right r-m10" id="delete" onclick="DeleteAll();">Delete Registration(s) </a>
                     }
                 </div>
             </div>

@@ -95,12 +95,16 @@
                         <label>Image </label>
                         <input type="file" name="ImageUrl" id="ImageUrl" />
                         <span id="spanfile" class="red-t"></span>
-                    </div> 
+                    </div>
+                    <div class="col-xs-12 col-lg-12">
+                        <b class="red-t">Note</b> : Image size should be maintained width * height (200 * 105)
+                        
+                    </div>
                 </div>
             </div> 
             
             <div class='box-body'>
-                <label>Description </label>
+                <label>Description <span class="red-t">*</span> </label>
                 <textarea rows="10" placeholder="Description *" name="NewsText" id="Description" cols="80" style="visibility: hidden; display: none;"></textarea><br />
                 <span class="field-validation-error" id="spanDescription"></span>
                 <script type="text/javascript">

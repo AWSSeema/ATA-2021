@@ -52,8 +52,7 @@
         var sortcolumn = $('#hdnsortcolumn').val();
         var sortorder = $('#hdnsortorder').val();
         var items = $('#txtitems').val();
-        var Search = ($.trim($('#txtsearch').val()));
-
+        var Search = $('#txtsearch').val().trim();
         $.ajax({
             url: '@Url.Action("CommitteeCategoriesList", "CommitteeMaster")',
             type: 'GET',

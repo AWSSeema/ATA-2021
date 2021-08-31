@@ -85,13 +85,13 @@ namespace TCAssociationTool.BLL
             return objDonors;
         }
 
-        public List<TCAssociationTool.Entities.Donors> GetDonorsListByVariable(Int64 PaymentMethod,Int64 PaymentStatus, string Search, string Sort, int PageNo, int Items, ref int Total)
+        public List<TCAssociationTool.Entities.Donors> GetDonorsListByVariable(Int64 PaymentMethodId,Int64 PaymentStatusId, string StartDate, string EndDate, string Search, string Sort, int PageNo, int Items, ref int Total)
         {
             List<TCAssociationTool.Entities.Donors> lstDonors = new List<TCAssociationTool.Entities.Donors>();
-            DataTable dt = _Donors.GetDonorsListByVariable(PaymentMethod, PaymentStatus, Search, Sort, PageNo, Items, ref Total);
+            DataTable dt = _Donors.GetDonorsListByVariable(PaymentMethodId, PaymentStatusId, StartDate, EndDate, Search, Sort, PageNo, Items, ref Total);
             if (dt.Rows.Count == 0 && PageNo != 0)
             {
-                dt = _Donors.GetDonorsListByVariable(PaymentMethod, PaymentStatus, Search, Sort, PageNo - 1, Items, ref Total);
+                dt = _Donors.GetDonorsListByVariable(PaymentMethodId, PaymentStatusId, StartDate, EndDate, Search, Sort, PageNo - 1, Items, ref Total);
             }
             if (dt.Rows.Count != 0)
             {

@@ -1,0 +1,181 @@
+﻿@{
+    ViewBag.Title = "AddMailTemplate";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.EventForm objEventForm = ViewBag.objEventForm;
+    string imgurl = System.Configuration.ConfigurationManager.AppSettings["baseurl"] + "Content/documents/";
+}
+
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+
+<script type="text/javascript">
+    function Validate() {
+        var return_val = true;
+
+        if ($.trim($('#firstname').val()) == '') { document.getElementsByName('firstname')[0].placeholder = 'Required'; $('#firstname').focus().addClass("validate"); return false; } else { $('#firstname').focus().removeClass("validate"); }
+        if ($.trim($('#lastname').val()) == '') { document.getElementsByName('lastname')[0].placeholder = 'Required'; $('#lastname').focus().addClass("validate"); return false; } else { $('#lastname').focus().removeClass("validate"); }
+
+
+        return return_val;
+    }
+
+
+
+    function ResetValidateClass() {
+      
+        $('#firstname').removeClass("validate");
+        $('#firstname').removeClass("validate");
+       
+    }
+
+    $(document).ready(function () {
+        $('#wGolf2021').addClass('active');
+        $('#Others').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+      //  $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
+        $("#datesent").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
+
+
+    });
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Registrations</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "EventForm")"><i class="fa fa-print"></i>Registrations</a></li>
+        <li class="active">Edit Registration</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+
+
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box validation">
+        <!-- /.box-header -->
+        <div class="box-header">
+            <h3 class="box-title dis-in">Edit EventForm </h3>
+        </div>
+        @using (Html.BeginForm("InsertEventForm", "EventForm", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input type="hidden" name="Id" id="Id" value="@objEventForm.Id" />
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Event Registration Details</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>First Name </label>
+                            <input type="text" class="form-control" name="firstname" value=" @objEventForm.firstname" onclick="ResetValidateClass();" id="firstname">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Last Name </label>
+                            <input type="text" class="form-control" name="lastname" value=" @objEventForm.lastname" onclick="ResetValidateClass();" id="lastname">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Email </label>
+                            <input type="text" class="form-control" name="email" value=" @objEventForm.email" onclick="ResetValidateClass();" id="email">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Phone No </label>
+                            <input type="text" class="form-control" name="phone" value=" @objEventForm.phone" onkeypress="return Common.isNumberKey(event);" maxlength="12" onclick="ResetValidateClass();" id="phone">
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Address 1 </label>
+                            <textarea id="address" name="address" class="form-control">@objEventForm.address</textarea>
+
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>City</label>
+                            <input type="text" class="form-control" name="city" value=" @objEventForm.city" onclick="ResetValidateClass();" id="city">
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>State</label>
+                            <input type="text" class="form-control" name="state" value=" @objEventForm.state" onclick="ResetValidateClass();" id="state">
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>ZipCode </label>
+                            <input type="text" class="form-control" name="zip" value=" @objEventForm.zip" onclick="ResetValidateClass();" id="zip">
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>No. of Guests</label>
+                            <input type="text" class="form-control" name="members" value=" @objEventForm.members" onclick="ResetValidateClass();" id="members">
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Is ATA Member</label>
+                            <input type="text" class="form-control" name="ismember" value=" @objEventForm.ismember" onclick="ResetValidateClass();" id="ismember">
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Date Sent</label>
+                            <input type="text" class="form-control" name="datesent" value=" @objEventForm.datesent.ToString("dd/MM/yyy")" onclick="ResetValidateClass();" id="datesent">
+                        </div>
+
+
+                    </div>
+
+
+                    @*<div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Admin Comments </label>
+                            <textarea id="comments" name="comments" class="form-control">@objEventForm.comments</textarea>
+
+                        </div>
+                   
+                    </div>*@
+
+
+
+                </div>
+
+            </div>
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body text-right">
+                    <input type="submit" onclick="return Validate()" class="btn btn-primary" id="add" value="Submit" name="add">
+
+                    <a class="btn btn-info" href="@Url.Action("Index", "EventForm")">Cancel</a>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        }
+        <!-- /.box-body -->
+    </div>
+    <!-- /.content -->
+</div>
+

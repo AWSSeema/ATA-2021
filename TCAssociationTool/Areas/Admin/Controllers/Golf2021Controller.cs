@@ -196,6 +196,34 @@ namespace TCAssociationTool.Areas.Admin.Controllers
             return Json(new { ok = _bool, data = str });
         }
 
+        [HttpPost]
+        [Areas.Admin.Models.SessionClass.SessionExpireFilter]
+        public JsonResult Golf2021UpdatePaymentStatus(Int64 Id)
+        {
+            string str = "";
+            try
+            {
+                Int64 _status = _Golf2021.Golf2021UpdatePaymentStatus(Id);
+                if (_status == 1)
+                {
+                    str = "<div class=\"alert alert-success alert-dismissable\">Updated Status Successfully</div>";
+                    return Json(new { ok = true, data = str });
+                }
+                else
+                {
+                    str = "<div class=\"alert alert-danger alert-dismissable\">Failed updating status</div>";
+                    return Json(new { ok = false, data = str });
+                }
+            }
+            catch
+            {
+                str = "<div class=\"alert alert-danger alert-dismissable\">Failed transaction.</div>";
+                return Json(new { ok = false, data = str });
+            }
+        }
+
+
+   
 
 
         public void Golf2021ExporttoExcel(string Search = "",  string StartDate = "", string EndDate = "", string SortColumn = "Id", string SortOrder = "DESC")

@@ -66,10 +66,7 @@ namespace TCAssociationTool.BLL
                     objLafitnessVouchers.created_at = (dt.Rows[0]["created_at"] != DBNull.Value ? Convert.ToDateTime(dt.Rows[0]["created_at"]) : DateTime.MinValue);
                     objLafitnessVouchers.updated_at = (dt.Rows[0]["updated_at"] != DBNull.Value ? Convert.ToDateTime(dt.Rows[0]["updated_at"]) : DateTime.MinValue);
                     objLafitnessVouchers.expire_date = (dt.Rows[0]["expire_date"] != DBNull.Value ? Convert.ToDateTime(dt.Rows[0]["expire_date"]) : DateTime.MinValue);
-
-
-       
-
+                    objLafitnessVouchers.Eexpire_date = objLafitnessVouchers.expire_date.ToString("dd/MM/yyyy");
 
                 }
             }

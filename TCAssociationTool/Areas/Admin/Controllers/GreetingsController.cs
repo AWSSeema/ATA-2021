@@ -22,7 +22,7 @@ namespace TCAssociationTool.Areas.Admin.Controllers
 
         [HttpGet]
         [Areas.Admin.Models.SessionClass.SessionExpireFilter]
-        public ActionResult GreetingsList(string search = "", int PageNo = 1, int PageItems = 10, string SortColumn = "", string SortOrder = "")
+        public ActionResult GreetingsList(string search = "", int PageNo = 1, int PageItems = 10, string SortColumn = "ID", string SortOrder = "DESC")
         {
             int Total = 0;
             List<Entities.Greetings> Greetingslist = new List<Entities.Greetings>();
@@ -80,11 +80,6 @@ namespace TCAssociationTool.Areas.Admin.Controllers
                     WebImage image = new WebImage(ConfigurationManager.AppSettings["uploadPath"] + "\\Greetings\\NormalImages\\" + imgsrc.FileName);
                     string imageurl = (image != null ? image.ImageFormat : "NA");
 
-
-
-                    //var image = WebImage.GetImageFromRequest();
-                    //string imageurl = (image != null ? image.ImageFormat : "NA");
-                    //objGreetings.UpdatedBy = this.User.Identity.Name;
                     Int64 _status = _Greetings.InsertGreetings(objGreetings, ref imageurl);
                     if (_status != -1)
                     {

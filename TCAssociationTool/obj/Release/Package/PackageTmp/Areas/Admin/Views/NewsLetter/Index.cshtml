@@ -26,7 +26,7 @@
         var sortcolumn = $('#hdnsortcolumn').val();
         var sortorder = $('#hdnsortorder').val();
         var items = $('#txtitems').val();
-        var Search = $('#txtsearch').val();
+        var Search = $('#txtsearch').val().trim();
         
         
         $.ajax({
@@ -78,9 +78,9 @@
     function ExporttoExcel() {
         var sortcolumn = $('#hdnsortcolumn').val();
         var sortorder = $('#hdnsortorder').val();
-        var Search = $('#txtsearch').val();
+        var Search = $('#txtsearch').val().trim();
 
-        window.location.href = "NewsLetter/NewsLetterExporttoExcel?Search=" + Search + "&SortColumn=" + sortcolumn + "&SortOrder=" + sortorder;
+        window.location.href = "Admin/NewsLetter/NewsLetterExporttoExcel?Search=" + Search + "&SortColumn=" + sortcolumn + "&SortOrder=" + sortorder;
 
     }
 

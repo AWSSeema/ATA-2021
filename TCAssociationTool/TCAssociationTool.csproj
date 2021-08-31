@@ -161,7 +161,9 @@
     <Compile Include="Areas\Admin\Controllers\CommitteeMemberController.cs" />
     <Compile Include="Areas\Admin\Controllers\CommitteesController.cs" />
     <Compile Include="Areas\Admin\Controllers\CommunityNewsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CouponsController.cs" />
     <Compile Include="Areas\Admin\Controllers\CulturalController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CulturalLocationsController.cs" />
     <Compile Include="Areas\Admin\Controllers\CulturalRegistrationsController.cs" />
     <Compile Include="Areas\Admin\Controllers\DonationCategoriesController.cs" />
     <Compile Include="Areas\Admin\Controllers\DonorsController.cs" />
@@ -170,6 +172,7 @@
     <Compile Include="Areas\Admin\Controllers\EventFormController.cs" />
     <Compile Include="Areas\Admin\Controllers\EventRegistrationsController.cs" />
     <Compile Include="Areas\Admin\Controllers\EventsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\FeedbacksController.cs" />
     <Compile Include="Areas\Admin\Controllers\FlyersController.cs" />
     <Compile Include="Areas\Admin\Controllers\Golf2021Controller.cs" />
     <Compile Include="Areas\Admin\Controllers\GreetingsController.cs" />
@@ -2139,9 +2142,12 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\API\Models\" />
+    <Folder Include="Content\ATAMessages\" />
     <Folder Include="Content\Certificates\" />
     <Folder Include="Content\committees\normalphoto\" />
     <Folder Include="Content\committees\thumbphoto\" />
+    <Folder Include="Content\CommunityNews\normalimages\" />
+    <Folder Include="Content\CommunityNews\thumbimages\" />
     <Folder Include="Content\documents\" />
     <Folder Include="Content\EventProfile\Profiledocs\" />
     <Folder Include="Content\events\banners\thumb\" />
@@ -2606,6 +2612,17 @@
     <Content Include="Areas\Admin\Views\LafitnessVouchers\LafitnessVouchersList.cshtml" />
     <Content Include="Areas\Admin\Views\Adminemails\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Adminemails\AdminemailsList.cshtml" />
+    <Content Include="Areas\Admin\Views\Coupons\AddCoupons.cshtml" />
+    <Content Include="Areas\Admin\Views\Coupons\CouponsList.cshtml" />
+    <Content Include="Areas\Admin\Views\Coupons\EditCoupons.cshtml" />
+    <Content Include="Areas\Admin\Views\Coupons\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Coupons\ViewCoupons.cshtml" />
+    <Content Include="Areas\Admin\Views\Feedbacks\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Feedbacks\FeedbacksList.cshtml" />
+    <Content Include="Areas\Admin\Views\Feedbacks\ViewFeedbacks.cshtml" />
+    <Content Include="Areas\Admin\Views\CulturalLocations\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\CulturalLocations\CulturalLocationsList.cshtml" />
+    <Content Include="Areas\Admin\Views\CommunityNews\ViewCommunityNews.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
   </ItemGroup>
   <PropertyGroup>

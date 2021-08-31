@@ -37,6 +37,22 @@ namespace TCAssociationTool.BLL
             return _status;
         }
 
+
+        public Int64 AdminemailsUpdateisdonation(Int64 Id)
+        {
+            Int64 _status = 0;
+            _status = _Adminemails.AdminemailsUpdateisdonation(Id);
+            return _status;
+        }
+
+
+        public Int64 AdminemailsUpdateismembership(Int64 Id)
+        {
+            Int64 _status = 0;
+            _status = _Adminemails.AdminemailsUpdateismembership(Id);
+            return _status;
+        }
+
         public Int64 DeleteAdminemails(Int64 Id)
         {
             Int64 _status = 0;

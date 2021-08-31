@@ -61,7 +61,9 @@
     <Compile Include="Committees.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="CommunityNews.cs" />
+    <Compile Include="Coupons.cs" />
     <Compile Include="Cultural.cs" />
+    <Compile Include="CulturalLocations.cs" />
     <Compile Include="CulturalRegistrations.cs" />
     <Compile Include="DonationCategories.cs" />
     <Compile Include="Donors.cs" />
@@ -69,6 +71,7 @@
     <Compile Include="EventCategories.cs" />
     <Compile Include="EventForm.cs" />
     <Compile Include="Events.cs" />
+    <Compile Include="Feedbacks.cs" />
     <Compile Include="Flyers.cs" />
     <Compile Include="Golf2021.cs" />
     <Compile Include="Greetings.cs" />

@@ -16,6 +16,8 @@ namespace TCAssociationTool.Areas.Admin.Controllers
         Entities.Members objMembers = new Entities.Members();
         BLL.Members _Members = new BLL.Members();
         DAL.Cultural _DCultural = new DAL.Cultural();
+        BLL.CulturalLocations _CulturalLocations = new BLL.CulturalLocations();
+        List<Entities.CulturalLocations> lstCulturalLocations = new List<Entities.CulturalLocations>();
 
         [Areas.Admin.Models.SessionClass.SessionExpireFilter]
         public ActionResult Index()
@@ -24,10 +26,13 @@ namespace TCAssociationTool.Areas.Admin.Controllers
             {
                 int _qstatus = 0;
                 objMembers = _Members.AddMembershipRequirement(ref _qstatus);
+                lstCulturalLocations = _CulturalLocations.GetCulturalLocationslist(ref _qstatus);
+
 
                 if (_qstatus == 1)
                 {
                     ViewBag.objMembers = objMembers;
+                    ViewBag.lstCulturalLocations = lstCulturalLocations;
                     ViewBag.status = _qstatus;
                 }
                 else
@@ -45,14 +50,14 @@ namespace TCAssociationTool.Areas.Admin.Controllers
 
         [HttpGet]
         [Areas.Admin.Models.SessionClass.SessionExpireFilter]
-        public ActionResult CulturalList(Int64 PaymentMethod = 0, Int64 PaymentStatus = 0, string search = "", string SortColumn = "datesent", string SortOrder = "Desc", int PageNo = 1, int PageItems = 10)
+        public ActionResult CulturalList(string StartDate="", string EndDate="", Int64 PaymentStatus =0, string category="", string location ="",string search = "", string SortColumn = "datesent", string SortOrder = "Desc", int PageNo = 1, int PageItems = 10)
         {
             string Sort = (SortColumn != "" ? SortColumn + " " + SortOrder : "");
             int Total = 0;
             List<Entities.Cultural> lstCultural = new List<Entities.Cultural>();
             try
             {
-                lstCultural = _Cultural.GetCulturalListByVariable(PaymentMethod, PaymentStatus, HttpUtility.UrlDecode(search.Trim()), Sort, PageNo, PageItems, ref Total);
+                lstCultural = _Cultural.GetCulturalListByVariable(StartDate, EndDate,PaymentStatus, category, location, HttpUtility.UrlDecode(search.Trim()), Sort, PageNo, PageItems, ref Total);
 
             }
             catch (Exception ex)
@@ -207,12 +212,12 @@ namespace TCAssociationTool.Areas.Admin.Controllers
            return View();
         }
 
-        public void CulturalExporttoExcel(string Search = "", Int64 PaymentStatusId = 0, string StartDate = "", string EndDate = "", string ExpiryDate = "", string SortColumn = "datesent", string SortOrder = "DESC")
+        public void CulturalExporttoExcel(string StartDate = "", string EndDate = "", Int64 PaymentStatus = 0, string category = "", string location = "", string Search = "", string SortColumn = "datesent", string SortOrder = "DESC")
         {
             string Sort = (SortColumn != "" ? SortColumn + " " + SortOrder : "");
             try
             {
-                DataTable dtUni = _DCultural.ExportCulturalList(Search,PaymentStatusId, StartDate, EndDate, ExpiryDate, Sort);
+                DataTable dtUni = _DCultural.ExportCulturalList(StartDate, EndDate, PaymentStatus, category, location, Search,Sort);
                 //MemoryStream stream = BLL.Common.CSVUtility.GetCSV(dtUni);
 
                 //var filename = "CSV-Members-Export-" + DateTime.UtcNow.ToString("MM-dd-yyyy") + ".csv";
@@ -225,13 +230,13 @@ namespace TCAssociationTool.Areas.Admin.Controllers
                 //Response.End();
                 using (XLWorkbook wb = new XLWorkbook())
                 {
-                    wb.Worksheets.Add(dtUni, "Cultural-Registration-Export");
+                    wb.Worksheets.Add(dtUni, "Cultural-Reg-Export");
 
                     Response.Clear();
                     Response.Buffer = true;
                     Response.Charset = "";
                     Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    Response.AddHeader("content-disposition", "attachment;filename=Cultural-Registration-Export-" + DateTime.UtcNow.ToString("MM-dd-yyyy") + ".xlsx");
+                    Response.AddHeader("content-disposition", "attachment;filename=Cultural-Reg-Export-" + DateTime.UtcNow.ToString("MM-dd-yyyy") + ".xlsx");
                     using (MemoryStream MyMemoryStream = new MemoryStream())
                     {
                         wb.SaveAs(MyMemoryStream);

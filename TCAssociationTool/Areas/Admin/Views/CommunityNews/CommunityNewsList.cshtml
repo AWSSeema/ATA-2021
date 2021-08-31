@@ -172,7 +172,8 @@ else
                     }
                 </td>
                 <td style="text-align:center;">
-                    <a onclick="ViewBanner(@item.id);" title="Edit" class="r-p5"><i class="fa fa-eye"></i></a>
+
+                    <a href="@(imgloc + item.imgsrc)" target="_blank" title="Edit" class="r-p5"><i class="fa fa-eye"></i></a>
                     <a title="Edit" class="sepV_a" href="@Url.Action("EditCommunityNews", "CommunityNews", new { id = item.id })"><i class="fa fa-pencil-square-o"></i></a>
 
                     <a class="themedelete" onclick="javascript: Delete(@item.id, '@item.imgsrc');" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>

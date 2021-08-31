@@ -31,7 +31,7 @@
 
     function EventBind(Pageno) {
         var pageno = Common.Pageno(Pageno);
-        var search = $('#keyword').val();
+        var search = $('#keyword').val().trim();
         var sortcolumn = $('#hdnsortcolumn').val();
         var sortorder = $('#hdnsortorder').val();
         var items = $('#txtitems').val();;

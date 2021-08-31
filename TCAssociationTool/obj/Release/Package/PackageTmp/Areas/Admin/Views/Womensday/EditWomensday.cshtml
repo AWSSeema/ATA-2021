@@ -1,0 +1,176 @@
+﻿@{
+    ViewBag.Title = "AddMailTemplate";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.Womensday objWomensday = ViewBag.objWomensday;
+   
+}
+
+<script type="text/javascript">
+    function Validate() {
+        var return_val = true;
+
+        if ($.trim($('#firstname').val()) == '') { document.getElementsByName('firstname')[0].placeholder = 'Required'; $('#firstname').focus().addClass("validate"); return false; } else { $('#firstname').focus().removeClass("validate"); }
+        if ($.trim($('#lastname').val()) == '') { document.getElementsByName('lastname')[0].placeholder = 'Required'; $('#lastname').focus().addClass("validate"); return false; } else { $('#lastname').focus().removeClass("validate"); }
+        if ($.trim($('#email').val()) == '') { document.getElementsByName('email')[0].placeholder = 'Required'; $('#email').focus().addClass("validate"); return false; } else { $('#email').focus().removeClass("validate"); }
+        if ($.trim($('#phone').val()) == '') { document.getElementsByName('phone')[0].placeholder = 'Required'; $('#phone').focus().addClass("validate"); return false; } else { $('#phone').focus().removeClass("validate"); }
+
+        
+        return return_val;
+    }
+
+
+
+    function ResetValidateClass() {
+        $('#firstname').removeClass("validate");
+        $('#lastname').removeClass("validate");
+        $('#email').removeClass("validate");
+        $('#phone').removeClass("validate");
+       
+    }
+
+    $(document).ready(function () {
+        $('#wWomensday').addClass('active');
+        $('#Others').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $("#datesent").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
+
+    });
+</script>
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Womensday</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "Womensday")"><i class="fa fa-print"></i>Womensday</a></li>
+        <li class="active">Edit Womensday</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box validation">
+        <!-- /.box-header -->
+        <div class="box-header">
+            <h3 class="box-title dis-in">Edit Womensday </h3>
+        </div>
+        @using (Html.BeginForm("InsertWomensday", "Womensday", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input type="hidden" name="Id" id="Id" value="@objWomensday.Id" />
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Firstname <span class="red-t">*</span></label>
+                        <input type="text" class="form-control" name="firstname" value="@objWomensday.firstname" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="firstname">
+                     
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Lastname <span class="red-t">*</span></label>
+                        <input type="text" class="form-control" value="@objWomensday.lastname" id="lastname" name="lastname" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+                   
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Email <span class="red-t">*</span></label>
+                        <input type="text" class="form-control" value="@objWomensday.email" id="email" name="email" onclick="ResetValidateClass();">
+                    
+                    </div>
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Phone <span class="red-t">*</span></label>
+                        <input type="text" class="form-control" value="@objWomensday.phone" name="phone" onclick="ResetValidateClass();" onkeypress="return Common.isNumberKey(event);" id="phone">
+                    
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="box-body">
+                <div class="row">
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>City<span class="red-t">*</span></label>
+                        <input type="text" class="form-control" value="@objWomensday.city" id="city" name="city" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>State <span class="red-t">*</span></label>
+                        <select class="form-control" name="state" id="state">
+                            <option value="">--Select--</option>
+                            <option @(objWomensday.state == "Atlanta" ? "selected='selected'" : "") value="Atlanta"> Atlanta</option>
+                            <option @(objWomensday.state == "Austin" ? "selected='selected'" : "") value="Austin"> Austin</option>
+                            <option @(objWomensday.state == "Boston" ? "selected='selected'" : "") value="Boston"> Boston</option>
+                            <option @(objWomensday.state == "Chicago Land" ? "selected='selected'" : "") value="Chicago Land"> Chicago Land</option>
+                            <option @(objWomensday.state == "Dallas" ? "selected='selected'" : "") value="Dallas"> Dallas</option>
+                            <option @(objWomensday.state == "DC Metro" ? "selected='selected'" : "") value="DC Metro"> DC Metro</option>
+                            <option @(objWomensday.state == "Delaware" ? "selected='selected'" : "") value="Delaware"> Delaware</option>
+                            <option @(objWomensday.state == "Detroit" ? "selected='selected'" : "") value="Detroit"> Detroit</option>
+                            <option @(objWomensday.state == "Los Angeles" ? "selected='selected'" : "") value="Los Angeles"> Los Angeles</option>
+                            <option @(objWomensday.state == "Maryland" ? "selected='selected'" : "") value="Maryland"> Maryland</option>
+                            <option @(objWomensday.state == "Nashville" ? "selected='selected'" : "") value="Nashville"> Nashville</option>
+                            <option @(objWomensday.state == "New England" ? "selected='selected'" : "") value="New England"> New England</option>
+                            <option @(objWomensday.state == "New Jersey" ? "selected='selected'" : "") value="New Jersey"> New Jersey</option>
+                            <option @(objWomensday.state == "Orlando" ? "selected='selected'" : "") value="Orlando"> Orlando</option>
+                            <option @(objWomensday.state == "Raleigh" ? "selected='selected'" : "") value="Raleigh"> Raleigh</option>
+                            <option @(objWomensday.state == "Richmond" ? "selected='selected'" : "") value="Richmond"> Richmond</option>
+                            <option @(objWomensday.state == "Seattle" ? "selected='selected'" : "") value="Seattle"> Seattle</option>
+                            <option @(objWomensday.state == "Washington DC" ? "selected='selected'" : "") value="Washington DC"> Washington DC</option>
+                        </select>
+                    </div>
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Location </label>
+                        <input type="text" class="form-control" value="@objWomensday.location" name="location" id="location">
+
+                    </div>
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Amount </label>
+                        <input type="text" class="form-control" value="@objWomensday.amount" name="amount" id="amount" onkeypress="return Common.isNumberKey(event);">
+
+                    </div>
+
+
+
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Date  Sent </label>
+                        <input type="text" class="form-control" value="@objWomensday.datesent.ToString("dd/MM/yyyy")" id="datesent" name="datesent">
+
+                    </div>
+
+
+                </div>
+            </div>
+
+
+
+        
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body text-right">
+                    <input type="submit" onclick="return Validate()" class="btn btn-primary" id="add" value="Submit" name="add">
+                    <a class="btn btn-info" href="@Url.Action("Index", "Womensday")">Cancel</a>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        }
+        <!-- /.box-body -->
+    </div>
+    <!-- /.content -->
+</div>
+

@@ -54,7 +54,9 @@
     <Compile Include="CommitteeMembers.cs" />
     <Compile Include="Committees.cs" />
     <Compile Include="CommunityNews.cs" />
+    <Compile Include="Coupons.cs" />
     <Compile Include="Cultural.cs" />
+    <Compile Include="CulturalLocations.cs" />
     <Compile Include="CulturalRegistrations.cs" />
     <Compile Include="DBAccess.cs" />
     <Compile Include="DonationCategories.cs" />
@@ -68,7 +70,9 @@
     <Compile Include="Entities\CommitteeMembers.cs" />
     <Compile Include="Entities\Committees.cs" />
     <Compile Include="Entities\CommunityNews.cs" />
+    <Compile Include="Entities\Coupons.cs" />
     <Compile Include="Entities\Cultural.cs" />
+    <Compile Include="Entities\CulturalLocations.cs" />
     <Compile Include="Entities\CulturalRegistrations.cs" />
     <Compile Include="Entities\CurrencyCodes.cs" />
     <Compile Include="Entities\DonationCategories.cs" />
@@ -79,6 +83,7 @@
     <Compile Include="Entities\EventRegistrationCounts.cs" />
     <Compile Include="Entities\EventRegistrationTypes.cs" />
     <Compile Include="Entities\Events.cs" />
+    <Compile Include="Entities\Feedbacks.cs" />
     <Compile Include="Entities\Flyers.cs" />
     <Compile Include="Entities\Golf2021.cs" />
     <Compile Include="Entities\Greetings.cs" />
@@ -112,6 +117,7 @@
     <Compile Include="EventCategories.cs" />
     <Compile Include="EventForm.cs" />
     <Compile Include="Events.cs" />
+    <Compile Include="Feedbacks.cs" />
     <Compile Include="Flyers.cs" />
     <Compile Include="Golf2021.cs" />
     <Compile Include="Greetings.cs" />

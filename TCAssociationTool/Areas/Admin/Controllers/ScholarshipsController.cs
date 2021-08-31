@@ -218,13 +218,13 @@ namespace TCAssociationTool.Areas.Admin.Controllers
 
                 using (XLWorkbook wb = new XLWorkbook())
                 {
-                    wb.Worksheets.Add(dtUni, "Scholarships-Registration-Export");
+                    wb.Worksheets.Add(dtUni, "Scholar-Registration-Export");
 
                     Response.Clear();
                     Response.Buffer = true;
                     Response.Charset = "";
                     Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    Response.AddHeader("content-disposition", "attachment;filename=Scholarships-Registration-Export-" + DateTime.UtcNow.ToString("MM-dd-yyyy") + ".xlsx");
+                    Response.AddHeader("content-disposition", "attachment;filename=Scholar-Registration-Export-" + DateTime.UtcNow.ToString("MM-dd-yyyy") + ".xlsx");
                     using (MemoryStream MyMemoryStream = new MemoryStream())
                     {
                         wb.SaveAs(MyMemoryStream);

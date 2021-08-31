@@ -1,0 +1,195 @@
+﻿@using System.Configuration;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+    var userRole = "";
+
+    HttpContext ctx = HttpContext.Current;
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+        userRole = authTicket.UserData;
+    }
+
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#MEvents').addClass('active');
+        $('#WCulturalRegistrations').addClass('active');
+
+        $('#Others').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+       // $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
+        $("#StartDate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
+        $("#EndDate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
+
+        PagerClickBind();
+    });
+
+    function sortresult(sortcolumn) {
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        CulturalRegistrationsBind(1);
+    }
+
+    function CulturalRegistrationsBind(Pageno) {
+
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = $('#keyword').val().trim();
+        var StartDate = $('#StartDate').val().trim();
+        var EndDate = $('#EndDate').val().trim();
+        var ItemType = $('#ItemType').val().trim();
+
+
+        $.ajax({
+            url: '@Url.Action("CulturalRegistrationsList", "CulturalRegistrations")',
+            type: 'GET',
+            cache: false,
+            data: { ItemType:ItemType,StartDate: StartDate, EndDate: EndDate,Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items },
+            success: function (result) {
+                $('#divCulturalRegistrations').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            CulturalRegistrationsBind($(this).text());
+        });
+    }
+
+
+
+    function validate(Id) {
+        if (Id == "") {
+            alert("Please select atleast one Item.");
+            return false;
+        }
+        return true;
+    }
+
+    function ExporttoExcel() {
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var Search = $('#keyword').val().trim();
+        var EndDate = $('#EndDate').val();
+        var StartDate = $('#StartDate').val();
+        var ItemType = $('#ItemType').val();
+
+
+        window.location.href = "Admin/CulturalRegistrations/CulturalRegistrationsExporttoExcel?Search=" + Search + "&ItemType=" + ItemType +"&StartDate=" + StartDate + "&EndDate=" + EndDate + "&SortColumn=" + sortcolumn + "&SortOrder=" + sortorder;
+
+    }
+
+    function ClearSearch() {
+        $('#keyword').val('');
+        $('#StartDate').val('');
+        $('#EndDate').val('');
+        $('#ItemType').val('');
+
+        CulturalRegistrationsBind(1);
+    }
+
+
+</script>
+<input type="hidden" id="hdnimgvalidate" value="0" />
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="Id" />
+<input id="hdnsortorder" type="hidden" value="DESC" />
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Cultural Registrations </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index","Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active"><i class="fa fa-tasks"></i>Cultural Registrations</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Search</label>
+                    <input type="text" placeholder="Name/Email/Phone" name="keyword" id="keyword" class="form-control" />
+                </div>
+
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Item Type </label>
+                    <select class="form-control" name="ItemType" id="ItemType">
+                        <option value="">All</option>
+                        <option value="Folk Song">Folk Song</option>
+                        <option value="Folk Dance">Folk Dance</option>
+                        <option value="Mimicry">Mimicry</option>
+                        <option value="Drama">Drama</option>
+                        <option value="Skits">Skits</option>
+                        <option value="Classical Dance">Classical Dance</option>
+                        <option value="Movie Dance"> Movie Dance</option>
+                        <option value="Classical Song">Classical Song</option>
+                        <option value="Karaoke">Karaoke</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+              
+
+                <div class="col-xs-12 col-lg-6 col-sm-6">
+                    <label>Start Date /End Date</label>
+                    <div class="clearfix row">
+                        <div class="col-xs-12 col-lg-6 col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" id="StartDate" name="StartDate" placeholder="From" class="form-control date" />
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-lg-6 col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" id="EndDate" name="EndDate" placeholder="To" class="form-control date" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-lg-12 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <button class="btn btn-primary" type="submit" onclick="CulturalRegistrationsBind(1);">Search</button>
+                    <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
+                    <a class="btn btn-danger pull-right r-m10" onclick="ExporttoExcel();">Export to Excel</a>
+
+                    @if (userRole.Contains("SuperAdmin"))
+                    {
+                        <a class="btn btn-danger pull-right r-m10" id="deletemembers" onclick="DeleteAll();">Delete</a>
+                    }
+                </div>
+            </div>
+        </div>
+        <div id="divCulturalRegistrations" class="box-body table-responsive">
+            @{Html.RenderAction("CulturalRegistrationsList", "CulturalRegistrations");}
+        </div>
+
+    </div>
+</div>
+

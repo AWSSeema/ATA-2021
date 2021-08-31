@@ -24,6 +24,6 @@ namespace TCAssociationTool.Entities
         public DateTime updated_at { get; set; }
         public DateTime expire_date { get; set; }
 
-
+        public string Eexpire_date { get; set; }
     }
 }

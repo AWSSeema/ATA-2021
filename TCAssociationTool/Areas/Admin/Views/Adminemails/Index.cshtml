@@ -7,6 +7,7 @@
 
     $(document).ready(function () {
 
+        $('#wMembers').addClass('active');
         $('#wAdminemails').addClass('active');
         $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
         $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
@@ -148,7 +149,7 @@
 </script>
 
 <input id="hdnPageNo" type="hidden" value="1" />
-<input id="hdnsortcolumn" type="hidden" value="created_at" />
+<input id="hdnsortcolumn" type="hidden" value="datemodified" />
 <input id="hdnsortorder" type="hidden" value="DESC" />
 
 <!-- breadcumb -->

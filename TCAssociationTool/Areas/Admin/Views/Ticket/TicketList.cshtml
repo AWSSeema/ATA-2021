@@ -179,7 +179,7 @@ else
 
                 <td>
                     <a href="@Url.Action("ViewTicket", "Ticket", new { Id = item.Id})" title="View" class="r-p5"><i class="fa fa-eye"></i></a>
-                    <a href="@Url.Action("EditTicket", "Ticket", new { Id = item.Id})" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>
+                    @*<a href="@Url.Action("EditTicket", "Ticket", new { Id = item.Id})" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>*@
                     @if (userRole.Contains("SuperAdmin"))
                     {
                         <a class="themedelete" onclick="javascript:DeleteTicket(@item.Id);" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>

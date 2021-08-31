@@ -104,7 +104,7 @@
             <div class="clearfix row">
                 <div class="col-xs-12 col-lg-3 col-sm-6">
                     <label>Search</label>
-                    <input type="text" placeholder="Member Name/First  Name /Last Name" name="keyword" id="keyword" class="form-control" />
+                    <input type="text" placeholder="Member Name/First  Name /phone" name="keyword" id="keyword" class="form-control" />
                 </div>
                 <div class="col-xs-12 col-lg-9 col-sm-6">
                     <div>
@@ -112,10 +112,10 @@
                     </div>
                     <button class="btn btn-primary" type="submit" onclick="VaccinationsBind(1);">Search</button>
                     <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
-                    <a data-toggle="modal" href="@Url.Action("AddVaccinations", "Vaccinations")" class="btn btn-danger pull-right">Add Vaccinations</a>
+                    @*<a data-toggle="modal" href="@Url.Action("AddVaccinations", "Vaccinations")" class="btn btn-danger pull-right">Add Vaccinations</a>*@
                     @if (userRole.Contains("SuperAdmin"))
                     {
-                        <a class="btn btn-danger pull-right r-m10" id="deletemembers" onclick="DeleteAll();">Delete </a>
+                <a class="btn btn-danger pull-right r-m10" id="deletemembers" onclick="DeleteAll();">Delete Vaccination(s) </a>
                     }
                 </div>
             </div>

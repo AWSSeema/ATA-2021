@@ -21,8 +21,9 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('#wTicket').addClass('active');
-        $('#Others').addClass('active');
+        
+        $('#MEvents').addClass('active');
+        $('#WTicket').addClass('active');
         $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
         $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
        // $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
@@ -153,7 +154,7 @@
 
                     @if (userRole.Contains("SuperAdmin"))
                     {
-                        <a class="btn btn-danger pull-right r-m10" id="deletemembers" onclick="DeleteAll();">Delete</a>
+                        <a class="btn btn-danger pull-right r-m10" id="Delete" onclick="DeleteAll();">Delete</a>
                     }
                 </div>
             </div>

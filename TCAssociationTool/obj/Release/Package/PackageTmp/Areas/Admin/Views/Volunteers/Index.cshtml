@@ -50,7 +50,7 @@
         var sortcolumn = $('#hdnsortcolumn').val();
         var sortorder = $('#hdnsortorder').val();
         var items = $('#txtitems').val();
-        var Search = $('#txtsearch').val();
+        var Search = $('#txtsearch').val().trim();
         var catid = $('#VolunteerCategoryId').val();
         var eventid = $('#EventId').val();
 
@@ -123,7 +123,7 @@
     }
 
     function ExporttoExcel() {
-        window.location.href = "Volunteers/VolunteersExporttoExcel?Search=" + $('#txtsearch').val() + "&VolunteerCategoryId=" + VolunteerCategoryId + "&EventId=" + $('#EventId').val() + "";
+        window.location.href = "Admin/Volunteers/VolunteersExporttoExcel?Search=" + $('#txtsearch').val().trim() + "&VolunteerCategoryId=" + $('#VolunteerCategoryId').val() + "&EventId=" + $('#EventId').val() + "";
     }
 </script>
 
@@ -152,32 +152,32 @@
     <div class="box">
         <div class="clearfix box-body">
             <div class="clearfix row">
-                  <div class="col-xs-12 col-lg-3 col-sm-6">
+                <div class="col-xs-12 col-lg-3 col-sm-6">
                     <label>Volunteer Category</label>
                     <select name="VolunteerCategoryId" id="VolunteerCategoryId" class="form-control">
                         <option value="">-- Select --</option>
-                                    @if (catlist != null)
-                                    { 
-                                        foreach (var item in catlist)
-                                        { 
-                                        <option value="@item.VolunteerCategoryId">@item.CategoryName</option>
-                                        }
-                                    }
-                                </select>
-                    </div>
-                  <div class="col-xs-12 col-lg-3 col-sm-6">
+                        @if (catlist != null)
+                        {
+                            foreach (var item in catlist)
+                            {
+                                <option value="@item.VolunteerCategoryId">@item.CategoryName</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-6">
                     <label>Events</label>
                     <select name="EventId" id="EventId" class="form-control">
                         <option value="">-- Select --</option>
-                                    @if (eventlist != null)
-                                    {
-                                        foreach (var item in eventlist)
-                                        { 
-                                        <option value="@item.EventId">@item.EventName</option>
-                                        }
-                                    }
-                                </select>
-                    </div>
+                        @if (eventlist != null)
+                        {
+                            foreach (var item in eventlist)
+                            {
+                                <option value="@item.EventId">@item.EventName</option>
+                            }
+                        }
+                    </select>
+                </div>
                 <div class="col-xs-12 col-lg-3 col-sm-6">
                     <label>Search</label>
                     <input type="text" placeholder="Name/Email/PhoneNo" name="txtsearch" id="txtsearch" class="form-control" />
@@ -188,19 +188,30 @@
                     </div>
                     <button class="btn btn-primary" type="submit" onclick="VolunteerBind(1);">Search</button>
                     <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
-                    <a data-toggle="modal" href="@Url.Action("AddVolunteer","Volunteers")" class="btn btn-danger pull-right">Add Volunteer</a>
+                    @*<a data-toggle="modal" href="@Url.Action("AddVolunteer","Volunteers")" class="btn btn-danger pull-right">Add Volunteer</a>*@
                 </div>
             </div>
         </div>
-         <div class="clearfix box-body">
-            <div class="clearfix row pull-right">
-                <div class="col-xs-12 col-lg-3 col-sm-6 pull-right">
-                    <a data-toggle="modal" onclick="ExporttoExcel();" class="btn btn-primary pull-right">Export Details to Excel</a> 
-                    </div>
+        @*<div class="clearfix box-body">
+        <div class="clearfix row pull-right">
+            <div class="col-xs-12 col-lg-3 col-sm-6 pull-right">
+                <a data-toggle="modal" onclick="ExporttoExcel();" class="btn btn-primary pull-right">Export Details to Excel</a>
                 </div>
-               </div>
+            </div>
+           </div>*@
+
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+               <div class="col-xs-12 col-lg-12 col-sm-6">
+                   
+                    <a data-toggle="modal" href="@Url.Action("AddVolunteer","Volunteers")" class="btn btn-danger pull-right">Add Volunteer</a>
+                    <a data-toggle="modal" onclick="ExporttoExcel();" class="btn btn-primary pull-right r-m10">Export Details to Excel</a>
+
+                </div>
+            </div>
+        </div>
         <div id="divDetails" class="box-body table-responsive">
-             @{Html.RenderAction("VolunteersList", "Volunteers");}
+            @{Html.RenderAction("VolunteersList", "Volunteers");}
         </div>
     </div>
 </div>

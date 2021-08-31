@@ -1,0 +1,154 @@
+﻿@{
+    ViewBag.Title = "AddMailTemplate";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.Vaccinations objVaccinations = ViewBag.objVaccinations;
+}
+
+<script type="text/javascript">
+    function Validate() {
+        var return_val = true;
+
+        if ($.trim($('#membername').val()) == '') { document.getElementsByName('membername')[0].placeholder = 'Required'; $('#membername').focus().addClass("validate"); return false; } else { $('#membername').focus().removeClass("validate"); }
+        if ($.trim($('#position').val()) == '') { document.getElementsByName('position')[0].placeholder = 'Required'; $('#position').focus().addClass("validate"); return false; } else { $('#position').focus().removeClass("validate"); }
+        if ($.trim($('#relation').val()) == '') { document.getElementsByName('relation')[0].placeholder = 'Required'; $('#relation').focus().addClass("validate"); return false; } else { $('#relation').focus().removeClass("validate"); }
+        if ($.trim($('#firstname').val()) == '') { document.getElementsByName('firstname')[0].placeholder = 'Required'; $('#firstname').focus().addClass("validate"); return false; } else { $('#firstname').focus().removeClass("validate"); }
+        if ($.trim($('#lastname').val()) == '') { document.getElementsByName('lastname')[0].placeholder = 'Required'; $('#lastname').focus().addClass("validate"); return false; } else { $('#lastname').focus().removeClass("validate"); }
+        if ($.trim($('#phone').val()) == '') { document.getElementsByName('phone')[0].placeholder = 'Required'; $('#phone').focus().addClass("validate"); return false; } else { $('#phone').focus().removeClass("validate"); }
+
+
+        return return_val;
+    }
+
+
+
+    function ResetValidateClass() {
+        $('#membername').removeClass("validate");
+        $('#position').removeClass("validate");
+        $('#relation').removeClass("validate");
+        $('#firstname').removeClass("validate");
+        $('#lastname').removeClass("validate");
+        $('#phone').removeClass("validate");
+    }
+
+    $(document).ready(function () {
+        $('#wVaccinations').addClass('active');
+        $('#Others').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $("#datesent").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
+
+    });
+</script>
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Vaccinations</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "Vaccinations")"><i class="fa fa-print"></i>Vaccinations</a></li>
+        <li class="active">Edit Vaccinations</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box validation">
+        <!-- /.box-header -->
+        <div class="box-header">
+            <h3 class="box-title dis-in">Edit Vaccinations </h3>
+        </div>
+        @using (Html.BeginForm("InsertVaccinations", "Vaccinations", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input type="hidden" name="Id" id="Id" value="@objVaccinations.Id" />
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Title <span class="red-t">*</span></label>
+                        <input type="text" class="form-control" name="membername" value="@objVaccinations.membername" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="membername">
+                        <span class="field-validation-error" id="spanmembername"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Position <span class="red-t">*</span></label>
+                        <input type="text" class="form-control" value="@objVaccinations.position" id="position" name="position" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+                        <span class="field-validation-error" id="spanposition"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Relation <span class="red-t">*</span></label>
+                        <input type="text" class="form-control" value="@objVaccinations.relation" id="relation" name="relation" onclick="ResetValidateClass();">
+                        <span class="field-validation-error" id="spanrelation"></span>
+                    </div>
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>First Name <span class="red-t">*</span></label>
+                        <input type="text" class="form-control" value="@objVaccinations.firstname" name="firstname" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="firstname">
+                        <span class="field-validation-error" id="spanfirstname"></span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="box-body">
+                <div class="row">
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Last Name <span class="red-t">*</span></label>
+                        <input type="text" class="form-control" value="@objVaccinations.lastname" id="lastname" name="lastname" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+                        <span class="field-validation-error" id="spanlastname"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Phone <span class="red-t">*</span></label>
+                        <input type="text" class="form-control" value="@objVaccinations.phone" id="phone" name="phone" onclick="ResetValidateClass();" onkeypress="return Common.isNumberKey(event);">
+                        <span class="field-validation-error" id="spanphone"></span>
+                    </div>
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Age </label>
+                        <input type="text" class="form-control" value="@objVaccinations.age" name="age" id="age">
+
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Date  Sent </label>
+                        <input type="text" class="form-control date" value="@objVaccinations.datesent.ToString("dd/MM/yyyy")" id="datesent" name="datesent">
+
+                    </div>
+
+                </div>
+            </div>
+
+
+
+            @*<div class="box-body">
+                <div class="row">
+                  
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Comments </label>
+                        <textarea id="comments" name="comments" class="form-control">@objVaccinations.comments</textarea>
+                    </div>
+
+                </div>
+            </div>*@
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body text-right">
+                    <input type="submit" onclick="return Validate()" class="btn btn-primary" id="add" value="Submit" name="add">
+                    <a class="btn btn-info" href="@Url.Action("Index", "Vaccinations")">Cancel</a>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        }
+        <!-- /.box-body -->
+    </div>
+    <!-- /.content -->
+</div>
+

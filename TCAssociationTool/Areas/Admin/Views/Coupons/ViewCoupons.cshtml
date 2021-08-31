@@ -1,0 +1,79 @@
+﻿@{
+    ViewBag.Title = "ViewCoupons";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.Coupons objCoupons = ViewBag.objCoupons;
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#Coupons').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
+    });
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>View Service Package</h1>
+
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="@Url.Action("Index", "Coupons")"><i class="fa fa-file-text"></i>Coupons</a></li>
+        <li class="active">View Coupons</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="clearfix sepH_b"></div>
+    <div class="box validation">
+        <div class="box-header">
+            <h3 class="box-title dis-in">Coupons Details </h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12 col-lg-3 col-sm-4">
+                    <label>code : </label>@objCoupons.code
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-4">
+                    <label>membership_type : </label>@objCoupons.membership_type
+                </div>
+
+                <div class="col-xs-12 col-lg-3 col-sm-4">
+                    <label>discount : </label> @objCoupons.discount
+                </div>
+               
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-lg-3 col-sm-4">
+                    <label>expiry date : </label>@objCoupons.expirydate
+                </div>
+                <div class="col-xs-12 col-lg-3 col-sm-4">
+                    <label>Date modified : </label>@objCoupons.datemodified
+                </div>
+
+            </div>
+
+           
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body text-right">
+                    <a class="btn btn-info" href="@Url.Action("Index", "Coupons")">Cancel</a>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+    </div>
+</div>
+
+

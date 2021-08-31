@@ -41,4 +41,3 @@ D:\Development\Projects\ATA-2021\TCAssociationTool.DAL\bin\Debug\TCAssociationTo
 D:\Development\Projects\ATA-2021\TCAssociationTool.DAL\obj\Debug\TCAssociationTool.DAL.csproj.CoreCompileInputs.cache
 D:\Development\Projects\ATA-2021\TCAssociationTool.DAL\obj\Debug\TCAssociationTool.DAL.dll
 D:\Development\Projects\ATA-2021\TCAssociationTool.DAL\obj\Debug\TCAssociationTool.DAL.pdb
-D:\Development\Projects\ATA-2021\TCAssociationTool.DAL\obj\Debug\TCAssociationTool.DAL.csproj.AssemblyReference.cache
