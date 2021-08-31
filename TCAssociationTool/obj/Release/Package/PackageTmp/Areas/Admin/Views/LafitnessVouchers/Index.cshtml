@@ -66,7 +66,7 @@
         });
     }
 
-   
+
 
     function LafitnessVouchersEdit(Id) {
         $.ajax({
@@ -78,8 +78,11 @@
                 if (result.ok) {
                     var objLafitnessVouchers = result.data;
                     $('#Id').val(objLafitnessVouchers.Id);
-                    $('#voucher').val(objLafitnessVouchers.voucher);
-                    $('#expire_date').val(objLafitnessVouchers.Eexpire_date);
+                    $('#Evoucher').val(objLafitnessVouchers.voucher);
+                    $('#Eexpire_date').val(objLafitnessVouchers.Eexpire_date);
+                    $('#member_id').val(objLafitnessVouchers.member_id);
+
+
 
                     //if (Common.ConvertDate(objLafitnessVouchers.expire_date) != '1/1/1') {
                     //    var Date = Common.ConvertDate(objLafitnessVouchers.expire_date);
@@ -88,7 +91,8 @@
                     $('#lbltitle').html('Edit Voucher');
 
                     $('#catname').focus().removeClass("validate");
-                    $('#AddCategory').modal('show');
+                    $('#EditCategory').modal('show');
+
                 }
                 else {
                     alert(result.data);
@@ -122,8 +126,17 @@
     function Validate() {
 
         //Account Information
-        if ($.trim($('#voucher').val()) == '') { document.getElementsByName('voucher')[0].placeholder = 'Category Name Required'; $('#voucher').focus().addClass("validate"); return false; } else { $('#voucher').focus().removeClass("validate"); }
-        if ($.trim($('#expire_date').val()) == '') { document.getElementsByName('expire_date')[0].placeholder = 'Category Name Required'; $('#expire_date').focus().addClass("validate"); return false; } else { $('#expire_date').focus().removeClass("validate"); }
+        if ($.trim($('#voucher').val()) == '') { document.getElementsByName('voucher')[0].placeholder = 'Required'; $('#voucher').focus().addClass("validate"); return false; } else { $('#voucher').focus().removeClass("validate"); }
+        if ($.trim($('#expire_date').val()) == '') { document.getElementsByName('expire_date')[0].placeholder = 'Required'; $('#expire_date').focus().addClass("validate"); return false; } else { $('#expire_date').focus().removeClass("validate"); }
+
+        return true;
+    }
+
+    function EValidate() {
+
+        //Account Information
+        if ($.trim($('#Evoucher').val()) == '') { document.getElementsByName('Evoucher')[0].placeholder = 'Required'; $('#Evoucher').focus().addClass("validate"); return false; } else { $('#Evoucher').focus().removeClass("validate"); }
+        if ($.trim($('#Eexpire_date').val()) == '') { document.getElementsByName('Eexpire_date')[0].placeholder = 'Required'; $('#Eexpire_date').focus().addClass("validate"); return false; } else { $('#Eexpire_date').focus().removeClass("validate"); }
 
         return true;
     }
@@ -193,8 +206,7 @@
 <div class="modal fade" id="AddCategory" tabindex="-1" role="dialog" aria-hidden="true">
     @using (Html.BeginForm("AddLafitnessVouchers", "LafitnessVouchers", FormMethod.Post, new { style = "margin-bottom:0" }))
     {
-        <input type="hidden" id="Id" name="Id" value="0" />
-
+      
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -212,10 +224,13 @@
                             <label>Expire Date <span class="red-t">*</span></label>
                             <input type="text" id="expire_date" name="expire_date" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="" value="" class="form-control">
                         </div>
+
+                       
+
                     </div>
 
                     <div class="row">
-                     
+
                     </div>
                 </div>
                 <div class="modal-footer clearfix">
@@ -226,3 +241,56 @@
         </div>
     }
 </div>
+
+
+
+
+
+<div class="modal fade" id="EditCategory" tabindex="-1" role="dialog" aria-hidden="true">
+    @using (Html.BeginForm("AddLafitnessVouchers", "LafitnessVouchers", FormMethod.Post, new { style = "margin-bottom:0" }))
+    {
+        <input type="hidden" id="Id" name="Id" value="0" />
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span id="lbltitle"></span></h4>
+                </div>
+                <div class="modal-body validation">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Voucher<span class="red-t">*</span></label>
+                            <input type="text" id="Evoucher" name="voucher" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="" value="" class="form-control">
+                        </div>
+
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Expire Date <span class="red-t">*</span></label>
+                            <input type="text" id="Eexpire_date" name="expire_date" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="" value="" class="form-control">
+                        </div>
+
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Assigned Member Id </label>
+                            <input type="text" id="member_id" name="member_id" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="" value="" class="form-control">
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                    </div>
+                </div>
+                <div class="modal-footer clearfix">
+                    <input type="submit" onclick="return EValidate();" value="Submit" class="btn btn-danger">
+                    <a class="btn btn-primary pull-left" data-dismiss="modal">Cancel</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+
+
+

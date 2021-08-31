@@ -10,7 +10,8 @@
 
     $(document).ready(function () {
         $("#lastdate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-10:+10", altFormat: 'mm/dd/yy' });
-        $('#wWomensdayLocations').addClass('active');
+        $('#MEvents').addClass('active');
+        $('#WWomensdayLocations').addClass('active');
         $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
         $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
 
@@ -57,7 +58,7 @@
             success: function (result) {
                 if (result.ok) {
                     var objWomensdayLocations = result.data;
-                    $('#id').val(objWomensdayLocations.id);
+                    $('#Id').val(objWomensdayLocations.Id);
                     $('#location').val(objWomensdayLocations.location);
                     $('#adminemail').val(objWomensdayLocations.adminemail);
                     $('#amount').val(objWomensdayLocations.amount);
@@ -169,7 +170,7 @@
 <div class="modal fade" id="AddWomensdayLocations" tabindex="-1" role="dialog" aria-hidden="true">
     @using (Html.BeginForm("AddWomensdayLocations", "WomensdayLocations", FormMethod.Post, new { enctype = "multipart/form-data", style = "margin-bottom:0" }))
     {
-        <input type="hidden" id="id" name="id" value="0" />
+        <input type="hidden" id="Id" name="Id" value="0" />
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

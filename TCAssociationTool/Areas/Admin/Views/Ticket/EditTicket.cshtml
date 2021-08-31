@@ -105,23 +105,47 @@
                                     <th width="15%">Category</th>
 
                                 </tr>
-                                
-                                <tr id="view-@objTicket.firstname">
-                                    <td width="15%">
-                                        <label>@objTicket.firstname</label>
-                                    </td>
-                                    <td width="15%">
-                                        <label>@objTicket.lastname</label>
-                                    </td>
-                                    <td width="15%">
-                                        <label>@objTicket.age</label>
-                                    </td>
-                                    <td width="15%">
-                                        <label>@objTicket.category</label>
-                                    </td>
+                                @if (objTicket.firstname != "")
+                                {
+                                    <tr id="view-@objTicket.firstname">
+                                        <td width="15%">
+                                            <label>@objTicket.firstname</label>
+                                        </td>
+                                        <td width="15%">
+                                            <label>@objTicket.lastname</label>
+                                        </td>
+                                        <td width="15%">
+                                            <label>@objTicket.age</label>
+                                        </td>
+                                        <td width="15%">
+                                            <label>@objTicket.category</label>
+                                        </td>
 
-                                </tr>
-                               
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr id="view-@objTicket.firstname">
+                                        <td width="15%">
+                                            <input type="text" class="form-control" value="@objTicket.firstname" id="firstname" name="firstname" >
+
+                                        </td>
+                                        <td width="15%">
+                                            <input type="text" class="form-control" value="@objTicket.lastname" id="lastname" name="lastname">
+                                        </td>
+                                        <td width="15%">
+                                            <input type="text" class="form-control" value="@objTicket.age" id="age" name="age">
+
+                                        </td>
+                                        <td width="15%">
+                                            <input type="text" class="form-control" value="@objTicket.category" id="category" name="category">
+
+                                        </td>
+
+                                    </tr>
+                                }
+
+
                             </tbody>
                         </table>
                 

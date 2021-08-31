@@ -43,29 +43,29 @@
     <div class="box validation">
         <!-- /.box-header -->
         <div class="box-header">
-            <h3 class="box-title dis-in">View Vaccinations </h3>
+            <h3 class="box-title dis-in">View Vaccination Details</h3>
         </div>
 
-        @using (Html.BeginForm("VaccinationsCommentUpdate", "Golf2021", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("VaccinationsCommentUpdate", "Vaccinations", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             <input type="hidden" name="Id" id="Id" value="@objVaccinations.Id" />
             <div class="box-body">
                 <div class="row">
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>Title</label>
+                        <label>Member Name :</label>
                         @objVaccinations.membername
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>Position </label>
+                        <label>Position :</label>
                         @objVaccinations.position
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>Relation </label>
+                        <label>Relation :</label>
                         @objVaccinations.relation
                     </div>
 
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>First Name </label>
+                        <label>First Name :</label>
                         @objVaccinations.firstname
                     </div>
 
@@ -77,20 +77,20 @@
                 <div class="row">
 
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>Last Name </label>
+                        <label>Last Name :</label>
                         @objVaccinations.lastname
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>Phone </label>
+                        <label>Contact Phone :</label>
                         @objVaccinations.phone
                     </div>
 
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>Age </label>
+                        <label>Age :</label>
                         @objVaccinations.age
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>Date Sent </label>
+                        <label>Date Sent :</label>
                         @(objVaccinations.datesent != null && objVaccinations.datesent != DateTime.MinValue ? objVaccinations.datesent.ToString("dd/MM/yyyy") : "N/A")
                     </div>
 
@@ -103,7 +103,7 @@
                 <div class="row">
 
                     <div class="col-xs-12 col-lg-4 col-sm-6">
-                        <label>Comments </label>
+                        <label>Comments : </label>
                         <textarea id="comments" name="comments" class="form-control">@objVaccinations.comments</textarea>
                         <span class="field-validation-error" id="spancomments"></span>
 

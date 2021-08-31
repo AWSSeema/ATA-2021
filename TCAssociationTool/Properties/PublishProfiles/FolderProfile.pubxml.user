@@ -9,7 +9,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <_PublishTargetUrl>D:\Development\Projects\TeluguAssociationTool\Deploy</_PublishTargetUrl>
     <LastUsedBuildConfiguration>Release</LastUsedBuildConfiguration>
     <LastUsedPlatform>Any CPU</LastUsedPlatform>
-    <History>True|2021-08-30T07:41:31.1919852Z;</History>
+    <History>True|2021-08-31T10:03:02.7781475Z;True|2021-08-30T13:11:31.1919852+05:30;</History>
   </PropertyGroup>
   <ItemGroup>
     <File Include="Areas/Admin/Views/Account/ChangePassword.cshtml">
@@ -22,16 +22,28 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/23/2021 16:33:41</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Account/Profile.cshtml">
-      <publishTime>08/23/2021 16:33:42</publishTime>
+      <publishTime>08/31/2021 11:50:39</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Account/UserValidate.cshtml">
       <publishTime>08/23/2021 16:33:42</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Adminemails/AdminemailsList.cshtml">
-      <publishTime>08/27/2021 18:25:58</publishTime>
+      <publishTime>08/31/2021 13:18:40</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Adminemails/Index.cshtml">
-      <publishTime>08/27/2021 18:15:06</publishTime>
+      <publishTime>08/31/2021 13:02:21</publishTime>
+    </File>
+    <File Include="Areas/Admin/Views/AmericaBharati/AddDetails.cshtml">
+      <publishTime>08/31/2021 15:22:49</publishTime>
+    </File>
+    <File Include="Areas/Admin/Views/AmericaBharati/DetailsList.cshtml">
+      <publishTime>08/31/2021 15:22:49</publishTime>
+    </File>
+    <File Include="Areas/Admin/Views/AmericaBharati/EditDetails.cshtml">
+      <publishTime>08/31/2021 15:22:49</publishTime>
+    </File>
+    <File Include="Areas/Admin/Views/AmericaBharati/Index.cshtml">
+      <publishTime>08/31/2021 15:31:00</publishTime>
     </File>
     <File Include="Areas/Admin/Views/ApplicationSettings/Index.cshtml">
       <publishTime>08/23/2021 16:33:42</publishTime>
@@ -88,13 +100,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/27/2021 14:55:01</publishTime>
     </File>
     <File Include="Areas/Admin/Views/CommunityNews/CommunityNewsList.cshtml">
-      <publishTime>08/27/2021 14:55:01</publishTime>
+      <publishTime>08/31/2021 12:27:08</publishTime>
     </File>
     <File Include="Areas/Admin/Views/CommunityNews/EditCommunityNews.cshtml">
       <publishTime>08/27/2021 14:55:01</publishTime>
     </File>
     <File Include="Areas/Admin/Views/CommunityNews/Index.cshtml">
       <publishTime>08/27/2021 14:55:01</publishTime>
+    </File>
+    <File Include="Areas/Admin/Views/CommunityNews/ViewCommunityNews.cshtml">
+      <publishTime>08/31/2021 12:21:18</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Coupons/AddCoupons.cshtml">
       <publishTime>08/28/2021 14:59:31</publishTime>
@@ -106,7 +121,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/28/2021 14:59:31</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Coupons/Index.cshtml">
-      <publishTime>08/30/2021 11:42:54</publishTime>
+      <publishTime>08/31/2021 11:43:14</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Coupons/ViewCoupons.cshtml">
       <publishTime>08/28/2021 14:59:31</publishTime>
@@ -118,10 +133,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/25/2021 12:44:33</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Cultural/Index.cshtml">
-      <publishTime>08/30/2021 12:59:48</publishTime>
+      <publishTime>08/31/2021 11:10:33</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Cultural/ViewCultural.cshtml">
       <publishTime>08/25/2021 12:44:33</publishTime>
+    </File>
+    <File Include="Areas/Admin/Views/CulturalLocations/CulturalLocationsList.cshtml">
+      <publishTime>08/30/2021 18:52:34</publishTime>
+    </File>
+    <File Include="Areas/Admin/Views/CulturalLocations/Index.cshtml">
+      <publishTime>08/30/2021 18:54:07</publishTime>
     </File>
     <File Include="Areas/Admin/Views/CulturalRegistrations/CulturalRegistrationsList.cshtml">
       <publishTime>08/26/2021 18:48:05</publishTime>
@@ -130,7 +151,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/26/2021 18:44:46</publishTime>
     </File>
     <File Include="Areas/Admin/Views/CulturalRegistrations/Index.cshtml">
-      <publishTime>08/30/2021 13:00:09</publishTime>
+      <publishTime>08/31/2021 13:35:25</publishTime>
     </File>
     <File Include="Areas/Admin/Views/CulturalRegistrations/ViewCulturalRegistrations.cshtml">
       <publishTime>08/26/2021 18:45:03</publishTime>
@@ -172,13 +193,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/26/2021 18:28:54</publishTime>
     </File>
     <File Include="Areas/Admin/Views/EventForm/EventFormList.cshtml">
-      <publishTime>08/26/2021 15:37:19</publishTime>
+      <publishTime>08/31/2021 14:42:06</publishTime>
     </File>
     <File Include="Areas/Admin/Views/EventForm/Index.cshtml">
-      <publishTime>08/30/2021 12:58:53</publishTime>
+      <publishTime>08/31/2021 14:43:28</publishTime>
     </File>
     <File Include="Areas/Admin/Views/EventForm/ViewEventForm.cshtml">
-      <publishTime>08/26/2021 13:31:14</publishTime>
+      <publishTime>08/31/2021 14:43:53</publishTime>
     </File>
     <File Include="Areas/Admin/Views/EventRegistrations/EditEventUser.cshtml">
       <publishTime>08/23/2021 16:33:42</publishTime>
@@ -216,6 +237,15 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Areas/Admin/Views/Events/ViewEvent.cshtml">
       <publishTime>08/23/2021 16:33:43</publishTime>
     </File>
+    <File Include="Areas/Admin/Views/Feedbacks/FeedbacksList.cshtml">
+      <publishTime>08/30/2021 16:20:59</publishTime>
+    </File>
+    <File Include="Areas/Admin/Views/Feedbacks/Index.cshtml">
+      <publishTime>08/30/2021 16:27:38</publishTime>
+    </File>
+    <File Include="Areas/Admin/Views/Feedbacks/ViewFeedbacks.cshtml">
+      <publishTime>08/30/2021 16:25:35</publishTime>
+    </File>
     <File Include="Areas/Admin/Views/Flyers/Flyerslist.cshtml">
       <publishTime>08/23/2021 16:33:43</publishTime>
     </File>
@@ -226,10 +256,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/26/2021 18:28:49</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Golf2021/Golf2021List.cshtml">
-      <publishTime>08/25/2021 10:32:37</publishTime>
+      <publishTime>08/30/2021 17:15:35</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Golf2021/Index.cshtml">
-      <publishTime>08/26/2021 15:15:03</publishTime>
+      <publishTime>08/30/2021 15:07:37</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Golf2021/ViewGolf2021.cshtml">
       <publishTime>08/26/2021 15:13:36</publishTime>
@@ -238,7 +268,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/25/2021 12:44:33</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Greetings/Index.cshtml">
-      <publishTime>08/25/2021 12:44:33</publishTime>
+      <publishTime>08/31/2021 11:38:28</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Home/Index.cshtml">
       <publishTime>08/23/2021 16:33:43</publishTime>
@@ -274,7 +304,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/30/2021 12:56:02</publishTime>
     </File>
     <File Include="Areas/Admin/Views/LafitnessVouchers/Index.cshtml">
-      <publishTime>08/30/2021 11:43:24</publishTime>
+      <publishTime>08/31/2021 12:50:19</publishTime>
     </File>
     <File Include="Areas/Admin/Views/LafitnessVouchers/LafitnessVouchersList.cshtml">
       <publishTime>08/27/2021 16:12:12</publishTime>
@@ -301,7 +331,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/23/2021 16:33:44</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Members/Index.cshtml">
-      <publishTime>08/26/2021 13:43:55</publishTime>
+      <publishTime>08/31/2021 12:47:53</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Members/MembersList.cshtml">
       <publishTime>08/26/2021 15:29:34</publishTime>
@@ -373,19 +403,19 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/23/2021 16:33:45</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Scholarships/EditScholarships.cshtml">
-      <publishTime>08/26/2021 16:10:35</publishTime>
+      <publishTime>08/31/2021 10:30:10</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Scholarships/Index.cshtml">
-      <publishTime>08/26/2021 18:07:07</publishTime>
+      <publishTime>08/30/2021 17:46:46</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Scholarships/ScholarshipsList.cshtml">
       <publishTime>08/26/2021 18:07:08</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Scholarships/ViewScholarships.cshtml">
-      <publishTime>08/25/2021 13:22:35</publishTime>
+      <publishTime>08/30/2021 17:19:02</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Shared/_MainLayout.cshtml">
-      <publishTime>08/30/2021 13:00:40</publishTime>
+      <publishTime>08/31/2021 15:28:37</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Sponsors/Index.cshtml">
       <publishTime>08/26/2021 13:03:47</publishTime>
@@ -406,16 +436,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/27/2021 14:55:01</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Ticket/EditTicket.cshtml">
-      <publishTime>08/27/2021 11:07:47</publishTime>
+      <publishTime>08/31/2021 15:00:22</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Ticket/Index.cshtml">
-      <publishTime>08/30/2021 12:59:00</publishTime>
+      <publishTime>08/31/2021 15:22:58</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Ticket/TicketList.cshtml">
-      <publishTime>08/27/2021 10:49:55</publishTime>
+      <publishTime>08/31/2021 15:02:45</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Ticket/ViewTicket.cshtml">
-      <publishTime>08/27/2021 11:09:08</publishTime>
+      <publishTime>08/31/2021 15:03:29</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Users/Index.cshtml">
       <publishTime>08/23/2021 16:33:45</publishTime>
@@ -430,16 +460,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/27/2021 12:43:15</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Vaccinations/EditVaccinations.cshtml">
-      <publishTime>08/26/2021 18:29:17</publishTime>
+      <publishTime>08/30/2021 16:40:30</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Vaccinations/Index.cshtml">
-      <publishTime>08/27/2021 14:57:12</publishTime>
+      <publishTime>08/30/2021 16:34:44</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Vaccinations/VaccinationsList.cshtml">
       <publishTime>08/27/2021 13:06:20</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Vaccinations/ViewVaccinations.cshtml">
-      <publishTime>08/26/2021 15:33:16</publishTime>
+      <publishTime>08/31/2021 11:47:08</publishTime>
     </File>
     <File Include="Areas/Admin/Views/VideoGallery/AddVideo.cshtml">
       <publishTime>08/23/2021 16:33:45</publishTime>
@@ -499,7 +529,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/26/2021 18:30:16</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Womensday/Index.cshtml">
-      <publishTime>08/30/2021 12:58:45</publishTime>
+      <publishTime>08/31/2021 13:35:41</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Womensday/ViewWomensday.cshtml">
       <publishTime>08/26/2021 11:15:25</publishTime>
@@ -508,10 +538,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/26/2021 15:35:59</publishTime>
     </File>
     <File Include="Areas/Admin/Views/WomensdayLocations/Index.cshtml">
-      <publishTime>08/25/2021 15:32:49</publishTime>
+      <publishTime>08/31/2021 13:46:45</publishTime>
     </File>
     <File Include="Areas/Admin/Views/WomensdayLocations/WomensdayLocationsList.cshtml">
-      <publishTime>08/25/2021 15:28:05</publishTime>
+      <publishTime>08/31/2021 13:40:10</publishTime>
     </File>
     <File Include="Areas/API/Views/DonateNow/Acknowledgement.cshtml">
       <publishTime>08/23/2021 16:33:46</publishTime>
@@ -823,22 +853,22 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/23/2021 16:33:23</publishTime>
     </File>
     <File Include="bin/TCAssociationTool.BLL.dll">
-      <publishTime>08/30/2021 13:11:01</publishTime>
+      <publishTime>08/31/2021 15:32:14</publishTime>
     </File>
     <File Include="bin/TCAssociationTool.BLL.pdb">
-      <publishTime>08/30/2021 13:11:01</publishTime>
+      <publishTime>08/31/2021 15:32:14</publishTime>
     </File>
     <File Include="bin/TCAssociationTool.DAL.dll">
-      <publishTime>08/30/2021 13:11:00</publishTime>
+      <publishTime>08/31/2021 15:32:13</publishTime>
     </File>
     <File Include="bin/TCAssociationTool.DAL.pdb">
-      <publishTime>08/30/2021 13:11:00</publishTime>
+      <publishTime>08/31/2021 15:32:13</publishTime>
     </File>
     <File Include="bin/TCAssociationTool.dll">
-      <publishTime>08/30/2021 13:11:03</publishTime>
+      <publishTime>08/31/2021 15:32:16</publishTime>
     </File>
     <File Include="bin/TCAssociationTool.pdb">
-      <publishTime>08/30/2021 13:11:03</publishTime>
+      <publishTime>08/31/2021 15:32:16</publishTime>
     </File>
     <File Include="ckeditor/.htaccess">
       <publishTime>08/23/2021 16:33:53</publishTime>
@@ -9592,7 +9622,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/23/2021 16:36:09</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>08/30/2021 13:11:07</publishTime>
+      <publishTime>08/31/2021 15:32:19</publishTime>
     </File>
   </ItemGroup>
 </Project>

@@ -91,6 +91,50 @@
         });
     }
 
+
+    function AdminemailsUpdateismembership(Id) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AdminemailsUpdateismembership", "Adminemails")', // the URL of the controller action method
+            data: { id: Id }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    $('#divmessage').html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    AdminemailsBind($('#hdnPageNo').val());
+                }
+                else {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+
+    function AdminemailsUpdateisdonation(Id) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AdminemailsUpdateisdonation", "Adminemails")', // the URL of the controller action method
+            data: { id: Id }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    $('#divmessage').html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    AdminemailsBind($('#hdnPageNo').val());
+                }
+                else {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
 </script>
 
 @if (Total == -1)
@@ -126,18 +170,32 @@ else
                 </th>
                 <th width="10%">
                     <a onclick="javascript:sortresult('ismembership');" class="white-t-u">
-                        Is Membership @if (sortcolumn == "ismembership")
+                        Is MemberShip @if (sortcolumn == "ismembership")
                         {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
                     </a>
                 </th>
 
                 <th width="10%">
                     <a onclick="javascript:sortresult('isdonation');" class="white-t-u">
-                        Is Donation @if (sortcolumn == "isdonation")
+                        IS Donation @if (sortcolumn == "isdonation")
                         {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
                     </a>
                 </th>
 
+
+                <th width="12%">
+                    <a onclick="javascript:sortresult('ismembership');" class="white-t-u">
+                        Default  Membership @if (sortcolumn == "ismembership")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+
+                <th width="10%">
+                    <a onclick="javascript:sortresult('isdonation');" class="white-t-u">
+                        Default Donation @if (sortcolumn == "isdonation")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
 
                 <th width="10%">Action</th>
             </tr>
@@ -154,6 +212,57 @@ else
                 <td class="t-t-c" style="text-align: left">@item.name</td>
                 <td class="t-t-c" style="text-align: left">@item.email</td>
                 <td class="t-t-c" style="text-align: left">@item.designation</td>
+
+                <td>
+                    @{
+                        var isactive2 = "";
+                        var active2 = "";
+                        var disable2 = "";
+                        if (item.ismembership == true)
+                        {
+                            isactive2 = "Active";
+                            disable2 = "style=\"cursor: pointer;\" onclick=\"javascript:AdminemailsUpdateismembership(" + item.Id + ");\"";
+                        }
+                        else
+                        {
+                            isactive2 = "Disabled";
+                            active2 = "style=\"cursor: pointer;\" onclick=\"javascript:AdminemailsUpdateismembership(" + item.Id + ");\"";
+                        }
+                        <div class="admin-active">
+                            @isactive2
+                            <ul>
+                                <li><a @Html.Raw(active2)>Active</a></li>
+                                <li><a @Html.Raw(disable2)>Disabled</a></li>
+                            </ul>
+                        </div>
+                    }
+                </td>
+
+
+                <td>
+                    @{
+                        var isactive3 = "";
+                        var active3 = "";
+                        var disable3 = "";
+                        if (item.isdonation == true)
+                        {
+                            isactive3 = "Active";
+                            disable3 = "style=\"cursor: pointer;\" onclick=\"javascript:AdminemailsUpdateisdonation(" + item.Id + ");\"";
+                        }
+                        else
+                        {
+                            isactive3 = "Disabled";
+                            active3 = "style=\"cursor: pointer;\" onclick=\"javascript:AdminemailsUpdateisdonation(" + item.Id + ");\"";
+                        }
+                        <div class="admin-active">
+                            @isactive3
+                            <ul>
+                                <li><a @Html.Raw(active3)>Active</a></li>
+                                <li><a @Html.Raw(disable3)>Disabled</a></li>
+                            </ul>
+                        </div>
+                    }
+                </td>
 
                 <td>
                     @{
@@ -199,14 +308,14 @@ else
                         <div class="admin-active">
                             @isactive1
                             <ul>
-                                <li><a @Html.Raw(active)>Active</a></li>
-                                <li><a @Html.Raw(disable)>Disabled</a></li>
+                                <li><a @Html.Raw(active1)>Active</a></li>
+                                <li><a @Html.Raw(disable1)>Disabled</a></li>
                             </ul>
                         </div>
                     }
                 </td>
 
-        
+
 
                 <td>
                     <a onclick="AdminemailsEdit(@item.Id);" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>

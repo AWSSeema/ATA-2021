@@ -48,8 +48,30 @@
         }
     }
 
+         function Golf2021UpdatePaymentStatus(Id)
+        {
 
-   
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Golf2021UpdatePaymentStatus", "Golf2021")', // the URL of the controller action method
+            data: { Id: Id }, // optional data
+            datatype: "JSON",
+            success: function(result) {
+                    if (result.ok)
+                    {
+                    $('#divmessage').html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                        Golf2021Bind($('#hdnPageNo').val());
+                    }
+                    else
+                    {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    }
+                }
+            });
+        }
+
 </script>
 
 @if (Total == -1)
@@ -61,7 +83,7 @@ else
     <table width="100%" class="table table-bordered table-hover">
         <thead>
             <tr>
-               
+
                 <th style="text-align: center;" width="5%">S.No.</th>
                 <th>
                     <a onclick="javascript:sortresult('playertype');" class="white-t-u">
@@ -71,22 +93,23 @@ else
                 </th>
                 <th width="10%">
                     <a onclick="javascript:sortresult('player1_name');" class="white-t-u">
-                        Name @if (sortcolumn == "player1_name")
-                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
-                    </a>
-                </th>
-                <th width="10%">
-                    <a onclick="javascript:sortresult('player1_email');" class="white-t-u">
-                        Email @if (sortcolumn == "player1_email")
+                        Player1  Name @if (sortcolumn == "player1_name")
                         {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
                     </a>
                 </th>
                 <th width="10%">
                     <a onclick="javascript:sortresult('player1_phone');" class="white-t-u">
-                        Phone @if (sortcolumn == "player1_phone")
+                        Player1  Phone @if (sortcolumn == "player1_phone")
                         {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
                     </a>
                 </th>
+                <th width="10%">
+                    <a onclick="javascript:sortresult('player1_email');" class="white-t-u">
+                        Player1 Email @if (sortcolumn == "player1_email")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+
                 <th width="10%">
                     <a onclick="javascript:sortresult('sponsorship');" class="white-t-u">
                         Sponsorship @if (sortcolumn == "sponsorship")
@@ -123,21 +146,47 @@ else
                 foreach (var item in lstGolf2021)
                 {
             <tr valign="top">
-               
+
                 <td style="text-align: center;">@item.RId</td>
                 <td class="t-t-c" style="text-align: left">@item.playertype</td>
                 <td class="t-t-c" style="text-align: left">@item.player1_name</td>
-                <td class="t-t-c" style="text-align: left">@item.player1_email</td>
                 <td class="t-t-c" style="text-align: left">@item.player1_phone</td>
+                <td class="t-t-c" style="text-align: left">@item.player1_email</td>
                 <td class="t-t-c" style="text-align: left">@item.sponsorship</td>
                 <td class="t-t-c" style="text-align: left">@item.amount</td>
-                <td class="t-t-c" style="text-align: left">@item.PaymentStauts</td>
+              
+                <td>
+                    @{
+                        var isactive = "";
+                        var active = "";
+                        var disable = "";
+                        if (item.payment_status == 1)
+                        {
+                            isactive = "Completed";
+                            disable = "style=\"cursor: pointer;\" onclick=\"javascript:Golf2021UpdatePaymentStatus(" + item.Id + ");\"";
+                        }
+                        else
+                        {
+                            isactive = "Pending";
+                            active = "style=\"cursor: pointer;\" onclick=\"javascript:Golf2021UpdatePaymentStatus(" + item.Id + ");\"";
+                        }
+                        <div class="admin-active">
+                            @isactive
+                            <ul>
+                                <li><a @Html.Raw(active)>Completed</a></li>
+                                <li><a @Html.Raw(disable)>Pending</a></li>
+                            </ul>
+                        </div>
+                    }
+                </td>
+
+               
 
                 <td class="t-t-c" style="text-align: left">@item.created_at.ToString("dd-MM-yyyy")</td>
 
                 <td>
                     <a href="@Url.Action("ViewGolf2021", "Golf2021", new { Id = item.Id})" title="View" class="r-p5"><i class="fa fa-eye"></i></a>
-                    <a href="@Url.Action("EditGolf2021", "Golf2021", new { Id = item.Id})" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>
+                    @*<a href="@Url.Action("EditGolf2021", "Golf2021", new { Id = item.Id})" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>*@
                     @if (userRole.Contains("SuperAdmin"))
                     {
                         <a class="themedelete" onclick="javascript:DeleteGolf2021(@item.Id);" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>

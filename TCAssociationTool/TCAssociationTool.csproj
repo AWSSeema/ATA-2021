@@ -154,6 +154,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminemailsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AmericaBharatiController.cs" />
     <Compile Include="Areas\Admin\Controllers\ApplicationSettingsController.cs" />
     <Compile Include="Areas\Admin\Controllers\ATAMessagesController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoriesController.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="Areas\Admin\Controllers\FlyersController.cs" />
     <Compile Include="Areas\Admin\Controllers\Golf2021Controller.cs" />
     <Compile Include="Areas\Admin\Controllers\GreetingsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\HealthController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\InnerPageMasterController.cs" />
     <Compile Include="Areas\Admin\Controllers\InnerPagesController.cs" />
@@ -2623,6 +2625,14 @@
     <Content Include="Areas\Admin\Views\CulturalLocations\Index.cshtml" />
     <Content Include="Areas\Admin\Views\CulturalLocations\CulturalLocationsList.cshtml" />
     <Content Include="Areas\Admin\Views\CommunityNews\ViewCommunityNews.cshtml" />
+    <Content Include="Areas\Admin\Views\AmericaBharati\AddDetails.cshtml" />
+    <Content Include="Areas\Admin\Views\AmericaBharati\DetailsList.cshtml" />
+    <Content Include="Areas\Admin\Views\AmericaBharati\EditDetails.cshtml" />
+    <Content Include="Areas\Admin\Views\AmericaBharati\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Health\EditHealth.cshtml" />
+    <Content Include="Areas\Admin\Views\Health\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Health\HealthList.cshtml" />
+    <Content Include="Areas\Admin\Views\Health\AddHealth.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
   </ItemGroup>
   <PropertyGroup>

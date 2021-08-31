@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adminemails.cs" />
+    <Compile Include="AmericaBharati.cs" />
     <Compile Include="AppInfo.cs" />
     <Compile Include="ATAMessages.cs" />
     <Compile Include="Categories.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Donors.cs" />
     <Compile Include="Enquiries.cs" />
     <Compile Include="Entities\Adminemails.cs" />
+    <Compile Include="Entities\AmericaBharati.cs" />
     <Compile Include="Entities\AppInfo.cs" />
     <Compile Include="Entities\ATAMessages.cs" />
     <Compile Include="Entities\Categories.cs" />
@@ -87,6 +89,7 @@
     <Compile Include="Entities\Flyers.cs" />
     <Compile Include="Entities\Golf2021.cs" />
     <Compile Include="Entities\Greetings.cs" />
+    <Compile Include="Entities\Health.cs" />
     <Compile Include="Entities\InnerPageCategories.cs" />
     <Compile Include="Entities\InnerPages.cs" />
     <Compile Include="Entities\LafitnessVouchers.cs" />
@@ -121,6 +124,7 @@
     <Compile Include="Flyers.cs" />
     <Compile Include="Golf2021.cs" />
     <Compile Include="Greetings.cs" />
+    <Compile Include="Health.cs" />
     <Compile Include="InnerPageCategories.cs" />
     <Compile Include="InnerPages.cs" />
     <Compile Include="LafitnessVouchers.cs" />

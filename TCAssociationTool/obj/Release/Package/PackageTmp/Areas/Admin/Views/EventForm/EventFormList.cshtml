@@ -189,8 +189,9 @@ else
 
 
                 <td class="t-t-c" style="text-align: left">@(item.datesent != null && item.datesent != DateTime.MinValue ? item.datesent.ToString("dd/MM/yyyy") : "N/A")</td>
-
+                
                 <td>
+                    <a href="@Url.Action("", "EventForm", new { Id = item.Id})" title="View" class="r-p5"><i class="fa fa-envelope"></i></a>
                     <a href="@Url.Action("ViewEventForm", "EventForm", new { Id = item.Id})" title="View" class="r-p5"><i class="fa fa-eye"></i></a>
                     <a href="@Url.Action("EditEventForm", "EventForm", new { Id = item.Id})" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>
                     @if (userRole.Contains("SuperAdmin"))

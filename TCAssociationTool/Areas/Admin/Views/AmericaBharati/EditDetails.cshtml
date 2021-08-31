@@ -1,0 +1,120 @@
+﻿@{
+    ViewBag.Title = "Create America Bharatis";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    var cssloc = System.Configuration.ConfigurationManager.AppSettings["usersiteurl"] + "Content/Admin/front-end-style.css";
+
+    TCAssociationTool.Entities.AmericaBharati objDetails = ViewBag.objDetails;
+}
+
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        $('#wAmericaBharati').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+
+    function Validate() {
+        if ($.trim($('#heading').val()) == '') { document.getElementsByName('heading')[0].placeholder = 'Page Name Required'; $('#heading').focus().addClass("validate"); return false; } else { $('#heading').focus().removeClass("validate"); }
+        if ($.trim($('#pagetitle').val()) == '') { document.getElementsByName('pagetitle')[0].placeholder = 'Page Title Required'; $('#pagetitle').focus().addClass("validate"); return false; } else { $('#pagetitle').focus().removeClass("validate"); }
+        if (CKEDITOR.instances.description.getData() == "") { $('#description').focus().addClass("red-border"); $('#lblDescription').html('Description Required.'); return false; } else { $('#description').val(CKEDITOR.instances.Description.getData()); $('#lblDescription').html(''); }
+
+        return true;
+    }
+    function ResetValidateClass() {
+        $('#Heading').removeClass("validate");
+        $('#InnerPageCategoryId').removeClass("validate");
+    }
+
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Edit America Bharati </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "AmericaBharati")"><i class="fa fa-list-alt"></i>America Bharati</a></li>
+        <li class="active">Edit America Bharati</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="clearfix sepH_b"></div>
+    @using (Html.BeginForm("AddDetails", "AmericaBharati", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="hidden" name="id" id="id" value="@objDetails.id" />
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">America Bharati Details </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Page Name : <span class="red-t">*</span></label>
+                        <input type="text" id="heading" onkeypress="ResetValidateClass();" value="@objDetails.heading" onclick="ResetValidateClass();" name="heading" class="form-control">
+                    </div>
+
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Page Redirect URL :  </label>
+                        <input type="text" id="pageurl" onkeypress="ResetValidateClass();" value="@objDetails.pageurl" onclick="ResetValidateClass();" name="pageurl" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>(OR) File Name (Manual create this page):</label>
+                        <input type="text" id="filename" onkeypress="ResetValidateClass();" value="@objDetails.filename" onclick="ResetValidateClass();" name="filename" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Page Title :<span class="red-t">*</span> </label>
+                        <textarea id="pagetitle" name="pagetitle" class="form-control">@objDetails.pagetitle</textarea>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>MetaKey words : </label>
+                        <textarea id="metakeywords" name="metakeywords" class="form-control">@objDetails.metakeywords</textarea>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Meta Description : </label>
+                        <textarea id="metadesc" name="metadesc" class="form-control">@objDetails.metadesc</textarea>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-lg-12 col-sm-6">
+                        <label>Description : <span class="red-t">*</span></label>
+                        <textarea rows="10" name="description" id="description" cols="80" style="visibility: hidden; display: none;">@objDetails.description</textarea><br />
+                        <label id="lblDescription" class="field-validation-error"></label>
+                        <script type="text/javascript">
+                            var editor = CKEDITOR.replace('description', { contentsCss: '@(cssloc)' });
+                            CKFinder.setupCKEditor(editor, '@(System.Configuration.ConfigurationManager.AppSettings["baseurl"])ckfinder/');
+                        </script>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body text-right">
+                <input type="submit" value="Submit" class="btn btn-primary" onclick="return Validate();" />
+                <a class="btn btn-info" href="@Url.Action("Index", "AmericaBharati")">Cancel</a>
+            </div>
+            <!-- /.box-body -->
+        </div>
+    }
+</div>
+
+
+

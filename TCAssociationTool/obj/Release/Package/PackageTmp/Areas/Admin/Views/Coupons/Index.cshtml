@@ -128,8 +128,8 @@
     function Validate() {
 
         //Account Information
-        if ($.trim($('#code').val()) == '') { document.getElementsByName('code')[0].placeholder = 'Required'; $('#Coupon').focus().addClass("validate"); return false; } else { $('#code').focus().removeClass("validate"); }
-        if ($.trim($('#discount').val()) == '') { document.getElementsByName('discount')[0].placeholder = 'Required'; $('#expire_date').focus().addClass("validate"); return false; } else { $('#discount').focus().removeClass("validate"); }
+        if ($.trim($('#code').val()) == '') { document.getElementsByName('code')[0].placeholder = 'Required'; $('#code').focus().addClass("validate"); return false; } else { $('#code').focus().removeClass("validate"); }
+        if ($.trim($('#discount').val()) == '') { document.getElementsByName('discount')[0].placeholder = 'Required'; $('#discount').focus().addClass("validate"); return false; } else { $('#discount').focus().removeClass("validate"); }
 
         return true;
     }

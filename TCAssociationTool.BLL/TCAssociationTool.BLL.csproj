@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adminemails.cs" />
+    <Compile Include="AmericaBharati.cs" />
     <Compile Include="AppInfo.cs" />
     <Compile Include="ATAMessages.cs" />
     <Compile Include="BluePay.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Flyers.cs" />
     <Compile Include="Golf2021.cs" />
     <Compile Include="Greetings.cs" />
+    <Compile Include="Health.cs" />
     <Compile Include="InnerPageCategories.cs" />
     <Compile Include="InnerPages.cs" />
     <Compile Include="LafitnessVouchers.cs" />
