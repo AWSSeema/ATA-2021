@@ -39,14 +39,12 @@
         ref lstSponsors,
         ref lstMediaSponsors,
         ref objAppInfo,
-        ref lstSponsorCategories,
+         ref lstPhotos,
           ref lstVideos,
-         ref lstMenuItems, ref lstMenuItems2, ref lstMenuItems3, ref lstMenuItems4, ref FooterMenuItems,
+         ref lstSponsorCategories,
+           ref lstMenuItems, ref lstMenuItems2, ref lstMenuItems3, ref lstMenuItems4, ref FooterMenuItems,
           ref objSInnerPages,
-          ref lstCommitteeCategories,
-          ref lstEvents,
-          ref lstPhotos,
-        ref Status);
+            ref Status);
 
     lstNews = objInnerPages.lstNews;
     lstSponsors = objInnerPages.lstSponsors;
@@ -78,31 +76,31 @@
 
     var gnimgloc = System.Configuration.ConfigurationManager.AppSettings["adminimgurl"] + "photogallery/normalphoto/";
     var gtimgloc = System.Configuration.ConfigurationManager.AppSettings["adminimgurl"] + "photogallery/thumb/";
-    
+
 }
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 5.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Cache-control" content="description"/>
-<meta http-equiv="Cache-control" content="public"/>
-<meta http-equiv="Cache-control" content="private"/>
-<meta http-equiv="Cache-control" content="no-cache"/>
-<meta http-equiv="Cache-control" content="no-store"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<base href="@(baseurl)" />
+    <meta http-equiv="Cache-control" content="description" />
+    <meta http-equiv="Cache-control" content="public" />
+    <meta http-equiv="Cache-control" content="private" />
+    <meta http-equiv="Cache-control" content="no-cache" />
+    <meta http-equiv="Cache-control" content="no-store" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <base href="@(baseurl)" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <meta name="description" content="@((string)ViewBag.MetaDescription != "" && (string)ViewBag.MetaDescription != null ? (string)ViewBag.MetaDescription : (objAppInfo.MetaDescription != null && objAppInfo.MetaDescription != "" ? objAppInfo.MetaDescription : @appname))" />
     <meta name="keywords" content="@((string)ViewBag.MetaKeywords != "" && (string)ViewBag.MetaKeywords != null ? (string)ViewBag.MetaKeywords : (objAppInfo.MetaKeywords != null && objAppInfo.MetaKeywords != "" ? objAppInfo.MetaKeywords : @appname))" />
     <title>@((string)ViewBag.Title != "" && (string)ViewBag.Title != null ? (string)ViewBag.Title : (objAppInfo.PageTitle != null && objAppInfo.PageTitle != "" ? objAppInfo.PageTitle : @appname))</title>
-<link rel="shortcut icon" href="Content/User/images/fevicon.ico"/>
-    <link rel="stylesheet" type="text/css" href="Content/User/aws.css" />
+    <link rel="shortcut icon" href="Content/User/images/fevicon.ico" />
+    <link rel="stylesheet" type="text/css" href="Content/User/ata.css" />
     <link rel="stylesheet" type="text/css" href="Content/User/default.css" />
     <link rel="stylesheet" type="text/css" href="Content/User/styles.css" />
-<script type="text/javascript" src="Scripts/User/jquery.min.js"></script>
-<script type="text/javascript" src="Scripts/User/jquery.nivo.slider.js"></script>
+    <script type="text/javascript" src="Scripts/User/jquery.min.js"></script>
+    <script type="text/javascript" src="Scripts/User/jquery.nivo.slider.js"></script>
     <script type="text/javascript" src="Scripts/User/Common.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
@@ -110,7 +108,7 @@
                 LoginShow();
                 $('#ErrorMessage').show();
             }
-            
+
 
             $('#login').dialog
              ({
@@ -242,465 +240,510 @@
         }
     </script>
     <SCRIPT type="text/javascript">
-<!--//set image paths
+<!--    //set image paths
         src = ["Content/User/images/user-icon1.png", "Content/User/images/no-image-2.png"] //set corresponding urls
 
 
-    //set duration for each image
-    duration = 3;
+        //set duration for each image
+        duration = 3;
 
-    //Please do not edit below
-    ads = []; ct = 0;
-    function switchAd() {
-        var n = (ct + 1) % src.length;
-        if (ads[n] && (ads[n].complete || ads[n].complete == null)) {
-            document["Ad_Image"].src = ads[ct = n].src;
+        //Please do not edit below
+        ads = []; ct = 0;
+        function switchAd() {
+            var n = (ct + 1) % src.length;
+            if (ads[n] && (ads[n].complete || ads[n].complete == null)) {
+                document["Ad_Image"].src = ads[ct = n].src;
+            }
+            ads[n = (ct + 1) % src.length] = new Image;
+            ads[n].src = src[n];
+            setTimeout("switchAd()", duration * 1000);
         }
-        ads[n = (ct + 1) % src.length] = new Image;
-        ads[n].src = src[n];
-        setTimeout("switchAd()", duration * 1000);
-    }
-    function doLink() {
-        location.href = url[ct];
-    } onload = function () {
-        if (document.images)
-            switchAd();
-    }
-    //-->
-</SCRIPT>
-<!--[if lt IE 9]>
-      <script src="Scripts/User/html5shiv.min.js"></script>
-      <script src="Scripts/User/respond.min.js"></script>
-<![endif]-->
+        function doLink() {
+            location.href = url[ct];
+        } onload = function () {
+            if (document.images)
+                switchAd();
+        }
+        //-->
+    </SCRIPT>
+    <!--[if lt IE 9]>
+          <script src="Scripts/User/html5shiv.min.js"></script>
+          <script src="Scripts/User/respond.min.js"></script>
+    <![endif]-->
 </head>
 <body>
-   <article class="clearfix position-r">
-                                    <article class="clearfix msg-caption">
-                                        <div id="divmessage">
-                                            <div class="pull-right mobile-pull-n" style="max-width:450px; min-width:450px;">
-                                                @if (TempData["message"] != null)
-                                                {@Html.Raw(TempData["message"].ToString())}
-                                                @if (ViewBag.message != null)
-                                                {@Html.Raw(ViewBag.message.ToString())}
+    <article class="clearfix position-r">
+        <article class="clearfix msg-caption">
+            <div id="divmessage">
+                <div class="pull-right mobile-pull-n" style="max-width:450px; min-width:450px;">
+                    @if (TempData["message"] != null)
+                    {@Html.Raw(TempData["message"].ToString())}
+                    @if (ViewBag.message != null)
+                    {@Html.Raw(ViewBag.message.ToString())}
+                </div>
+            </div>
+
+        </article>
+
+    </article>
+
+
+
+    <section class="clearfix off_canvas_animate slide off_canvas_container">
+        <article class="clearfix off_canvas_animate slide off_canvas_top_menu">
+            <article class="clearfix off_canvas_toggles"> <span class="nav_prev_btn"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Back</span> <span class="nav_close_btn"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span> </article>
+        </article>
+    </section>
+    <main class="clearfix content_animate slide content">
+        <!---  Header Section Start ------>
+        <header>
+            <article class="clearfix wrapper headerbac-bg">
+                <article class="clearfix topheadbor">
+                    <article class="clearfix sidestatues-imgs">
+                        <article class="clearfix inner-wrapper">
+                            <article class="clearfix charminar-img">
+                                <article class="clearfix block-row">
+                                    <article class="clearfix left-block eng-head-block"> <a href="@Url.Action("Index", "Home")" class="dis-b t-r t-m26 b-m21"> <img src="Content/User/images/english-title-logo.png" width="418" height="121" alt="" border="0" /> </a> </article>
+                                    <article class="clearfix middle-block h-logo-block position-r"> <a href="index.html" class="dis-b t-c toplogopos"> <img src="Content/User/images/logo.png" class="logoshad" width="205" height="189" alt="" border="0" /> </a> </article>
+                                    <article class="clearfix right-block tel-head-block"> <a href="@Url.Action("Index", "Home")" class="dis-b t-r t-m20"> <img src="Content/User/images/telugu-title-logo.png" width="420" height="128" alt="" border="0" /> </a> </article>
+                                </article>
+                            </article>
+                        </article>
+                    </article>
+                </article>
+            </article>
+            <article class="clearfix wrapper menubac-bg ">
+                <article class="clearfix inner-wrapper ">
+                    <menu class="clearfix">
+                        <span class="nav_toggle pull-right"> <span class="glyphicon glyphicon-align-justify b-p3" aria-hidden="true"></span> </span>
+                        <nav class="clearfix resmenuwrapper ">                            
+                            <ul class="clearfix list-pn m0 menu">
+                                <li class="active"><a href="@Url.Action("Index", "Home")">Home</a></li>
+                                <li>
+                                    <a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("About ATA") })">About ATA</a>
+                                    <section class="clearfix menudropdown">
+                                        <ul class="clearfix list-pn submenu">
+                                            <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("About ATA") })">About ATA</a></li>
+                                            <li><a href="Content/User/pdf/ATA_History.pdf" target="_blank" title="ATA History">ATA History</a></li>
+                                            <li><a href="Content/User/pdf/ATABYLAWS.pdf" target="_blank" title="ATA BY-LAWS">ATA BY-LAWS</a></li>
+                                            <li><a href="Content/User/pdf/ATACONSTITUTION.pdf" target="_blank" title="ATA constitution">ATA Constitution</a></li>
+                                            <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("ATA Mission") })">ATA Mission</a></li>
+                                        </ul>
+                                    </section>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Leadership") })">Leadership</a>
+                                    <section class="clearfix menudropdown">
+                                        <ul class="clearfix list-pn submenu">
+                                            <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Leadership") })">Organization</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Board of Trustees" })">Board of Trustees</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Executive Committee" })">Executive Committee</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Executive Director" })">Executive Director</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Advisory Committee" })">Advisory Committee </a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="ATA Office" })">ATA Office</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Standing Committees" })">Standing Committees</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="ATA Convention" })">ATA Convention</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Women Coordinators" })">Women Coordinators</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Regional Directors" })">Regional Directors</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Regional Coordinators" })">Regional Coordinators</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Regional Advisors" })">Regional Advisors</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="International Coordinators" })">International Coordinators</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="India Team" })">India Team</a></li>
+                                        </ul>
+                                    </section>
+                                </li>
+                                <li>
+                                    <a href="about-us.html">Membership</a>
+                                    <section class="clearfix menudropdown">
+                                        <ul class="clearfix list-pn submenu">
+                                            <li><a href="membership.html">Membership Registration</a></li>
+                                            <li><a href="membership-rewards.html">Membership Rewards</a></li>
+                                            <li><a href="member-benefits.html">Member Benefits</a></li>
+                                            <li><a href="membership-verification.html">Membership Verification</a></li>
+                                        </ul>
+                                    </section>
+                                </li>
+                                <li>
+                                    <a href="charity-projects.html">Charity / Projects</a>
+                                    <section class="clearfix menudropdown">
+                                        <ul class="clearfix list-pn submenu">
+                                            <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("charity-projects") })">Adopt A Village</a></li>
+                                            <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Adopt A Student") })">Adopt A Student</a></li>
+                                            <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Student Fund") })">Student Fund</a></li>
+                                            <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Community Service") })">Community Service</a></li>
+                                            <li><a href="donor.html">Donate to A Cause</a></li>
+                                            <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Adopt Gattu Mandal") })">Adopt Gattu Mandal</a></li>
+                                        </ul>
+                                    </section>
+                                </li>
+                                <!-- <li><a href="update-soon.html">Charity / Projects</a></li> -->
+                                <li>
+                                    <a href="gallery.html">Gallery</a>
+                                    <section class="clearfix menudropdown">
+                                        <ul class="clearfix list-pn submenu">
+                                            <li><a href="@Url.Action("PhotosList", "Gallery")">Photo Gallery</a></li>
+                                            <li><a href="@Url.Action("Videos","Gallery")">Video Gallery</a></li>
+                                        </ul>
+                                    </section>
+                                </li>
+                                <li><a href="media.html">Media</a></li>
+                                <li><a href="contact-us.html">CONTACT US</a></li>
+                            </ul>
+                        </nav>
+                    </menu>
+                </article>
+            </article>
+        </header>
+
+        <!---  Header Section End ------>
+        <!---  Main Section Start ------>
+        <section class="clearfix wrapper mainbac-bg b-p80 ">
+            <article class="clearfix banbac-bg2">
+                <!---  News Section Start ------>
+                <article class="clearfix inner-wrapper">
+                    <article class="clearfix block-row t-m30">                       
+                            <article class="clearfix latenew-bg t-radius6">
+            <article class="clearfix left-block2">
+              <article class="clearfix latestt-bgg t-p14">
+                <h3 class="clearfix m0 Arnprior font18 lates-tex l-h18 t-b-p11 t-c mobile-l-p0 mobile-t-c">Latest News<i class="latest-ico l-m5">&nbsp;</i></h3>
+              </article>
+            </article>
+            <article class="clearfix right-block2 news-middle-block t-p10 tabhorizontal-b-p10">
+              <article class="clearfix">
+                <article class="clearfix news overflow-h position-r tabhorizontal-l-p0"><ul class="clearfix m0 list-pn list-f latestnew-li">
+                    @if (lstNews != null && lstNews.Count != 0)
+                                            {
+                                                foreach (var item in lstNews)
+                                                {
+                                                    <li><a href="@Url.Action("Index", "News", new { nid = item.NewsId })">@item.Title <span class="yel-t">Click Here.</span></a></li>
+
+                                                }
+                                            }
+                  </ul>
+                </article>
+				
+              </article>
+            </article>
+			<!-- login btn -->
+			 <article class="clearfix login-end-block t-c t-p10 tabhorizontal-b-p10">
+				<article class="clearfix">
+					<a href="login.html" class="lgn-btn white-t font17 t-t-u">login</a>
+				</article>
+			 </article>
+			<!-- login btn ends-->
+          </article>
+                        </article>
+                    </article>
+                </article>
+                <!---  News Section End ------>
+               
+                <article class="clearfix inner-wrapper t-p25">
+                    <article class="clearfix foot-bg1"></article>
+                    <article class="clearfix foot-bg2"></article>
+                    <article class="clearfix white-bg eventsbag-shad">
+                        <article class="clearfix eventstopbotbor">
+                            <article class="clearfix t-p25 b-p40 l-r-p35">
+                                <div class="clearfix block-row">
+
+                                    <div class="clearfix left-block7 r-p30 tabhorizontal-r-p0">
+                                        @RenderBody()
+                                    </div>
+
+                                    <div class="clearfix right-block7 tabhorizontal-hide">
+                                        <article class="clearfix quciklinks-bg position-r">
+                                            <article class="clearfix sponsortit-bg">
+                                                <h4 class="clearfix m0 FuturaPT-Demi white-t font24 t-t-u l-h24 t-c t-p8">Sponsors</h4>
+                                            </article>
+                                            <article class="clearfix t-m4">
+                                                <article class="clearfix sponsors overflow-h position-r">
+                                                    @if (lstSponsors != null && lstSponsors.Count != 0)
+                                                    {
+                                                        <ul class="clearfix m0 list-pn sponsorlis">
+                                                            @foreach (var item in lstSponsors)
+                                                            {
+
+                                                                <li>
+                                                                    @if (item.RedirectUrl != null && item.RedirectUrl != "")
+                                                                    {
+                                                                        <img src="@(imglocsponsor + item.LogoUrl)" class="border sponsorbord" alt="Img" width="190" height="85" />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img src="@(imglocsponsor + item.LogoUrl)" class="border sponsorbord" alt="Img" width="190" height="85" />
+                                                                    }
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    }
+                                                </article>
+                                            </article>
+                                            <article class="clearfix sponsortit-bg t-m20">
+                                                <h4 class="clearfix m0 FuturaPT-Demi white-t font24 t-t-u l-h24 t-c t-p8">Sponsors</h4>
+                                            </article>
+                                            <article class="clearfix t-m4">
+                                                <article class="clearfix sponsors overflow-h position-r">
+                                                    <ul class="clearfix m0 list-pn sponsorlis">
+                                                        @foreach (var item in lstSponsors)
+                                                        {
+
+                                                            <li>
+                                                                @if (item.RedirectUrl != null && item.RedirectUrl != "")
+                                                                {
+                                                                    <img src="@(imglocsponsor + item.LogoUrl)" class="border sponsorbord" alt="Img" width="190" height="85" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <img src="@(imglocsponsor + item.LogoUrl)" class="border sponsorbord" alt="Img" width="190" height="85" />
+                                                                }
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </article>
+                                            </article>
+                                        </article>
+                                        <article class="clearfix quciklinks-bg position-r mt-20p">
+                                            <article class="clearfix quicklintit-bg">
+                                                <h4 class="clearfix m0 FuturaPT-Demi white-t font24 t-t-u l-h24 t-c t-p8">Quick Links</h4>
+                                            </article>
+                                            <ul class="clearfix m0 list-pn quicklis l-p20 t-p50">
+                                                 <li><a href="@Url.Action("Index", "Committee" , new { CType ="Board of Trustees" })"><i class="quick-ico1"></i>COMMITTEES</a></li>
+                                                  <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("LITERATURE") })"><i class="quick-ico2"></i>LITERATURE</a></li>
+                                                  <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("BUSINESS FORUM") })"><i class="quick-ico3"></i>BUSINESS FORUM</a></li>
+                                                  <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("WOMEN'S FORUM") })"><i class="quick-ico4"></i>WOMEN'S FORUM</a></li>
+                                                  <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("SPIRITUALITY") })"><i class="quick-ico5"></i>SPIRITUALITY</a></li>
+                                                  <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("STUDENT FORUM") })"><i class="quick-ico1"></i>STUDENT FORUM</a></li>
+                                                  <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("YOUTH FORUM") })"><i class="quick-ico2"></i>YOUTH FORUM</a></li>
+                                                  <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("IMMIGRATION") })"><i class="quick-ico3"></i>IMMIGRATION</a></li>
+                                                  <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("PAST CONVENTIONS") })"><i class="quick-ico4"></i>PAST CONVENTIONS</a></li>
+                                                  <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("PRESIDENT'S CLUB") })"><i class="quick-ico5"></i>PRESIDENT'S CLUB</a></li>
+                                                  <li><a href="@Url.Action("Index","Events")"><i class="quick-ico1"></i>PROGRAMS & EVENTS</a></li>
+                                                  <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("CLASSIFIEDS") })"><i class="quick-ico2"></i>CLASSIFIEDS</a></li>
+                                                  <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("IN MEDIA") })"><i class="quick-ico3"></i>IN MEDIA</a></li>
+                                            </ul>
+                                        </article>
+                                    </div>
+                                    <div class="clearfix right-block7 resp-inn-sponser-block tabhorizontal-visible">
+                                        <div class="clearfix part-row">
+                                            <div class="part-6">
+                                                <article class="clearfix quciklinks-bg position-r b-m15">
+                                                    <article class="clearfix sponsortit-bg">
+                                                        <h4 class="clearfix m0 FuturaPT-Demi white-t font24 t-t-u l-h24 t-c t-p8">Sponsors</h4>
+                                                    </article>
+                                                    <article class="clearfix t-m4">
+                                                        <article class="clearfix sponsors overflow-h position-r">
+                                                            <ul class="clearfix m0 list-pn sponsorlis">
+                                                                <li><img src="Content/images/sponsor-img1.jpg" class="border sponsorbord" alt="Img" width="190" height="85"></li>
+                                                                <li><img src="Content/images/sponsor-img2.jpg" class="border sponsorbord" alt="Img" width="190" height="85"></li>
+                                                            </ul>
+                                                        </article>
+                                                    </article>
+                                                    <article class="clearfix sponsortit-bg t-m20">
+                                                        <h4 class="clearfix m0 FuturaPT-Demi white-t font24 t-t-u l-h24 t-c t-p8">Sponsors</h4>
+                                                    </article>
+                                                    <article class="clearfix t-m4">
+                                                        <article class="clearfix sponsors overflow-h position-r">
+                                                            <ul class="clearfix m0 list-pn sponsorlis">
+                                                                <li><img src="Content/User/images/sponsor-img1.jpg" class="border sponsorbord" alt="Img" width="190" height="85"></li>
+                                                                <li><img src="Content/User/images/sponsor-img2.jpg" class="border sponsorbord" alt="Img" width="190" height="85"></li>
+                                                            </ul>
+                                                        </article>
+                                                    </article>
+                                                </article>
+                                            </div>
+                                            <div class="part-6 tabhorizontal-l-p30 mobile-l-p0">
+                                                <article class="clearfix quciklinks-bg position-r">
+                                                    <article class="clearfix quicklintit-bg">
+                                                        <h4 class="clearfix m0 FuturaPT-Demi white-t font24 t-t-u l-h24 t-c t-p8">Quick Links</h4>
+                                                    </article>
+                                                    <ul class="clearfix m0 list-pn quicklis l-p20 t-p50">
+                                                         <li><a href="@Url.Action("Index", "Committee" , new { CType ="Board of Trustees" })"><i class="quick-ico1"></i>COMMITTEES</a></li>
+                      <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("LITERATURE") })"><i class="quick-ico2"></i>LITERATURE</a></li>
+                      <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("BUSINESS FORUM") })"><i class="quick-ico3"></i>BUSINESS FORUM</a></li>
+                      <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("WOMEN'S FORUM") })"><i class="quick-ico4"></i>WOMEN'S FORUM</a></li>
+                      <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("SPIRITUALITY") })"><i class="quick-ico5"></i>SPIRITUALITY</a></li>
+                      <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("STUDENT FORUM") })"><i class="quick-ico1"></i>STUDENT FORUM</a></li>
+                      <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("YOUTH FORUM") })"><i class="quick-ico2"></i>YOUTH FORUM</a></li>
+                      <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("IMMIGRATION") })"><i class="quick-ico3"></i>IMMIGRATION</a></li>
+                      <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("PAST CONVENTIONS") })"><i class="quick-ico4"></i>PAST CONVENTIONS</a></li>
+                      <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("PRESIDENT'S CLUB") })"><i class="quick-ico5"></i>PRESIDENT'S CLUB</a></li>
+                      <li><a href="@Url.Action("Index","Events")"><i class="quick-ico1"></i>PROGRAMS & EVENTS</a></li>
+                      <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("CLASSIFIEDS") })"><i class="quick-ico2"></i>CLASSIFIEDS</a></li>
+                      <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("IN MEDIA") })"><i class="quick-ico3"></i>IN MEDIA</a></li>
+                                                    </ul>
+                                                </article>
                                             </div>
                                         </div>
-
-                                    </article>
-
-                                </article>
-<section class="clearfix off_canvas_animate slide off_canvas_container">
-  <article class="clearfix off_canvas_animate slide off_canvas_top_menu">
-    <article class="clearfix off_canvas_toggles"> <span class="nav_prev_btn"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Back </span> <span class="nav_close_btn"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> </span> </article>
-  </article>
-</section>
-<main class="clearfix content_animate slide content">
-  <!---  Top Section Start ------>
-  <section class="clearfix wrapper position-r maintop-bor border-t4">
-    <article class="clearfix side-flor-bg-lef"></article>
-    <article class="clearfix side-flor-bg-righ"></article>
-
-    <article class="clearfix main-ban-bg">
-      <article class="clearfix border-b3 menuorgbor tabhorizontal-bor-b0">
-        <article class="clearfix thoranm-bg"></article>
-        <article class="clearfix inner-wrapper">
-         <article class="clearfix block-row t-m8 b-m14 tabhorizontal-hide">
-            <article class="clearfix left-block"> @*<a href="@Url.Action("Index1", "Home")"> <img src="Content/User/images/texlogo-english.png" class="t-m40" width="457" height="112" alt="" border="0"/> </a> *@</article>
-            <article class="clearfix middle-block"> <a href="@Url.Action("Index", "Home")"> <img src="Content/User/images/logo.png" class="logpos" width="274" height="172" alt="" border="0"/> </a> </article>
-            <article class="clearfix right-block"> @*<a href="@Url.Action("Index1", "Home")"> <img src="Content/User/images/texlogo-telugu.png" class="t-m40" width="450" height="115" alt="" border="0"/> </a>*@ </article>
-          </article>
-          <article class="clearfix tabhorizontal-visible tabhorizontal-t-c tab-position-r"> <a href="@Url.Action("Index", "Home")"> <img src="Content/User/images/logo.png" class="t-m40 tabhorizontal-t-m0 tabhorizontal-b-m10" width="247" height="172" alt="" border="0"/> </a> </article>
-        </article>
-        
-      </article>
-    </article>
-  </section>
-  <!---  Top Section End ------>
-
-  <!---  Middle Section Start ------>
-    
-    <section class="clearfix wrapper">
-      <article class="clearfix main-mid-bg">
-        <article class="clearfix side-flowers-bg">
-          <article class="clearfix tab-position-r">
-            <article class="clearfix side-status">
-              <article class="clearfix">
-                <article class="clearfix inner-wrapper">
-                  <article class="clearfix menubac-bg"> <menu class="clearfix"> <span class="nav_toggle pull-right"> <span class="glyphicon glyphicon-align-justify b-p3" aria-hidden="true"></span> </span>
-                    <nav class="clearfix resmenuwrapper">
-                <ul class="clearfix list-pn m0 menu">
-                  <li><a href="index.html" class="tabhorizontal-hide"><i class="menhome-ico">&nbsp;</i></a> <a href="@Url.Action("Index", "Home")" class="desk-hide tabhorizontal-visible">Home</a> </li>
-                  <li class="@(ViewBag.heading == "About AWS" ? "active" : "")"><a>About us</a>
-                    <section class="clearfix menudropdown">
-                     <ul class="clearfix list-pn submenu">
-                         <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("About AWS") })">About AWS</a></li>
-                        @if (lstCommitteeCategories != null && lstCommitteeCategories.Count != 0)
-                      {
-                        foreach (var cat in lstCommitteeCategories)
-                        {
-                           
-                      <li><a href="@Url.Action("Index", "Committee", new { CType = TCAssociationTool.BLL.Common.EncodeURL(@cat.CategoryName) })">@cat.CategoryName</a></li>
-                         
-                        }
-                         }
-                    
-                    </ul>
-                    </section>
-                  </li>
-                    
-                  <li class="@(ViewBag.heading == "Events" ? "active" : "")"><a>Events</a>
-                      <section class="clearfix menudropdown">
-                        <ul class="clearfix list-pn submenu">
-                          <li><a href="@Url.Action("Index", "Event", new { Type = "upcoming"})">Upcoming Events</a>
-                           @* <section class="clearfix menudropdown level2">
-                              <ul class="clearfix list-pn submenu1">
-                                <li> <a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Events Calendar") })">Events Calendar</a> </li>
-                                <li> <a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Sports & Games") })">Sports & Games</a> </li>
-                              </ul>
-                            </section>*@
-                          </li>
-                          <li><a href="@Url.Action("Index", "Event", new { Type = "past"})">Past Events</a>
-                           @* <section class="clearfix menudropdown level2">
-                              <ul class="clearfix list-pn submenu1">
-                                <li> <a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("2017 Events") })">2017 Events</a> </li>
-                              </ul>
-                            </section>*@
-                          </li>
-                           @* <li> <a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Events Calendar") })">Events Calendar</a> </li>
-                                <li> <a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Sports & Games") })">Sports & Games</a> </li>*@
-                        </ul>
-                      </section>
-                    </li>
-                  <li class="@(ViewBag.heading == "Services" ? "active" : "")"><a href="#">Services</a>
-                      <section class="clearfix menudropdown">
-                        <ul class="clearfix list-pn submenu">
-                             @if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null && Session["username"] != null)
-                             {
-                             }
-                            else
-                             {
-                          <li><a href="@Url.Action("AddMember", "Members")">Membership</a></li>
-                             }
-                          <li><a href="@Url.Action("MemberList","Members")">Life Members List</a></li>
-                          @*<li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("By-Law") })">By-Law</a></li>*@
-                          @*<li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Feedback") })">Feedback</a></li>
-                          <li><a href="sign-up-to-stay-in-touch.html">Sign up to stay in touch</a></li>*@
-                        </ul>
-                      </section>
-                    </li>
-                    
-                    <li class="@(ViewBag.heading == "Announcements" ? "active" : "")"><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Announcements") })">Announcements</a></li>
-                    <li class="@(ViewBag.heading == "Gallery" ? "active" : "")"><a>Gallery</a>
-                        <section class="clearfix menudropdown">
-                    <ul class="clearfix list-pn submenu">
-                      <li><a href="@Url.Action("Photos","Gallery", new { Year = (DateTime.Now.Year).ToString() })">Photos</a></li>
-                      <li><a href="@Url.Action("Videos", "Gallery")">Videos</a></li>                      
-                    </ul>
-                  </section>
-                      <!--<section class="clearfix menudropdown">
-                        <ul class="clearfix list-pn submenu">
-                          <li><a href="#">Photo Gallery</a>
-                            <section class="clearfix menudropdown level2">
-                              <ul class="clearfix list-pn submenu1">
-                                <li> <a href="#">About Manabadi</a> </li>
-                                <li> <a href="#">Locations/Teachers</a> </li>
-                              </ul>
-                            </section>
-                          </li>
-                          <li><a href="#">Video Gallery</a></li>
-                        </ul>
-                      </section>-->
-                    </li>
-                    <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Articles") })">Articles</a></li>
-                      <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Youth Club") })">Youth Club</a></li>
-                    <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Mahila") })">Mahila</a></li>
-                    @*<li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Mahila") })">Mahila</a></li>*@
-                    <li class="@(ViewBag.heading == "ContactUs" ? "active" : "")"><a href="@Url.Action("ContactUS", "Home")">Contact us</a></li>
-                  <li class="tabhorizontal-hide">
-                       @if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null && Session["username"] != null)
-                       {
-                           <a href="@Url.Action("LogOff", "Members")" class="menlogin-bg l-h12 Oswald-Regular font14 dis-b"><i class="lock-ico r-m8">&nbsp;</i>LogOut</a>
-                       }
-                      else
-                       {
-                      <a href="@Url.Action("LogOn", "Members")" class="menlogin-bg l-h12 Oswald-Regular font14 dis-b"><i class="lock-ico r-m8">&nbsp;</i>Login</a>
-                       }
-                  </li>
-                </ul>
-                    </nav>
-                    </menu></article>
-                </article>
-                
-              </article>
-        
-              <article class="clearfix inner-wrapper">
-                <article class="clearfix border-t3 banbot-bor">
-                  <article class="clearfix block-row">
-                    <article class="clearfix left-block1">
-                      <article class="clearfix newsbac-bg">
-                        <h3 class="clearfix m0 l-h18 Impact white-t font22 t-t-u t-p20 b-p15 l-p30 tabhorizontal-t-c letespa1 tabhorizontal-l-p0 tabhorizontal-t-b-p10">Latest News<i class="newsarow-ico l-m10 tabhorizontal-hide">&nbsp;</i></h3>
-                      </article>
-                    </article>
-                    <article class="clearfix right-block1">
-                      <article class="clearfix latesnewbac-bg">
-                        <article class="clearfix block-row">
-                          <article class="clearfix left-block2">
-                            <article class="clearfix news overflow-h position-r">
-                                  @if (lstNews != null && lstNews.Count != 0)
-                                  {
-                             <ul class="clearfix m0 li list-pn newslis-li">                         
-                               @foreach (var item in lstNews)
-                               {
-                        <li><a href="@Url.Action("Index", "News", new { nid = item.NewsId })" class="white-t">@item.Title</a></li>
-                               }                           
-                          </ul>
-                                  }
+                                    </div>
+                                </div>
                             </article>
-                          </article>
-                          <article class="clearfix right-block2">
-                            <article class="clearfix t-m11 tabhorizontal-t-m0 tabhorizontal-b-p5"> <a href="#" class="f-l l-h10 OpenSans font13 yellow-t newsviewmor-bg t-p11 b-p10 l-p20 r-p15 border-radius16">View More<i class="newsviewmo-ico l-m3">&nbsp;</i></a> </article>
-                          </article>
                         </article>
-                      </article>
                     </article>
-                  </article>
                 </article>
-                <article class="clearfix t-c tabhorizontal-hide"> <img src="Content/User/images/news-shad-bg.png" class="" width="971" height="40" alt="" border="0"/> </article>
-              </article>
-        
-              <article class="clearfix inner-wrapper">
-                <article class="clearfix block-row b-m30 mobile-b-m20 white-bg tlcamidwhit-shad">
-                  <article class="clearfix left-block7 tabhorizontal-t-m41" id="left-block7">
-                    <article class="clearfix p20 tabhorizontal-p10 mobile-p5">
-                      <article class="clearfix innercon-bg p30 inerwhgrymin tabhorizontal-p20 mobile-p10">
-                        @RenderBody()
-                      </article>
+                <!---  Images Section Start ------>
+             <!---  Images Section Start ------>
+                <article class="clearfix inner-wrapper t-p25 tabhorizontal-t-p15 tabhorizontal-b-m15 mobile-b-m5">
+                    @Html.Raw(objSInnerPages.Description)
+                </article>
+                <!---  Images Section ends ------>
+                <article class="clearfix inner-wrapper t-p25">
+                    <ul class="clearfix m0 list-f list-pn buttonslis">
+                        <li><a href="@Url.Action("AddMember","Members")"><i class="buttonimg1 r-m8"></i><span class="butexshad">Become A Member</span></a></li>
+                        <li><a href="@Url.Action("Index", "Donation")"><i class="buttonimg2 r-m8"></i><span class="butexshad">Donate Now</span></a></li>
+                        <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Scholarship Applic") })"><i class="buttonimg3 r-m8"></i><span class="butexshad">Scholarship Applic</span></a></li>
+                        <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Health Bulletin") })"><i class="buttonimg4 r-m8"></i><span class="butexshad">Health Bulletin</span></a></li>
+                        <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("STUDENT SERVICES") })"><i class="buttonimg5 r-m8"></i><span class="butexshad">STUDENT SERVICES</span></a></li>
+                        <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("America Bharathi") })"><i class="buttonimg6 r-m8"></i><span class="butexshad">America Bharathi</span></a></li>
+                    </ul>
+                </article>
+            <!---  photo Section Start ------>
+            <article class="clearfix inner-wrapper t-p25">
+                <article class="clearfix foot-bg1"></article>
+                <article class="clearfix foot-bg2"></article>
+                <article class="clearfix white-bg eventsbag-shad">
+                    <article class="clearfix eventstopbotbor">
+                        <article class="clearfix t-p25 b-p40 l-r-p20">
+                            <div class="clearfix">
+                                <h3 class="clearfix m0 FuturaPT-Demi font32 l-h32 eventstex-t t-t-u t-c t-p32 b-p20 tabhorizontal-b-p10 tabhorizontal-font26">Photo Gallery</h3>
+                                <article class="clearfix b-p30 tabhorizontal-b-p15">
+                                    @if (lstPhotos != null && lstPhotos.Count != 0)
+                                    {
+                                        <article class="clearfix m0 owl-carousel eventslis2 position-r">
+                                            @foreach (var item in lstPhotos)
+                                            {
+                                                <article class="items">
+                                                    <article class="clearfix"> <img src="@TCAssociationTool.BLL.Common.ValidateImage((gnimgloc + item.ImageUrl), gnimgloc + "no-image.jpg")" alt="Img" width="281" height="185" class="width100" /> </article>
+                                                </article>
+                                            }
+                                        </article>
+                                    }
+                                </article>
+                            </div>
+                            <div class="clearfix">
+                                <h3 class="clearfix m0 FuturaPT-Demi font32 l-h32 eventstex-t t-t-u t-c t-p6 b-p20 tabhorizontal-b-p10 tabhorizontal-font26">Video Gallery</h3>
+                                <article class="clearfix b-p30 tabhorizontal-b-p0">
+                                    @if (lstVideos != null && lstVideos.Count != 0)
+                                    {
+                                        <article class="clearfix m0 owl-carousel eventslis2 position-r">
+                                            @foreach (var item in lstVideos)
+                                            {
+                                                <article class="items">
+                                                    <article class="clearfix">
+                                                        <article class="clearfix position-r">
+                                                            <a href="https://www.youtube.com/embed/@(item.VideoUrl)" data-fancybox-group="gallery" class="various fancybox.iframe dis-b"> <span class="video-icon-hover flip">&nbsp;</span> <img src="http://i1.ytimg.com/vi/@(item.VideoUrl)/hqdefault.jpg" alt="@item.Heading" class="width100" width="" height="" /> </a>
+                                                        </article>
+                                                    </article>
+                                                </article>
+                                            }
+
+                                        </article>
+                                    }
+                                </article>
+
+                            </div>
+                        </article>
                     </article>
-                  </article>
-                  <article class="clearfix right-block7" id="right-block7">
-                      <article class="clearfix nominabac-bg t-b-p15 tabhorizontal-b-p0">
-                      <article class="clearfix sponsbor l-r-m19">
-                                <article class="clearfix norsponbor t-b-m25 l-r-m3">
-	                                <article align="center">
-                                        <article class="clearfix spontexb-bg l-h20 Montserrat-SemiBold t-t-u font16 black-t t-c t-p15 b-p12 l-r-m10">Executive Committee & BOT</article>
-                                        <article class="clearfix t-c l-r-m-auto t-m10">
-	                                <a href="javascript:doLink();" onMouseOver="status=url[ct];return true;" onMouseOut="status=''">
-	                                <img name="Ad_Image" SRC="Content/User/images/user-icon1.png" border=0 width="158" height="178">
-	                                </a>
-                                            </article>
-	                                </article>
+                </article>
+            </article>
+        </section>
+        <!---  photo Section end ------>
+        <!---  Main Section End ------>
+        <!--footer start-->
+        <article class="clearfix wrapper foot-bor">
+            <article class="clearfix">
+                <article class="clearfix inner-wrapper">
+                    <article class="clearfix foot-max-width">
+                        <article class="t-c"><a href="#"><img src="Content/User/images/bot-logo.png" class="t-m50n" width="146" height="142" alt="" border="0" /></a></article>
+                        <h3 class="m0 FuturaPT-Demi t-t-u font18 l-h20 f-head t-c t-p1" style="letter-spacing:0.5px;">American Telugu Association</h3>
+                        <article class="clearfix block-row t-p20">
+                            <article class="clearfix left-block6 r-p15 tabhorizontal-r-p10 mobile-r-p0">
+                                <article class="f-red-bor">
+                                    <h3 class="m0 Muli font12 l-h12 t-c t-p15">You can get in touch with us by e-mail.</h3>
+                                    <h3 class="m0 Muli-SemiBold font15 l-h16 t-c t-p7 b-p4">Post Box : @objAppInfo.CompanyAddress</h3>
+                                    <h3 class="m0 Muli-SemiBold font15 l-h16 t-c"><a href="mailto:@objAppInfo.CompanyEmail">@objAppInfo.CompanyEmail</a></h3>
+                                </article>
+                            </article>
+                            <article class="clearfix middle-block6 r-p15 tabhorizontal-r-p0 mobile-t-p10">
+                                <article class="f-orange-bor">
+                                    <article class="t-c t-p17">
+                                        <h3 class="m0 Muli font12 l-h12">Alternatively you can give us a call any -time.</h3>
+                                        <h3 class="m0 Montserrat-Medium font32 l-h26 t-p8 tabhorizontal-font28">@objAppInfo.CompanyPhone</h3>
                                     </article>
                                 </article>
-                          </article>
-                    <article class="clearfix becomeb-bg p30">
-                      <ul class="clearfix m0 list-pn inerbutlis">
-                          @if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null && Session["username"] != null)
-                          {
-                               <li>
-                          <article class="button1-bg"> <a href="@Url.Action("Profile", "Members")" class="white-t l-p15 dis-b t-p8 b-p5"><i class="button1-ico r-m9">&nbsp;</i>Become a Member</a> </article>
-                        </li>
-                          }
-                          else
-                          {
-                        <li>
-                          <article class="button1-bg"> <a href="@Url.Action("AddMember", "Members")" class="white-t l-p15 dis-b t-p8 b-p5"><i class="button1-ico r-m9">&nbsp;</i>Become a Member</a> </article>
-                        </li>
-                          }
-                        <li>
-                          <article class="button2-bg"> <a href="@Url.Action("Index", "Donation")" class="white-t l-p15 dis-b t-p8 b-p5"><i class="button2-ico r-m9">&nbsp;</i>Donate Now</a> </article>
-                        </li>
-                        <li>
-                          <article class="button3-bg"> <a href="#" class="white-t l-p15 dis-b t-p8 b-p5"><i class="button3-ico r-m9">&nbsp;</i>Youth Club</a> </article>
-                        </li>
-                        <li>
-                          <article class="button4-bg"> <a href="#" class="white-t l-p15 dis-b t-p8 b-p5"><i class="button4-ico r-m9">&nbsp;</i>Mahila Forum</a> </article>
-                        </li>
-                      </ul>
-                    </article>
-                    <article class="clearfix nominabac-bg">
-                      <ul class="clearfix m0 list-pn nomin-lis t-p30 l-r-p30">
-                        <li> <a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Nomination Form 2020") })">Nomination Form 2020</a> </li>
-                        <li> <a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Souvenir - Ebook") })">Souvenir - Ebook</a> </li>
-                      </ul>
-                      <article class="clearfix sponsbor l-r-m19">
-                        <article class="clearfix norsponbor t-b-m25 l-r-m3">
-                          <article class="clearfix spontexb-bg l-h14 Montserrat-SemiBold t-t-u font18 black-t t-c t-p15 b-p12 l-r-m10">Sponsors</article>
-                          <article class="clearfix m0 sponsors overflow-h position-r" style="position: relative; width: auto; height: 369.185px; overflow: hidden;">
-                             @if (lstSponsors != null && lstSponsors.Count != 0)
-                             {
-                    <ul class="clearfix t-m0 list-pn sponimg-li t-p10 l-r-p25 b-p14" style="margin: 0px; position: absolute; width: 100%; top: 0px;">
-                         @foreach (var item in lstSponsors)
-                         {
-                      <li style="margin: 0px; display: list-item;">
-                          @if (item.RedirectUrl != null && item.RedirectUrl != "")
-                          {
-                          <a href="@item.RedirectUrl" target="@item.Target">
-                          <img src="@(imglocsponsor + item.LogoUrl)" class="width100" alt="" width="204" height="85">
-                                    </a>
-                          }
-                          else
-                          {
-                              <img src="@(imglocsponsor + item.LogoUrl)" class="width100" alt="" width="204" height="85">  
-                          }
-                      </li>
-                      
-                         }
-                    </ul>
-                             }
-                          </article>
+                            </article>
+                            <article class="clearfix middle-block-6 r-p7 tabhorizontal-t-p10 tabhorizontal-r-p10 mobile-r-p0">
+                                <article class="f-red-bor l-p20 r-p1">
+                                    <h3 class="m0 Muli font12 l-h12 t-c t-p12 b-p7">Subscribe for Newsletter</h3>
+                                    <article class="l-r-m-auto foot-form">
+                                        <article class="clearfix box-row">
+                                            <article class="clearfix box-9">
+                                                <input placeholder="E-mail" id="NEmail" name="NEmail" class="form-control newsletter-form b-m0" style="border:2px solid #cecece; color:#2f2f2f !important; background:transparent !important; min-height:36px!important;font-family: 'Muli';" type="text" />
+                                            </article>
+                                            <article class="clearfix box-2">
+                                                <article class="clearfix l-m3 mobile-t-m0 position-r mobile-t-c">
+                                                    <input value="send" class="b-m0 Montserrat-SemiBold font12 white-t t-t-u t-c" onclick="NewsLetterSubmit();" style="min-height:36px!important; border:0px; border-radius: 2px; background: linear-gradient(to right, #ff3328 0%,#ff981a 100%);margin-left: -5px;padding-left: 15px;padding-right: 15px;letter-spacing: 1px;" type="submit" />
+                                                </article>
+                                            </article>
+                                        </article>
+                                    </article>
+                                </article>
+                            </article>
+                            <article class="clearfix right-block6 l-p8 tabhorizontal-t-p10 tabhorizontal-l-p0">
+                                <article class="f-orange-bor">
+                                    <article class="t-p9">
+                                        <h3 class="m0 Muli font12 l-h12 b-p8 t-c">Connect with us</h3>
+                                        <ul class="clearfix m0 list-f list-pn soc-li l-r-m-auto" style="max-width:194px;">
+                                            @if (objAppInfo.FacebookUrl != null && objAppInfo.FacebookUrl != "")
+                                            {
+                                                <li><a href="@objAppInfo.FacebookUrl" target="_blank"><img src="Content/User/images/fb.png" class="" width="" height="" alt="" border="0" /></a></li>
+                                            }
+                                            @if (objAppInfo.TwitterUrl != null && objAppInfo.TwitterUrl != "")
+                                            {
+                                                <li><a href="@objAppInfo.TwitterUrl" target="_blank"><img src="Content/User/images/twiter.png" class="" width="" height="" alt="" border="0" /></a></li>
+                                            }
+                                            @if (objAppInfo.YoutubeUrl != null && objAppInfo.YoutubeUrl != "")
+                                            {
+                                                <li><a href="@objAppInfo.YoutubeUrl" target="_blank"><img src="Content/User/images/youtube.png" class="" width="" height="" alt="" border="0" /></a></li>
+                                            }
+                                            <li><a href="#" target="_blank"><img src="Content/User/images/google.png" class="" width="" height="" alt="" border="0" /></a></li>
+                                        </ul>
+                                    </article>
+                                </article>
+                            </article>
                         </article>
-                      </article>
-                      <article class="clearfix spontexb-bg l-h14 Montserrat-SemiBold t-t-u font18 black-t t-c t-p15 b-p12 l-r-m10 t-m6 b-m15 l-r-m30">Title Song</article>
-                      <article class="clearfix t-c t-m20 b-m30"> 
-                           <audio controls="" style="width: 200px;">
-									<source src="Content/images/TLCA_Title_ Song.mp3" type="audio/mpeg">									
-								</audio>
+                    </article>
+                </article>
+            </article>
+            <article class="clearfix inner-wrapper">
+                <article class="clearfix botm-menu-maxwid">
+                    <article class="clearfix  mobile-visible t-c l-h20 mobile-t-b-p20"> <a href="#" class="menu-link3 clearfix t-b-m0 t-b-m0 Montserrat-Medium font26" style="color:#25ab43;">Quick Links <span class="dis-b t-c t-p10"> <img src="Content/User/images/down-arrow1.png" width="20" height="14" /> </span> </a> </article>
+                    <article id="menu3" class="clearfix responsive-menu mobile-t-c">
+                        <ul class="clearfix m0 list-f list-pn bottomlis-li t-t-u Muli t-b-p40 mobile-t-c mobile-t-b-p0 letespa1 tabhorizontal-t-b-p20 ">
+                            <li><a href="#">ATA Committees </a></li>
+                            <li><a href="#">Programs And Events</a></li>
+                            <li><a href="#">Youth Programs</a></li>
+                            <li><a href="#"> Charity/Projects</a></li>
+                            <li><a href="#">In Media</a></li>
+                        </ul>
+                    </article>
+                </article>
+            </article>
+        </article>
+        <!--footer end-->
+        <article class="clearfix wrapper dkbrown-bg2 ">
+            <article class="clearfix foot-bg3"></article>
+            <article class="clearfix inner-wrapper text-center">
+                <article class="clearfix t-p32 b-p29 tabhorizontal-t-b-p20 t-c">
+                    <h4 class="clearfix m0 Muli font14 white-t l-h10 dis-in t-m4 tabhorizontal-t-c tabhorizontal-dis-b mobile-l-h18">© 2021 @objAppInfo.SiteName. All rights reserved.</h4>
+                    <!-- <h3 class="clearfix m0 segoeScript white-t font14 l-h12 dis-in f-r tabhorizontal-pull-n tabhorizontal-dis-b tabhorizontal-t-c tabhorizontal-t-p10">Design & developed by <span class="OpenSans"><a href="http://www.innovateindia.in/" target="_blank"><img src="Content/User/images/design.png" /></a></span></h3> -->
+                </article>
+            </article>
+        </article>
 
-                      </article>
-                    </article>
-                  </article>
-                </article>
-              </article>
-              <article class="clearfix inner-wrapper b-p70 tabhorizontal-b-p30 mobile-b-p20">
-                <article class="clearfix white-bg tlcamidwhit-shad">
-                  <article class="clearfix galltopbor p35">
-                    <article class="clearfix galtex-modbg b-m25 t-m5 tabhorizontal-t-m0 tabhorizontal-b-m10">
-                      <h3 class="clearfix m0 l-h28 t-t-u Impact font26 evesec-tex t-c letespa1"><span class="evered-t"> Photo Gallery</span></h3>
-                    </article>
-                    @if (lstPhotos != null && lstPhotos.Count != 0)
-                    {
-              <ul class="clearfix m0 list-pn list-f gallpholis">
-                   @foreach (var item in lstPhotos)
-                   {
-                <li>
-                  <article class="clearfix">
-                      @if (item.AlbumLink != "")
-                      { 
-                      <a href ="@item.AlbumLink" target="_blank" class="fancybox" data-fancybox-group="5"> 
-                          <img src="@TCAssociationTool.BLL.Common.ValidateImage((gnimgloc + item.ImageUrl), gnimgloc + "no-image.jpg")" alt="" class="width100" width="263" height="171" style="min-height:171px; max-height:171px; overflow:hidden;" /> 
-                      </a>
-                      }
-                      else
-                      {
-                          <a href="@TCAssociationTool.BLL.Common.ValidateImage((gnimgloc + item.ImageUrl), gnimgloc + "no-image.jpg")" data-fancybox-group="5" class="fancybox">
-                                        <img src="@TCAssociationTool.BLL.Common.ValidateImage((gnimgloc + item.ImageUrl), gnimgloc + "no-image.jpg")" alt="" class="width100" width="263" height="171" style="min-height:171px; max-height:171px; overflow:hidden;" /> 
-                          </a>
-                      } 
-                  </article>
-                </li>
-                   }
-              </ul>
-                    }
-                      @if (lstVideos != null && lstVideos.Count != 0)
-                      {
-                    <article class="clearfix galtex-modbg b-m25 t-m35 tabhorizontal-t-b-m10">
-                      <h3 class="clearfix m0 l-h28 t-t-u Impact font26 evesec-tex t-c letespa1"><span class="evered-t"> Video Gallery</span></h3>
-                    </article>
-                    <ul class="clearfix m0 list-pn list-f gallpholis">
-                 @foreach (var item in lstVideos)
-                 {
-              <li>
-                <article class="clearfix position-r"> 
-                    <a href="https://www.youtube.com/embed/@(item.VideoUrl)" data-fancybox-group="gallery" class="various fancybox.iframe dis-b"> 
-                        <span class="video-icon-hover1 flip">&nbsp;</span> 
-                        <img src="http://i1.ytimg.com/vi/@(item.VideoUrl)/hqdefault.jpg" alt="@item.Heading" title="@item.Heading" class="width100" width="263" height="171"> </a> </article>
-              </li>
-                 }
-            </ul>
-                      }
-                  </article>
-                </article>
-              </article>
-            </article>
-          </article>
-        </article>
-      </article>
-    </section>
-  <!---  Middle Section End ------>
-  <!-- footer secton start -->
-  <footer class="clearfix wrapper">
-    <article class="clearfix foot-bg">
-      <article class="clearfix inner-wrapper">
-        <article class="clearfix footbotmbor border-b4">
-          <article class="clearfix block-row">
-            <article class="clearfix left-block6">
-              <article class="clearfix l-h16 t-p65 OpenSans font12 white-t b-p7 mobile-t-p30">You can get in touch with us by e-mail. <span class="dis-b">Alternatively you can give us a call any -time.</span></article>
-              <h4 class="clearfix m0 Oswald-Light font26 white-t l-h22"><i class="phone-ico r-m10">&nbsp;</i> @objAppInfo.CompanyPhone</h4>
-            </article>
-            <article class="clearfix middle-block6">
-              <article class="clearfix t-p32 position-r b-m4n">
-                <article class="clearfix headset-log"> <img src="Content/User/images/footer-log-o.png" alt="Img" height="85" width="83"/> </article>
-                <article class="clearfix upasa-inner-bg">
-                  <article class="clearfix t-p40">
-                    <h4 class="clearfix m0 Helvetica-Condensed-Black l-h20 yellow-t bot-yel-sha t-t-u font26 t-c b-p15 letespa1">@objAppInfo.SiteName Help Line</h4>
-                    <article class="clearfix thornm-bot-wid b-p22">
-                      <article class="clearfix lef-righ-thora">
-                        <h3 class="clearfix m0 OpenSans white-t font16 l-h20 t-c little-elm-shad b-p10 t-p8">@objAppInfo.CompanyAddress</h3>
-                        <h5 class="clearfix m0 OpenSans font17 l-h12 t-c little-elm-shad b-p9"><a href="mailto:@objAppInfo.CompanyEmail" class="white-t">@objAppInfo.CompanyEmail</a></h5>
-                      </article>
-                    </article>
-                  </article>
-                </article>
-              </article>
-            </article>
-             <article class="clearfix right-block6">
-              <article class="clearfix l-m63 t-m70 tabhorizontal-l-m0 tabhorizontal-t-m30">
-                
-                  <div class="clearfix" id="messagediv">                     
-                  </div>
-                  <div class="clearfix" id="formdiv">
-                      <h4 class="clearfix m0 l-h12 font16 white-t OpenSans b-p10">Subscribe Newsletter</h4>
-                <article class="clearfix box-row">
-                  <article class="clearfix box-9">
-                    <article class="clearfix position-r">
-                      <input value="" id="NEmail" name="NEmail" class="form-control emai" type="text" placeholder="E-mail">
-                    </article>
-                  </article>
-                  <article class="clearfix box-3">
-                    <article class="clearfix dkblue-b4 border-radius2 t-c">
-                      <input class="clearfix m0 Oswald-Regular t-t-u font14 white-t letespa3 t-b-p12 l-h12" value="Send" onclick="NewsLetterSubmit();" type="submit" style="background-color: #ffa200;border: none;" />
-                    </article>
-                  </article>
-                </article>
-                      </div>
-              </article>
-            </article>
-          </article>
-        </article>
-      </article>
-      <article class="clearfix inner-wrapper">
-        <article class="clearfix botm-menu-maxwid">
-          <article class="clearfix  mobile-visible t-c l-h20 mobile-t-b-p10"> <a href="#menu3" class="menu-link3 clearfix t-b-m0 t-b-m0 Roboto-Medium font26 redt" style="color:#fff;">Quick Links <span class="dis-b t-c t-p10"> <img src="Content/User/images/down-arrow1.png" width="20" height="14"> </span> </a> </article>
-          <article id="menu3" class="clearfix responsive-menu mobile-t-c">
-            <ul class="clearfix m0 list-f list-pn bottomlis-li t-t-u Montserrat-Light t-b-p25 mobile-t-c mobile-t-b-p0 letespa1 tabhorizontal-t-p15 tabhorizontal-b-p5">
-              <li><a href="@Url.Action("Index", "Home")">Home</a></li>
-              <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("About Us") })">About us</a></li>
-              <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Events") })">Events</a></li>
-              <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Services") })">Services</a></li>
-              <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Announcements") })">Announcements</a></li>
-              <li><a href="@Url.Action("Photos", "Gallery")">Gallery</a></li>
-              <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Articles") })">Articles</a></li>
-              <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Youth Club") })">Youth Club</a></li>
-              <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Mahila") })">Mahila</a></li>
-              <li><a href="@Url.Action("ContactUs", "Home")">Contact us</a></li>
-            </ul>
-          </article>
-        </article>
-      </article>
-    </article>
-    <article class="clearfix dkbrown-bg2">
-      <article class="clearfix inner-wrapper">
-        <article class="clearfix t-p32 b-p29 tabhorizontal-t-b-p20">
-          <h4 class="clearfix m0 OpenSans font14 white-t l-h10 dis-in t-m4 tabhorizontal-t-c tabhorizontal-dis-b mobile-l-h18">© 2021 @objAppInfo.SiteName. All rights reserved.</h4>
-          <h3 class="clearfix m0 segoeScript white-t font14 l-h12 dis-in f-r tabhorizontal-pull-n tabhorizontal-dis-b tabhorizontal-t-c tabhorizontal-t-p10">Design & developed by <span class="OpenSans"><a href="http://www.arjunweb.com/" target="_blank" class="yellow-t"> arjunteam</a></span></h3>
-        </article>
-      </article>
-    </article>
-  </footer>
-  <!-- footer secton end -->
-</main>
-<script type="text/javascript" src="Scripts/User/bootstrap.min.js"></script>
-    <script type="text/javascript" src="Scripts/User/res-tab.js"></script>
-    <script type="text/javascript">
+
+        <script type="text/javascript" src="Scripts/User/bootstrap.min.js"></script>
+        <script type="text/javascript" src="Scripts/User/jquery.nivo.slider.js"></script>
+        <script type="text/javascript" src="Scripts/User/res-tab.js"></script>
+        <script type="text/javascript">
 
         $(document).ready(function () {
             $('#enqfrm').dialog
@@ -806,7 +849,7 @@
             $('#btnres').show();
             return true;
         }
-    </script>
+        </script>
 </body>
 </html>
 

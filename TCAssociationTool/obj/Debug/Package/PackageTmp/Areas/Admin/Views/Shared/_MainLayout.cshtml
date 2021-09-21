@@ -1,0 +1,282 @@
+﻿@using System.Configuration
+@{
+    Layout = null;
+    var objuser = new TCAssociationTool.Entities.Users();
+    var userRole = "";
+    string url = ConfigurationManager.AppSettings["usersiteurl"].ToString();
+
+    HttpContext ctx = HttpContext.Current;
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+        userRole = authTicket.UserData;
+
+        TCAssociationTool.BLL.Users _user = new TCAssociationTool.BLL.Users();
+        int status = 0;
+        objuser = _user.GetUserByUserName(this.User.Identity.Name, ref status);
+        if (objuser != null)
+        {
+            Session["username"] = objuser.UserName;
+        }
+    }
+
+    int qstatus = 0;
+    
+    TCAssociationTool.BLL.AppInfo _AppInfo = new TCAssociationTool.BLL.AppInfo();
+
+    TCAssociationTool.Entities.AppInfo objAppInfo = new TCAssociationTool.Entities.AppInfo();
+
+    objAppInfo = _AppInfo.GetAppInfoDetails(ref qstatus);
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport' />
+    @{var baseurl = ConfigurationManager.AppSettings["baseurl"];}
+    <base href="@(baseurl)" />
+
+    <title>@(objAppInfo.SiteName) - Control Panel</title>
+    <link rel="shortcut icon" href="Content/Admin/images/fevicon.ico" />
+    <!-- Bootstrap -->
+    <link href="Content/Admin/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="Content/Admin/common-styles.css" rel="stylesheet" type="text/css" />
+    <link href="Content/Admin/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <link href="Content/Admin/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css" />
+    <link href="Content/Admin/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+    <link href="Content/Admin/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
+    <link href="Content/Admin/admin-styles.css" rel="stylesheet" type="text/css" />
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+          <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+    <!-- ============== GENRAL JS [start] ========= -->
+    <script src="Scripts/Admin/jquery-1.8.3.js" type="text/javascript"></script>
+    <script src="Scripts/Admin/jquery-ui-1.9.2.custom.min.js" type="text/javascript"></script>
+    <script src="Scripts/Admin/Common.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+        function DropDown(el) {
+            this.dd = el;
+            this.initEvents();
+        }
+        DropDown.prototype = {
+            initEvents: function () {
+                var obj = this;
+
+                obj.dd.on('click', function (event) {
+                    $(this).toggleClass('active');
+                    event.stopPropagation();
+                });
+            }
+        }
+
+        $(function () {
+
+            var dd = new DropDown($('#dd'));
+
+            $(document).click(function () {
+                // all dropdowns
+                $('.wrapper-dropdown-3').removeClass('active');
+            });
+
+        });
+
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $(".ui-accordion").accordion({
+                collapsible: true,
+                heightStyle: "content"
+            });
+
+            // date picker
+            $(function () {
+                $(function () {
+                    $(".datepicker").datepicker({
+                        altField: "#alternate",
+                        altFormat: "DD, d MM, yy"
+                    });
+                });
+            });
+        });
+        $(document).ready(function () {
+            $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+            $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+
+            $('.date, #DateOfBirth, #StartDate, #EndDate, #StartPaymentDate, #EndPaymentDate').keypress(function (evt) {
+                var charCode = (evt.which) ? evt.which : event.keyCode
+                if (charCode == 08 || charCode == 127) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            });
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="Content/Admin/lib/lightview/css/lightview/lightview.css" />
+    <script type="text/javascript" src="Content/Admin/lib/lightview/js/spinners/spinners.js"></script>
+    <script type="text/javascript" src="Content/Admin/lib/lightview/js/lightview/lightview.js"></script>
+</head>
+
+<body class="skin-red pace-done fixed">
+    <div class="header">
+        <a href="@Url.Action("Index", "Home")" class="logo">
+            <img src="Content/Admin/images/logo.png" alt="@(objAppInfo.SiteName)" title="@(objAppInfo.SiteName)" border="0" width="182" height="60"/></a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <div class="navbar navbar-static-top" role="navigation">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button"><span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a>
+            <div class="navbar-right">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown messages-menu"><a href="Content/documents/HTCA-documentation.pdf" target="_blank"><i class="fa fa-question-circle r-p5"></i><span class="tablet-hide">Help</span> </a></li>
+                    @if (userRole.Contains("SuperAdmin"))
+                    {                        
+                        <li class="dropdown messages-menu"><a href="@Url.Action("Index", "Users")"><i class="fa fa-users r-p5"></i><span class="tablet-hide">Users</span> </a></li>
+                        <li class="dropdown messages-menu"><a href="@Url.Action("Index", "ApplicationSettings")"><i class="fa fa-cogs r-p5"></i><span class="tablet-hide">Application Settings</span> </a></li>
+                    }
+
+                    <!-- User Account: style can be found in dropdown.less -->
+                    <li class="dropdown user user-menu"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i><span class="t-t-c">@objuser.UserName <i class="caret"></i></span></a>
+                        <ul class="dropdown-menu">
+                            <!-- User image -->
+                            <li class="user-header bg-light-blue">
+                                <img src="Content/Admin/images/avatar3.png" class="img-circle" alt="User Image" />
+                                <p class="t-t-c">@objuser.UserName </p>
+                            </li>
+                            <li class="user-footer">
+                                <div class="pull-left"><a href="@Url.Action("Profile", "Account")" class="btn btn-default btn-flat">Profile</a> </div>
+                                <div class="pull-right"><a href="@Url.Action("LogOff", "Account")" class="btn btn-default btn-flat">Sign out</a> </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="wrapper row-offcanvas row-offcanvas-left">
+        <!-- Left side column. contains the logo and sidebar -->
+        <div class="left-side sidebar-offcanvas">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <div class="sidebar">
+                <!-- Sidebar user panel -->
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        <img src="Content/Admin/images/avatar3.png" class="img-circle" alt="User Image" />
+                    </div>
+                    <div class="pull-left info">
+                        <p class="t-t-c">Hello, @objuser.UserName</p>
+                    </div>
+                </div>
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu">
+                    @if (userRole.Contains("SuperAdmin") || userRole.Contains("SubAdmin"))
+                    { 
+                        <li class="treeview" id="WebPages">
+                            <a><i class="fa fa-bars"></i><span>Menu Pages</span> <i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="treeview-menu">
+                                <li id="wInnerPageCategories"><a href="@Url.Action("Index", "InnerPageMaster")"><i class="fa fa-angle-double-right"></i>Menu Items</a></li>
+                                <li id="wInnerPages"><a href="@Url.Action("Index", "InnerPages")"><i class="fa fa-angle-double-right"></i><span>Menu Pages</span></a> </li>
+                            </ul>
+                        </li> 
+                        <li id="MEvents"><a href="@Url.Action("Index", "Events",new { EventType = "upcoming"})"><i class="fa fa-calendar"></i><span>Events</span></a> </li>
+                        <li id="wCommittiees"><a href="@Url.Action("Index", "CommitteeMaster")"><i class="fa fa-file-text-o"></i>Committees</a></li>
+                        <li class="treeview" id="wMembers">
+                            <a><i class="fa fa-bars"></i><span>Members</span> <i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="treeview-menu">
+                                <li id="wMembershipTypes"><a href="@Url.Action("Index", "MembershipTypes")"><i class="fa fa-users"></i><span>Membership Types</span></a></li>
+                                <li id="IwMembers"><a href="@Url.Action("Index", "Members")"><i class="fa fa-users"></i><span>Members</span></a></li>
+                                <li id="wMembersOrders"><a href="@Url.Action("Index", "MembersOrders")"><i class="fa fa-users"></i><span>Members Orders </span></a></li>
+                            </ul>
+                        </li>
+                          <li class="treeview" id="Volunteers">
+                            <a><i class="fa fa-bars"></i><span>Volunteers</span> <i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="treeview-menu">
+                                <li id="wVolunteerCategories"><a href="@Url.Action("Index", "VolunteerCategories")"><i class="fa fa-file-text-o"></i>Volunteer Categories</a></li>
+                                <li id="wVolunteers"><a href="@Url.Action("Index", "Volunteers")"><i class="fa fa-file-text-o"></i><span>Volunteers </span></a></li>
+                            </ul>
+                        </li> 
+
+                        
+                        <li class="treeview" id="Gallery">
+                            <a><i class="fa fa-bars"></i><span>Gallery</span> <i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="treeview-menu">
+                                <li id="wPhotoGallery"><a href="@Url.Action("Index", "PhotoGallery")"><i class="fa fa-picture-o"></i><span>Photo Gallery </span></a></li>
+                                <li id="wVideoGallery"><a href="@Url.Action("Index", "VideoGallery")"><i class="fa fa-youtube-play"></i><span>Video Gallery </span></a></li>                                
+                            </ul>
+                        </li>
+                        <li id="wSponsors"><a href="@Url.Action("Index", "Sponsors")"><i class="fa fa-file-text-o"></i><span>Sponsors</span></a></li>
+                        
+                        <li class="treeview" id="Banners">
+                            <a><i class="fa fa-bars"></i><span>Banners</span> <i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="treeview-menu">
+                                <li id="wThemeBanners"><a href="@Url.Action("Index", "WebsiteBanners")"><i class="fa fa-th-large"></i><span>Website Banners</span></a> </li>
+                               @* <li id="wFlyers"><a href="@Url.Action("Index", "Flyers")"><i class="fa fa-file-text-o"></i><span>PopUp Pages</span></a></li> *@
+                            </ul>
+                        </li>
+                        <li class="treeview" id="Settings">
+                            <a><i class="fa fa-bars"></i><span>Settings</span> <i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="treeview-menu">
+                                <li id="wApplicationSettings"><a href="@Url.Action("Index", "ApplicationSettings")"><i class="fa fa-cogs"></i>Application Settings </a></li>
+                                <li id="wPaymentSettings"><a href="@Url.Action("Index", "PaymentSettings")"><i class="fa fa-money"></i><span>Payment Settings </span></a></li>
+                            </ul>
+                        </li>
+                        <li class="treeview" id="Donations">
+                            <a><i class="fa fa-bars"></i><span>Donations</span> <i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="treeview-menu">
+                                <li id="wDonationCategories"><a href="@Url.Action("Index", "DonationCategories")"><i class="fa fa-money"></i>Donor Categories</a></li>
+                                <li id="wDonors"><a href="@Url.Action("Index", "Donors")"><i class="fa fa-money"></i><span>Donor </span></a></li>
+                            </ul>
+                        </li> 
+                        <li class="treeview" id="Others">
+                            <a><i class="fa fa-bars"></i><span>Others</span> <i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="treeview-menu">
+                                <li id="wNews"><a href="@Url.Action("Index", "News")"><i class="fa fa-list-ul"></i><span>News</span></a> </li>
+                                <li id="wEnquiries"><a href="@Url.Action("Index", "Enquiry")"><i class="fa fa-file-text-o"></i><span>Enquiries </span></a></li>
+                                <li id="wMailTemplates"><a href="@Url.Action("Index", "MailTemplates")"><i class="fa fa-envelope"></i><span>Mail Templates</span></a> </li>
+                                <li id="wNewsLetters"><a href="@Url.Action("Index", "NewsLetter")"><i class="fa fa-file-text-o"></i><span>News Letters </span></a></li>
+                                @*<li id="wVolunteers"><a href="@Url.Action("Index", "Volunteers")"><i class="fa fa-file-text-o"></i><span>Volunteers </span></a></li>*@
+                            </ul>
+                        </li> 
+                        if (userRole.Contains("SuperAdmin"))
+                        {
+                        <li id="wSendmail"><a href="@Url.Action("SendMail", "Home")"><i class="fa fa-envelope-o"></i><span>Send Mail</span></a> </li>
+                        }
+                    }
+                </ul>
+            </div>
+            <!-- /.sidebar -->
+        </div>
+        <div class="right-side">
+            @RenderBody()
+        </div>
+    </div>
+
+    <!-- Bootstrap -->
+    <script src="Scripts/Admin/bootstrap.min.js" type="text/javascript"></script>
+    <!-- Morris.js charts -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="Scripts/Admin/plugins/morris/morris.min.js" type="text/javascript"></script>
+    <!-- fullCalendar -->
+    <script src="Scripts/Admin/plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
+    <!-- daterangepicker -->
+    <script src="Scripts/Admin/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
+    <!-- iCheck -->
+    @*<script src="Scripts/Admin/plugins/iCheck/icheck.min.js" type="text/javascript"></script> *@
+    <!-- AdminLTE App -->
+    <script src="Scripts/Admin/AdminLTE/app.js" type="text/javascript"></script>
+
+    <script src="Scripts/Admin/plugins/input-mask/jquery.inputmask.js" type="text/javascript"></script>
+    <script src="Scripts/Admin/plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>
+
+    <script src="Scripts/Admin/AdminLTE/dashboard.js" type="text/javascript"></script>
+</body>
+</html>

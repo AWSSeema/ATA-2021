@@ -1,0 +1,60 @@
+﻿@using System.Configuration
+@{    
+    ViewBag.Title = "User Validate - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+    Layout = null;
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" class="bg-black">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport' />
+    @{var baseurl = ConfigurationManager.AppSettings["baseurl"];}
+    <base href="@(baseurl)" />
+    <title>Houston Telugu Cultural Association - Control Panel</title>
+    <link rel="shortcut icon" href="Content/Admin/images/fevicon.ico" />
+    <!-- Bootstrap -->
+    <link href="Content/Admin/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="Content/Admin/common-styles.css" rel="stylesheet" type="text/css" />
+    <link href="Content/Admin/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css" />
+    <link href="Content/Admin/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+    <link href="Content/Admin/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
+    <link href="Content/Admin/admin-styles.css" rel="stylesheet" type="text/css" />
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+          <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+    <!-- add new calendar event modal -->
+    <script src="Scripts/Admin/jquery-1.8.3.js" type="text/javascript"></script>
+    <script src="Scripts/Admin/jquery-ui-1.9.2.custom.min.js" type="text/javascript"></script>
+    <!-- Bootstrap -->
+
+    <script src="Scripts/Admin/bootstrap.min.js" type="text/javascript"></script>
+    <script src="Scripts/Admin/Common.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () { 
+            $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+            $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        }); 
+    </script>
+</head>
+<body class="bg-black"> 
+    <div class="form-box" id="login-box">
+        <div class="header">
+                    <img src="Content/Admin/images/logo-s.png" alt="Houston Telugu Cultural Association" title="Houston Telugu Cultural Association" border="0" /> 
+        </div>
+        <div class="body bg-gray text-center">
+            @if (ViewBag.message != null)
+            {
+                <h3 class="font14 t-c b-p40">@Html.Raw(ViewBag.message)</h3>
+            }
+        </div>
+        <div class="footer">
+            <a class="btn btn-primary btn-block" href="@Url.Action("LogOn", "Account")">Go to Login</a>
+        </div>
+    </div>
+</body>
+</html> 

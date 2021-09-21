@@ -1,0 +1,135 @@
+﻿@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+    List<TCAssociationTool.Entities.NewsLetter> NewsLetterlist = ViewBag.NewsLetterlist;
+
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    }    
+}
+<link type="text/css" media="screen" rel="stylesheet" href="colorbox/colorbox.css" />
+<script type="text/javascript" src="colorbox/jquery.colorbox.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("a[rel]").colorbox({ transition: "fade" });
+        $(".viewdetails").colorbox({ iframe: true, innerWidth: 750, innerHeight: 500 });
+    });
+
+    function NewsLettertatus(LetterId) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("NewsLetterStatus", "NewsLetter")', // the URL of the controller action method
+            data: { LetterId: LetterId }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    NewsLettersBind($('#hdnPageNo').val());
+                }
+                else {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>'); 
+                }
+            }
+        });
+    }
+
+</script>
+
+
+
+@if (Total == -1)
+{
+    <div class="norecords">Sorry failed processing your request.</div> 
+}
+else
+{
+    <table width="100%" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th width="5%" style="text-align: center;">S.No.</th>
+
+                <th width="12%">Email</th>
+
+
+
+                <th width="12%"><a onclick="javascript:sortresult('IsActive');" class="white-t-u">Status @if (sortcolumn == "IsActive")
+                                                                                                         {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a></th>
+                <th width="12%"><a onclick="javascript:sortresult('PostedDate');" class="white-t-u">Posted Date @if (sortcolumn == "PostedDate")
+                                                                                                                {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a></th>
+                @if (userRole.Contains("SuperAdmin"))
+                {
+                    <th width="8%" style="text-align: center;">Action</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (NewsLetterlist.Count != 0)
+            {
+                int j = 0;
+                foreach (var item in NewsLetterlist)
+                { 
+                <tr valign="top">
+                    <td style="text-align: center;">@item.RId</td> 
+                    <td><a href="mailto:@item.EmailId" style="color:#324468;">@item.EmailId</a></td> 
+                    <td>
+                        @{
+                    var isactive = "";
+                    var active = "";
+                    var disable = "";
+                    if (item.IsActive == true)
+                    {
+                        isactive = "Active";
+                        disable = "style=\"cursor: pointer;\" onclick=\"javascript:NewsLettertatus(" + item.LetterId + ");\"";
+                    }
+                    else
+                    {
+                        isactive = "Disabled";
+                        active = "style=\"cursor: pointer;\" onclick=\"javascript:NewsLettertatus(" + item.LetterId + ");\"";
+                    }
+                            <div class="admin-active">@isactive
+                                <ul>
+                                    <li><a @Html.Raw(active) >Active</a></li>
+                                    <li><a @Html.Raw(disable) >Disabled</a></li>
+                                </ul>
+                            </div>      
+                        }
+                    </td>
+                    <td>@item.RegisteredDate.ToString("dd-MM-yyyy")</td>
+                    @if (userRole.Contains("SuperAdmin"))
+                    {
+                        <td style="text-align: center;">
+
+                            <a class="delete" onclick="javascript:Delete(@item.LetterId);" title="Delete"><i class="fa fa-trash-o"></i></a>
+
+                        </td>
+                    }
+                </tr>
+                    j++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td class="norecords" colspan="10">No News Letters Found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+} 
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.pageno, "pagination pagination-centered"))

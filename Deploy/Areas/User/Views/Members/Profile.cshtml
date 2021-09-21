@@ -1,0 +1,1149 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.Members objMember = ViewBag.objMembers;
+    TCAssociationTool.Entities.Volunteers objVolunteers = ViewBag.objVolunteers;
+    var location = System.Configuration.ConfigurationManager.AppSettings["adminimgurl"] + "MemberProfileImages/";
+
+    var objMemberDetails = (TCAssociationTool.Entities.Members)ViewBag.objMemberDetails;
+    var MembershipType = ViewBag.MembershipType;
+
+    string reneve = "";
+    if (objMemberDetails.ExpiryDate != DateTime.MinValue && objMemberDetails.ExpiryDate < DateTime.Now)
+    {
+        reneve = "yes";
+    }
+
+    string pay = "";
+    if (objMemberDetails.objMembershipOrder.PaymentStatus != "Completed")
+    {
+        pay = "yes";
+    }
+
+    var lstVolunteers = (List<TCAssociationTool.Entities.Volunteers>)ViewBag.lstVolunteers;
+
+    var imgloc = System.Configuration.ConfigurationManager.AppSettings["adminuploadPath"] + "Content/SponsorRegistrations/ThumbImages/";
+    var imglocNormal = System.Configuration.ConfigurationManager.AppSettings["adminuploadPath"] + "Content/SponsorRegistrations/NormalImages/";
+
+    ViewBag.Title = "Dashboard - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+}
+
+<script>
+    $(document).ready(function () {
+    //    $("#MobilePhone").mask("(999) 999-9999");
+        $('#LiProfile').addClass('active');
+
+        $('#viewarticle').show();
+
+    
+        $('#changemail').dialog
+           ({
+               autoOpen: false,
+               width: 420,
+               modal: true
+           });
+        $('#changeimage').dialog({
+            autoOpen: false,
+            width: 420,
+            modal: true
+        });
+        $('#membership').dialog({
+            autoOpen: false,
+            width:500,
+            modal: true
+        });
+        $('#changepassword').dialog({
+            autoOpen: false,
+            width: 420,
+            modal: true
+        });
+        $('#renewalConfirm-popup').dialog
+          ({
+              autoOpen: false,
+              closeOnEscape: false,
+              width: 450,
+              modal: true
+          });
+        $('#PaymentPopup').dialog
+          ({
+              autoOpen: false,
+              closeOnEscape: false,
+              width: 450,
+              modal: true
+          });
+        $('#volunteer').dialog({
+            autoOpen: false,
+            width:900,
+            height:300,
+            modal: true
+        });
+
+        $('#message').dialog
+         ({
+             autoOpen: false,
+             closeOnEscape: false,
+             width: 500,
+             modal: true
+         });
+
+        if('@reneve' == 'yes' && '@pay' != 'yes')
+        {
+            $('#renewalConfirm-popup').dialog('open');
+        }
+        else{
+            $('#renewalConfirm-popup').dialog('close');
+        }
+        if('@pay' == 'yes')
+        {
+            $('#PaymentPopup').dialog('open');
+        }
+        else{
+            $('#PaymentPopup').dialog('close');
+        }
+
+        if('@ViewBag.t' != null && '@ViewBag.t' == 'rst')
+        {
+            $('#changepassword').dialog('open');
+        }
+    });
+    function emailclose() {
+        $('#Email').val('');
+        $('#spanEmail').html('');
+
+        $('#changeemail').dialog('close');
+     
+    }
+    function emailchange() {
+        $('#PEmail').removeClass("validate");
+        $('#PEmail').val('@objMember.Email');
+        $('#changeemail').dialog('open');
+    }
+
+
+    function ValidateEmail() {
+        if ($('#PEmail').val() == "") { $('#PEmail').focus().addClass("validate"); return false; } else { $('#PEmail').removeClass("validate"); }
+        if (!Common.CheckEmail($('#PEmail').val())) { $('#PEmail').val(''); document.getElementsByName('Email')[0].placeholder = 'Invalid email address'; $('#PEmail').focus().addClass("validate"); return false; } else { $('#PEmail').removeClass("validate"); }
+        if (!CheckEmailAvailability($.trim($('#PEmail').val()))) { $('#PEmail').val(''); document.getElementsByName('Email')[0].placeholder = 'Email already exist.'; $('#PEmail').focus().addClass("validate"); return false; } else { $('#PEmail').removeClass("validate"); }
+        return true;
+    }
+    function ResetEmailValidateClass() {
+        $('#PEmail').removeClass("validate");
+
+    }
+    function CheckEmailAvailability(email) {
+        var returnval = null;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CheckProfileEmailAvailability", "Members")', // the URL of the controller action method
+            data: { MemberId: @(objMember.MemberId), Email: email }, // optional data
+            datatype: "JSON",
+            async: false,
+            success: function (result) {
+                if (result.ok) {
+                    returnval = result.data;
+                }
+            }
+        });
+        return returnval;
+    }
+    function Photochange()
+    {
+        $('#file').val('');
+        $('#spanfile').html('');
+        $('#changeimage').dialog('open');
+    }
+    function mobileonchange()
+    {
+        var phone = $('#MobilePhone').val();
+        if(phone.length == 3){$('#MobilePhone').val(phone+'-');}
+        else if(phone.length == 7){$('#MobilePhone').val(phone+'-');}
+    }
+    function mobileonchange1()
+    {
+        var phone = $('#HomePhone').val();
+        if(phone.length == 3){$('#HomePhone').val(phone+'-');}
+        else if(phone.length == 7){$('#HomePhone').val(phone+'-');}
+    }
+    function profileEditvalidate() {
+        var returnvalue = true;
+        if ($('#UserName').val() == '') { $('#UserName').focus().addClass('validate'); returnvalue = false } else { $('#UserName').removeClass('validate'); }
+        if ($.trim($('#FirstName').val()) == '') { $('#FirstName').focus().addClass('redborder'); $('#spanFirstName').show().html('First Name Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanFirstName').hide().html(''); $('#FirstName').removeClass('redborder'); }
+        if ($.trim($('#LastName').val()) == '') { $('#LastName').focus().addClass('redborder'); $('#spanLastName').show().html('Last Name Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanLastName').hide().html(''); $('#LastName').removeClass('redborder'); }
+        //if ($('#FirstName').val() == '') { $('#FirstName').focus().addClass('validate'); returnvalue = false } else { $('#FirstName').removeClass('validate'); }
+        //if ($('#LastName').val() == '') { $('#LastName').focus().addClass('validate'); returnvalue = false } else { $('#LastName').removeClass('validate'); }
+        //if ($('#HomePhone').val() == '') { $('#HomePhone').focus().addClass('validate'); $('#spanPhone').html(''); returnvalue = false }
+        //else {
+        //    $('#HomePhone').removeClass('validate');
+        //    var phone = $('#HomePhone').val();
+        //    if (phone.length != 12) { $('#HomePhone').focus().addClass('validate'); $('#spanPhone').html('Enter your 10 digit phone no.'); returnvalue = false } else { $('#HomePhone').removeClass('validate'); }
+        //}
+
+        if ($('#MobilePhone').val() == '') { $('#MobilePhone').focus().addClass('validate'); $('#spanPhone').html(''); returnvalue = false }
+      //  if ($.trim($('#MobilePhone').val()) == '') { $('#MobilePhone').focus().addClass('redborder'); $('#spanPhone').show().html('Mobile Phone Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; }
+        //else {
+        //    $('#MobilePhone').removeClass('validate');
+        //    var phone = $('#MobilePhone').val();
+        //    if (phone.length != 14) { $('#MobilePhone').focus().addClass('redborder'); $('#spanPhone').show().html('Enter your 10 digit phone no.<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); returnvalue = false } else { $('#MobilePhone').removeClass('redborder'); }
+        //}
+
+        if ($.trim($('#City').val()) == '') { $('#City').focus().addClass('redborder'); $('#spanCity').show().html('City Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanCity').hide().html(''); $('#City').removeClass('redborder'); }
+        if ($.trim($('#State').val()) == '') { $('#State').focus().addClass('redborder'); $('#spanState').show().html('State Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanState').hide().html(''); $('#State').removeClass('redborder'); }
+        //if ($('#City').val() == '') { $('#City').focus().addClass('validate'); returnvalue = false } else { $('#City').removeClass('validate'); }
+        //if ($('#State').val() == '') { $('#State').focus().addClass('validate'); returnvalue = false } else { $('#State').removeClass('validate'); }
+        return returnvalue;
+    }
+
+    //function ValidatePassword() {
+    //    var returnval = true;
+    //    if ($('#OldPassword').val() == '') { $('#OldPassword').focus().addClass("validate"); returnval = false; } else { $('#OldPassword').removeClass("validate"); }
+    //    if ($('#NewPassword').val() == '') { $('#NewPassword').focus().addClass("validate"); returnval = false; }
+    //    else {
+    //        $('#NewPassword').removeClass("validate");
+    //        var pwd = $('#NewPassword').val();
+    //        if (pwd.length < 6) { $('#NewPassword').addClass('validate'); $('#spanNewPassword').html('Reqired minimum 6 charecters'); returnval = false; } else { $('#spanNewPassword').html(''); $('#NewPassword').removeClass("validate"); }
+    //        //if (!Common.ValidatePassword($('#NewPassword').val())) { $('#spanNewPassword').html('Please enter minimum 8 characters (atleast one special character & one numeric character).'); $('#NewPassword').focus().addClass("validate"); returnval = false; } else { $('#spanNewPassword').html(''); $('#NewPassword').removeClass("validate"); }
+    //    }
+    //    if ($('#ConfPassword').val() == '') { $('#ConfPassword').focus().addClass("validate"); returnval = false; }
+    //    else {
+    //        $('#ConfPassword').removeClass("validate");
+    //        if ($('#NewPassword').val() != $('#ConfPassword').val()) { $('#ConfPassword').val(''); document.getElementsByName('ConfPassword')[0].placeholder = 'Password do not match.'; $('#ConfPassword').focus().addClass("validate"); returnval = false; } else { $('#ConfPassword').removeClass("validate"); }
+    //    }
+
+    //    return returnval;
+    //}
+
+
+
+
+    function ValidatePassword() {
+        if ($.trim($('#OldPassword').val()) == '') { $('#OldPassword').focus().addClass('redborder'); $('#spanOldPassword').show().html('Old Password Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanOldPassword').hide().html(''); $('#OldPassword').removeClass("redborder"); }
+
+        if ($.trim($('#NewPassword').val()) == '') { $('#NewPassword').focus().addClass('redborder'); $('#spanNewPassword').show().html('New Password Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanNewPassword').hide().html(''); $('#NewPassword').removeClass('redborder'); }
+        if (!Common.ValidatePassword($('#NewPassword').val())) { $('#NewPassword').focus().addClass('redborder'); $('#spanNewPassword').show().html('Please enter minimum 8 charecters (atleast one special charecter & one numeric charecter).<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#NewPassword').focus().addClass("redborder"); return false; } else { $('#spanNewPassword').hide().html(''); $('#NewPassword').focus().removeClass("redborder"); }
+
+        if ($('#ConfPassword').val() == '') { $('#ConfPassword').focus().addClass('redborder'); $('#spanConfPassword').show().html('Confirm Password Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanConfPassword').hide().html(''); $('#ConfPassword').removeClass('redborder'); }
+        if ($('#NewPassword').val() != $('#ConfPassword').val()) { $('#ConfPassword').focus().addClass('redborder'); $('#spanConfPassword').show().html('Password and confirm password do not match.<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanConfPassword').hide().html(''); $('#ConfPassword').removeClass('redborder'); }
+        return true;
+    }
+
+    function closeValidation(field) {
+        $(field).parent().hide();
+    }
+
+    function ChangePasswordshow() {
+        $('#spanNewPassword').html('');
+        $('#OldPassword').val('');
+        $('#NewPassword').val('');
+        $('#ConfPassword').val('');
+        $('#OldPassword').removeClass("validate");
+        $('#NewPassword').removeClass("validate");
+        $('#ConfPassword').removeClass("validate");
+        $('#changepassword').dialog('open');
+    }
+    function ValidateImg() {
+        if ($.trim($('#file').val()) == '') { $('#file').focus(); $('#Aspanfile').show().html('Image Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#Aspanfile').hide().html(''); }
+        if (!Common.isImage($('#file').val())) { $('#Aspanfile').show().html('Sorry Image is invalid. Only allowed extensions are:<b>Jpeg, png</b>.<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#file').focus(); return false; } else { $('#Aspanfile').hide().html(''); }
+        //if ($('#file').val() == "") { $('#spanfile').html('Required.'); $('#file').focus(); return false; }
+        //if (!Common.isImage($('#file').val())) { $('#spanfile').html('Invalid Image.'); $('#file').focus(); return false; }
+        return true;
+    }
+
+    function SaveCertificates(VolunteerId) {
+        //$('#tload' + VolunteerId + '').show();
+        //$('#save' + VolunteerId + '').hide();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetCertificateandSave", "Volunteer")', // the URL of the controller action method
+            data: { VolunteerId: VolunteerId }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    $('#divmessage').html(result.data);
+                    //ClassifiedUserOrdersBind($('#hdnPageNo').val());
+                    //$('#tload' + VolunteerId + '').hide();
+                    //$('#save' + VolunteerId + '').show();
+                    if (result.data1 != '') {
+                        window.open(result.data1, '_blank');
+                    }
+                }
+                else {
+                    $('#divmessage').html(result.data);
+                }
+            }
+        });
+    }
+
+    function VolunteersBind() {
+        $.ajax({
+            url: '@Url.Action("Profile", "Members")',
+            type: 'GET',
+            cache: false,
+            data: {  PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder },
+            success: function (result) {
+                $('#volunteer').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+    function UpdateHoursSpent(i, VolunteerId) {
+        var HoursSpent = parseInt($('#HoursSpent' + i).val());
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UpdateVolunteerHours", "Volunteer")',
+            data: { HoursSpent: HoursSpent, VolunteerId: VolunteerId },
+            success: function (result) {
+                var div = '';
+                if (result.ok) {
+                    $("#divmessage").html(result.data);
+                    VolunteersBind(1);
+                }
+                else {
+                    $("#divmessage").html(result.data);
+                    $('#vfailedmsg').html(result.data).show();
+                }
+            }
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+       // $("#MobilePhone").mask("(999) 999-9999");
+        $('#LiProfile').addClass('active');
+        $('#changemail').dialog
+           ({
+               autoOpen: false,
+               width: 420,
+               modal: true
+           });
+        $('#changeimage').dialog({
+            autoOpen: false,
+            width: 420,
+            modal: true
+        });
+        $('#membership').dialog({
+            autoOpen: false,
+            width:500,
+            modal: true
+        });
+        $('#changepassword').dialog({
+            autoOpen: false,
+            width: 420,
+            modal: true
+        });
+        $('#renewalConfirm-popup').dialog
+          ({
+              autoOpen: false,
+              closeOnEscape: false,
+              width: 450,
+              modal: true
+          });
+        $('#PaymentPopup').dialog
+          ({
+              autoOpen: false,
+              closeOnEscape: false,
+              width: 450,
+              modal: true
+          });
+        $('#volunteer').dialog({
+            autoOpen: false,
+            width:900,
+            height:300,
+            modal: true
+        });
+
+        $('#message').dialog
+         ({
+             autoOpen: false,
+             closeOnEscape: false,
+             width: 500,
+             modal: true
+         });
+
+        if('@reneve' == 'yes' && '@pay' != 'yes')
+        {
+            $('#renewalConfirm-popup').dialog('open');
+        }
+        else{
+            $('#renewalConfirm-popup').dialog('close');
+        }
+        if('@pay' == 'yes')
+        {
+            $('#PaymentPopup').dialog('open');
+        }
+        else{
+            $('#PaymentPopup').dialog('close');
+        }
+    });
+    function emailclose() {
+        $('#Email').val('');
+        $('#spanEmail').html('');
+
+        $('#changeemail').dialog('close');
+    }
+    function emailchange() {
+        $('#PEmail').removeClass("validate");
+        $('#PEmail').val('@objMember.Email');
+        $('#changeemail').dialog('open');
+    }
+
+
+    function ValidateEmail() {
+        if ($('#PEmail').val() == "") { $('#PEmail').focus().addClass("validate"); return false; } else { $('#PEmail').removeClass("validate"); }
+        if (!Common.CheckEmail($('#PEmail').val())) { $('#PEmail').val(''); document.getElementsByName('Email')[0].placeholder = 'Invalid email address'; $('#PEmail').focus().addClass("validate"); return false; } else { $('#PEmail').removeClass("validate"); }
+        if (!CheckEmailAvailability($.trim($('#PEmail').val()))) { $('#PEmail').val(''); document.getElementsByName('Email')[0].placeholder = 'Email already exist.'; $('#PEmail').focus().addClass("validate"); return false; } else { $('#PEmail').removeClass("validate"); }
+        return true;
+    }
+    function ResetEmailValidateClass() {
+        $('#PEmail').removeClass("validate");
+
+    }
+    function CheckEmailAvailability(email) {
+        var returnval = null;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CheckProfileEmailAvailability", "Members")', // the URL of the controller action method
+            data: { MemberId: @(objMember.MemberId), Email: email }, // optional data
+            datatype: "JSON",
+            async: false,
+            success: function (result) {
+                if (result.ok) {
+                    returnval = result.data;
+                }
+            }
+        });
+        return returnval;
+    }
+    function Photochange()
+    {
+        $('#file').val('');
+        $('#spanfile').html('');
+        $('#changeimage').dialog('open');
+    }
+    function mobileonchange()
+    {
+        var phone = $('#MobilePhone').val();
+        if(phone.length == 3){$('#MobilePhone').val(phone+'-');}
+        else if(phone.length == 7){$('#MobilePhone').val(phone+'-');}
+    }
+    function mobileonchange1()
+    {
+        var phone = $('#HomePhone').val();
+        if(phone.length == 3){$('#HomePhone').val(phone+'-');}
+        else if(phone.length == 7){$('#HomePhone').val(phone+'-');}
+    }
+    function profileEditvalidate() {
+        var returnvalue = true;
+        if ($('#UserName').val() == '') { $('#UserName').focus().addClass('validate'); returnvalue = false } else { $('#UserName').removeClass('validate'); }
+        if ($.trim($('#FirstName').val()) == '') { $('#FirstName').focus().addClass('redborder'); $('#spanFirstName').show().html('First Name Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanFirstName').hide().html(''); $('#FirstName').removeClass('redborder'); }
+        if ($.trim($('#LastName').val()) == '') { $('#LastName').focus().addClass('redborder'); $('#spanLastName').show().html('Last Name Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanLastName').hide().html(''); $('#LastName').removeClass('redborder'); }
+        //if ($('#FirstName').val() == '') { $('#FirstName').focus().addClass('validate'); returnvalue = false } else { $('#FirstName').removeClass('validate'); }
+        //if ($('#LastName').val() == '') { $('#LastName').focus().addClass('validate'); returnvalue = false } else { $('#LastName').removeClass('validate'); }
+        //if ($('#HomePhone').val() == '') { $('#HomePhone').focus().addClass('validate'); $('#spanPhone').html(''); returnvalue = false }
+        //else {
+        //    $('#HomePhone').removeClass('validate');
+        //    var phone = $('#HomePhone').val();
+        //    if (phone.length != 12) { $('#HomePhone').focus().addClass('validate'); $('#spanPhone').html('Enter your 10 digit phone no.'); returnvalue = false } else { $('#HomePhone').removeClass('validate'); }
+        //}
+
+        //if ($('#MobilePhone').val() == '') { $('#MobilePhone').focus().addClass('validate'); $('#spanPhone').html(''); returnvalue = false }
+        if ($.trim($('#MobilePhone').val()) == '') { $('#MobilePhone').focus().addClass('redborder'); $('#spanPhone').show().html('Mobile Phone Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; }
+        //else {
+        //    $('#MobilePhone').removeClass('validate');
+        //    var phone = $('#MobilePhone').val();
+        //    if (phone.length != 14) { $('#MobilePhone').focus().addClass('redborder'); $('#spanPhone').show().html('Enter your 10 digit phone no.<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); returnvalue = false } else { $('#MobilePhone').removeClass('redborder'); }
+        //}
+
+        if ($.trim($('#City').val()) == '') { $('#City').focus().addClass('redborder'); $('#spanCity').show().html('City Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanCity').hide().html(''); $('#City').removeClass('redborder'); }
+        if ($.trim($('#State').val()) == '') { $('#State').focus().addClass('redborder'); $('#spanState').show().html('State Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanState').hide().html(''); $('#State').removeClass('redborder'); }
+        //if ($('#City').val() == '') { $('#City').focus().addClass('validate'); returnvalue = false } else { $('#City').removeClass('validate'); }
+        //if ($('#State').val() == '') { $('#State').focus().addClass('validate'); returnvalue = false } else { $('#State').removeClass('validate'); }
+        return returnvalue;
+    }
+
+    //function ValidatePassword() {
+    //    var returnval = true;
+    //    if ($('#OldPassword').val() == '') { $('#OldPassword').focus().addClass("validate"); returnval = false; } else { $('#OldPassword').removeClass("validate"); }
+    //    if ($('#NewPassword').val() == '') { $('#NewPassword').focus().addClass("validate"); returnval = false; }
+    //    else {
+    //        $('#NewPassword').removeClass("validate");
+    //        var pwd = $('#NewPassword').val();
+    //        if (pwd.length < 6) { $('#NewPassword').addClass('validate'); $('#spanNewPassword').html('Reqired minimum 6 charecters'); returnval = false; } else { $('#spanNewPassword').html(''); $('#NewPassword').removeClass("validate"); }
+    //        //if (!Common.ValidatePassword($('#NewPassword').val())) { $('#spanNewPassword').html('Please enter minimum 8 characters (atleast one special character & one numeric character).'); $('#NewPassword').focus().addClass("validate"); returnval = false; } else { $('#spanNewPassword').html(''); $('#NewPassword').removeClass("validate"); }
+    //    }
+    //    if ($('#ConfPassword').val() == '') { $('#ConfPassword').focus().addClass("validate"); returnval = false; }
+    //    else {
+    //        $('#ConfPassword').removeClass("validate");
+    //        if ($('#NewPassword').val() != $('#ConfPassword').val()) { $('#ConfPassword').val(''); document.getElementsByName('ConfPassword')[0].placeholder = 'Password do not match.'; $('#ConfPassword').focus().addClass("validate"); returnval = false; } else { $('#ConfPassword').removeClass("validate"); }
+    //    }
+
+    //    return returnval;
+    //}
+
+
+
+
+    function ValidatePassword() {
+        if ($.trim($('#OldPassword').val()) == '') { $('#OldPassword').focus().addClass('redborder'); $('#spanOldPassword').show().html('Old Password Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanOldPassword').hide().html(''); $('#OldPassword').removeClass("redborder"); }
+
+        if ($.trim($('#NewPassword').val()) == '') { $('#NewPassword').focus().addClass('redborder'); $('#spanNewPassword').show().html('New Password Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanNewPassword').hide().html(''); $('#NewPassword').removeClass('redborder'); }
+        if (!Common.ValidatePassword($('#NewPassword').val())) { $('#NewPassword').focus().addClass('redborder'); $('#spanNewPassword').show().html('Please enter minimum 8 charecters (atleast one special charecter & one numeric charecter).<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#NewPassword').focus().addClass("redborder"); return false; } else { $('#spanNewPassword').hide().html(''); $('#NewPassword').focus().removeClass("redborder"); }
+
+        if ($('#ConfPassword').val() == '') { $('#ConfPassword').focus().addClass('redborder'); $('#spanConfPassword').show().html('Confirm Password Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanConfPassword').hide().html(''); $('#ConfPassword').removeClass('redborder'); }
+        if ($('#NewPassword').val() != $('#ConfPassword').val()) { $('#ConfPassword').focus().addClass('redborder'); $('#spanConfPassword').show().html('Password and confirm password do not match.<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanConfPassword').hide().html(''); $('#ConfPassword').removeClass('redborder'); }
+        return true;
+    }
+
+    function closeValidation(field) {
+        $(field).parent().hide();
+    }
+
+    function ChangePasswordshow() {
+        $('#spanNewPassword').html('');
+        $('#OldPassword').val('');
+        $('#NewPassword').val('');
+        $('#ConfPassword').val('');
+        $('#OldPassword').removeClass("validate");
+        $('#NewPassword').removeClass("validate");
+        $('#ConfPassword').removeClass("validate");
+        $('#changepassword').dialog('open');
+    }
+    function ValidateImg() {
+        if ($.trim($('#file').val()) == '') { $('#file').focus(); $('#Aspanfile').show().html('Image Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#Aspanfile').hide().html(''); }
+        if (!Common.isImage($('#file').val())) { $('#Aspanfile').show().html('Sorry Image is invalid. Only allowed extensions are:<b>Jpeg, png</b>.<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#file').focus(); return false; } else { $('#Aspanfile').hide().html(''); }
+        //if ($('#file').val() == "") { $('#spanfile').html('Required.'); $('#file').focus(); return false; }
+        //if (!Common.isImage($('#file').val())) { $('#spanfile').html('Invalid Image.'); $('#file').focus(); return false; }
+        return true;
+    }
+
+    function SaveCertificates(VolunteerId) {
+        //$('#tload' + VolunteerId + '').show();
+        //$('#save' + VolunteerId + '').hide();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetCertificateandSave", "Volunteer")', // the URL of the controller action method
+            data: { VolunteerId: VolunteerId }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    $('#divmessage').html(result.data);
+                    //ClassifiedUserOrdersBind($('#hdnPageNo').val());
+                    //$('#tload' + VolunteerId + '').hide();
+                    //$('#save' + VolunteerId + '').show();
+                    if (result.data1 != '') {
+                        window.open(result.data1, '_blank');
+                    }
+                }
+                else {
+                    $('#divmessage').html(result.data);
+                }
+            }
+        });
+    }
+
+    function VolunteersBind() {
+        $.ajax({
+            url: '@Url.Action("Profile", "Members")',
+            type: 'GET',
+            cache: false,
+            data: {  PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder },
+            success: function (result) {
+                $('#volunteer').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+    function UpdateHoursSpent(i, VolunteerId) {
+        var HoursSpent = parseInt($('#HoursSpent' + i).val());
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UpdateVolunteerHours", "Volunteer")',
+            data: { HoursSpent: HoursSpent, VolunteerId: VolunteerId },
+            success: function (result) {
+                var div = '';
+                if (result.ok) {
+                    $("#divmessage").html(result.data);
+                    VolunteersBind(1);
+                }
+                else {
+                    $("#divmessage").html(result.data);
+                    $('#vfailedmsg').html(result.data).show();
+                }
+            }
+        });
+    }
+
+    //function editprofile() {
+    //    $('#viewdiv').dialog('close');
+    //    $('#editdiv').dialog('open');
+
+    //}
+
+  
+</script>
+<!--- DILOG BOX Membership Details [start] --->
+<section id="membership" style="display: none; overflow: visible;">
+    <article class="clearfix dialog-title t-c white-bg border-b b-p5">
+        <span class="pull-right r-p10 t-p10"><a class="cursor-p latomedium red-t" onclick=" $('#membership').dialog('close')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></span>
+        <h3 class="black-t font20 poppins-medium">Membership Details</h3>
+    </article>
+    <article class="clearfix dialog-content">
+        <article class="clearfix p30 mobile-p10">
+            <form action="profile.html" method="post" class="b-m0 font14 black-t">
+
+                <article class="clearfix box-row b-p5">
+                    <article class="box-5">User Name<span class="dis-in pull-right">:</span></article>
+                    <article class="box-7">
+                        <span class="dis-in l-p15 dk-t">@objMemberDetails.FirstName </span>
+                    </article>
+                </article>
+                <article class="clearfix box-row b-p5">
+                    <article class="box-5">Member Id<span class="dis-in pull-right">:</span></article>
+                    <article class="box-7">
+                        <span class="dis-in l-p15 dk-t">@objMemberDetails.SpouseCell  </span>
+                    </article>
+                </article>
+                <article class="clearfix box-row b-p5">
+                    <article class="box-5">
+                        Membership Type<span class="dis-in pull-right">:</span>
+                    </article>
+                    <article class="box-7">
+                        <span class="dis-in l-p15 dk-t">@objMemberDetails.MembershipType </span>
+                    </article>
+                </article>
+                <article class="clearfix box-row b-p5">
+                    <article class="box-5">
+                        ExpiryDate<span class="dis-in pull-right">:</span>
+                    </article>
+                    <article class="box-7">
+                        <span class="dis-in l-p15 dk-t">@(objMemberDetails.ExpiryDate == DateTime.MinValue ? (objMemberDetails.objMembershipOrder.PaymentStatus == "Completed" ? "Life Time" : "N/A") : objMemberDetails.ExpiryDate.ToString("MM-dd-yyyy")) </span>
+                    </article>
+                </article>
+                <article class="clearfix t-p10 t-c">
+                    <a onclick=" $('#membership').dialog('close')" class="btn btn-danger btn-block poppinssemibold font18 border-radius0" />CANCEL</a>
+                </article>
+
+            </form>
+        </article>
+    </article>
+</section>
+<!--- DILOG BOX Membership Details [end] --->
+<!--- DILOG BOX Volunteeer Details [start] --->
+<section id="volunteer" style="display: none; overflow: visible;">
+    <article class="clearfix dialog-title t-c white-bg border-b b-p5">
+        <span class="pull-right r-p10 t-p10"><a class="cursor-p latomedium red-t" onclick=" $('#volunteer').dialog('close')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></span>
+        <h3 class="black-t font20 poppins-medium">Volunteer Details</h3>
+        <article id="vfailedmsg" class="clearfix hide b-m10 red-t font14"></article>
+    </article>
+    <article class="clearfix overflow_x-a">
+        <article class="clearfix p10" style="min-width: 700px;">
+            <table width="100%" cellspacing="0" cellpadding="0" class="table table-hover table-bordered poppins-regular gray-t font13 m0">
+                <tbody>
+                    <tr class="t-l yello-bg">
+                        <th>User Name </th>
+                        <th>Email</th>
+                        <th>Event Name</th>
+                        <th align="center">Hours Spent</th>
+                        <th align="center">Status</th>
+                        <th>#</th>
+                    </tr>
+                    @if (lstVolunteers != null && lstVolunteers.Count != 0)
+                    {
+                        Int64 i = 1;
+                        foreach (var item in lstVolunteers)
+                        {
+                            <tr>
+                                <td valign="middle">@(((item.FirstName != null && item.FirstName != "") ? "" : item.FirstName) + " " + ((item.LastName!= null && item.LastName != "") ? "" : item.LastName))</td>
+                                <td valign="middle"><a href="mailto:@item.Email" class="black-t r-p5">@item.Email</a></td>
+                                <td valign="middle" class="orange-t">@((item.EventName == null || item.EventName == "") ? "N/A" : item.EventName)</td>
+                                @if (item.IsActive == true)
+                                {
+                                    <td align="center" valign="middle" class="orange-t">@((item.HoursSpent == null || item.HoursSpent == "") ? "N/A" : item.HoursSpent) </td>
+                                }
+                                else
+                                {
+                                    <td class="orange-t">
+                                        <span class="clearfix dis-in">
+                                            <input type="text" class="dis-in" style="width:50px; margin-bottom:0px;" maxlength="3" id="HoursSpent@(i)" value="@item.HoursSpent" onkeypress="return Common.isNumberKey(event)" />
+                                            <a onclick="UpdateHoursSpent(@i,@item.VolunteerId);" title="Update" class="dis-in"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a>
+                                        </span>
+                                    </td>
+                                }
+                                <td align="center" valign="middle">@(item.IsActive == true ? "Approved" : "Not Approved")</td>
+                                @if (item.IsActive == true)
+                                {
+                                    <td align="center" valign="middle"><a onclick="SaveCertificates(@item.VolunteerId);">Get Certificate</a></td>
+                                }
+                                else
+                                {
+                                    <td align="center" valign="middle"><a onclick="$(&quot;#message&quot;).dialog(&quot;open&quot;);">Get Certificate</a></td>
+                                }
+
+                            </tr>
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="norecords" colspan="7">No Volunters Found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </article>
+    </article>
+</section>
+
+<section id="message" style="display: none; overflow: visible;">
+    <article class="clearfix dialog-title t-c white-bg border-b b-p5">
+        <span class="pull-right r-p10 t-p10"><a class="cursor-p latomedium red-t" onclick=" $('#message').dialog('close')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></span>
+        <h3 class="poppinssemibold blue-t font22 t-t-u l-h24 b-p7">Info</h3>
+    </article>
+    <article class="clearfix dialog-content">
+        <article class="clearfix p20 mobile-p10">
+            <span class="clearfix red-t font16">Waiting for the Approval from Administrator..!!</span>
+        </article>
+    </article>
+</section>
+<!--- DILOG BOX Change Pic [start] --->
+<section id="changeimage" style="display: none; overflow: visible; padding: 0!important;">
+    <article class="clearfix l-r-m-auto alphawhite-bg p10" style="margin: -3px -3px;">
+        <article class="clearfix dialog-content white-bg position-r p20">
+            <span class="pull-right r-p10 t-p10 closebtn"><a class="cursor-p poppins-medium red-t" onclick=" $('#changeimage').dialog('close')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></span>
+            <h3 class="poppinssemibold blue-t font22 t-m0 t-t-u l-h24">Change Profile Picture</h3>
+            @using (Html.BeginForm("ProfilePic", "Members", FormMethod.Post, new { enctype = "multipart/form-data", @class = "b-m0 validation" }))
+            {
+                @Html.Hidden("MemberId", (Int64)@objMember.MemberId)
+                <article class="position-r">
+                    <label class="dk-t poppins-regular">Uploade Image</label>
+                    <input type="file" id="file" name="file" class="width100" />
+                    <span id="Aspanfile" class="errormsg"></span>
+                </article>
+                <article class="clearfix t-p10 t-c">
+                    <input type="submit" value="UPDATE" onclick="return ValidateImg();" class="clearfix m0 career-submit-bg border-radius4 t-t-u font18 white-t t-c l-h12 Poppins-Medium t-b-p20 border0 width100" />
+                </article>
+
+            }
+        </article>
+    </article>
+</section>
+<!--- DILOG BOX Change Pic [end] --->
+<!--- DILOG BOX Change Email [start] --->
+
+<section id="changemail" style="display: none; overflow: visible; padding: 0!important;">
+    <article class="clearfix l-r-m-auto alphawhite-bg p10" style="margin: -3px -3px;">
+        <article class="clearfix dialog-content white-bg position-r p20">
+            <span class="pull-right r-p10 t-p10 closebtn"><a class="cursor-p poppins-medium red-t" onclick=" $('#changemail').dialog('close')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></span>
+            <h3 class="poppinssemibold blue-t font22 t-m0 t-t-u l-h24 b-p7">Change Email Id</h3>
+            @using (Html.BeginForm("ProfileEmailUpdate", "Members", FormMethod.Post, new { enctype = "multipart/form-data", @class = "validation" }))
+            {
+                @Html.Hidden("MemberId", (Int64)@objMember.MemberId)
+                <input value="@objMember.Email" placeholder="Email Id" onkeypress="ResetEmailValidateClass();" onclick="ResetEmailValidateClass();" name="Email" id="PEmail" class="form-control" type="text" />
+                <input value="UPDATE" onclick="return ValidateEmail();" class="clearfix m0 career-submit-bg border-radius4 t-t-u font18 white-t t-c l-h12 Poppins-Medium t-b-p20 border0 width100" type="submit" />
+            }
+        </article>
+    </article>
+</section>
+<!--- DILOG BOX Change Email  [end] --->
+<!--- DILOG BOX Change Password [start] --->
+<section id="changepassword" style="display: none; overflow: visible; padding: 0!important;">
+    <article class="clearfix l-r-m-auto alphawhite-bg p10" style="margin: -3px -3px;">
+        <article class="clearfix dialog-content white-bg position-r p20">
+            <span class="pull-right r-p10 t-p5 closebtn"><a class="cursor-p poppins-medium red-t" onclick=" $('#changepassword').dialog('close')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></span>
+            <h3 class="poppinssemibold blue-t font22 t-t-u l-h24 b-p10">Change Password</h3>
+            @using (Html.BeginForm("ChangePassword", "Members", FormMethod.Post, new { enctype = "multipart/form-data", @class = "validation" }))
+            {
+                @Html.Hidden("MemberId", (Int64)objMember.MemberId)
+                <article class="clearfix position-r">
+
+                    <input type="password" id="OldPassword" name="OldPassword" placeholder="Old Password*" class="form-control" />
+                    <span class="errormsg" id="spanOldPassword"></span>
+                </article>
+                <article class="clearfix position-r">
+
+                    <input type="password" placeholder="New Password*" class="form-control" id="NewPassword" name="NewPassword" />
+                    <span class="errormsg" id="spanNewPassword"></span>
+                </article>
+                <article class="clearfix position-r">
+
+                    <input type="password" placeholder="Retype Password*" class="form-control" id="ConfPassword" name="ConfPassword" />
+                    <span class="errormsg" id="spanConfPassword"></span>
+                </article>
+                <article class="clearfix t-p10 t-c">
+                    <input type="submit" value="UPDATE" class="clearfix m0 career-submit-bg border-radius4 t-t-u font18 white-t t-c l-h12 Poppins-Medium t-b-p20 border0 width100" onclick="return ValidatePassword()" />
+                </article>
+
+            }
+        </article>
+    </article>
+</section>
+<!--- DILOG BOX Change Password  [end] --->
+
+<article class="clearfix t-m0 l-h28 t-t-u Impact font26 evesec-tex letespa1 b-m25 tabhorizontal-b-m10 mobile-b-m5">Profile<i class="inertitsid-img l-m10 mobile-hide">&nbsp;</i>
+                    
+                </article>
+
+                                <article class="clearfix gr-bg t-b-p10 tabhorizontal-l-r-p10 mobile-l-r-p0">
+                                    <article class="clearfix border p30 shadowb white-bg grayborder tabhorizontal-p10">
+                                        <article class="clearfix sep-row b-p10">
+
+                                            <article class="sep-4">
+                                                <article class="clearfix res-item2">
+                                                    <article class="clearfix font14 t-c dk-cream-bg p5 mobile-p10 greenborder border-t3 b-m10 innershadow l-r-m-auto" style="max-width: 350px;">
+                                                        <h3 class="titleshadow KaushanScript-Regular red-t font22 l-h20 t-m5">@objMember.FirstName</h3>
+                                                        <article class="clearfix flower-design t-p25"></article>
+                                                        <article class="clearfix p4 l-r-m-auto white-bg border-radius50 shadow" style="max-width: 109px;">
+                                                            <img alt="" title="" src="@TCAssociationTool.BLL.Common.ValidateImage((location + objMember.ProfileImage), "Content/MemberProfileImages/no-image.jpeg")" class="border-radius50" height="104" width="109">
+                                                        </article>
+                                                        <article class="clearfix t-p7 Montserrat-Regular font12"><a onclick="$(&quot;#changeimage&quot;).dialog(&quot;open&quot;);" class="red-t"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>Edit Profile Pic</a></article>
+
+                                                        <h5 class="clearfix font15 l-h24 black-t t-m5 b-m3">@objMember.Email</h5>
+                                                        <a onclick="$(&quot;#changemail&quot;).dialog(&quot;open&quot;);" class="red-t Montserrat-Regular font12"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>Change mail id</a>
+                                                        <article class="clearfix flower-design t-p25"></article>
+                                                    </article>
+                                                </article>
+                                                <article class="clearfix res-item2">
+                                                    <article class="clearfix font14 dk-cream-bg p10 mobile-p10 greenborder border-t3 b-m10 innershadow l-r-m-auto" style="max-width: 350px;">
+                                                        <ul class="clearfix list-pn m0 sidebarmenulist poppins-medium side-bar-bg">
+                                                            @if (objMemberDetails.MembershipTypeId != null && @objMemberDetails.MembershipTypeId != 0)
+                                                            {
+                                                                <li class="active">
+                                                                    <a href="#">
+                                                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                                            <tr>
+                                                                                <td width="12%" height="30"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></td>
+                                                                                <td width="88%" height="30" class="Montserrat-Regular">Profile Details</td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                            <li class="">
+                                                                <a onclick="$(&quot;#changepassword&quot;).dialog(&quot;open&quot;);">
+                                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                                        <tr>
+                                                                            <td width="12%" height="30"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></td>
+                                                                            <td width="88%" height="30" class="Montserrat-Regular">Change Password</td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </a>
+                                                            </li>
+                                                            @if (objMemberDetails.MembershipTypeId != null && @objMemberDetails.MembershipTypeId != 0)
+                                                            {
+                                                                <li class="">
+                                                                    <a onclick="$(&quot;#membership&quot;).dialog(&quot;open&quot;);">
+                                                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                                            <tr>
+                                                                                <td width="12%" height="30"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></td>
+                                                                                <td width="88%" height="30" class="Montserrat-Regular">Membership Details</td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                            else
+                                                            {
+                                                                <li class="">
+                                                                    <a href="@Url.Action("AddMember", "Members", new { MemberId = objMemberDetails.MemberId })">
+                                                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                                            <tr>
+                                                                                <td width="12%" height="30"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></td>
+                                                                                <td width="88%" height="30">Become A Member</td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                            @if (objMemberDetails.MembershipType == "Lifetime Member" && @objMemberDetails.objMembershipOrder.PaymentStatus == "Completed")
+                                                            { }
+                                                            else
+                                                            {
+                                                                <li class="">
+                                                                    <a>
+                                                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                                            <tr>
+                                                                                <td width="12%" height="30"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></td>
+                                                                                <td width="88%" height="30" class="Montserrat-Regular">Membership Renewal</td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </a>
+                                                                </li>
+                                                            }
+
+                                                            @if (lstVolunteers != null && lstVolunteers.Count != 0)
+                                                            {
+                                                                <li class="">
+                                                                    <a onclick="$(&quot;#volunteer&quot;).dialog(&quot;open&quot;);">
+                                                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                                            <tr>
+                                                                                <td width="12%" height="30"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></td>
+                                                                                <td width="88%" height="30">Volunteer Details</td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                            <li class="">
+                                                                <a href="@Url.Action("LogOff", "Members")">
+                                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                                        <tr>
+                                                                            <td width="12%" height="30"><span class="glyphicon glyphicon-off" aria-hidden="true"></span></td>
+                                                                            <td width="88%" height="30" class="Montserrat-Regular">Logout</td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </article>
+                                                </article>
+                                            </article>
+                                            <article class="sep-8">
+
+                                                <article class="clearfix l-p30 tabhorizontal-l-p0 Roboto-Regular dk-t">
+                                                    <article class="clearfix res-item2">
+                                                      
+
+                                                        <h4 class="Montserrat-SemiBold dkblue-t font20 mobile-t-p10 t-m0 border-b b-p10">Personal Information <span class="pull-right t-p5 font14"><a id="editprofilebtn" onclick="editprofile()" class="brown-t1"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>Edit Profile</a></span></h4>                                                        
+                                                        <article class="clearfix t-b-p10">
+                                                            @*<article class="clearfix" id="viewdiv">*@
+                                                            <article class="clearfix hide" id="viewarticle">
+
+                                                                <article class="clearfix box-row b-p5 Montserrat-Regular">
+                                                                    <article class="box-5">First Name<span class="dis-in r-p15 pull-right">:</span></article>
+                                                                    <article class="box-7 black-t">@objMember.FirstName </article>
+                                                                </article>
+                                                                <article class="clearfix box-row b-p5 Montserrat-Regular">
+                                                                    <article class="box-5">Last Name<span class="dis-in r-p15 pull-right">:</span></article>
+                                                                    <article class="box-7 black-t">@objMember.LastName </article>
+                                                                </article>
+                                                                <article class="clearfix box-row b-p5 Montserrat-Regular">
+                                                                    <article class="box-5">Mobile No <span class="dis-in r-p15 pull-right">:</span></article>
+                                                                    <article class="box-7 black-t">@(objMember.MobilePhone == null ? "N/A" : objMember.MobilePhone)</article>
+                                                                </article>
+                                                                <article class="clearfix box-row b-p5 Montserrat-Regular">
+                                                                    <article class="box-5">Ocuupation <span class="dis-in r-p15 pull-right">:</span></article>
+                                                                    <article class="box-7 black-t">@(objMember.Occupation == null ? "N/A" : objMember.Occupation)</article>
+                                                                </article>
+                                                                <article class="clearfix box-row b-p5 Montserrat-Regular">
+                                                                    <article class="box-5">Spouse FirstName <span class="dis-in r-p15 pull-right">:</span></article>
+                                                                    <article class="box-7 black-t">
+                                                                        @(objMember.SpouseFirstName == null ? "N/A" : objMember.SpouseFirstName)
+                                                                    </article>
+                                                                </article>
+                                                                <article class="clearfix box-row b-p5 Montserrat-Regular">
+                                                                    <article class="box-5">Spouse Email <span class="dis-in r-p15 pull-right">:</span></article>
+                                                                    <article class="box-7 black-t">
+                                                                        @(objMember.SpouseLastName == null ? "N/A" : objMember.SpouseLastName)
+                                                                    </article>
+                                                                </article>
+                                                                <article class="clearfix box-row b-p5 Montserrat-Regular">
+                                                                    <article class="box-5">Spouse Occupation <span class="dis-in r-p15 pull-right">:</span></article>
+                                                                    <article class="box-7 black-t">
+                                                                        @(objMember.SpouseOccupation == null ? "N/A" : objMember.SpouseOccupation)
+                                                                    </article>
+                                                                </article>
+
+                                                                <br/>
+
+                                                                <article class="clearfix res-item2 mobile-t-p10">
+                                                                    <article class="clearfix" id="viewdiv2">
+                                                                        <h4 class="font16 black-t Montserrat-SemiBold t-m0">Contact Information </h4>
+                                                                        <article class="clearfix border-b" style="max-width: 125px;"></article>
+                                                                        <article class="clearfix t-b-p10">
+
+
+
+                                                                            <article class="clearfix box-row b-p5 Montserrat-Regular">
+                                                                                <article class="box-5">City <span class="dis-in r-p15 pull-right">:</span></article>
+                                                                                <article class="box-7 black-t">@(objMember.City == null ? "N/A" : objMember.City)</article>
+                                                                            </article>
+                                                                            <article class="clearfix box-row b-p5 Montserrat-Regular">
+                                                                                <article class="box-5">State <span class="dis-in r-p15 pull-right">:</span></article>
+                                                                                <article class="box-7 black-t">@(objMember.State == null ? "N/A" : objMember.State)</article>
+                                                                            </article>
+                                                                            <article class="clearfix box-row b-p5 Montserrat-Regular">
+                                                                                <article class="box-5">Address <span class="dis-in r-p15 pull-right">:</span></article>
+                                                                                <article class="box-7 black-t">@(objMember.Address == null ? "N/A" : objMember.Address) </article>
+                                                                            </article>
+                                                                            <article class="clearfix box-row b-p5 Montserrat-Regular">
+                                                                                <article class="box-5">Zipcode <span class="dis-in r-p15 pull-right">:</span></article>
+                                                                                <article class="box-7 black-t">@(objMember.ZipCode == null ? "N/A" : objMember.ZipCode) </article>
+                                                                            </article>
+
+
+                                                                        </article>
+                                                                    </article>
+                                                                </article>
+
+
+
+                                                            </article>
+
+
+                                                            @using (Html.BeginForm("ProfileEdit", "Members", FormMethod.Post, new { enctype = "multipart/form-data", @class = "validation b-m0" }))
+                                                            {
+                                                                <article class="clearfix hide" id="editarticle">
+                                                                    <input type="hidden" value="@objMember.MemberId" id="MemberId" name="MemberId" />
+                                                                    <input type="hidden" value="@objMember.SpouseCell" id="SpouseCell" name="SpouseCell" />
+                                                                    <article class="clearfix sm-row">
+                                                                        <article class="sm-6 t-b-p5">
+                                                                            <article class="clearfix r-p5 mobilev-r-p0 tablet-r-p5">
+                                                                                <article class="box-4">
+                                                                                    <article class="clearfix dropdown shadow-non border-r0">
+                                                                                        <select class="input-block-level dropdown-select" id="UserName" name="UserName" style="min-height:44px;">
+                                                                                            <option value="">Title *</option>
+                                                                                            <option @(objMember.UserName == "Mr." ? "selected=selected" : "") value="Mr.">Mr. </option>
+                                                                                            <option @(objMember.UserName == "Mrs." ? "selected=selected" : "") value="Mrs.">Mrs. </option>
+                                                                                            <option @(objMember.UserName == "Ms." ? "selected=selected" : "") value="Ms.">Ms. </option>
+                                                                                        </select>
+                                                                                    </article>
+                                                                                </article>
+                                                                                <article class="box-8 position-r">
+                                                                                    <input type="text" class="form-control" placeholder="First Name" value="@objMember.FirstName" id="FirstName" name="FirstName" />
+                                                                                    <span class="errormsg" id="spanFirstName"></span>
+                                                                                </article>
+                                                                            </article>
+                                                                        </article>
+                                                                        <article class="sm-6 t-b-p5 position-r">
+                                                                            <article class="clearfix l-p5 mobilev-l-p0 tablet-l-p5">
+                                                                                <input type="text" class="form-control" placeholder="Last Name" value="@objMember.LastName" id="LastName" name="LastName" />
+                                                                                <span class="errormsg" id="spanLastName"></span>
+                                                                            </article>
+                                                                        </article>
+                                                                    </article>
+                                                                    <article class="clearfix sm-row">
+                                                                        <article class="sm-6 t-b-p5 position-r">
+                                                                            <article class="clearfix r-p5 mobilev-r-p0 tablet-r-p5">
+                                                                                <input type="text" class="form-control" placeholder="Phone No" value="@objMember.MobilePhone" id="MobilePhone" name="MobilePhone" onkeypress="return Common.isNumberKey(event);" maxlength="12" />
+                                                                                <span class="errormsg" id="spanPhone"></span>
+                                                                            </article>
+                                                                        </article>
+                                                                        <article class="sm-6 t-b-p5">
+                                                                            <article class="clearfix l-p5 mobilev-l-p0 tablet-l-p5">
+                                                                                <input type="text" class="form-control" placeholder="Occupation" id="Occupation" name="Occupation" value="@objMember.Occupation" />
+                                                                            </article>
+                                                                        </article>
+                                                                    </article>
+                                                                    <article class="clearfix sm-row">
+                                                                        <article class="sm-6 t-b-p5">
+                                                                            <article class="clearfix r-p5 mobilev-r-p0 tablet-r-p5">
+                                                                                <input type="text" class="form-control" placeholder="Spouse First Name" id="SpouseFirstName" name="SpouseFirstName" value="@objMember.SpouseFirstName" />
+                                                                            </article>
+                                                                        </article>
+                                                                        <article class="sm-6 t-b-p5">
+                                                                            <article class="clearfix l-p5 mobilev-l-p0 tablet-l-p5">
+                                                                                <input type="text" class="form-control" placeholder="Spouse Email" id="SpouseLastName" name="SpouseLastName" value="@objMember.SpouseLastName" />
+                                                                            </article>
+                                                                        </article>
+                                                                    </article>
+                                                                    <article class="clearfix sm-row">
+                                                                        <article class="sm-6 t-b-p5">
+                                                                            <article class="clearfix r-p5 mobilev-r-p0 tablet-r-p5">
+                                                                                <input type="text" class="form-control" placeholder="Spouse Occupation" id="SpouseOccupation" name="SpouseOccupation" value="@objMember.SpouseOccupation" />
+                                                                            </article>
+                                                                        </article>
+                                                                        <article class="sm-6 t-b-p5 position-r">
+                                                                            <article class="clearfix l-p5 mobilev-l-p0 tablet-l-p5">
+                                                                                <input type="text" class="form-control" placeholder="City" id="City" name="City" value="@objMember.City" />
+                                                                                <span class="errormsg" id="spanCity"></span>
+                                                                            </article>
+                                                                        </article>
+                                                                    </article>
+                                                                    <article class="clearfix sm-row position-r">
+                                                                        <article class="sm-6 t-b-p5">
+                                                                            <article class="clearfix r-p5 mobilev-r-p0 tablet-r-p5">
+                                                                                <article class="clearfix dropdown">
+                                                                                    <select class="input-block-level dropdown-select" id="State" name="State">
+                                                                                        <option value="">Select State</option>
+                                                                                        <option @(objMember.State == "Alabama" ? "selected=selected" : "") value="Alabama">Alabama</option>
+                                                                                        <option @(objMember.State == "Alaska" ? "selected=selected" : "") value="Alaska">Alaska</option>
+                                                                                        <option @(objMember.State == "Arizona" ? "selected=selected" : "") value="Arizona">Arizona</option>
+                                                                                        <option @(objMember.State == "Arkansas" ? "selected=selected" : "") value="Arkansas">Arkansas</option>
+                                                                                        <option @(objMember.State == "California" ? "selected=selected" : "") value="California">California</option>
+                                                                                        <option @(objMember.State == "Colorado" ? "selected=selected" : "") value="Colorado">Colorado</option>
+                                                                                        <option @(objMember.State == "Connecticut" ? "selected=selected" : "") value="Connecticut">Connecticut</option>
+                                                                                        <option @(objMember.State == "Delaware" ? "selected=selected" : "") value="Delaware">Delaware</option>
+                                                                                        <option @(objMember.State == "Florida" ? "selected=selected" : "") value="Florida">Florida</option>
+                                                                                        <option @(objMember.State == "Georgia" ? "selected=selected" : "") value="Georgia">Georgia</option>
+                                                                                        <option @(objMember.State == "Hawaii" ? "selected=selected" : "") value="Hawaii">Hawaii</option>
+                                                                                        <option @(objMember.State == "Idaho" ? "selected=selected" : "") value="Idaho">Idaho</option>
+                                                                                        <option @(objMember.State == "Illinois" ? "selected=selected" : "") value="Illinois">Illinois</option>
+                                                                                        <option @(objMember.State == "Indiana" ? "selected=selected" : "") value="Indiana">Indiana</option>
+                                                                                        <option @(objMember.State == "Iowa" ? "selected=selected" : "") value="Iowa">Iowa</option>
+                                                                                        <option @(objMember.State == "Kansas" ? "selected=selected" : "") value="Kansas">Kansas</option>
+                                                                                        <option @(objMember.State == "Kentucky" ? "selected=selected" : "") value="Kentucky">Kentucky</option>
+                                                                                        <option @(objMember.State == "Louisiana" ? "selected=selected" : "") value="Louisiana">Louisiana</option>
+                                                                                        <option @(objMember.State == "Maine" ? "selected=selected" : "") value="Maine">Maine</option>
+                                                                                        <option @(objMember.State == "Maryland" ? "selected=selected" : "") value="Maryland">Maryland</option>
+                                                                                        <option @(objMember.State == "Massachusetts" ? "selected=selected" : "") value="Massachusetts">Massachusetts</option>
+                                                                                        <option @(objMember.State == "Michigan" ? "selected=selected" : "") value="Michigan">Michigan</option>
+                                                                                        <option @(objMember.State == "Minnesota" ? "selected=selected" : "") value="Minnesota">Minnesota</option>
+                                                                                        <option @(objMember.State == "Mississippi" ? "selected=selected" : "") value="Mississippi">Mississippi</option>
+                                                                                        <option @(objMember.State == "Missouri" ? "selected=selected" : "") value="Missouri">Missouri</option>
+                                                                                        <option @(objMember.State == "Montana" ? "selected=selected" : "") value="Montana">Montana</option>
+                                                                                        <option @(objMember.State == "Nebraska" ? "selected=selected" : "") value="Nebraska">Nebraska</option>
+                                                                                        <option @(objMember.State == "Nevada" ? "selected=selected" : "") value="Nevada">Nevada</option>
+                                                                                        <option @(objMember.State == "New Hampshire" ? "selected=selected" : "") value="New Hampshire">New Hampshire</option>
+                                                                                        <option @(objMember.State == "New Jersey" ? "selected=selected" : "") value="New Jersey">New Jersey</option>
+                                                                                        <option @(objMember.State == "New Mexico" ? "selected=selected" : "") value="New Mexico">New Mexico</option>
+                                                                                        <option @(objMember.State == "New York" ? "selected=selected" : "") value="New York">New York</option>
+                                                                                        <option @(objMember.State == "North Carolina" ? "selected=selected" : "") value="Maryland">North Carolina</option>
+                                                                                        <option @(objMember.State == "North Dakota" ? "selected=selected" : "") value="North Dakota">North Dakota</option>
+                                                                                        <option @(objMember.State == "Ohio" ? "selected=selected" : "") value="Ohio">Ohio</option>
+                                                                                        <option @(objMember.State == "Oklahoma" ? "selected=selected" : "") value="Oklahoma">Oklahoma</option>
+                                                                                        <option @(objMember.State == "Oregon" ? "selected=selected" : "") value="Oregon">Oregon</option>
+                                                                                        <option @(objMember.State == "Pennsylvania" ? "selected=selected" : "") value="Pennsylvania">Pennsylvania</option>
+                                                                                        <option @(objMember.State == "Rhode Island" ? "selected=selected" : "") value="Rhode Island">Rhode Island</option>
+                                                                                        <option @(objMember.State == "South Carolina" ? "selected=selected" : "") value="South Carolina">South Carolina</option>
+                                                                                        <option @(objMember.State == "South Dakota" ? "selected=selected" : "") value="South Dakota">South Dakota</option>
+                                                                                        <option @(objMember.State == "Tennessee" ? "selected=selected" : "") value="Tennessee">Tennessee</option>
+                                                                                        <option @(objMember.State == "North Carolina" ? "selected=selected" : "") value="Texas">Texas</option>
+                                                                                        <option @(objMember.State == "Texas" ? "selected=selected" : "") value="North Dakota">North Dakota</option>
+                                                                                        <option @(objMember.State == "Utah" ? "selected=selected" : "") value="Utah">Utah</option>
+                                                                                        <option @(objMember.State == "Vermont" ? "selected=selected" : "") value="Vermont">Vermont</option>
+                                                                                        <option @(objMember.State == "Virginia" ? "selected=selected" : "") value="Virginia">Virginia</option>
+                                                                                        <option @(objMember.State == "Washington" ? "selected=selected" : "") value="Washington">Washington</option>
+                                                                                        <option @(objMember.State == "West Virginia" ? "selected=selected" : "") value="West Virginia">West Virginia</option>
+                                                                                        <option @(objMember.State == "Wisconsin" ? "selected=selected" : "") value="Wisconsin">Wisconsin</option>
+                                                                                        <option @(objMember.State == "Wyoming" ? "selected=selected" : "") value="Wyoming">Wyoming</option>
+                                                                                        <option @(objMember.State == "Other" ? "selected=selected" : "") value="Other">Other</option>
+                                                                                    </select>
+                                                                                    <span class="errormsg" id="spanState"></span>
+                                                                                </article>
+                                                                            </article>
+                                                                        </article>
+                                                                        <article class="sm-6 t-b-p5">
+                                                                            <article class="clearfix l-p5 mobilev-l-p0 tablet-l-p5">
+                                                                                <input type="text" class="form-control" placeholder="Zip Code" id="ZipCode" name="ZipCode" value="@objMember.ZipCode" />
+                                                                                <span class="errormsg" id="spanZipCode"></span>
+                                                                            </article>
+                                                                        </article>
+                                                                    </article>
+                                                                    <article class="clearfix sm-row">
+                                                                        <article class="sm-12 t-b-p5">
+                                                                            <article class="clearfix">
+                                                                                <textarea class="form-control" placeholder="Address 1" id="Address" name="Address">@objMember.Address</textarea>
+                                                                            </article>
+                                                                        </article>
+
+                                                                    </article>
+                
+                                                                    <article class="clearfix t-p10 t-r">
+                                                                        <input type="submit" class="Raleway-Medium font22 t-t-u tabhorizontal-dis-in" style="background-color:#f87500; border-radius:4px; padding:13px 35px; color:#fff; border:none;" onclick="return profileEditvalidate();" value="UPDATE">
+                                                                        <a class="-Medium font22 t-t-u tabhorizontal-dis-in" style="background-color:#f7f7f7; border-radius:4px; padding:14px 35px; color:#000; border:1px solid #bdbdbd;" href="@Url.Action("Profile", "Members")">Cancel</a>
+                                                                    </article>
+                                                                </article>
+                                                            }
+                                                        </article>
+                                                    </article>
+                                                </article>
+
+                                            </article>
+                                        </article>
+                                    </article>
+                                    </article>
+                               
+

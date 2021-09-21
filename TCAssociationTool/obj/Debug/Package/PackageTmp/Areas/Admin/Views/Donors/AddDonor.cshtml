@@ -1,0 +1,140 @@
+﻿@{
+    ViewBag.Title = "AddDetails";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    List<TCAssociationTool.Entities.DonationCategories> lstDonationCategories = ViewBag.lstDonationCategories;
+    var cssloc = System.Configuration.ConfigurationManager.AppSettings["usersiteurl"] + "Content/Admin/front-end-style.css";
+
+    var DonationCategoryId = ViewBag.DonationCategoryId;
+
+    //var Type = ViewBag.Type;
+}
+
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#WebPages').addClass('active');
+        $('#wDonors').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+
+    function Validate() {
+
+        if ($.trim($('#Heading').val()) == '') { document.getElementsByName('Heading')[0].placeholder = 'Required'; $('#Heading').focus().addClass("validate"); return false; } else { $('#Heading').focus().removeClass("validate"); }
+        if ($.trim($('#DonationCategoryId').val()) == '') { document.getElementsByName('DonationCategoryId')[0].placeholder = 'Required'; $('#DonationCategoryId').focus().addClass("validate"); return false; } else { $('#DonationCategoryId').focus().removeClass("validate"); }
+        if ($('#ImageUrl').val() == "") { $('#spanfile').html('Required.'); $('#ImageUrl').focus(); return false; } else { $('#spanfile').html(' '); }
+        if (!Common.isImage($('#ImageUrl').val())) { $('#spanfile').html('Sorry image is invalid. Only allowed extensions are:<b>jpg, png, PNG, gif, jpeg, JPEG</b>.'); $('#ImageUrl').focus(); return false; } else { $('#spanfile').html(''); }
+        if (CKEDITOR.instances.Description.getData() == "") { $('#Description').focus().addClass("red-border"); $('#lblDescription').html('Required.'); return false; } else { $('#Description').val(CKEDITOR.instances.Description.getData()); $('#lblDescription').html(''); }
+
+        return true;
+    }
+    function ResetValidateClass() {
+        $('#Heading').removeClass("validate");
+        $('#DonationCategoryId').removeClass("validate");
+    }
+
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Add Donors </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "Donors")"><i class="fa fa-list-alt"></i>Donors</a></li>
+        <li class="active">Add Web Page</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="clearfix sepH_b"></div>
+    @using (Html.BeginForm("AddDetails", "Donors", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {    
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Web Page Details </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Page Name : <span class="red-t">*</span></label>
+                        <input type="text" id="Heading" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" name="Heading" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-lg-2 col-sm-6">
+                        <label>Display Order : </label>
+                        <input type="text" onkeypress="return Common.isNumberKey(event)" id="DisplayOrder" onclick="ResetValidateClass();" name="DisplayOrder" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-lg-2 col-sm-6">
+                        <label>Category : <span class="red-t">*</span></label>
+                        <select id="DonationCategoryId" class="form-control" name="DonationCategoryId" onclick="ResetValidateClass();">
+                            <option value="">- Select Category -</option>
+                            @if (lstDonationCategories.Count > 0)
+                            {
+                                foreach (var item in lstDonationCategories)
+                                {
+                                <option  @(DonationCategoryId == item.DonationCategoryId ? "selected='selected'" : "") value="@(item.DonationCategoryId)">@(item.CategoryName)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Banner Image :  <span class="red-t">*</span></label>
+                        <input type="file" id="ImageUrl" name="ImageUrl" />
+                        <span id="spanfile" class="red-t"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-12 col-sm-6 text-right"> 
+                        <label>Image Width and height should be 867 * 174 px for better visibility</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-lg-12 col-sm-6">
+                        <label>Description : <span class="red-t">*</span></label>
+                        <textarea rows="10" name="Description" id="Description" cols="80" style="visibility: hidden; display: none;"></textarea><br />
+                        <label id="lblDescription" class="field-validation-error"></label>
+                        <script type="text/javascript">
+                            var editor = CKEDITOR.replace('Description', { contentsCss: '@(cssloc)' });
+                            CKFinder.setupCKEditor(editor, '@(System.Configuration.ConfigurationManager.AppSettings["baseurl"])ckfinder/');
+                        </script>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-lg-6 col-sm-6">
+                        <label>Page Title : </label>
+                        <input type="text" id="PageTitle" name="PageTitle" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-lg-6 col-sm-6">
+                        <label>MetaKey words : </label>
+                        <textarea  id="MetaKeywords" name="MetaKeywords" class="form-control"></textarea>
+                    </div>
+                    <div class="col-xs-12 col-lg-6 col-sm-6">
+                        <label>Meta Description : </label>
+                        <textarea  id="MetaDescription" name="MetaDescription" class="form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body text-right">
+                <input type="submit" value="Submit" class="btn btn-primary" onclick="return Validate();" />
+                <a class="btn btn-info" href="@Url.Action("Index", "Donors")">Cancel</a>
+            </div>
+            <!-- /.box-body -->
+        </div> 
+    }
+</div>
+
+
+

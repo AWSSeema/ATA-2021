@@ -1,0 +1,370 @@
+﻿@{
+    ViewBag.Title = "AddEvent";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    List<TCAssociationTool.Entities.EventCategories> lstEventCategories = ViewBag.lstEventCategories;
+    var cssloc = System.Configuration.ConfigurationManager.AppSettings["usersiteurl"] + "Content/Admin/front-end-style.css";
+}
+
+<script src="Scripts/Admin/countries.js" type="text/javascript"></script>
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#MEvents').addClass('active');
+        $("#StartDate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-10:+10", altFormat: 'mm/dd/yy' });
+        $("#EndDate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-10:+10", altFormat: 'mm/dd/yy' });
+        $("#RegistrationStartDate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-10:+10", altFormat: 'mm/dd/yy' });
+        $("#RegistrationEndDate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-10:+10", altFormat: 'mm/dd/yy' });
+
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+
+    });
+
+    function Validate() {
+
+       if ($.trim($('#EventName').val()) == '') { document.getElementsByName('EventName')[0].placeholder = 'Event Name Required'; $('#EventName').focus().addClass("validate"); return false; } else { $('#EventName').focus().removeClass("validate"); }
+       if ($.trim($('#EventCategoryId').val()) == '') { document.getElementsByName('EventCategoryId')[0].placeholder = 'Category Required'; $('#EventCategoryId').focus().addClass("validate"); return false; } else { $('#EventCategoryId').focus().removeClass("validate"); }
+       if ($.trim($('#StartDate').val()) == '') { document.getElementsByName('StartDate')[0].placeholder = 'Start Date Required'; $('#StartDate').focus().addClass("validate"); return false; } else { $('#StartDate').focus().removeClass("validate"); }
+       if ($.trim($('#EndDate').val()) == '') { document.getElementsByName('EndDate')[0].placeholder = 'EndDate Required'; $('#EndDate').focus().addClass("validate"); return false; } else { $('#EndDate').focus().removeClass("validate"); }
+     
+        var checkbox = document.getElementsByName('IsRegistration');
+        if (checkbox[0].checked) {
+           // if ($('#RegistrationStartDate').val() == '') { $('#spanRegistrationStartDate').html('Required.'); $('#RegistrationStartDate').focus().addClass("red-border"); return false; } else { $('#spanRegistrationStartDate').html(''); $('#RegistrationStartDate').removeClass("red-border"); }
+           // if ($('#RegistrationEndDate').val() == '') { $('#spanRegistrationEndDate').html('Required.'); $('#RegistrationEndDate').focus().addClass("red-border"); return false; } else { $('#spanRegistrationEndDate').html(''); $('#RegistrationEndDate').removeClass("red-border"); }
+
+
+            
+         if ($.trim($('#RegistrationStartDate').val()) == '') { document.getElementsByName('RegistrationStartDate')[0].placeholder = 'Reg Start Date Required'; $('#RegistrationStartDate').focus().addClass("validate"); return false; } else { $('#RegistrationStartDate').focus().removeClass("validate"); }
+         if ($.trim($('#RegistrationEndDate').val()) == '') { document.getElementsByName('RegistrationEndDate')[0].placeholder = 'Reg EndDate'; $('#RegistrationEndDate').focus().addClass("validate"); return false; } else { $('#RegistrationEndDate').focus().removeClass("validate"); }
+     
+
+            if ($('#RegistrationStartDate').val() != "" && $('#RegistrationEndDate').val() != "") {
+                var startdate = new Date($('#RegistrationStartDate').val());
+                var enddate = new Date($('#RegistrationEndDate').val());
+                if (startdate > enddate) { $('#spanRegistrationStartDate').html('Registration start date should be less than registration end date.'); $('#spanRegistrationStartDate'); return false; } else { $('#spanRegistrationStartDate').html(''); }
+            }
+        }
+        $('#spanRegistrationStartDate').html('');
+
+        if ($('#StartDate').val() != "" && $('#EndDate').val() != "") {
+            var startdate = new Date($('#StartDate').val());
+            var enddate = new Date($('#EndDate').val());
+            if (startdate > enddate) { $('#spanStartDate').html('Start date should be less than end date.'); $('#spanStartDate'); return false; } else { $('#spanStartDate').html(''); }
+        }
+        $('#spanStartDate').html('');
+        if ($('#EventCategoryId').val() == '') { $('#spanEventCategoryId').html('Required.'); $('#EventCategoryId').focus(); return false; } else { $('#spanEventCategoryId').html(''); }
+        if ($('#file').val() != "") {
+            if (!Common.isImage($('#file').val())) { $('#spanfile').html('Sorry image is invalid. Only allowed extensions are:<b>jpg, png, PNG, gif, jpeg, JPEG</b>.'); $('#file').focus(); return false; } else { $('#spanfile').html(''); }
+            //if ($('#hdnimgvalidate').val() == '0') { $('#spanfile').html('Please select image with diemensions equal to 670 * 542.'); $('#file').focus(); return false; } else { $('#spanfile').html(''); }
+        }
+        return true;
+    }
+
+    function addRow1() {
+        var table = document.getElementById("tableRegistrationType");
+        var rowCount = table.rows.length;
+        var row = table.insertRow(rowCount);
+        row.id = rowCount;
+
+        var cell2 = row.insertCell(0);
+        var element2 = document.createElement("input");
+        element2.type = "text";
+        element2.placeholder = "Title";
+        element2.name = "[" + (rowCount - 1) + "].RegistrationTitle";
+        element2.style = "height:40px!important;min-height:40px!important;"
+        element2.id = "RegistrationTitle-" + (rowCount - 1);
+        element2.className = "form-control m0";
+        cell2.appendChild(element2);
+
+        var cell3 = row.insertCell(1);
+        var element3 = document.createElement("input");
+        element3.type = "text";
+        element3.placeholder = "Member Amount";
+        element3.name = "[" + (rowCount - 1) + "].MemberAmount";
+        element3.style = "height:40px!important;min-height:40px!important;"
+        element3.id = "MemberAmount-" + (rowCount - 1);
+        element3.className = "form-control m0";
+        element3.onkeypress = "return Common.isNumberKey(event)";
+        cell3.appendChild(element3);
+
+
+        var cell4 = row.insertCell(2);
+        var element4 = document.createElement("input");
+        element4.type = "text";
+        element4.placeholder = "Non-Member Amount";
+        element4.name = "[" + (rowCount - 1) + "].NonMemberAmount";
+        element4.style = "height:40px!important;min-height:40px!important;"
+        element4.id = "NonMemberAmount-" + (rowCount - 1);
+        element4.className = "form-control m0";
+        element4.onkeypress = "return Common.isNumberKey(event)";
+        cell4.appendChild(element4);
+
+        var cell5 = row.insertCell(3);
+        var element5 = document.createElement("input");
+        element5.type = "text";
+        element5.placeholder = "Reg.Count";
+        element5.name = "[" + (rowCount - 1) + "].RegCount";
+        element5.style = "height:40px!important;min-height:40px!important;"
+        element5.id = "RegCount-" + (rowCount - 1);
+        element5.className = "form-control m0";
+        element5.onkeypress = "return Common.isNumberKey(event)";
+        cell5.appendChild(element5);
+
+        var cell6 = row.insertCell(4);
+        var element5 = document.createElement("input");
+        element5.type = "text";
+        element5.placeholder = "OrderNo";
+        element5.name = "[" + (rowCount - 1) + "].OrderNo";
+        element5.style = "height:40px!important;min-height:40px!important;"
+        element5.id = "OrderNo-" + (rowCount - 1);
+        element5.className = "form-control m0";
+        element5.onkeypress = "return Common.isNumberKey(event)";
+        cell6.appendChild(element5);
+
+
+        var cell7 = row.insertCell(5);
+        cell7.innerHTML = '<a onclick="javascript:deleteRow1(' + rowCount + ')" class="dis-b t-p15"><i class="fa fa-trash-o"></i></a>';
+        $('#hdnRowCount1').val(rowCount);
+
+        $('#OrderNo-' + (rowCount - 1) + ', #RegCount-' + (rowCount - 1) + ', #NonMemberAmount-' + (rowCount - 1) + ', #MemberAmount-' + (rowCount - 1)).attr('onkeypress', 'return Common.isNumberKey(event)');
+
+    }
+
+    function deleteRow1(i) {
+        try {
+            var row = document.getElementById(i);
+            row.parentNode.removeChild(row);
+            $('#hdnRowCount1').val(i - 1);
+        } catch (e) {
+            alert(e);
+        }
+    }
+</script>
+
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Add Event</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "Events", new { EventType = "upcoming" })">Events</a></li>
+        <li class="active">Add Event</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<input type="hidden" id="hdnimgvalidate" value="0" />
+<div class="content">
+    <!-- Main content -->
+    <div class="clearfix sepH_b"></div>
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="clearfix sepH_b"></div>
+    @using (Html.BeginForm("AddEvent", "Events", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    { 
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Event Details </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Event Name :<span class="red-t">*</span></label>
+                        <input type="text" id="EventName"  name="EventName" class="form-control" />
+                        <span id="spanEventName" class="red-t"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Category :<span class="red-t">*</span></label>
+                        <select class="form-control" id="EventCategoryId" name="EventCategoryId">
+                            <option value="">-- Select --</option>
+                            @if (lstEventCategories != null && lstEventCategories.Count != 0)
+                            {
+                                foreach (var item in lstEventCategories)
+                                { 
+                                <option value="@item.EventCategoryId">@item.EventCategory</option>
+                                }
+                            }
+                        </select> 
+                        <span id="spanEventCategoryId" class="red-t"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Start Date :<span class="red-t">*</span></label>
+                        <input type="text" id="StartDate" name="StartDate" class="form-control" />
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>End Date :<span class="red-t">*</span></label>
+                        <input type="text" name="EndDate" id="EndDate" class="form-control" />
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>City :</label>
+                        <input type="text" id="City" name="City" class="form-control" />
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Contact Email :</label>
+                        <input type="text" id="ContactEmail" name="ContactEmail" class="form-control" />
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Location :</label>
+                        <input type="text" name="Location" id="Location" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>State Name :</label>
+                        <input type="text" name="StateName" id="StateName" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label class="t-p5 font12">Zip Code :</label>
+                        <input type="text" id="ZipCode" maxlength="6" onkeypress="return Common.isNumberKey(event)" name="ZipCode" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-lg-6 col-sm-6">
+                        <label>Image :</label>
+                        <input type="file" id="file" name="file">
+                        <span id="spanfile" class="red-t"></span>
+                        <div class="clearfix">
+                            <b style="color: #f00; font-size: 13px">Note :</b> Image size should be maintained less than 5MB.
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6 t-p10">
+                        <label>Is Volunteer :</label>
+                        <select class="form-control" name="TopLine" id="TopLine" type="text">
+                            <option value="">Select</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Registration Details</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-2 col-sm-6">
+                        <label>Is Registration :</label>
+                        @Html.CheckBox("IsRegistration")
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Reg. Start Date :<span class="red-t">*</span></label>
+                        <input type="text" name="RegistrationStartDate" id="RegistrationStartDate" class="form-control">
+                        <span id="spanRegistrationStartDate" class="red-t"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Reg. End Date :<span class="red-t">*</span></label>
+                        <input type="text" id="RegistrationEndDate" name="RegistrationEndDate" class="form-control">
+                        <span id="spanRegistrationEndDate" class="red-t"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Registration Types </h3>
+            </div>
+            <table width="100%" class="table table-bordered table-hover" id="tableRegistrationType">
+                <tbody>
+                    <tr>
+                        <th width="35%">Title</th>
+                        <th width="15%">Member Amount</th>
+                        <th width="15%">Non-Member Amount</th>
+                        <th width="10%">Reg. Count</th>
+                        <th width="10%">OrderNo</th>
+                        <th width="15%"><a class="btn btn-danger btn-small" onclick="addRow1();" style="color: #ffffff; padding-left: 15px;">Add</a></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" class="form-control b-m0" name="[0].RegistrationTitle" style="height: 40px!important; min-height: 40px!important;" placeholder="Registration Title" id="RegistrationTitle-0"><span class="errormsg" id="spanRegistrationTitle-0"></span></td>
+                        <td>
+                            <input type="text" class="form-control b-m0" name="[0].MemberAmount" onkeypress="return Common.isNumberKey(event)" style="height: 40px!important; min-height: 40px!important;" placeholder="Member Amount" id="MemberAmount-0"></td>
+
+                        <td>
+                            <input type="text" class="form-control b-m0" name="[0].NonMemberAmount" onkeypress="return Common.isNumberKey(event)" style="height: 40px!important; min-height: 40px!important;" placeholder="Non-Member Amount" id="NonMemberAmount-0"></td>
+                        <td>
+                            <input type="text" class="form-control b-m0" name="[0].RegCount" onkeypress="return Common.isNumberKey(event)" style="height: 40px!important; min-height: 40px!important;" placeholder="Reg Count" id="RegCount-0"></td>
+                        <td>
+                            <input type="text" class="form-control b-m0" name="[0].OrderNo" onkeypress="return Common.isNumberKey(event)" style="height: 40px!important; min-height: 40px!important;" placeholder="OrderNo" id="OrderNo-0"></td>
+
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Event Description</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-12 col-sm-6">
+                        <textarea rows="10" name="EventDetails" id="description" cols="80" style="visibility: hidden; display: none;"></textarea>
+                        <span id="spandescription" class="red-t"></span>
+                        <script type="text/javascript">
+                            //CKEDITOR.replace('description', { contentsCss: '../css/editor.css' });
+                            var editor = CKEDITOR.replace('description', { contentsCss: '@(cssloc)' });
+                            CKFinder.setupCKEditor(editor, '@(System.Configuration.ConfigurationManager.AppSettings["baseurl"])ckfinder/');
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">SEO Details</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Page Title :</label>
+                        <textarea type="text" id="PageTitle" name="PageTitle" class="form-control"></textarea>
+                        <span id="spanPageTitle" class="red-t"></span>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label class="t-p5">Meta Keywords :</label>
+                        <textarea type="text" id="MetaKeywords" name="MetaKeywords" class="form-control"></textarea>
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label class="t-p5">Meta Description :</label>
+                        <textarea type="text" id="MetaDescription" name="MetaDescription" class="form-control"></textarea>
+                        <span id="spanMetaDescription" class="red-t"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-body text-right">
+                <input type="submit" value=" Submit " onclick="return Validate();" name="send" class="button2 btn btn-primary">
+                <a class="btn btn-info" href="@Url.Action("Index", "Events", new { EventType = "upcoming" })">Cancel</a>
+            </div>
+        </div>   
+    }
+</div>
+
+
+<script>
+    var _URL = window.URL || window.webkitURL;
+    $("#file").change(function (e) {
+        var file, img;
+        if ((file = this.files[0])) {
+            img = new Image();
+            img.onload = function () {
+                if (this.width == 670 && this.height == 542) {
+                    $('#hdnimgvalidate').val('1');
+                }
+                else {
+                    $('#hdnimgvalidate').val('0');
+                }
+            };
+            img.src = _URL.createObjectURL(file);
+        }
+    });
+
+</script>

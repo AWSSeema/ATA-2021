@@ -1,0 +1,210 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.AppInfo objAppInfo = ViewBag.objAppInfo;
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#Settings').addClass('active');
+        $('#wApplicationSettings').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+    function ValidateApplication() {
+
+        var returnval = true;
+
+        if ($('#SiteName').val() == '') { $('#SiteName').focus().addClass("validate"); returnval = false; } else { $('#SiteName').focus().removeClass("validate"); }
+        if ($('#CompanyAddress').val() == '') { $('#CompanyAddress').focus().addClass("validate"); returnval = false; } else { $('#CompanyAddress').focus().removeClass("validate"); }
+        if ($('#CompanyWebSite').val() == '') { $('#CompanyWebSite').focus().addClass("validate"); returnval = false; } else { $('#CompanyWebSite').focus().removeClass("validate"); }
+        if ($('#CompanyEmail').val() == '') { $('#CompanyEmail').focus().addClass("validate"); returnval = false; }
+        else {
+            $('#CompanyEmail').focus().removeClass("validate");
+            if (!Common.CheckEmail($('#CompanyEmail').val())) { $('#CompanyEmail').val(''); document.getElementsByName('CompanyEmail')[0].placeholder = 'Please enter valid email.'; $('#CompanyEmail').focus().addClass("validate"); returnval = false; } else { $('#CompanyEmail').focus().removeClass("validate"); }
+        }
+        //if ($('#CompanyPhone').val() == '') { $('#CompanyPhone').focus().addClass("validate"); returnval = false; } else { $('#CompanyPhone').focus().removeClass("validate"); }
+        //if ($('#CustomerCareNumber').val() == '') { $('#CustomerCareNumber').focus().addClass("validate"); returnval = false; } else { $('#CustomerCareNumber').focus().removeClass("validate"); }
+         
+        return returnval;
+    }
+
+    function ResetValidateClass() {
+        $('#SiteName').removeClass("validate");
+        $('#CompanyAddress').removeClass("validate");
+        $('#CompanyWebSite').removeClass("validate");
+        $('#CompanyEmail').removeClass("validate");
+        $('#CompanyPhone').removeClass("validate");
+    }
+
+    function phonenochange(event) {
+        if (event.keyCode == 8 || event.keyCode == 46) {
+        }
+        else {
+            var ph = $('#CompanyPhone').val();
+            if (ph.length == 3) { $('#CompanyPhone').val(ph + '-'); }
+            if (ph.length == 7) { $('#CompanyPhone').val(ph + '-'); }
+        }
+    }
+</script>
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Application Settings </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active">Application Settings</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    @using (Html.BeginForm("UpdateAppInfo", "ApplicationSettings", FormMethod.Post, new { @class="validation"}))
+    { 
+        <input type="hidden" name="AppInfoId" id="AppInfoId" value="@(objAppInfo.AppInfoId)" />
+        <div class="box">
+            <!-- /.box-header -->
+            <div class="box-header">
+                <h3 class="box-title dis-in">Website Info </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Application Name : </label>
+                        <input type="text" placeholder="Application Name *" class="form-control" value="@objAppInfo.SiteName" name="SiteName" id="SiteName" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();">
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Company Address : </label>
+                        <input type="text" placeholder="Company Address *" class="form-control" value="@objAppInfo.CompanyAddress"  name="CompanyAddress" id="CompanyAddress" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();">
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Company WebSite : </label>
+                        <input type="text" placeholder="Company WebSite *" class="form-control" value="@objAppInfo.CompanyWebSite" name="CompanyWebSite" id="CompanyWebSite" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();">
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Company Email : </label>
+                        <input type="text" placeholder="Company Email *" class="form-control" value="@objAppInfo.CompanyEmail" name="CompanyEmail" id="CompanyEmail" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();">
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Company Phone : </label>
+                        <input type="text" placeholder="Company Phone" class="form-control" value="@objAppInfo.CompanyPhone" maxlength="12" name="CompanyPhone" onkeypress="phonenochange(event); return Common.isNumberKey(event);" id="CompanyPhone" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();">
+                    </div>
+                    @*<div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>President Email : </label>
+                        <input type="text" placeholder="President Email" class="form-control" value="@objAppInfo.PresidentEmail" name="PresidentEmail" id="PresidentEmail" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();">
+                    </div>*@
+                   @* <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Toll Free Number :  </label> 
+                        <input type="text" placeholder="Toll Free Number" class="form-control" value="@objAppInfo.TollFreeNumber" maxlength="12" name="TollFreeNumber" id="TollFreeNumber" onkeypress="return Common.isNumberKey(event);" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();">
+                    </div>*@
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Enquery Email : </label>
+                        <input type="text" placeholder="Enquery Email" class="form-control" value="@objAppInfo.EnqueryEmail" name="EnqueryEmail" id="EnqueryEmail" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();">
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Treasurer Email : </label>
+
+                        <input type="text" placeholder="Treasurer Email" class="form-control" value="@objAppInfo.PresidentPhone" name="PresidentPhone" id="PresidentPhone" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" />
+
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Cultural Email :</label>
+                        <input type="text" placeholder="Cultural Email" class="form-control" value="@objAppInfo.SecretaryEmail"  name="SecretaryEmail" id="SecretaryEmail" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();">
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>General Secretary Email : </label>
+                        <input type="text" placeholder="General Secretary Email" class="form-control" value="@objAppInfo.SecretaryPhone" name="SecretaryPhone" id="SecretaryPhone" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();">
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Radio Enquiry Email: </label>
+                        <input type="text" placeholder="Radio Enquiry Email" class="form-control" value="@objAppInfo.CustomerCareNumber" name="CustomerCareNumber" id="CustomerCareNumber" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();">
+                    </div>
+
+                   @* <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Page Items : </label>
+                        <input type="text" placeholder="Page Items" class="form-control" value="@objAppInfo.PageItems" name="PageItems" id="PageItems" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();">
+
+                    </div>*@
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <div class="box">
+            <!-- /.box-header -->
+            <div class="box-header">
+                <h3 class="box-title">Social Site Details </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Facebook Url : </label>
+                        <input type="text"  placeholder="Facebook Url" class="form-control" value="@objAppInfo.FacebookUrl"   name="FacebookUrl" id="FacebookUrl" size="30">
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Twitter Url : </label>
+                        <input type="text"  placeholder="Twitter Url" class="form-control" value="@objAppInfo.TwitterUrl" name="TwitterUrl" id="TwitterUrl" size="30">
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Youtube Url : </label>
+                        <input type="text"  placeholder="Youtube Url" class="form-control" value="@objAppInfo.YoutubeUrl" name="YoutubeUrl" id="YoutubeUrl" size="30">
+                    </div>
+                       <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Instagram Url : </label>
+                        <input type="text" placeholder="Support Email" class="form-control" value="@objAppInfo.SupportEmail" name="SupportEmail" id="SupportEmail" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();">
+                    </div>
+                </div>
+            </div>
+        </div> 
+        <div class="box">
+            <!-- /.box-header -->
+            <div class="box-header">
+                <h3 class="box-title">SEO Details </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Page Title : </label>
+                        <textarea placeholder="Page Title" name="PageTitle" id="PageTitle" class="form-control">@objAppInfo.PageTitle</textarea>
+
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Meta Keywords :</label>
+                        <textarea placeholder="Meta Keywords" name="MetaKeywords" id="MetaKeywords" class="form-control">@objAppInfo.MetaKeywords</textarea>
+
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Meta Description : </label>
+                        <textarea placeholder="Meta Description" name="MetaDescription" id="MetaDescription" class="form-control">@objAppInfo.MetaDescription</textarea>
+
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Top Line : </label>
+                        <textarea placeholder="Top Line" name="Topline" id="Topline" class="form-control">@objAppInfo.Topline</textarea>
+
+                    </div>
+                </div>
+                
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body text-right">
+
+                <input type="submit" value="Update" name="button2" class="btn btn-primary" onclick="return ValidateApplication();">
+                <a onclick="history.back();" class="btn btn-info">Cancel</a>
+
+            </div>
+            <!-- /.box-body -->
+        </div>
+    }
+    <!-- /.content -->
+</div>
+

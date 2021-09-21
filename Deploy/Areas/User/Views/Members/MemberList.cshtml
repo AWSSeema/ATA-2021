@@ -1,0 +1,100 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+    ViewBag.Title = "Members - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+
+    var location = System.Configuration.ConfigurationManager.AppSettings["baseurl"];
+
+    TCAssociationTool.Entities.InnerPages objLifeMembers = ViewBag.objLifeMembers;
+
+    var objMembers = (TCAssociationTool.Entities.Members)ViewBag.objMembers;
+
+    var lstMembershipType = (List<TCAssociationTool.Entities.MembershipTypes>)objMembers.lstMembershipType;
+    
+    ViewBag.heading = "Services";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        PagerClickBind();
+    });
+
+    function Membersbind(Pageno) {
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = ($.trim($('#txtsearch').val()));
+        var MembershipTypeId = $('#MembershipTypeId').val();
+
+        $.ajax({
+            url: '@Url.Action("FEMembersList", "Members")',
+            type: 'GET',
+            cache: false,
+            data: { MembershipTypeId: MembershipTypeId, Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items },
+            success: function (result) {
+                $('#divMemberDetails').html(result);
+                PagerClickBind();
+            }
+        });
+
+    }
+
+    function ClearSearch() {
+        $('#txtsearch').val('');
+        $('#MembershipTypeId').val('');
+        Membersbind(1);
+    }
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            Membersbind($(this).text());
+        });
+    }
+
+</script>
+
+<input id="TotalPages" type="hidden" value="1" />
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="MemberId" />
+<input id="hdnsortorder" type="hidden" value="ASC" />
+<input id="hdnuserid" type="hidden" value="0" />
+
+
+<article class="clearfix t-m0 l-h28 t-t-u Impact font26 evesec-tex letespa1 b-m25 tabhorizontal-b-m10 mobile-b-m5">Life Time Members<i class="inertitsid-img l-m10 mobile-hide">&nbsp;</i></article>
+
+                <article class="clearfix part-row b-p10" style="display:none;">
+
+
+                    <article class="clearfix part-12 mobilev-l-r-p0 l-p10">
+                        <article class="clearfix box-row">
+                            <article class="clearfix box-5 mobilev-l-r-p0">
+                                <input name="txtsearch" id="txtsearch" placeholder="Search by Member Name" autocomplete="off" class="b-m0 form-control" type="text" />
+                            </article>
+                            <article class="clearfix box-4 l-p5 mobilev-l-r-p0">
+                                <article class="clearfix dropdown">
+                                    <select class="dropdown-select ui-select" id="MembershipTypeId" name="MembershipTypeId">
+                                        @if (lstMembershipType != null)
+                                        {
+                                            <option value="">Select Membership Types *</option>
+                                            foreach (var item in lstMembershipType)
+                                            {
+                                                <option value="@item.MembershipTypeId">@item.MembershipType</option>
+                                            }
+                                        }
+                                    </select>
+                                </article>
+                            </article>
+                            <article class="box-1 l-m20 mobilev-t-r">
+                                <input class="btn btn-warning btn-sm p20 font16 OpenSans-Semibold l-h0 t-c" style="background-color:#f87500; border:none; text-align:center;" type="submit" value="Search" onclick="Membersbind();">
+                            </article>
+                            <article class="box-1 l-m20 mobilev-t-r">
+                                <input class="btn btn-inverse btn-large p20 font16 OpenSans-Semibold l-h0 t-c" type="submit" value="Clear" onclick="ClearSearch();">
+                            </article>
+                        </article>
+                    </article>
+                </article>
+                <article class="clearfix t-p20" id="divMemberDetails">
+                    @{Html.RenderAction("FEMembersList", "Members");}
+                </article>
+                @* @Html.Raw(objLifeMembers.Description)*@
+            

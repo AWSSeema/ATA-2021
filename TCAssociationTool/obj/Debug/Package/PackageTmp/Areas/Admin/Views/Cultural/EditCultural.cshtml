@@ -1,0 +1,216 @@
+﻿@{
+    ViewBag.Title = "EditDetails";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.Cultural objDetails = ViewBag.objCultural;
+    var objMembers = (TCAssociationTool.Entities.Members)ViewBag.objMembers;
+    List<TCAssociationTool.Entities.DonationCategories> lstDonationCategories = ViewBag.lstDonationCategories;
+    var cssloc = System.Configuration.ConfigurationManager.AppSettings["usersiteurl"] + "Content/Admin/front-end-style.css";
+
+    var imglocNormal = System.Configuration.ConfigurationManager.AppSettings["adminimageurl"] + "innerpages/";
+
+    var Type = ViewBag.Type;
+
+    var lstPaymentMethod = (List<TCAssociationTool.Entities.PaymentMethods>)objMembers.lstPaymentMethod;
+    var lstPaymentStatus = (List<TCAssociationTool.Entities.PaymentStatus>)objMembers.lstPaymentStatus;
+}
+
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#WebPages').addClass('active');
+        $('#wCultural').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+
+    function Validate() {
+
+        //Account Information
+        if ($.trim($('#FirstName').val()) == '') { document.getElementsByName('FirstName')[0].placeholder = 'Required'; $('#FirstName').focus().addClass("validate"); return false; } else { $('#FirstName').focus().removeClass("validate"); }
+        if ($.trim($('#LastName').val()) == '') { document.getElementsByName('LastName')[0].placeholder = 'Required'; $('#LastName').focus().addClass("validate"); return false; } else { $('#LastName').focus().removeClass("validate"); }
+        if ($.trim($('#DonationCategoryId').val()) == '') { document.getElementsByName('DonationCategoryId')[0].placeholder = 'Required'; $('#DonationCategoryId').focus().addClass("validate"); return false; } else { $('#DonationCategoryId').focus().removeClass("validate"); }
+
+        return true;
+    }
+    function ResetValidateClass() {
+        $('#Heading').removeClass("validate");
+        $('#DonationCategoryId').removeClass("validate");
+    }
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Edit Cultural </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "Cultural")"><i class="fa fa-list-alt"></i>Cultural</a></li>
+        <li class="active">Edit Cultural</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="clearfix sepH_b"></div>
+    @using (Html.BeginForm("AddCultural", "Cultural", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="hidden" name="id" id="id" value="@objDetails.id" />
+        <div class="box validation">
+
+            <div class="box validation">
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Competiton  Details </h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Cultural Number : <span class="red-t">*</span></label>
+                            <input type="text" id="cultural_no" onkeypress="ResetValidateClass();" value="@objDetails.cultural_no" onclick="ResetValidateClass();" name="cultural_no" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>First Name : <span class="red-t">*</span></label>
+                            <input type="text" id="FirstName" onkeypress="ResetValidateClass();" value="@objDetails.firstname" onclick="ResetValidateClass();" name="firstname" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Middle Name : <span class="red-t"></span></label>
+                            <input type="text" id="FirstName" onkeypress="ResetValidateClass();" value="@objDetails.middlename" onclick="ResetValidateClass();" name="firstname" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Last Name : <span class="red-t">*</span></label>
+                            <input type="text" id="LastName" onkeypress="ResetValidateClass();" value="@objDetails.lastname" onclick="ResetValidateClass();" name="lastname" class="form-control">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="box validation">
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Contact  Details </h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Address : </label>
+                            <textarea name="Address" id="Address" onclick="ResetValidateClass();" class="form-control">@objDetails.address1</textarea>
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>City : </label>
+                            <input type="text" value="@objDetails.city" id="Email" onclick="ResetValidateClass();" name="Email" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>State : </label>
+                            <input type="text" value="@objDetails.state" id="DonationProgram" onclick="ResetValidateClass();" name="state" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Zip Code : </label>
+                            <input type="text" value="@objDetails.zip" id="DonationCause" onclick="ResetValidateClass();" name="zip" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Mobile : </label>
+                            <input type="text" onkeypress="return Common.isNumberKey(event)" id="Amount" value="@objDetails.mobile" name="Amount" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Email : </label>
+                            <input type="text" value="@objDetails.email" id="Email" onclick="ResetValidateClass();" name="Email" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Vcode : </label>
+                            <input type="text" value="@objDetails.vcode" id="vcode" onclick="ResetValidateClass();" name="vcode" class="form-control">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="box validation">
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Other  Details </h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label class="t-p5">Category :</label>
+                            <select class="form-control" name="CategoryId" id="CategoryId">
+                                @*@if (lstPaymentMethod != null)
+                {
+                    <option value="">Select</option>
+                    foreach (var item in lstPaymentMethod)
+                    {
+                        <option @(item.PaymentMethodId == objDetails.payment_methodid ? "selected=selected" : "") value="@item.PaymentMethodId">@item.PaymentMethod</option>
+                    }
+                }*@
+                            </select>
+                            <span class="field-validation-error" id="spanPaymentMethodId"></span>
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Amount : </label>
+                            <input type="text" id="TransactionId" value="@objDetails.amount" name="TransactionId" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label class="t-p5">Payment Method :</label>
+                            <select class="form-control" name="PaymentMethodId" id="PaymentMethodId">
+                                @if (lstPaymentMethod != null)
+                                {
+                                    <option value="">Select</option>
+                                    foreach (var item in lstPaymentMethod)
+                                    {
+                                        <option @(item.PaymentMethodId == objDetails.payment_methodid ? "selected=selected" : "") value="@item.PaymentMethodId">@item.PaymentMethod</option>
+                                    }
+                                }
+                            </select>
+                            <span class="field-validation-error" id="spanPaymentMethodId"></span>
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Location : </label>
+                            <input type="text" id="location" value="@objDetails.location" name="location" class="form-control">
+                        </div>
+                       </div>
+                        
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Age : </label>
+                            <input type="text" id="age" value="@objDetails.age" name="age" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Youtube URL : </label>
+                            <input type="text" id="youtubeurl" value="@objDetails.youtubeurl" name="youtubeurl" class="form-control">
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Admin Comments : </label>
+                            <textarea name="admincomments" id="admincomments" onclick="ResetValidateClass();" class="form-control">@objDetails.admincomments</textarea>
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Description : </label>
+                            <textarea name="description" id="description" onclick="ResetValidateClass();" class="form-control">@objDetails.description</textarea>
+                        </div>
+                    </div>
+
+                       
+                    </div>
+                </div>
+  </div>
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body text-right">
+                        <input type="submit" value="Submit" class="btn btn-primary" onclick="return Validate();" />
+                        <a class="btn btn-info" href="@Url.Action("Index", "Cultural")">Cancel</a>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                }
+            </div>

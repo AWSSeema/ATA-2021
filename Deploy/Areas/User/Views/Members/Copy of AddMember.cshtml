@@ -1,0 +1,686 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+    var objMembers = (TCAssociationTool.Entities.Members)ViewBag.objMembers;
+    var lstMembershipType = (List<TCAssociationTool.Entities.MembershipTypes>)objMembers.lstMembershipType;
+    var lstPaymentMethod = (List<TCAssociationTool.Entities.PaymentMethods>)objMembers.lstPaymentMethod;
+    var lstPaymentStatus = (List<TCAssociationTool.Entities.PaymentStatus>)objMembers.lstPaymentStatus;
+    ViewBag.heading = "Services";
+
+    ViewBag.Title = "Become a Member - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+
+    var objMemberDetails = (TCAssociationTool.Entities.Members)ViewBag.objMemberDetails;
+}
+
+<script>
+
+    function addRow() {
+        var table = document.getElementById("childinfo");
+        var rowCount = table.rows.length;
+        var row = table.insertRow(rowCount);
+        row.id = rowCount;
+
+        var cell1 = row.insertCell(0);
+        var element1 = document.createElement("input");
+        element1.type = "text";
+        element1.placeholder = "Name";
+        element1.name = "[" + (rowCount - 1) + "].FirstName";
+        element1.id = "FirstName-" + (rowCount - 1);
+        element1.className = "form-control b-m0";
+        cell1.appendChild(element1);
+
+        var cell2 = row.insertCell(1);
+        var element2 = document.createElement("input");
+        element2.type = "text";
+        element2.placeholder = "Age";
+        element2.name = "[" + (rowCount - 1) + "].Age";
+        element2.id = "Age-" + (rowCount - 1);
+        element2.className = "form-control b-m0";
+        cell2.appendChild(element2);
+
+        document.getElementById("Age-" + (rowCount - 1)).onkeypress = function (event) { return Common.isNumberKey(event) };
+
+        var cell3 = row.insertCell(2);
+        cell3.innerHTML = '<a class="btn black-t font12 poppins-medium btn-block" onclick="javascript:deleteRow(' + rowCount + ')"><img src="Content/User/images/delete-icon.png" width="" height="" class="r-p3"/>Remove</a>';
+        $('#hdnRowCount').val(rowCount);
+    }
+
+    function deleteRow(i) {
+        try {
+            var row = document.getElementById(i);
+            row.parentNode.removeChild(row);
+        } catch (e) {
+            alert(e);
+        }
+    }
+
+    function DropDown(el) {
+        this.dd = el;
+        this.initEvents();
+    }
+
+    DropDown.prototype = {
+        initEvents: function () {
+            var obj = this;
+
+            obj.dd.on('click', function (event) {
+                $(this).toggleClass('active');
+                event.stopPropagation();
+            });
+        }
+    }
+
+    $(function () {
+
+        var dd = new DropDown($('#dd'));
+
+        $(document).click(function () {
+
+            $('.wrapper-dropdown-3').removeClass('active');
+
+        });
+
+    });
+
+    function closeValidationOnClick(field) {
+        $(field).next('span').hide();
+    }
+</script>
+<script type="text/javascript">
+    $(function () {
+        $(document).pjScrollUp({
+            imgSrc: "Content/User/images/toparrow.png"
+        });
+    });
+
+    $(document).ready(function () {
+        $("#MobilePhone").mask("(999) 999-9999");
+        $('#memberbenifits').dialog
+           ({
+               autoOpen: false,
+               width: 450,
+               modal: true
+           });
+    });
+    function checkhide() {
+        document.getElementById("mailed").checked = false;
+        document.getElementById("rpaymentby").checked = false;
+        $('#PaymentBy').show();
+        $('#check').hide();
+        $('#PaymentMethod').val('PayPal');
+        $('#paypaldiv').show();
+    }
+    function checkshow() {
+        document.getElementById("mailed").checked = false;
+        document.getElementById("rpaymentby").checked = true;
+        $('#PaymentBy').show();
+        $('#check').show();
+        $('#PaymentMethod').val('Cash/Cheque');
+        $('#paypaldiv').hide();
+    }
+    function CheckEmailAvailability(email) {
+
+        var returnval = null;
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CheckEmailAvailability", "Members")', // the URL of the controller action method
+            data: { Email: email }, // optional data
+            datatype: "JSON",
+            async: false,
+            success: function (result) {
+                if (result.ok) {
+                    returnval = result.data;
+                }
+            }
+        });
+        return returnval;
+    }
+
+    function CheckUserNameAvailability(username) {
+
+        var returnval = null;
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CheckUserNameAvailability", "Members")', // the URL of the controller action method
+            data: { UserName: username }, // optional data
+            datatype: "JSON",
+            async: false,
+            success: function (result) {
+                if (result.ok) {
+                    returnval = result.data;
+                }
+            }
+        });
+        return returnval;
+    }
+
+    function Validate() {
+
+        //if ($.trim($('#UserName').val()) == '') { $('#UserName').focus().addClass('redborder'); $('#spanUserName').show().html('User Name Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanUserName').hide().html(''); $('#UserName').removeClass('redborder'); }
+
+        if ($.trim($('#Email').val()) == '') { $('#Email').focus().addClass('redborder'); $('#spanEmail').show().html('Email Id Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanEmail').hide().html(''); $('#Email').removeClass("redborder"); }
+        if (!Common.CheckEmail($.trim($('#Email').val()))) { $('#spanEmail').show().html('Please enter valid email.<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#Email').focus().addClass("red-border"); return false; } else { $('#spanEmail').html(''); }
+        if (!CheckEmailAvailability($.trim($('#Email').val()))) { $('#spanEmail').show().html('Email Id already Exists.<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#Email').focus().addClass("redborder"); return false; } else { $('#spanEmail').hide().html(''); }
+        if ($.trim($('#Password').val()) == '') { $('#Password').focus().addClass('redborder'); $('#spanPassword').show().html('Password Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanPassword').hide().html(''); $('#Password').removeClass('redborder'); }
+        if (!Common.ValidatePassword($('#Password').val())) { $('#Password').focus().addClass('redborder'); $('#spanPassword').show().html('Please enter minimum 8 charecters (atleast one special charecter & one numeric charecter).<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#Password').focus().addClass("redborder"); return false; } else { $('#spanPassword').hide().html(''); $('#Password').focus().removeClass("redborder"); }
+
+        if ($('#ConfPassword').val() == '') { $('#ConfPassword').focus().addClass('redborder'); $('#spanConfPassword').show().html('Confirm Password Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanConfPassword').hide().html(''); $('#ConfPassword').removeClass('redborder'); }
+        if ($('#Password').val() != $('#ConfPassword').val()) { $('#ConfPassword').focus().addClass('redborder'); $('#spanConfPassword').show().html('Password and confirm password do not match.<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanConfPassword').hide().html(''); $('#ConfPassword').removeClass('redborder'); }
+
+        if ($.trim($('#FirstName').val()) == '') { $('#FirstName').focus().addClass('redborder'); $('#spanFirstName').show().html('First Name Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanFirstName').hide().html(''); $('#FirstName').removeClass('redborder'); }
+        if ($.trim($('#LastName').val()) == '') { $('#LastName').focus().addClass('redborder'); $('#spanLastName').show().html('Last Name Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanLastName').hide().html(''); $('#LastName').removeClass('redborder'); }
+
+        if ($.trim($('#MobilePhone').val()) == '') { $('#MobilePhone').focus().addClass('redborder'); $('#spanMobilePhone').show().html('Mobile Phone Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanMobilePhone').hide().html(''); $('#MobilePhone').removeClass('redborder'); }
+        //var mobile = $('#MobilePhone').val();
+        //if (mobile.length < 14) { $('#MobilePhone').focus().addClass("redborder"); alert('Please enter valid 10 digit mobile number like (xxx)-xxx-xxxx'); return false; }
+
+        if ($.trim($('#Address').val()) == '') { $('#Address').focus().addClass('redborder'); $('#spanAddress').show().html('Address Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanAddress').hide().html(''); $('#Address').removeClass('redborder'); }
+        if ($.trim($('#State').val()) == '') { $('#State').focus().addClass('redborder'); $('#spanState').show().html('State Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanState').hide().html(''); $('#State').removeClass('redborder'); }
+
+        if ($.trim($('#City').val()) == '') { $('#City').focus().addClass('redborder'); $('#spanCity').show().html('City Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanCity').hide().html(''); $('#City').removeClass('redborder'); }
+
+
+        //if ($('#FirstName').val() == "") { $('#FirstName').focus().addClass("validate"); return false; } else { $('#FirstName').focus().removeClass("validate"); }
+        //if ($('#LastName').val() == "") { $('#LastName').focus().addClass("validate"); return false; } else { $('#LastName').focus().removeClass("validate"); }
+        //if ($('#MobilePhone').val() == '') { $('#MobilePhone').focus().addClass("validate"); return false; } else { $('#MobilePhone').focus().removeClass("validate"); }
+        //if (!CheckUserNameAvailability($.trim($('#UserName').val()))) { $('#UserName').val(''); document.getElementsByName('UserName')[0].placeholder = 'User Name already exist.'; $('#UserName').focus().addClass("validate"); return false; } else { $('#UserName').removeClass("validate"); }
+        //if ($('#Email').val() == "") { $('#Email').focus().addClass("validate"); return false; } else { $('#Email').removeClass("validate"); }
+        //if (!Common.CheckEmail($('#Email').val())) { $('#Email').val(''); document.getElementsByName('Email')[0].placeholder = 'Invalid email address'; $('#Email').focus().addClass("validate"); return false; } else { $('#Email').removeClass("validate"); }
+        //if (!CheckEmailAvailability($.trim($('#Email').val()))) { $('#Email').val(''); document.getElementsByName('Email')[0].placeholder = 'Email already exist.'; $('#Email').focus().addClass("validate"); return false; } else { $('#Email').removeClass("validate"); }
+
+        //if ($('#Password').val() == '') { $('#Password').focus().addClass("validate"); return false; } else { $('#Password').removeClass("validate"); }
+        //if (!Common.ValidatePassword($('#Password').val())) { $('#spanPassword').html('Reqired minimum 8 charecters (atleast one special charecter & one numeric charecter).'); $('#Password').focus(); return false; } else { $('#spanPassword').html(''); $('#Password').focus().removeClass("validate"); }
+        //if ($('#ConfPassword').val() == '') { $('#ConfPassword').focus().addClass("validate"); return false; } else { $('#ConfPassword').focus().removeClass("validate"); }
+        //if ($('#Password').val() != $('#ConfPassword').val()) { $('#ConfPassword').val(''); document.getElementsByName('ConfPassword')[0].placeholder = 'Password do not match.'; $('#ConfPassword').focus().addClass("validate"); return false; } else { $('#ConfPassword').focus().removeClass("validate"); }
+        //if ($('#Address').val() == '') { $('#Address').focus().addClass("validate"); return false; } else { $('#Address').focus().removeClass("validate"); }
+
+
+
+        //if ($('#City').val() == '') { $('#City').focus().addClass("validate"); return false; } else { $('#City').focus().removeClass("validate"); }
+        //if ($('#State').val() == '') { $('#State').focus().addClass("validate"); return false; } else { $('#State').focus().removeClass("validate"); }
+
+        //var rowcount = $('#hdnRowCount').val();
+
+        //for (var i = 0; i < rowcount; i++) {
+        //    if ($("#FirstName-" + i).val() != '' || $("#Age-" + i).val() != '') {
+        //        if ($("#FirstName-" + i).val() == '') { $("#FirstName-" + i).focus().addClass("validate"); return false; } else { $("#FirstName-" + i).removeClass("validate"); }
+        //        //if ($("#LastName-" + i).val() == '') { $("#LastName-" + i).focus().addClass("validate"); return false; } else { $("#LastName-" + i).removeClass("validate"); }
+        //        if ($("#Age-" + i).val() == '') { $("#Age-" + i).focus().addClass("validate"); return false; } else { $("#Age-" + i).removeClass("validate"); }
+        //        //if ($("#Relationship-" + i).val() == '') { $("#Relationship-" + i).focus().addClass("validate"); return false; } else { $("#Relationship-" + i).removeClass("validate"); }
+        //    }
+        //    else { $("#FirstName-" + i).removeClass("validate"); $("#Age-" + i).removeClass("validate"); }
+        //}
+
+        if ($('#MembershipTypeId').val() == "") { $('#spanMembershipTypeId').html('Required.'); $('#MembershipTypeId').focus(); return false; } else { $('#spanMembershipTypeId').html(''); $('#MembershipTypeId').focus().removeClass("validate"); }
+
+        //var rowcount = $('#hdnRowCount').val();
+
+        //for (var i = 0; i < rowcount; i++) {
+        //    if ($("#FirstName-" + i).val() != '' || $("#Age-" + i).val() != '') {
+        //        if ($("#FirstName-" + i).val() == '') { $("#FirstName-" + i).focus().addClass("validate"); return false; } else { $("#FirstName-" + i).removeClass("validate"); }
+        //        //if ($("#LastName-" + i).val() == '') { $("#LastName-" + i).focus().addClass("validate"); return false; } else { $("#LastName-" + i).removeClass("validate"); }
+        //        if ($("#Age-" + i).val() == '') { $("#Age-" + i).focus().addClass("validate"); return false; } else { $("#Age-" + i).removeClass("validate"); }
+        //        //if ($("#Relationship-" + i).val() == '') { $("#Relationship-" + i).focus().addClass("validate"); return false; } else { $("#Relationship-" + i).removeClass("validate"); }
+        //    }
+        //    else { $("#FirstName-" + i).removeClass("validate"); $("#Age-" + i).removeClass("validate"); }
+        //}
+
+        //if ($('#MembershipTypeId').val() == "") { $('#spanMembershipTypeId').html('Required.'); $('#MembershipTypeId').focus(); return false; } else { $('#spanMembershipTypeId').html(''); $('#MembershipTypeId').focus().removeClass("validate"); }
+
+        //var radioButtons = document.getElementsByName('Cash/Cheque');
+        //if (radioButtons[1].checked) {
+        //    if ($('#PaymentBy').val() == '') { $('#PaymentBy').focus().addClass("validate"); return false; } else { $('#PaymentBy').removeClass("validate"); }
+        //}
+
+        //if ($.trim($('#Amount').val()) == '') { $('#Amount').focus().addClass("validate"); return false; } else { $('#Amount').focus().removeClass("validate"); }
+
+        //if (!IsNumeric($("#Amount").val())) { $('#Amount').val(''); document.getElementsByName('Amount')[0].placeholder = 'Please enter valid amount.'; $('#Amount').focus().addClass("validate"); return false; } else {  $('#Amount').focus().removeClass("validate"); }
+        //if ($('#Amount').val() <= 0) { $('#Amount').val(''); document.getElementsByName('Amount')[0].placeholder = 'Please enter valid amount.'; $('#Amount').focus().addClass("validate"); return false; } else { $('#Amount').focus().removeClass("validate"); }
+        if ($.trim($('#txtCaptcha').val()) == '') { $('#txtCaptcha').focus().addClass('redborder'); $('#spantxtCaptcha').show().html('Captcha Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spantxtCaptcha').hide().html(''); $('#txtCaptcha').removeClass('redborder'); }
+        //if ($('#txtCaptcha').val() == '') { $('#txtCaptcha').focus().addClass("validate"); return false; } else { $('#txtCaptcha').focus().removeClass("validate"); }
+        var str = Common.GetCaptcha();
+
+        if ($('#txtCaptcha').val() != str) { $('#txtCaptcha').val(''); document.getElementsByName('MCaptcha')[0].placeholder = 'wrong captcha.'; $('#txtCaptcha').focus().addClass("validate"); return false; } else { $('#txtCaptcha').focus().removeClass("validate"); }
+
+        //if ($('#CardNumber').val() == "") { $('#CardNumber').focus().addClass("validate"); return false; } else { $('#CardNumber').focus().removeClass("validate"); }
+        //if ($('#CSVMonth').val() == "") { $('#CSVMonth').focus().addClass("validate"); return false; } else { $('#CSVMonth').focus().removeClass("validate"); }
+        //if ($('#CSVYear').val() == "") { $('#CSVYear').focus().addClass("validate"); return false; } else { $('#CSVYear').focus().removeClass("validate"); }
+        //if ($('#Cvv').val() == "") { $('#Cvv').focus().addClass("validate"); return false; } else { $('#Cvv').focus().removeClass("validate"); }
+        //var SpouseSkils = Common.GetCheckBoxValue('ItemValue');
+        //if (SpouseSkils == "") {
+        //    alert("Please select atleast one item From Interested List.");
+        //    return false;
+        //}
+
+        //else {
+        //    $('#SpouseSkils').val(SpouseSkils);
+        //}
+        //if (returnvalue == true) {
+        //    if ($('#Terms').prop("checked") == true) {
+        //        $('#spanTerms').html('');
+        //    }
+        //    else {
+        //        returnvalue = false; $('#spanTerms').html('Please accept our acknowledgement to continue.'); $('#Terms').focus();
+        //    }
+        //}
+
+        return returnvalue;
+    }
+
+    function closeValidation(field) {
+        $(field).parent().hide();
+    }
+
+    function ResetValidateClass() {
+        $('#UserName').removeClass("validate");
+        $('#Password').removeClass("validate");
+        $('#Email').removeClass("validate");
+        $('#ConfPassword').removeClass("validate");
+        $('#FirstName').removeClass("validate");
+        $('#LastName').removeClass("validate");
+        $('#txtCaptcha').removeClass("validate");
+
+    }
+
+    function CreloadCaptcha() {
+        document.getElementById('CUcaptcha').src = document.getElementById('CUcaptcha').src + '/';
+    }
+    function paymentbyhide() {
+        $('#PaymentBy').val('');
+        $('#PaymentBy').hide();
+    }
+    function paymentbyshow() {
+        $('#PaymentBy').val('');
+        $('#PaymentBy').show();
+    }
+
+    function paypalyhide() {
+        $('#PayPal').hide();
+    }
+    function paypalbyshow() {
+        $('#PayPal').show();
+    }
+    //function phonenochange(event) {
+    //    if (event.keyCode == 8 || event.keyCode == 46) {
+    //    }
+    //    else {
+    //        var ph = $('#MobilePhone').val();
+    //        if (ph.length == 3) { $('#MobilePhone').val(ph + '-'); }
+    //        if (ph.length == 7) { $('#MobilePhone').val(ph + '-'); }
+    //    }
+    //}
+
+</script>
+<script type="text/javascript">
+    $(function () {
+
+        // date picker
+        $(function () {
+            $(function () {
+                $(".datepicker").datepicker({
+                    altField: "#alternate",
+                    altFormat: "DD, d MM, yy"
+                });
+            });
+        });
+    });
+    $(document).ready(function () {
+        getamount();
+        $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altField: '.date', altFormat: 'mm/dd/yy' });
+        $("#LastName-0").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altField: '.date', altFormat: 'mm/dd/yy' });
+    });
+    function getamount() {
+        var membershipid = Common.getCheckedRadio('MembershipTypeId');;
+        $.ajax({
+            url: '@Url.Action("GetMemberAmount", "Members")',
+            type: 'POST',
+            data: { MembershipTypeId: membershipid },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objMembershipType = result.data;
+                    $('#payamount').html(objMembershipType.Price);
+                    $('#MemberAmount').val(objMembershipType.Price);
+                    $('#MembershipType').val(objMembershipType.MembershipType);
+                    if (objMembershipType.Validity != 0) {
+                        var d = new Date();
+                        d.setMonth((d.getMonth()) + objMembershipType.Validity);
+                        $('#ExpiryDate').val(d.toDateString("MM/dd/yyyy"));
+                    } else { $('#ExpiryDate').val(0); }
+                    if (objMembershipType.Price == 0) {
+                        paypalyhide();
+                    }
+                    else {
+                        paypalbyshow();
+                    }
+                }
+            }
+        });
+    }
+</script>
+<script>
+    function onlyAlphabets(e, t) {
+        try {
+            if (window.event) {
+                var charCode = window.event.keyCode;
+            }
+            else if (e) {
+                var charCode = e.which;
+            }
+            else { return true; }
+            if ((charCode == 32) || (charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (specialKeys.indexOf(e.keyCode) != -1 && e.charCode != e.keyCode)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch (err) {
+            alert(err.Description);
+        }
+    }
+    var specialKeys = new Array();
+    specialKeys.push(8); //Backspace
+    specialKeys.push(9); //Tab
+    specialKeys.push(32); //Space
+    specialKeys.push(46); //Delete
+    specialKeys.push(36); //Home
+    specialKeys.push(35); //End
+    specialKeys.push(37); //Left
+    specialKeys.push(39); //Right
+</script>
+<script>
+
+    $(document).ready(function () {
+        $('#ItemValue-7').change(function () {
+            if (this.checked) {
+                $('#testselect').show('slow');
+            }
+            else {
+                $('#testselect').hide('slow');
+            }
+        });
+    });
+
+    function phonenochange(event) {
+        if (event.keyCode == 8 || event.keyCode == 46) {
+        }
+        else {
+            var ph = $('#MobilePhone').val();
+            if (ph.length == 3) { $('#MobilePhone').val(ph + '-'); }
+            if (ph.length == 7) { $('#MobilePhone').val(ph + '-'); }
+        }
+    }
+
+</script>
+
+<input type="hidden" value="1" id="hdnRowCount" />
+<article class="clearfix t-m0 l-h28 t-t-u Impact font26 evesec-tex letespa1 b-m25 tabhorizontal-b-m10 mobile-b-m5">Member <span class="evered-t">Registration</span><i class="inertitsid-img l-m10 mobile-hide">&nbsp;</i></article>
+<article class="clearfix shadow white-bg t-p15">
+    <article class="clearfix  grayborder mobile-p15">
+        @using (Html.BeginForm("AddMember", "Members", FormMethod.Post, new { enctype = "multipart/form-data", @class = "validation" }))
+        {
+            <article class="clearfix p30 t-p15 tabhorizontal-p10 l-r-m-auto validation" style="max-width:760px;">
+                @*<input type="hidden" value="100" id="MemberAmount" name="MemberAmount">
+                    <input type="hidden" value="Life Time Membership" id="MembershipType" name="MembershipType">
+                    <input type="hidden" value="Invalid Date" id="ExpiryDate" name="ExpiryDate">
+                    <input type="hidden" value="PayPal" id="PaymentMethod" name="PaymentMethod">
+                    <input type="hidden" id="SpouseSkils" name="SpouseSkils">*@
+
+                <input type="hidden" value="100" id="MemberAmount" name="MemberAmount" />
+                <input type="hidden" value="" id="MembershipType" name="MembershipType" />
+                <input type="hidden" value="" id="ExpiryDate" name="ExpiryDate" />
+                <input type="hidden" value="PayPal" id="PaymentMethod" name="PaymentMethod" />
+                <input type="hidden" id="SpouseSkils" name="SpouseSkils" />
+
+
+                <h4 class="Roboto-Medium pink-t font20 mobile-t-p10 t-m0 b-p10 dis-in" style="border-bottom:1px dashed #c0dbd0;">Login Information</h4>
+                <article class="clearfix part-row t-p15">
+                    <article class="part-4 t-b-p5 position-r">
+                        <article class="clearfix r-p5 tabhorizontal-l-p5 mobile-l-p0">
+                            <label>Email <span class="red-t">*</span></label>
+                            <input class="form-control" placeholder="" value="@objMemberDetails.Email" name="Email" id="Email" onkeypress="closeValidationOnClick(this);" type="text">
+                            <span class="errormsg" id="spanEmail"></span>
+                        </article>
+                    </article>
+                    <article class="part-4 t-b-p5 position-r">
+                        <article class="clearfix l-r-p5 tabhorizontal-l-r-p5 mobile-l-r-p0">
+                            <label>Password <span class="red-t">*</span></label>
+                            <input class="form-control" name="password" id="Password" placeholder="" onkeypress="closeValidationOnClick(this);" type="password">
+                            <span class="errormsg" id="spanPassword"></span>
+                        </article>
+                    </article>
+                    <article class="part-4 t-b-p5 position-r">
+                        <article class="clearfix l-p5 tabhorizontal-l-p5 mobile-l-p0">
+                            <label>Retype Password <span class="red-t">*</span></label>
+                            <input class="form-control" name="password" id="ConfPassword" placeholder="" onkeypress="closeValidationOnClick(this);" type="password">
+                            <span class="errormsg" id="spanConfPassword"></span>
+                        </article>
+                    </article>
+                </article>
+                <h4 class="Roboto-Medium pink-t font20 mobile-t-p10 t-m0 b-p10 t-p10 dis-in" style="border-bottom:1px dashed #c0dbd0;">Personal Information</h4>
+                <article class="clearfix part-row">
+                    <article class="part-4 t-b-p5 position-r">
+                        <article class="clearfix r-p5 tabhorizontal-r-p5 mobile-r-p0">
+                            <label>First Name <span class="red-t">*</span></label>
+                            <input name="FirstName" id="FirstName" placeholder="" value="@objMemberDetails.FirstName" class="form-control" onkeypress="closeValidationOnClick(this);" type="text">
+                            <span class="errormsg" id="spanFirstName"></span>
+                        </article>
+                    </article>
+                    <article class="part-4 t-b-p5 position-r">
+                        <article class="clearfix l-r-p5 tabhorizontal-l-r-p5 mobile-l-r-p0">
+                            <label>Last Name <span class="red-t">*</span></label>
+                            <input name="LastName" id="LastName" placeholder="" value="@objMemberDetails.LastName" class="form-control" onkeypress="closeValidationOnClick(this);" type="text">
+                            <span class="errormsg" id="spanLastName"></span>
+                        </article>
+                    </article>
+                    <article class="part-4 t-b-p5 position-r">
+                        <article class="clearfix l-p5 tabhorizontal-l-p5 mobile-l-p0">
+                            <label>Mobile Phone <span class="red-t">*</span></label>
+                            <input class="form-control" placeholder="" value="@objMemberDetails.MobilePhone" name="MobilePhone" id="MobilePhone" onkeypress="phonenochange(event); closeValidationOnClick(this); return Common.isNumberKey(event);" maxlength="12" type="text">
+                            <span class="errormsg" id="spanMobilePhone"></span>
+                        </article>
+                    </article>
+                </article>
+                <article class="clearfix part-row">
+                    <article class="part-4 t-b-p5 position-r">
+                        <article class="clearfix r-p5 tabhorizontal-r-p5 mobile-r-p0">
+                            <label>Spouse Full Name </label>
+                            <input name="SpouseFirstName" id="SpouseFirstName " placeholder="" onkeypress="closeValidationOnClick(this);" class="form-control">
+                            <span class="errormsg" id="spanSpouseFirstName"></span>
+                        </article>
+                    </article>
+                    <article class="part-4 t-b-p5 position-r">
+                        <article class="clearfix l-r-p5 tabhorizontal-l-r-p5 mobile-l-r-p0">
+                            <label>Spouse Email </label>
+                            <input name="SpouseLastName" id="SpouseLastName" placeholder="" onkeypress="closeValidationOnClick(this);" class="form-control">
+                            <span class="errormsg" id="spanSpouseLastName"></span>
+                        </article>
+                    </article>
+                    <article class="part-4 t-b-p5 position-r">
+                        <article class="clearfix l-p5 tabhorizontal-l-p5 mobile-l-p0">
+                            <label>Address <span class="red-t">*</span></label>
+                            <input class="form-control" placeholder="" name="Address" id="Address" onkeypress="closeValidationOnClick(this);" type="text">
+                            <span class="errormsg" id="spanAddress"></span>
+                        </article>
+                    </article>
+                </article>
+                <article class="clearfix part-row">
+                    <article class="part-4 t-b-p5 position-r">
+                        <article class="clearfix r-p5 tabhorizontal-r-p5 mobile-r-p0">
+                            <label>State<span class="red-t">*</span> </label>
+                            <article class="clearfix dropdown">
+                                <select class="dropdown-select ui-select" id="State" name="State" onchange="closeValidationOnClick(this);" style="height:44px;">
+                                    <option value="">Select State *</option>
+                                    <option value="Alabama">Alabama</option>
+                                    <option value="Alaska">Alaska</option>
+                                    <option value="Arizona">Arizona</option>
+                                    <option value="Arkansas">Arkansas</option>
+                                    <option value="California">California</option>
+                                    <option value="Colorado">Colorado</option>
+                                    <option value="Connecticut">Connecticut</option>
+                                    <option value="Delaware">Delaware</option>
+                                    <option value="Florida">Florida</option>
+                                    <option value="Georgia">Georgia</option>
+                                    <option value="Hawaii">Hawaii</option>
+                                    <option value="Idaho">Idaho</option>
+                                    <option value="Illinois">Illinois</option>
+                                    <option value="Indiana">Indiana</option>
+                                    <option value="Iowa">Iowa</option>
+                                    <option value="Kansas">Kansas</option>
+                                    <option value="Kentucky">Kentucky</option>
+                                    <option value="Louisiana">Louisiana</option>
+                                    <option value="Maine">Maine</option>
+                                    <option value="Maryland">Maryland</option>
+                                    <option value="Massachusetts">Massachusetts</option>
+                                    <option value="Michigan">Michigan</option>
+                                    <option value="Minnesota">Minnesota</option>
+                                    <option value="Mississippi">Mississippi</option>
+                                    <option value="Missouri">Missouri</option>
+                                    <option value="Montana">Montana</option>
+                                    <option value="Nebraska">Nebraska</option>
+                                    <option value="Nevada">Nevada</option>
+                                    <option value="New Hampshire">New Hampshire</option>
+                                    <option value="New Jersey">New Jersey</option>
+                                    <option value="New Mexico">New Mexico</option>
+                                    <option value="New York">New York</option>
+                                    <option value="North Carolina">North Carolina</option>
+                                    <option value="North Dakota">North Dakota</option>
+                                    <option value="Ohio">Ohio</option>
+                                    <option value="Oklahoma">Oklahoma</option>
+                                    <option value="Oregon">Oregon</option>
+                                    <option value="Pennsylvania">Pennsylvania</option>
+                                    <option value="Rhode Island">Rhode Island</option>
+                                    <option value="South Carolina">South Carolina</option>
+                                    <option value="South Dakota">South Dakota</option>
+                                    <option value="Tennessee">Tennessee</option>
+                                    <option value="Texas">Texas</option>
+                                    <option value="Utah">Utah</option>
+                                    <option value="Vermont">Vermont</option>
+                                    <option value="Virginia">Virginia</option>
+                                    <option value="Washington">Washington</option>
+                                    <option value="West Virginia">West Virginia</option>
+                                    <option value="Wisconsin">Wisconsin</option>
+                                    <option value="Wyoming">Wyoming</option>
+                                </select>
+                                <span class="errormsg" id="spanState"></span>
+                            </article>
+                        </article>
+                    </article>
+                    <article class="part-4 t-b-p5 position-r">
+                        <article class="clearfix l-r-p5 tabhorizontal-l-r-p5 mobile-l-r-p0">
+                            <label>City<span class="red-t">*</span></label>
+                            <input class="form-control" name="City" id="City" placeholder="" type="text" onkeypress="closeValidationOnClick(this);">
+                            <span class="errormsg" id="spanCity"></span>
+                        </article>
+                    </article>
+                    <article class="part-4 t-b-p5 position-r">
+                        <article class="clearfix l-p5 tabhorizontal-l-p5 mobile-l-p0">
+                            <label>ZipCode </label>
+                            <input class="form-control" placeholder="" name="ZipCode" id="ZipCode" onkeypress="closeValidationOnClick(this);" onKeyPress="return Common.isNumberKey(event);" maxlength="6" type="text">
+                            <span class="errormsg" id="spanZipCode"></span>
+                        </article>
+                    </article>
+                </article>
+                <h4 class="Roboto-Medium pink-t font20 mobile-t-p10 t-m10 b-p10 dis-in" style="border-bottom:1px dashed #c0dbd0;">Membership Types</h4>
+                <ul class="clearfix m0 list-pn list-f part-row mobilev-p5">
+                    @if (lstMembershipType != null)
+                    {
+                        int i = 1;
+
+                        foreach (var item in lstMembershipType)
+                        {
+
+                            <li class="part-4 t-b-p7">
+                                <label class="radiostyle b-m0">
+                                    <input value="@item.MembershipTypeId" onclick="getamount(@item.Price);" name="MembershipTypeId" id="MembershipTypeId-@i" @(i == 1 ? "checked='checked'" : "") type="radio">
+                                    <span for="radio" class="dis-in OpenSans font16 l-h20 black-t mobile-font12"><a class="black-t">@item.MembershipType  (@(item.Price == 0 ? "Free" : "$" + (Math.Round(@item.Price, 0))))</a></span>
+                                </label>
+                            </li>
+                            i++;
+                        }
+                    }
+                </ul>
+
+
+                <article class="clearfix font13 Muli-Light l-h24 tabhorizontal-p10">
+                    <h4 class="Roboto-Medium pink-t font20 mobile-t-p10 t-m0 b-p10 dis-in t-p10" style="border-bottom:1px dashed #c0dbd0;">Payment Method :</h4>
+                    <article class="clearfix row-fluid">
+                        <article class="clearfix span10">
+                            <article class="clearfix part-row">
+                                <article class="clearfix part-6">
+                                    <label class="font16 dkdark-t radiostyle b-m0">
+                                        <input value="1" name="pmethod" checked="checked" onClick="checkhide();" type="radio">
+                                        <span class="dis-in Montserrat-Regular font14" for="radio1">Instant Checkout  through PayPal </span>
+                                    </label>
+                                </article>
+                                <article class="clearfix part-6">
+                                    <label class="font16 dkdark-t radiostyle b-m0">
+                                        <input value="0" name="pmethod" onClick="checkshow();" type="radio">
+                                        <span class="dis-in Montserrat-Regular font14" for="radio1">Cash/Cheque</span>
+                                    </label>
+                                </article>
+                            </article>
+                        </article>
+                    </article>
+                    <article style="display: none;" class="Montserrat-Regular font14 dk-t l-h22" id="check">
+                        <article class="clearfix border2 border-radius4 t-b-m10 p10 l-m5 shadow" style="border-color:#17275d;">
+                            <article class="clearfix b-p5"> <span class="Muli-Light font13 red-t2">You will recieve a confirmation email once the payment is credited to @System.Configuration.ConfigurationManager.AppSettings["ApplicationName"] account. Please follow-up with your @System.Configuration.ConfigurationManager.AppSettings["ApplicationName"] contact, if you did not recieve email within seven days..</span> </article>
+                            <article class="clearfix b-p10 row-fluid">
+                                <label class="dkdark-t radiostyle b-m0 yellowborder">
+                                    <input onClick="paymentbyhide();" name="Cash/Cheque" id="mailed" type="radio">
+                                    <span class="dis-in" for="radio1">Mailed the cheque already to @System.Configuration.ConfigurationManager.AppSettings["ApplicationName"]</span>
+                                </label>
+                            </article>
+                            <article class="clearfix part-row b-p10">
+                                <label class="dkdark-t radiostyle dis-in">
+                                    <input onClick="paymentbyshow();" id="rpaymentby" name="Cash/Cheque" type="radio">
+                                    <span class="dis-in t-p10" for="radio1">Handed the cash/cheque to - </span>
+                                </label>
+                                <input placeholder="Handed the cash/cheque to" name="PaymentBy" id="PaymentBy" class="b-m0 form-control" style="max-height: 30px; max-width:200px; display:inline-block!important; font-size:12px;" type="text">
+                            </article>
+                        </article>
+                    </article>
+                    <article class="clearfix border2 border-radius4 t-b-m10 p10 l-m5 shadow" id="paypaldiv" style="border-color:#17275d;">
+                        <article class="clearfix part-row">
+                            <article class="clearfix part-8">
+                                <article class="clearfix font13 poppinsregular l-h24 tabhorizontal-p10 b-p5">
+                                    <h4 class="clearfix Roboto-Medium l-h20 font18 b-m15 dis-in b-p5 mobile-font18 mobile-t-b-m0 mobilev-b-m5" style="border-bottom:1px dashed #c0dbd0;">Payment by using PayPal</h4>
+                                    <br>
+                                    <img src="Content/User/images/paypal.jpg" alt="PayPal" width="250" height="117">
+                                </article>
+                            </article>
+                            <article class="part-4">
+                                <article class="part-8 t-p15  Roboto-Medium tablet-t-p10 mobile-t-p0 t-r font16 mobile-t-c"><span class="v-align-m mobilev-font14">Total Amount : </span></article>
+                                <article class="part-4 t-p15 font15 tablet-t-p10 mobile-t-c"> <b class="font16 red-t"> $<span id="payamount">100</span> </b> </article>
+                            </article>
+                        </article>
+                    </article>
+                    <article class="clearfix t-p10 part-row mobile-t-b-p10">
+                        <article class="part-5">
+                            <article class="clearfix r-p10 tabhorizontal-r-p5 mobilev-r-p0">
+                                <label>Security Code <span class="red-t">*</span> </label>
+                                <input placeholder="" class="form-control" onkeypress="closeValidationOnClick(this);" id="txtCaptcha" name="MCaptcha" type="text">
+                                <span class="errormsg" id="spantxtCaptcha"></span>
+                            </article>
+                        </article>
+                        <article class="part-7">
+                            @*<article class="clearfix l-p10 tabhorizontal-l-p5 mobilev-l-p0"> <img alt="Captcha" id="CUcaptcha" src="Content/images/ShowCaptchaImage.gif" style="min-height: 38px!important;" width="91" height="33" border="0"> <span class="l-p10"> <a href="javascript:CreloadCaptcha();"> <img src="Content/images/refresh.png" alt="Refresh" width="33" height="33" border="0"></a></span> </article>*@
+                            @*Comment this line kiran*@
+                            <article class="clearfix l-p10 tabhorizontal-l-p5 mobilev-l-p0">
+                                <label>&nbsp;</label>
+                                <img alt="Captcha" id="CUcaptcha" src="Members/ShowCaptchaImage" style="min-height: 38px!important;" width="91" height="33" border="0"> <span class="l-p10"> <a href="javascript:CreloadCaptcha();"> <img src="Content/User/images/refresh.png" alt="Refresh" width="33" height="33" border="0"></a></span>
+                            </article>
+
+                        </article>
+                    </article>
+                    <label class="b-m3 font14 dk-t OpenSans"> By clicking submit I agree to the <a href="" class="poppins-medium red1-t">Terms & Conditions</a> & <a href="" class="poppins-medium red1-t">Privacy Policy.</a></label>
+                </article>
+                <article class="clearfix t-b-p10 mobile-t-c t-r">
+                    <input value="SUBMIT" class="clearfix m0 career-submit-bg border-radius4 t-t-u font18 white-t t-c l-h12 Poppins-Medium t-b-p20 border0 l-r-p15" style="background-color: #ff811b;" onClick="return Validate();" type="submit">
+                </article>
+            </article>
+        }
+    </article>
+</article>

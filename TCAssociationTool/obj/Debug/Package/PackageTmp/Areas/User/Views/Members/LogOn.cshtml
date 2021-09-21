@@ -1,0 +1,127 @@
+﻿@{
+    ViewBag.Title = "Signup - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"]; 
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+
+    var baseurl = System.Configuration.ConfigurationManager.AppSettings["baseurl"];
+
+    string url = ViewBag.returnurl;
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.closable').append('<span id="lblclose" class="closelink" title="Close"></span>');
+        $('.closelink').click(function () {
+            $(this).parent().fadeOut('600', function () { $(this).remove(); });
+        });
+
+    });
+
+
+    function PostLogin() {
+        if (LoginValidate()) {
+            var model = {};
+            model.Email = $('#Email1').val();
+            model.Password = $('#Password1').val();
+            model.ReturnUrl = '@ViewBag.returnurl';
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("LogOn", "Members")', // the URL of the controller action method
+                    data: JSON.stringify(model),
+                    datatype: "JSON",
+                    contentType: 'application/json',
+                    success: function (result) {
+                        if (result.ok) {
+                            if (result.data == "buy-laws") {
+                                window.location.href = '@baseurl' + 'by-laws-details.html';
+                            }
+                            else {
+                                window.location.href = '@baseurl' + 'profile.html';
+                            }
+                        }
+                        else {
+                            $('#LoginBtn').removeAttr('disabled');
+                            $('#failedmsg').html(result.data).show();
+                        }
+                    }
+                });
+            }
+        }
+
+        function LoginValidate() {
+
+            var return_val = true;
+
+            if ($('#Password1').val() == "") { $('#Password1').focus().addClass('redborder'); $('#spanPassword1').show().html('Password Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return_val = false; } else { $('#spanPassword1').hide().html(''); $('#Password1').removeClass('redborder'); }
+            if ($.trim($('#Email1').val()) == '') { $('#Email1').focus().addClass('redborder'); $('#spanEmail1').show().html('Email Id Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return_val = false; } else { $('#spanEmail1').hide().html(''); $('#Email1').removeClass("redborder"); }
+            if ($.trim($('#Email1').val()) != '') {
+                if (!Common.CheckEmail($.trim($('#Email1').val()))) { $('#spanEmail1').show().html('Please enter valid email address.<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#Email1').focus().addClass("red-border"); return_val = false; } else { $('#spanEmail1').html(''); }
+            }
+            $('.errormsg').append('<abbr onclick="closeValidation(this);">&nbsp;</abbr>');
+
+            if (return_val == true) {
+                $('#Loginhide').hide();
+                $('#LoginShow').show();
+            }
+
+            return return_val;
+
+
+            //if ($('#Email1').val() == "") { $('#Email1').focus().addClass("validate"); return false; } else { $('#Email1').removeClass("validate"); }
+            //if (!Common.CheckEmail($('#Email1').val())) { $('#Email1').val(''); document.getElementsByName('Email')[0].placeholder = 'Invalid email address'; $('#Email1').focus().addClass("validate"); return false; } else { $('#Email1').removeClass("validate"); }
+            //if ($('#Password1').val() == '') { $('#Password1').focus().addClass("validate"); return false; } else { $('#Password1').focus().removeClass("validate"); }
+
+
+            //return true;
+        }
+
+        function closeValidation(field) {
+            $(field).parent().hide();
+        }
+
+        function ResetValidateClass() {
+            $('#Email1').removeClass("validate");
+            $('#Password1').removeClass("validate");
+
+        }
+
+
+    </script>
+<article class="clearfix t-m0 l-h28 t-t-u Impact font26 evesec-tex letespa1 b-m25 tabhorizontal-b-m10 mobile-b-m5">log<span class="evered-t">in</span><i class="inertitsid-img l-m10 mobile-hide">&nbsp;</i></article>
+                <!------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+                <article class="clearfix mobile-t-p15 tabhorizontal-t-p15">
+                  <article class="l-r-m-auto white-bg p30 b-p40 mobile-p20 shadow" style="max-width: 430px;">
+                    <article class="clearfix white-bg border-radius shadow-l">
+                      <article id="failedmsg" class="clearfix hide b-m10 red-t t-c border shadow1 p5 Montserrat-Medium font14"></article>
+                      <input type="hidden" value="profile.html" id="ReturnUrl" name="ReturnUrl">
+                      <h5 class="clearfix t-b-m0 Roboto-Medium font14 b-p2 grey-text gwt-tex-t t-c">Provide your credentials to login into</h5>
+                      <h5 class="clearfix t-b-m0 Montserrat-Regular red-text font15 l-h18 red-t  t-c">Telugu Literary & Cultural Association</h5>
+                      <article class="clearfix t-c t-m30">
+                        <article class="clearfix t-m5 position-r">
+                          <label class="font13 lowd-t1 Roboto-Regular t-l t-m5n">Email <span class="red-t">* </span></label>
+                          <input class="form-control profile-form" style="min-height: 47px; border-color: #dbdbdb!important;" name="Email" id="Email1" type="text" />
+                          <span class="errormsg" id="spanEmail1"></span>
+                            </article>
+                        <article class="clearfix t-m5 position-r">
+                          <label class="font13 lowd-t1 Roboto-Regular t-b-m0 dk-t t-l">Password <span class="red-t">* </span></label>
+                          <input class="form-control profile-form" style="min-height: 47px; border-color: #dbdbdb!important;" name="Password" id="Password1" type="password" />
+                          <span class="errormsg" id="spanPassword1"></span>
+                            </article>
+                        <article class="clearfix t-l t-m0">
+                          <label class="checkboxstyle">
+                          <input name="ItemValue" id="ItemValue-1" value="Panel talk  " type="checkbox">
+                          <span for="checkbox" class="dis-in Poppins-Medium font12 l-h20 dk-t t-t-c l-p8 v-align-m">Keep me logged in </span> </label>
+                        </article>
+                        <article class="clearfix t-m5">
+                          <input class="t-t-u Montserrat-Regular font20 l-r-p30 t-b-p10 btn-block" style="color: #fff; background-color: #ff7001; border:#097c11;" value="Login" type="submit" onClick="PostLogin();">
+                        </article>
+                        <label class="b-m0 Montserrat-Regular font14 t-p10 b-p7"><a class="" href="@Url.Action("ForgotPassword","Members")" style="color: #ea3d6b;">Forgot Password?</a></label>
+                      
+                      <article class="clearfix border-t dashborder-t das-border t-p10 t-c mobile-b-p20">
+                        <label class="t-b-m0 Montserrat-Regular font12 t-p0 gray3-t mobile-t-p0">Don’t have a credentials to login ?</label>
+                        <article class="clearfix dis-in t-m15"> <a class="t-t-u Montserrat-Regular font14 l-r-p30 t-b-p8 border-radius" style="border: #fc7113 1px solid; color: #fc7113; border-radius: 25px; letter-spacing: 0.5px;" href="member-registration.html">Create an Account</a> </article>
+                      </article>
+                    
+                  </article>
+                </article>
+                      </article>
+                    </article>
+                <!------------------------------------------------------------------------------------------------------------------------------------------------------------------->

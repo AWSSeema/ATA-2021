@@ -1,0 +1,146 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#wNewsLetters').addClass('active');
+        $('#Others').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>'); 
+        PagerClickBind();
+    });
+
+    function sortresult(sortcolumn) {
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        NewsLettersBind(1);
+    }
+
+    
+    function NewsLettersBind(Pageno) {
+
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = $('#txtsearch').val().trim();
+        
+        
+        $.ajax({
+            url: '@Url.Action("NewsLetterList", "NewsLetter")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items },
+            success: function (result) {
+                $('#divDetails').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+    function Delete(LetterId) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteNewsLetter", "NewsLetter")',  // the URL of the controller action method
+                data: { LetterId: LetterId }, // optional data
+                success: function (result) {
+                    $("#divmessage").html(result.data);
+                    
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    NewsLettersBind($('#hdnPageNo').val());
+                },
+                error: function (req, status, error) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    
+                }
+            });
+        }
+    }
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            NewsLettersBind($(this).text());
+        });
+    }
+
+    function SearchClear() {
+        $('#txtsearch').val('');
+        
+        NewsLettersBind(1);
+    }
+
+    function ExporttoExcel() {
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var Search = $('#txtsearch').val().trim();
+
+        window.location.href = "Admin/NewsLetter/NewsLetterExporttoExcel?Search=" + Search + "&SortColumn=" + sortcolumn + "&SortOrder=" + sortorder;
+
+    }
+
+    function ClearSearch() {
+        $('#txtsearch').val('');
+        
+        $('#hdnPageNo').val(1);
+        
+        NewsLettersBind(1);
+    }
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="RegisteredDate" />
+<input id="hdnsortorder" type="hidden" value="DESC" />
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>News Letters</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active">News Letters</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <!-- Main content -->
+    <div class="box">
+        <!-- /.box-header -->
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-4 col-sm-6">
+                    <label>Search</label>
+                    <input type="text" placeholder="Name" name="txtsearch" id="txtsearch" class="form-control" />
+                </div> 
+                <div class="col-xs-12 col-lg-4 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <button class="btn btn-primary" type="submit" onclick="NewsLettersBind(1);">Search</button>
+                    <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
+                </div>
+                <div class="col-xs-12 col-lg-4 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    
+                    <a data-toggle="modal" onclick="ExporttoExcel();" class="btn btn-danger pull-right">Export Details to Excel</a>
+                </div>
+            </div>
+        </div>
+        <div id="divDetails" class="box-body">
+            @{Html.RenderAction("NewsLetterList", "NewsLetter");}
+        </div>
+    </div>
+</div>

@@ -34,8 +34,8 @@ namespace TCAssociationTool.Areas.User.Controllers
             List<Entities.WebsiteBanners> lstWebsiteBanners = new List<Entities.WebsiteBanners>();
             List<Entities.Events> lstUpcommingEvents = new List<Entities.Events>();
             Entities.InnerPages objPHInnerPages = new Entities.InnerPages();
-            Entities.InnerPages objCInnerPages = new Entities.InnerPages();
-            List<Entities.Events> lstLatestEvents = new List<Entities.Events>();
+           // Entities.InnerPages objCInnerPages = new Entities.InnerPages();
+          //  List<Entities.Events> lstLatestEvents = new List<Entities.Events>();
             List<Entities.Sponsors> lstSponsors = new List<Entities.Sponsors>();
             List<Entities.Sponsors> lstMediaSponsors = new List<Entities.Sponsors>();
             //List<Entities.Photos> lstPhotos = new List<Entities.Photos>();
@@ -43,20 +43,21 @@ namespace TCAssociationTool.Areas.User.Controllers
             Entities.AppInfo objAppInfo = new Entities.AppInfo();
             List<Entities.SponsorCategories> lstSponsorCategories = new List<Entities.SponsorCategories>();
             Entities.Flyers objFlyers = new Entities.Flyers();
-            List<Entities.CommitteeCategories> lstCommitteeCategories = new List<Entities.CommitteeCategories>();
+           // List<Entities.CommitteeCategories> lstCommitteeCategories = new List<Entities.CommitteeCategories>();
             List<Entities.InnerPageCategories> lstMenuItems = new List<Entities.InnerPageCategories>();
             List<Entities.InnerPageCategories> lstMenuItems2 = new List<Entities.InnerPageCategories>();
             List<Entities.InnerPageCategories> lstMenuItems3 = new List<Entities.InnerPageCategories>();
             List<Entities.InnerPageCategories> lstMenuItems4 = new List<Entities.InnerPageCategories>();
             List<Entities.InnerPageCategories> FooterMenuItems = new List<Entities.InnerPageCategories>();
-             List<Entities.Events> lstEvents = new List<Entities.Events>();
+            // List<Entities.Events> lstEvents = new List<Entities.Events>();
             Entities.InnerPages objSInnerPages = new Entities.InnerPages();
             List<Entities.Photos> lstPhotos = new List<Entities.Photos>();
 
             int status = 0;
             try
             {
-                _AppInfo.FEGetListInitialLoad(ref lstNews, ref objPInnerPages, ref lstWebsiteBanners, ref lstUpcommingEvents, ref objPHInnerPages, ref lstLatestEvents, ref lstSponsors, ref lstMediaSponsors, ref lstVideos, ref objAppInfo, ref lstSponsorCategories, ref objFlyers, ref objCInnerPages, ref lstMenuItems, ref lstMenuItems2, ref lstMenuItems3, ref lstMenuItems4, ref FooterMenuItems, ref objSInnerPages, ref lstCommitteeCategories, ref lstEvents, ref lstPhotos, ref status);
+                _AppInfo.FEGetListInitialLoad(ref lstNews, ref objPInnerPages, ref lstWebsiteBanners, ref objPHInnerPages, ref lstUpcommingEvents, ref lstSponsors, ref lstMediaSponsors, ref lstPhotos, ref lstVideos, ref objAppInfo, ref lstSponsorCategories, ref  objFlyers, ref lstMenuItems, ref lstMenuItems2, ref lstMenuItems3, ref lstMenuItems4, ref FooterMenuItems, ref status);
+
                 if (type == "" && ttype == "")
                 {
                     if (Request.Cookies["sval"] != null && Request.Cookies["sval"].Value == "home")
@@ -98,24 +99,24 @@ namespace TCAssociationTool.Areas.User.Controllers
             ViewBag.lstWebsiteBanners = lstWebsiteBanners;
             ViewBag.lstUpcommingEvents = lstUpcommingEvents;
             ViewBag.objPHInnerPages = objPHInnerPages;
-            ViewBag.objCInnerPages = objCInnerPages;
-            ViewBag.lstLatestEvents = lstLatestEvents;
+            //ViewBag.objCInnerPages = objCInnerPages;
+            //ViewBag.lstLatestEvents = lstLatestEvents;
             ViewBag.lstSponsors = lstSponsors;
             ViewBag.lstMediaSponsors = lstMediaSponsors;
+            ViewBag.lstPhotos = lstPhotos;
             ViewBag.lstVideos = lstVideos;
             ViewBag.objAppInfo = objAppInfo;
             ViewBag.lstSponsorCategories = lstSponsorCategories;
             ViewBag.objFlyers = objFlyers;
-            ViewBag.lstCommitteeCategories = lstCommitteeCategories;
+           // ViewBag.lstCommitteeCategories = lstCommitteeCategories;
             ViewBag.lstMenuItems = lstMenuItems;
             ViewBag.lstMenuItems2 = lstMenuItems2;
             ViewBag.lstMenuItems3 = lstMenuItems3;
             ViewBag.lstMenuItems4 = lstMenuItems4;
             ViewBag.FooterMenuItems = FooterMenuItems;
-            ViewBag.objSInnerPages = objSInnerPages;
-             ViewBag.lstEvents = lstEvents;
-             ViewBag.lstPhotos = lstPhotos;
-            ViewBag.str = str;
+           // ViewBag.objSInnerPages = objSInnerPages;
+            // ViewBag.lstEvents = lstEvents;
+              ViewBag.str = str;
             
             return View();
         }
@@ -150,10 +151,11 @@ namespace TCAssociationTool.Areas.User.Controllers
                             body.Replace("[TEmail]", objAppInfo.CompanyEmail);
                             body.Replace("[SiteName]", objAppInfo.SiteName);
 
-                            BLL.Common.SendMail(objNewsLetter.EmailId, "Thank you for Subscribing your Email Id - TLCA", body.ToString());
+                            //BLL.Common.SendMail(objNewsLetter.EmailId, "Thank you for Subscribing your Email Id - ATA", body.ToString());
                         }
                         string msg = "<h4 class=\"clearfix m0 l-h12 font16 white-t OpenSans b-p10 t-c\">Acknowledgment</h4><article class=\"newssuccess newssuccess l-h20 yellow-t t-b-p10 t-c upasa-inner-bg p5 OpenSans\">Added your mailId to mailing list successfully.</article>";
                         return Json(new { ok = true, data = true, message = msg });
+
                     }
                     else
                     {
@@ -216,8 +218,6 @@ namespace TCAssociationTool.Areas.User.Controllers
             {
                 _objMember = _Members.GetMemberFullDetailsByEmail(HttpContext.User.Identity.Name.ToString(), ref QStatus);
             }
-            ViewBag.Memberdetails = _objMember;
-            ViewBag.lstEvents = lstEvents;
             ViewBag.objAppInfo = objAppInfo;
             ViewBag.objInnerPageMap = objInnerPageMap;
             return View();
@@ -231,13 +231,6 @@ namespace TCAssociationTool.Areas.User.Controllers
                 Int64 EnquiryId = 0;
                 Int64 _status = _Enquiries.InsertEnquiries(objEnquiry, ref EnquiryId);
 
-                int status3 = 0;
-                string EventName = "";
-                if (objEnquiry.EventId != 0)
-                {
-                    objEvents = _Events.GetEventById(objEnquiry.EventId, EventName, ref lstEventRegistrationTypes, ref status3);
-                }
-
                 int status1 = 0;
                 Entities.AppInfo objAppInfo = _appinfo.GetAppInfoDetails(ref status1);
 
@@ -246,7 +239,7 @@ namespace TCAssociationTool.Areas.User.Controllers
                     if (objEnquiry.EventId != 0)
                     {
                         int status = 0;
-                        Entities.MailTemplates objTemplates = _MailTemplates.GetMailTemplateById("User Feedback - TLCA", 0, ref status);
+                        Entities.MailTemplates objTemplates = _MailTemplates.GetMailTemplateById("User Feedback - ATA", 0, ref status);
                         if (objTemplates != null)
                         {
                             StringBuilder body = new StringBuilder();
@@ -262,7 +255,7 @@ namespace TCAssociationTool.Areas.User.Controllers
                             body.Replace("[SiteName]", objAppInfo.SiteName);
                             body.Replace("[EventName]", (objEvents.EventName != null && objEvents.EventName != "") ? objEvents.EventName : "N/A");
 
-                            BLL.Common.SendMailwithfrom(objEnquiry.Email, objEvents.ContactEmail, "Thanks for your Comment - TLCA", body.ToString());
+                            //BLL.Common.SendMailwithfrom(objEnquiry.Email, objEvents.ContactEmail, "Thanks for your Comment - ATA", body.ToString());
                         }
                         int status2 = 0;
                         Entities.MailTemplates objTemplates1 = _MailTemplates.GetMailTemplateById("Feedback for Admin", 0, ref status2);
@@ -288,7 +281,7 @@ namespace TCAssociationTool.Areas.User.Controllers
                             //body.Replace("[Subjects]", (objEnquiriy.Subject != null && objEnquiriy.Subject != "") ? objEnquiriy.Subject : "N/A");
                             body.Replace("[EventName]", (objEvents.EventName != null && objEvents.EventName != "") ? objEvents.EventName : "N/A");
 
-                            BLL.Common.SendMailwithfrom(objEnquiry.Email, objEvents.ContactEmail, "You have a new Feedback from TLCA", body.ToString());
+                           // BLL.Common.SendMailwithfrom(objEnquiry.Email, objEvents.ContactEmail, "You have a new Feedback from ATA", body.ToString());
                         }
                         TempData["message"] = "<div class=\"success closable\">Sent your enquiry successfully</div>";
                         return RedirectToAction("Thankyou", "Home");
@@ -298,7 +291,7 @@ namespace TCAssociationTool.Areas.User.Controllers
                         if (objEnquiry.Field1 == "General Enquiry")
                         {
                             int status = 0;
-                            Entities.MailTemplates objTemplates = _MailTemplates.GetMailTemplateById("User Enquiry - TLCA", 0, ref status);
+                            Entities.MailTemplates objTemplates = _MailTemplates.GetMailTemplateById("User Enquiry - ATA", 0, ref status);
                             if (objTemplates != null)
                             {
                                 StringBuilder body = new StringBuilder();
@@ -313,7 +306,7 @@ namespace TCAssociationTool.Areas.User.Controllers
                                 body.Replace("[TEmail]", objAppInfo.CompanyEmail);
                                 body.Replace("[SiteName]", objAppInfo.SiteName);
 
-                                BLL.Common.SendMail(objEnquiry.Email, "Thank You for Contacting us - TLCA", body.ToString());
+                               // BLL.Common.SendMail(objEnquiry.Email, "Thank You for Contacting us - ATA", body.ToString());
                             }
                             int status2 = 0;
                             Entities.MailTemplates objTemplates1 = _MailTemplates.GetMailTemplateById("Enquiry for Admin", 0, ref status2);
@@ -338,198 +331,12 @@ namespace TCAssociationTool.Areas.User.Controllers
                                 body.Replace("[Subjects]", (objEnquiriy.Subject != null && objEnquiriy.Subject != "") ? objEnquiriy.Subject : "N/A");
                                 body.Replace("[Field1]", (objEnquiriy.Field1 != null && objEnquiriy.Field1 != "") ? objEnquiriy.Field1 : "N/A");
 
-                                BLL.Common.SendMail(objAppInfo.CompanyEmail, "You have a new Enquiry from TLCA", body.ToString());
+                               // BLL.Common.SendMail(objAppInfo.CompanyEmail, "You have a new Enquiry from ATA", body.ToString());
                             }
                         }
 
-                        if (objEnquiry.Field1 == "Cultural Enquiry")
-                        {
-                            int status = 0;
-                            Entities.MailTemplates objTemplates = _MailTemplates.GetMailTemplateById("User Enquiry - TLCA", 0, ref status);
-                            if (objTemplates != null)
-                            {
-                                StringBuilder body = new StringBuilder();
-                                body.Append(objTemplates.Description);
-                                body.Replace("[usersiteurl]", ConfigurationManager.AppSettings["baseurl"].ToString());
-                                body.Replace("[USERNAME]", BLL.Common.UppercaseFirst(objEnquiry.Name));
-                                body.Replace("[FBUrl]", objAppInfo.FacebookUrl);
-                                body.Replace("[TWUrl]", objAppInfo.TwitterUrl);
-                                body.Replace("[YUrl]", objAppInfo.YoutubeUrl);
-                                body.Replace("[GUrl]", objAppInfo.SupportEmail);
-                                body.Replace("[TPhone]", objAppInfo.CompanyPhone);
-                                body.Replace("[TEmail]", objAppInfo.CompanyEmail);
-                                body.Replace("[SiteName]", objAppInfo.SiteName);
-
-                                BLL.Common.SendMailwithfrom(objEnquiry.Email, objAppInfo.SecretaryEmail, "Thank You for Contacting us - TLCA", body.ToString());
-                            }
-                            int status2 = 0;
-                            Entities.MailTemplates objTemplates1 = _MailTemplates.GetMailTemplateById("Enquiry for Admin", 0, ref status2);
-                            if (objTemplates1 != null)
-                            {
-
-                                StringBuilder body = new StringBuilder();
-                                body.Append(objTemplates.Description);
-                                body.Replace("[usersiteurl]", ConfigurationManager.AppSettings["baseurl"].ToString());
-                                body.Replace("[USERNAME]", BLL.Common.UppercaseFirst(objEnquiry.Name));
-                                body.Replace("[FBUrl]", objAppInfo.FacebookUrl);
-                                body.Replace("[TWUrl]", objAppInfo.TwitterUrl);
-                                body.Replace("[YUrl]", objAppInfo.YoutubeUrl);
-                                body.Replace("[GUrl]", objAppInfo.SupportEmail);
-                                body.Replace("[TPhone]", objAppInfo.CompanyPhone);
-                                body.Replace("[TEmail]", objAppInfo.CompanyEmail);
-                                body.Replace("[SiteName]", objAppInfo.SiteName);
-                                body.Replace("[UserName]", BLL.Common.UppercaseFirst(objEnquiriy.Name));
-                                body.Replace("[Email]", objEnquiriy.Email);
-                                body.Replace("[Name]", BLL.Common.UppercaseFirst(objEnquiriy.Name));
-                                body.Replace("[Comments]", objEnquiriy.Description);
-                                body.Replace("[Subjects]", (objEnquiriy.Subject != null && objEnquiriy.Subject != "") ? objEnquiriy.Subject : "N/A");
-                                body.Replace("[Field1]", (objEnquiriy.Field1 != null && objEnquiriy.Field1 != "") ? objEnquiriy.Field1 : "N/A");
-
-                                BLL.Common.SendMail(objAppInfo.SecretaryEmail, "You have a new Enquiry from TLCA", body.ToString());
-                            }
-                        }
-
-                        if (objEnquiry.Field1 == "Membership Enquiry")
-                        {
-                            int status = 0;
-                            Entities.MailTemplates objTemplates = _MailTemplates.GetMailTemplateById("User Enquiry - TLCA", 0, ref status);
-                            if (objTemplates != null)
-                            {
-                                StringBuilder body = new StringBuilder();
-                                body.Append(objTemplates.Description);
-                                body.Replace("[usersiteurl]", ConfigurationManager.AppSettings["baseurl"].ToString());
-                                body.Replace("[USERNAME]", BLL.Common.UppercaseFirst(objEnquiry.Name));
-                                body.Replace("[FBUrl]", objAppInfo.FacebookUrl);
-                                body.Replace("[TWUrl]", objAppInfo.TwitterUrl);
-                                body.Replace("[YUrl]", objAppInfo.YoutubeUrl);
-                                body.Replace("[GUrl]", objAppInfo.SupportEmail);
-                                body.Replace("[TPhone]", objAppInfo.CompanyPhone);
-                                body.Replace("[TEmail]", objAppInfo.CompanyEmail);
-                                body.Replace("[SiteName]", objAppInfo.SiteName);
-
-                                BLL.Common.SendMailwithfrom(objEnquiry.Email, objAppInfo.SecretaryPhone, "Thank You for Contacting us - TLCA", body.ToString());
-                            }
-                            int status2 = 0;
-                            Entities.MailTemplates objTemplates1 = _MailTemplates.GetMailTemplateById("Enquiry for Admin", 0, ref status2);
-                            if (objTemplates1 != null)
-                            {
-
-                                StringBuilder body = new StringBuilder();
-                                body.Append(objTemplates.Description);
-                                body.Replace("[usersiteurl]", ConfigurationManager.AppSettings["baseurl"].ToString());
-                                body.Replace("[USERNAME]", BLL.Common.UppercaseFirst(objEnquiry.Name));
-                                body.Replace("[FBUrl]", objAppInfo.FacebookUrl);
-                                body.Replace("[TWUrl]", objAppInfo.TwitterUrl);
-                                body.Replace("[YUrl]", objAppInfo.YoutubeUrl);
-                                body.Replace("[GUrl]", objAppInfo.SupportEmail);
-                                body.Replace("[TPhone]", objAppInfo.CompanyPhone);
-                                body.Replace("[TEmail]", objAppInfo.CompanyEmail);
-                                body.Replace("[SiteName]", objAppInfo.SiteName);
-                                body.Replace("[UserName]", BLL.Common.UppercaseFirst(objEnquiriy.Name));
-                                body.Replace("[Email]", objEnquiriy.Email);
-                                body.Replace("[Name]", BLL.Common.UppercaseFirst(objEnquiriy.Name));
-                                body.Replace("[Comments]", objEnquiriy.Description);
-                                body.Replace("[Subjects]", (objEnquiriy.Subject != null && objEnquiriy.Subject != "") ? objEnquiriy.Subject : "N/A");
-                                body.Replace("[Field1]", (objEnquiriy.Field1 != null && objEnquiriy.Field1 != "") ? objEnquiriy.Field1 : "N/A");
-
-                                BLL.Common.SendMail(objAppInfo.SecretaryPhone, "You have a new Enquiry from TLCA", body.ToString());
-                            }
-                        }
-
-                        if (objEnquiry.Field1 == "Radio Enquiry")
-                        {
-                            int status = 0;
-                            Entities.MailTemplates objTemplates = _MailTemplates.GetMailTemplateById("User Enquiry - TLCA", 0, ref status);
-                            if (objTemplates != null)
-                            {
-                                StringBuilder body = new StringBuilder();
-                                body.Append(objTemplates.Description);
-                                body.Replace("[usersiteurl]", ConfigurationManager.AppSettings["baseurl"].ToString());
-                                body.Replace("[USERNAME]", BLL.Common.UppercaseFirst(objEnquiry.Name));
-                                body.Replace("[FBUrl]", objAppInfo.FacebookUrl);
-                                body.Replace("[TWUrl]", objAppInfo.TwitterUrl);
-                                body.Replace("[YUrl]", objAppInfo.YoutubeUrl);
-                                body.Replace("[GUrl]", objAppInfo.SupportEmail);
-                                body.Replace("[TPhone]", objAppInfo.CompanyPhone);
-                                body.Replace("[TEmail]", objAppInfo.CompanyEmail);
-                                body.Replace("[SiteName]", objAppInfo.SiteName);
-
-                                BLL.Common.SendMailwithfrom(objEnquiry.Email, objAppInfo.CustomerCareNumber, "Thank You for Contacting us - TLCA", body.ToString());
-                            }
-                            int status2 = 0;
-                            Entities.MailTemplates objTemplates1 = _MailTemplates.GetMailTemplateById("Enquiry for Admin", 0, ref status2);
-                            if (objTemplates1 != null)
-                            {
-
-                                StringBuilder body = new StringBuilder();
-                                body.Append(objTemplates.Description);
-                                body.Replace("[usersiteurl]", ConfigurationManager.AppSettings["baseurl"].ToString());
-                                body.Replace("[USERNAME]", BLL.Common.UppercaseFirst(objEnquiry.Name));
-                                body.Replace("[FBUrl]", objAppInfo.FacebookUrl);
-                                body.Replace("[TWUrl]", objAppInfo.TwitterUrl);
-                                body.Replace("[YUrl]", objAppInfo.YoutubeUrl);
-                                body.Replace("[GUrl]", objAppInfo.SupportEmail);
-                                body.Replace("[TPhone]", objAppInfo.CompanyPhone);
-                                body.Replace("[TEmail]", objAppInfo.CompanyEmail);
-                                body.Replace("[SiteName]", objAppInfo.SiteName);
-                                body.Replace("[UserName]", BLL.Common.UppercaseFirst(objEnquiriy.Name));
-                                body.Replace("[Email]", objEnquiriy.Email);
-                                body.Replace("[Name]", BLL.Common.UppercaseFirst(objEnquiriy.Name));
-                                body.Replace("[Comments]", objEnquiriy.Description);
-                                body.Replace("[Subjects]", (objEnquiriy.Subject != null && objEnquiriy.Subject != "") ? objEnquiriy.Subject : "N/A");
-                                body.Replace("[Field1]", (objEnquiriy.Field1 != null && objEnquiriy.Field1 != "") ? objEnquiriy.Field1 : "N/A");
-
-                                BLL.Common.SendMail(objAppInfo.CustomerCareNumber, "You have a new Enquiry from TLCA", body.ToString());
-                            }
-                        }
-                        if (objEnquiry.Field1 == "Feedback")
-                        {
-                            int status = 0;
-                            Entities.MailTemplates objTemplates = _MailTemplates.GetMailTemplateById("User Enquiry - TLCA", 0, ref status);
-                            if (objTemplates != null)
-                            {
-                                StringBuilder body = new StringBuilder();
-                                body.Append(objTemplates.Description);
-                                body.Replace("[usersiteurl]", ConfigurationManager.AppSettings["baseurl"].ToString());
-                                body.Replace("[USERNAME]", BLL.Common.UppercaseFirst(objEnquiry.Name));
-                                body.Replace("[FBUrl]", objAppInfo.FacebookUrl);
-                                body.Replace("[TWUrl]", objAppInfo.TwitterUrl);
-                                body.Replace("[YUrl]", objAppInfo.YoutubeUrl);
-                                body.Replace("[GUrl]", objAppInfo.SupportEmail);
-                                body.Replace("[TPhone]", objAppInfo.CompanyPhone);
-                                body.Replace("[TEmail]", objAppInfo.CompanyEmail);
-                                body.Replace("[SiteName]", objAppInfo.SiteName);
-
-                                BLL.Common.SendMailwithfrom(objEnquiry.Email, objAppInfo.CustomerCareNumber, "Thank You for Contacting us - TLCA", body.ToString());
-                            }
-                            int status2 = 0;
-                            Entities.MailTemplates objTemplates1 = _MailTemplates.GetMailTemplateById("Enquiry for Admin", 0, ref status2);
-                            if (objTemplates1 != null)
-                            {
-
-                                StringBuilder body = new StringBuilder();
-                                body.Append(objTemplates.Description);
-                                body.Replace("[usersiteurl]", ConfigurationManager.AppSettings["baseurl"].ToString());
-                                body.Replace("[USERNAME]", BLL.Common.UppercaseFirst(objEnquiry.Name));
-                                body.Replace("[FBUrl]", objAppInfo.FacebookUrl);
-                                body.Replace("[TWUrl]", objAppInfo.TwitterUrl);
-                                body.Replace("[YUrl]", objAppInfo.YoutubeUrl);
-                                body.Replace("[GUrl]", objAppInfo.SupportEmail);
-                                body.Replace("[TPhone]", objAppInfo.CompanyPhone);
-                                body.Replace("[TEmail]", objAppInfo.CompanyEmail);
-                                body.Replace("[SiteName]", objAppInfo.SiteName);
-                                body.Replace("[UserName]", BLL.Common.UppercaseFirst(objEnquiriy.Name));
-                                body.Replace("[Email]", objEnquiriy.Email);
-                                body.Replace("[Name]", BLL.Common.UppercaseFirst(objEnquiriy.Name));
-                                body.Replace("[Comments]", objEnquiriy.Description);
-                                body.Replace("[Subjects]", (objEnquiriy.Subject != null && objEnquiriy.Subject != "") ? objEnquiriy.Subject : "N/A");
-                                body.Replace("[Field1]", (objEnquiriy.Field1 != null && objEnquiriy.Field1 != "") ? objEnquiriy.Field1 : "N/A");
-
-                                BLL.Common.SendMail(objAppInfo.CustomerCareNumber, "You have a new Enquiry from TLCA", body.ToString());
-                            }
-                        }
-                        TempData["message"] = "<div class=\"success closable\">Sent your enquiry successfully</div>";
-                        return RedirectToAction("Thankyou", "Home");
+                       TempData["message"] = "<div class=\"success closable\">Sent your enquiry successfully</div>";
+                       return RedirectToAction("Thankyou", "Home");
 
                     }
                 }

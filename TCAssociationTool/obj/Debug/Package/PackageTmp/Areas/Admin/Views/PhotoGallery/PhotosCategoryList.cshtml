@@ -1,0 +1,96 @@
+﻿@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+    List<TCAssociationTool.Entities.PhotoCategories> lstPhotoCategories = ViewBag.lstPhotoCategories;
+
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    }       
+}
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () { 
+        $('#MWebsite').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+
+    })
+    </script>
+
+       @if (Total == -1)
+       {
+    <div class="norecords">Sorry failed processing your request.</div> 
+       }
+else
+{
+           <table width="100%" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th width="6%" align="center">S.No.</th>
+                        <th><a onclick="javascript:sortresult('CategoryName');" class="white-t-u">Gallery Name @if (sortcolumn == "CategoryName")
+                                                                                                                {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</th>
+                        <th><a onclick="javascript:sortresult('Year');" class="white-t-u">Year @if (sortcolumn == "Year")
+                                                                                               {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</th>
+                        <th width="20%">
+                            <a onclick="javascript:sortresult('UpdatedTime');" class="white-t-u">Posted Date @if (sortcolumn == "UpdatedTime")
+                                                                                                             {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }
+                        </th>
+                        <th width="15%">#</th>
+                        <th width="9%">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (lstPhotoCategories.Count != 0)
+                    {
+                        foreach (var item in lstPhotoCategories)
+                        { 
+                        <tr>
+                            <td width="47" valign="top">@item.RId</td>
+                            <td style="text-align: left">@item.CategoryName</td>
+                             <td style="text-align: left">@item.Year</td>
+                            <td style="text-align: left">@item.UpdatedTime.ToString("dd-MM-yyyy")</td>
+                            <td><a href="@Url.Action("Photos", "PhotoGallery", new { PhotoCategoryId = item.PhotoCategoryId })">Photos</a></td>
+                            <td>
+                                <a title="Edit"onclick="PhotoCategoryEdit(@item.PhotoCategoryId);" ><i class="fa fa-pencil-square-o"></i></a>
+                                @if (userRole.Contains("SuperAdmin"))
+                    {
+                                 if (item.PhotosCount == 0)
+                                 {
+                                <a title="Delete" id="10" onclick="javascript:Delete(@item.PhotoCategoryId);" class="scdelete"><i class="fa fa-trash-o"></i></a>
+                                 }
+
+                                 else
+                                 {
+                            <a title="This category have @item.PhotosCount Photos" class="sepV_a disable-alpha"><i class="fa fa-trash-o"></i></a>
+                                 }
+                                 }
+                                @*<a title="Delete" class="sepV_a disable-alpha"><i class="icon-trash"></i></a>*@
+                            </td>
+                        </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="norecords" colspan="6">No Gallery Found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.pageno, "pagination pagination-centered"))

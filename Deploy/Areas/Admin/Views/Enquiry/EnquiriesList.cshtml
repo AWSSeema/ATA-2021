@@ -1,0 +1,150 @@
+﻿@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+
+    List<TCAssociationTool.Entities.Enquiries> lstEnquiries = ViewBag.lstEnquiries;
+
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    }
+
+    var EventId = ViewBag.EventId;
+}
+
+<script type="text/javascript" src="colorbox/jquery.colorbox.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("a[rel]").colorbox({ transition: "fade" });
+        $(".viewdetails").colorbox({ iframe: true, innerWidth: 600, innerHeight: 400 });
+    });
+</script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('#MWebsite').addClass('active');
+    });
+
+
+       function EnquiryStatus(EnquiryId) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("EnquiryStatus", "Enquiry")',  // the URL of the controller action method
+                data: { EnquiryId: EnquiryId }, // optional data
+                success: function (result) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    EnquiryBind(1);
+                },
+                error: function (req, status, error) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            });
+    }
+
+</script>
+
+@if (Total == -1)
+{
+    <div class="norecords">Sorry failed processing your request.</div> 
+}
+else
+{
+    <table width="100%" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th width="4%" style="text-align: center;">S.No.</th>
+                <th><a onclick="javascript:sortresult('FirstName');" class="white-t-u">Name @if (sortcolumn == "FirstName")
+                                                                                            {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a></th>
+                <th width="20%"><a onclick="javascript:sortresult('Email');" class="white-t-u">Email @if (sortcolumn == "Email")
+                                                                                                     {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a></th>
+                <th width="15%">Enquiry Type</th>
+               
+                <th width="12%"><a onclick="javascript:sortresult('UpdatedDate');" class="white-t-u">Posted Date @if (sortcolumn == "UpdatedDate")
+                                                                                                                 {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a></th>
+
+                @*<th width="11%"><a onclick="javascript:sortresult('IsActive');" class="white-t-u">Status @if (sortcolumn == "IsActive")
+                                                                                                         {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a></th>*@
+
+                <th width="7%">Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @if (lstEnquiries.Count != 0)
+            {
+                foreach (var item in lstEnquiries)
+                { 
+                <tr>
+                    <td style="text-align: center;">@item.RId</td>
+                    <td class="t-t-c">@item.Name</td>
+
+                    <td>@item.Email</td>
+                    <td>@(item.Field1 == null ? "N/A" : item.Field1)</td>
+                    <td>@item.InsertedTime.ToString("MM/dd/yyyy")</td>
+                    @*<td>
+                        @{
+                    var isactive = "";
+                    var active = "";
+                    var disable = "";
+                    if (item.IsActive == true)
+                    {
+                        isactive = "Completed";
+                        disable = "style=\"cursor: pointer;\" onclick=\"javascript:EnquiryStatus(" + item.EnquiryId + ");\"";
+                    }
+                    else
+                    {
+                        isactive = "Pending";
+                        active = "style=\"cursor: pointer;\" onclick=\"javascript:EnquiryStatus(" + item.EnquiryId + ");\"";
+                    }
+                            <div class="admin-active">@isactive
+                                <ul>
+                                    <li><a @Html.Raw(active) >Completed</a></li>
+                                    <li><a @Html.Raw(disable) >Pending</a></li>
+                                </ul>
+                            </div>      
+                        }</td>*@
+                    <td>
+                        @*<a  href="@Url.Action("EditEnquiry", "Enquiries", new { EnquiryId = item.EnquiryId })"><i class="fa fa-pencil-square-o"></i></a>*@
+                        <a  href="@Url.Action("ViewEnquiry", "Enquiry", new { EnquiryId = item.EnquiryId })" ><i class="fa fa-eye"></i></a>
+                        @if (userRole.Contains("SuperAdmin"))
+                        {
+                            <a class="enquirydelete" onclick="javascript:Delete(@item.EnquiryId);" id="66" title="Delete"><i class="fa fa-trash-o"></i></a>
+                        }
+                    </td>
+                </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td class="norecords" colspan="8">No Enquiries Found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.pageno, "pagination pagination-centered"))
+
+

@@ -1,0 +1,131 @@
+﻿@{
+    ViewBag.Title = "SendMail";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+}
+
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#MSendmail').addClass('active');
+        $('#wSendmail').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+
+    function Validate() {
+        if ($('#EmailFrom').val() == '') { document.getElementsByName('EmailFrom')[0].placeholder = 'Required'; $('#EmailFrom').focus().addClass("validate"); return false; } else { $('#EmailFrom').focus().removeClass("validate"); }
+        if ($('#EmailTo').val() == '') { document.getElementsByName('EmailTo')[0].placeholder = 'Required'; $('#EmailTo').focus().addClass("validate"); return false; } else { $('#EmailTo').focus().removeClass("validate"); }
+        if (!Common.CheckEmail($('#EmailTo').val())) { $('#EmailTo').val(''); document.getElementsByName('EmailTo')[0].placeholder = 'Please enter valid email id.'; $('#EmailTo').focus().addClass("validate"); return false; } else { $('#EmailTo').focus().removeClass("validate"); }
+        if ($('#MailTemplateId').val() == '') { document.getElementsByName('MailTemplateId')[0].placeholder = 'Required'; $('#MailTemplateId').focus().addClass("validate"); return false; } else { $('#MailTemplateId').focus().removeClass("validate"); }
+        if ($('#Subject').val() == '') { document.getElementsByName('Subject')[0].placeholder = 'Required'; $('#Subject').focus().addClass("validate"); return false; } else { $('#Subject').focus().removeClass("validate"); }
+        if (CKEDITOR.instances.description.getData() == "") { $('#description').focus(); $('#spandescription').html('Required.'); return false; } else { $('#description').val(CKEDITOR.instances.description.getData()); $('#spandescription').html(''); }
+        return true;
+    }
+
+    function ResetValidateClass() {
+        $('#EmailFrom').removeClass("validate");
+        $('#EmailTo').removeClass("validate");
+        $('#MailTemplateId').removeClass("validate");
+        $('#Subject').removeClass("validate");
+    }
+
+    function MailTemplate() {
+        $.ajax({
+            url: '@Url.Action("MailTemplate", "Home")',
+            type: 'POST',
+            data: { MailTemplateName: $('#MailTemplateName').val() },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objMailTemplate = result.data;
+                    $('#description').val(objMailTemplate.Description);
+                    CKEDITOR.instances.description.setData(objMailTemplate.Description)
+                }
+                else {
+                    alert(result.data);
+                }
+            }
+        });
+    }
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Send Mail</h1>
+    <ol class="breadcrumb">        
+        <li class="active"><i class="fa fa-envelope-o"></i> Send Mail</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <!-- /.box-header -->
+        <div class="box-header">
+            <h3 class="box-title dis-in">Send Mail</h3>
+        </div>
+        @using (Html.BeginForm("Send", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="box-body">
+                <div class="row validation">
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Email From</label><br />
+
+                        <span class="b-p5"><b>@System.Configuration.ConfigurationManager.AppSettings["adminemailid"]</b></span>
+
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Email To <span class="red-t">*</span></label>
+                        <input type="text" placeholder="Email To"  class="form-control" value="@ViewBag.Email" name="EmailTo" id="EmailTo" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+                        <span class="clearfix">If multiple mails, separate by (,) comma</span>
+                    </div>
+                    <div class="col-xs-12 col-lg-5 col-sm-6">
+                        <label>Subject <span class="red-t">*</span></label>
+                        <input type="text" placeholder="Subject" class="form-control" name="Subject" id="Subject" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+                    </div>
+                    @*<div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Choose Notification</label>
+                        <select onchange="MailTemplate();" class="form-control" name="MailTemplateName" id="MailTemplateName">
+                            <option value="">--Select--</option>
+                            @if (lstMailTemplate != null)
+                            {
+                                foreach (var item in lstMailTemplate)
+                                { 
+                                <option @(ViewBag.TemplateName == item.Heading ? "selected=selected" : null) value="@item.Heading">@item.Heading</option>
+                                }
+                            }
+                        </select>
+                    </div>*@
+                </div>
+            </div>
+            <div class='box-body pad'>
+                <label>Description</label>
+                <textarea rows="10" name="Description" id="description" cols="80" style="visibility: hidden; display: none;"></textarea>
+                <br />
+                <span id="spandescription" class="field-validation-error"></span>
+                <script type="text/javascript">
+                    CKEDITOR.replace('description', { contentsCss: '../css/editor.css' });
+                </script>
+            </div>
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body text-right">
+                    <input type="submit" onclick="return Validate();" class="btn btn-primary" value="Submit">
+                    <a class="btn btn-info" href="javascript:history.back()">Cancel</a>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box-body -->
+        }
+    </div>
+    <!-- /.content -->
+</div>

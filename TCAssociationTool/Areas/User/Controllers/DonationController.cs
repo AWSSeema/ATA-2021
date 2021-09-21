@@ -28,6 +28,11 @@ namespace TCAssociationTool.Areas.User.Controllers
         Entities.Members _objMember = new Entities.Members();
         TCAssociationTool.BLL.AppInfo _appinfo = new BLL.AppInfo();
 
+
+        public string action1 = string.Empty;
+        public string hash1 = string.Empty;
+        public string txnid1 = string.Empty;
+
         public ActionResult Index()
         {
             List<Entities.DonationCategories> lstDonationCategories = new List<Entities.DonationCategories>();
@@ -64,36 +69,67 @@ namespace TCAssociationTool.Areas.User.Controllers
                 Int64 status1 = _Donors.InsertDonors(objdonar, ref DonarId);
                 if (DonarId != 0)
                 {
-                    int status = 0;
-                    Entities.PaymentSettings objPaymentSettings = _paymentSettings.GetPaymentSettingsDetails(0, "PayPal", ref status);                     
-                    if (objPaymentSettings != null)
+                    if (objdonar.PaymentMethod == "CreditCard")
                     {
-                        List<PayByPayPal.CartItems> lstCartItems = new List<PayByPayPal.CartItems>();
+                        int status = 0;
+                        Entities.PaymentSettings objPaymentSettings = _paymentSettings.GetPaymentSettingsDetails(0, "PayPal", ref status);
+                        if (objPaymentSettings != null)
+                        {
+                            List<PayByPayPal.CartItems> lstCartItems = new List<PayByPayPal.CartItems>();
 
-                        PayByPayPal.CartItems objCartItems = new PayByPayPal.CartItems();
-                        objCartItems.ItemName = "Donation";
-                        objCartItems.ItemPrice = objdonar.Amount;
-                        lstCartItems.Add(objCartItems);
+                            PayByPayPal.CartItems objCartItems = new PayByPayPal.CartItems();
+                            objCartItems.ItemName = "Donation";
+                            objCartItems.ItemPrice = objdonar.Amount;
+                            lstCartItems.Add(objCartItems);
 
-                        objPayByPayPal.lstCartItems = lstCartItems;
+                            objPayByPayPal.lstCartItems = lstCartItems;
 
-                        PayByPayPal.PaymentSettings objpaymentsettings = new PayByPayPal.PaymentSettings();
-                        objpaymentsettings.BusinessEmail = objPaymentSettings.PaymentEmail;
-                        objpaymentsettings.BusinessPassword = objPaymentSettings.PaymentPassword;
-                        objpaymentsettings.CurrencyCode = objPaymentSettings.CurrencyCode;
-                        objpaymentsettings.NotifyUrl = ConfigurationManager.AppSettings["baseurl"] + "donation/ipn.html" + "?DonarId=" + DonarId;
-                        objpaymentsettings.PaymentUrl = objPaymentSettings.PaymentUrl;
-                        objpaymentsettings.ReturnUrl = ConfigurationManager.AppSettings["baseurl"].ToString() + "donation-acknowledgement.html?DonarId=" + DonarId;
-                        objpaymentsettings.Cmd = "_cart";
-                        objpaymentsettings.PDTToken = objPaymentSettings.TokenNo;
-                        objpaymentsettings.CBT = "Click here to complete your transaction";
-                        objpaymentsettings.CancelUrl = ConfigurationManager.AppSettings["baseurl"] + "index.html";
+                            PayByPayPal.PaymentSettings objpaymentsettings = new PayByPayPal.PaymentSettings();
+                            objpaymentsettings.BusinessEmail = objPaymentSettings.PaymentEmail;
+                            objpaymentsettings.BusinessPassword = objPaymentSettings.PaymentPassword;
+                            objpaymentsettings.CurrencyCode = objPaymentSettings.CurrencyCode;
+                            objpaymentsettings.NotifyUrl = ConfigurationManager.AppSettings["baseurl"] + "donation/ipn.html" + "?DonarId=" + DonarId;
+                            objpaymentsettings.PaymentUrl = objPaymentSettings.PaymentUrl;
+                            objpaymentsettings.ReturnUrl = ConfigurationManager.AppSettings["baseurl"].ToString() + "donation-acknowledgement.html?DonarId=" + DonarId;
+                            objpaymentsettings.Cmd = "_cart";
+                            objpaymentsettings.PDTToken = objPaymentSettings.TokenNo;
+                            objpaymentsettings.CBT = "Click here to complete your transaction";
+                            objpaymentsettings.CancelUrl = ConfigurationManager.AppSettings["baseurl"] + "index.html";
 
-                        objPayByPayPal.objPaymentSettings = objpaymentsettings;
+                            objPayByPayPal.objPaymentSettings = objpaymentsettings;
 
-                        string returnurl = objPayByPayPal.CheckOut();
+                            string returnurl = objPayByPayPal.CheckOut();
 
-                        return new RedirectResult(returnurl);
+                            return new RedirectResult(returnurl);
+                        }
+                    }
+                    else if (objdonar.PaymentMethod == "CreditCard")
+                    {
+                        action1 = ConfigurationManager.AppSettings["PaymentUrl"];
+                        ViewBag.action1 = action1;
+                        //ViewBag.hash = hash1;
+                        //ViewBag.txnid = txnid1;
+                        //ViewBag.key = ConfigurationManager.AppSettings["TokenNo"];
+                        ViewBag.firstname = objdonar.FirstName.Trim();
+                        ViewBag.lastname = objdonar.LastName.Trim();
+                        ViewBag.email = objdonar.Email.Trim();
+                        ViewBag.phone = (objdonar.PhoneNo != null ? objdonar.PhoneNo + " " + objdonar.PhoneNo.Trim() : objdonar.PhoneNo);
+                        ViewBag.surl = ConfigurationManager.AppSettings["baseurl"].ToString() + "donation-acknowledgement.html?DonarId=" + DonarId + "&PaymentMethod=" + objdonar.PaymentMethod;
+                        ViewBag.furl = ConfigurationManager.AppSettings["baseurl"];
+                        ViewBag.service_provider = "first_data";
+                        ViewBag.address = objdonar.Address;
+                        ViewBag.city = objdonar.City;
+                        ViewBag.state = objdonar.State;
+                        ViewBag.CardNumber = objdonar.CardNumber;
+                        ViewBag.cardtype = objdonar.CardType;
+                        ViewBag.holderfirstname = objdonar.CardHolderFirstName;
+                        ViewBag.holderlastname = objdonar.CardHolderLastName;
+                        ViewBag.CSVMonth = objdonar.CSVMonth;
+                        ViewBag.CSVYear = objdonar.CSVYear;
+                        ViewBag.Cvv = objdonar.Cvv;
+
+
+                        ViewBag.amount = objdonar.Amount;
                     }
                 }
             }
@@ -291,6 +327,110 @@ namespace TCAssociationTool.Areas.User.Controllers
                         }
                         return RedirectToAction("Thankyou", "Donation");
                     }
+                }
+                else if (PaymentMethod == "CreditCard")
+                {
+                    Entities.AppInfo objAppInfo = _appinfo.GetAppInfoDetails(ref status);
+
+                    objDonors = _Donors.GetDonorsById(DonarId, ref result1);
+
+                     if (objDonors.FirstName != null)
+                        {
+                            Username = objDonors.FirstName + " " + objDonors.LastName;
+                        }
+                        else
+                        {
+                            Username = HttpContext.User.Identity.Name.ToString();
+                        }
+                     if (Username != null)
+                     {
+                         objDonors.Amount = Convert.ToDecimal(objDonors.Amount);
+                         objDonors.PaymentMethod = "PayPal";
+                         objDonors.TransactionId = "sale";
+                         objDonors.PaymentStatus = "Completed";
+                         objDonors.DonorId = objDonors.DonorId;
+                         objDonors.OrderDate = DateTime.UtcNow;
+                         objDonors.UpdatedBy = Username;
+
+                         result = _Donors.UpdateDonors(objDonors);
+                         if (result == 1)
+                         {
+                             ViewBag.PayerEmail = objDonors.Email;
+                             ViewBag.UserName = Username;
+                             ViewBag.ReceiverEmail = "info@ataworld.org";
+                             ViewBag.AddressCity = objDonors.City;                            
+                             ViewBag.Address1 = objDonors.Address;
+                             ViewBag.AddressState = objDonors.State;
+                             ViewBag.Address2 = objDonors.Address2;
+                             ViewBag.AddressZip = objDonors.ZipCode;
+                             ViewBag.GrossTotal = objDonors.Amount;
+                             ViewBag.PaymentStatus = "Completed";
+                             ViewBag.TransactionId = "sale";
+                             ViewBag.DonorId = DonarId;
+                             DateTime paydate = DateTime.UtcNow;
+                             DateTime Date = paydate = DateTime.UtcNow;
+                             ViewBag.PaymentDate = Date.ToString("MM/dd/yyyy");
+                         }
+
+                         int _status = 0;
+                         Entities.MailTemplates objTemplates = _MailTemplates.GetMailTemplateById("Thank you for giving donation", 0, ref _status);
+                         if (objTemplates != null)
+                         {
+                             StringBuilder body = new StringBuilder();
+                             body.Append(objTemplates.Description);
+                             body.Replace("[usersiteurl]", ConfigurationManager.AppSettings["baseurl"].ToString());
+                             body.Replace("[UserName]", BLL.Common.UppercaseFirst(objDonors.FirstName + " " + objDonors.LastName));
+                             body.Replace("[FirstName]", objDonors.FirstName);
+                             body.Replace("[LastName]", objDonors.LastName);
+                             body.Replace("[Email]", objDonors.Email);
+                             body.Replace("[PhoneNo]", objDonors.PhoneNo);
+                             body.Replace("[Address]", (objDonors.Address == "" ? "N/A" : objDonors.Address));
+                             body.Replace("[DonationCause]", objDonors.DonationCause);
+                             body.Replace("[DonationProgram]", objDonors.DonationProgram);
+                             body.Replace("[DonationAmount]", objDonors.Amount.ToString());
+                             body.Replace("[TransactionId]", objDonors.TransactionId);
+                             body.Replace("[PaymentStatus]", objDonors.PaymentStatus);
+                             body.Replace("[PaymentDate]", objDonors.OrderDate.ToShortDateString());
+                             body.Replace("[FBUrl]", objAppInfo.FacebookUrl);
+                             body.Replace("[TWUrl]", objAppInfo.TwitterUrl);
+                             body.Replace("[YUrl]", objAppInfo.YoutubeUrl);
+                             body.Replace("[GUrl]", objAppInfo.SupportEmail);
+                             body.Replace("[TPhone]", objAppInfo.CompanyPhone);
+                             body.Replace("[TEmail]", objAppInfo.CompanyEmail);
+                             body.Replace("[ApplicationName]", objAppInfo.SiteName);
+                             body.Replace("[SiteName]", objAppInfo.SiteName);
+                             BLL.Common.SendMail(objDonors.Email, objTemplates.Subject, body.ToString());
+                         }
+                         Entities.MailTemplates objTemplates1 = _MailTemplates.GetMailTemplateById("Donate for Admin", 0, ref _status);
+                         if (objTemplates1 != null)
+                         {
+                             StringBuilder body1 = new StringBuilder();
+                             body1.Append(objTemplates1.Description);
+                             body1.Replace("[usersiteurl]", ConfigurationManager.AppSettings["baseurl"].ToString());
+                             body1.Replace("[UserName]", BLL.Common.UppercaseFirst(objDonors.FirstName + " " + objDonors.LastName));
+                             body1.Replace("[FirstName]", objDonors.FirstName);
+                             body1.Replace("[LastName]", objDonors.LastName);
+                             body1.Replace("[Email]", objDonors.Email);
+                             body1.Replace("[PhoneNo]", objDonors.PhoneNo);
+                             body1.Replace("[Address]", (objDonors.Address == "" ? "N/A" : objDonors.Address));
+                             body1.Replace("[DonationCause]", objDonors.DonationCause);
+                             body1.Replace("[DonationProgram]", objDonors.DonationProgram);
+                             body1.Replace("[DonationAmount]", objDonors.Amount.ToString());
+                             body1.Replace("[TransactionId]", objDonors.TransactionId);
+                             body1.Replace("[PaymentStatus]", objDonors.PaymentStatus);
+                             body1.Replace("[PaymentDate]", objDonors.OrderDate.ToShortDateString());
+                             body1.Replace("[FBUrl]", objAppInfo.FacebookUrl);
+                             body1.Replace("[TWUrl]", objAppInfo.TwitterUrl);
+                             body1.Replace("[YUrl]", objAppInfo.YoutubeUrl);
+                             body1.Replace("[GUrl]", objAppInfo.SupportEmail);
+                             body1.Replace("[TPhone]", objAppInfo.CompanyPhone);
+                             body1.Replace("[TEmail]", objAppInfo.CompanyEmail);
+                             body1.Replace("[ApplicationName]", objAppInfo.SiteName);
+                             body1.Replace("[SiteName]", objAppInfo.SiteName);
+
+                             BLL.Common.SendMail(objAppInfo.CompanyEmail, objTemplates1.Subject, body1.ToString());
+                         }
+                     }
                 }
             }
             catch

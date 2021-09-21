@@ -1,0 +1,69 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+    ViewBag.Title = "Acknowledgement - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+
+    DateTime Date = ViewBag.Date;
+}
+
+<article class="clearfix t-m0 l-h28 t-t-u Impact font26 evesec-tex letespa1 b-m25 tabhorizontal-b-m10 mobile-b-m5">Acknowledgement<i class="inertitsid-img l-m10 mobile-hide">&nbsp;</i></article>
+ <article class="clearfix p10 t-p0"> 
+<article class="clearfix dk-gray-bg flower-border-new"> 
+<article class="clearfix l-r-p30 t-b-p40 tabhorizontal-p15 tabhorizontal-minheight0" style="min-height:900px;"> 
+<article class="clearfix tbp7 mobilev-t-p5 tablet-t-p5">
+                 <article class="clearfix l-r-m-auto t-c t-p0 b-p20 tabhorizontal-t-b-p30 mobile-t-b-p15" style="max-width:800px;">
+<img src="Content/User/images/thankyou2.png" alt="Thank You For Registration" title="Thank You" width="210" height="209" border="0" /></article>
+              <h1 class="font30 blue-t t-p20 t-b-m0 Roboto-Medium b-p10 tablet-font28 mobile-font22 mobile-t-m10 tablet-t-m15 mobile-b-p0 t-c l-h18">Thanks for Event Registration !!!</h1>
+        <h3 align="center" class="black-t font18 l-h30 Roboto-Regular b-m0 tablet-font18 mobilev-font16">You will receive a confirmation email with the details. For more information or if you have any questions, please send an email to <a href="mailto:@System.Configuration.ConfigurationManager.AppSettings["websiteemail"]" class="dark-t">@System.Configuration.ConfigurationManager.AppSettings["websiteemail"]</a></h3>
+        <article class="clearfix dashborder-b border-b l-r-m-auto" style="max-width:750px;">&nbsp;</article>
+        
+       <article style="max-width:500px;" class="clearfix t-p5 l-r-m-auto">
+          <article class="sm-row font14">
+            <article class="sm-6 mobilev-t-c b-p10 mobile-b-p0 tablet-b-p5">
+              <h3 class="black-t font18 t-m0 b-m5 t-p5 poppins-regular">Your Details</h3>
+               <p>
+                            <span class="t-t-c">@ViewBag.UserName</span>
+                            <br>
+                            Ph: @ViewBag.UserPhone<br>
+                            <a href="mailto:@ViewBag.UserEmail" class="dark-t">@ViewBag.UserEmail</a>
+                        </p></article>
+            <article class="sm-6 mobilev-t-c">
+                <h3 class="black-t font18 t-m0 b-m5 t-p5 poppins-regular">Payment Received By</h3>
+                @System.Configuration.ConfigurationManager.AppSettings["ApplicationName"]<br>
+                <a class="red-t" href="mailto:@System.Configuration.ConfigurationManager.AppSettings["websiteemail"]">@System.Configuration.ConfigurationManager.AppSettings["websiteemail"]</a>
+            </article>
+          </article>
+        </article>
+         <article class="clearfix dashborder-t border-t t-m5 tablet-t-m5 l-r-m-auto t-p10" style="max-width:700px;"> 
+          <article class="clearfix t-p0 border grayborder table-responsive t-m10">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" class="table table-hover table-bordered poppins-regular gray-t font13 m0">
+               <tbody>
+                                        <tr class="white-t">
+                                     <th width="16.6%" style="background-color:#ff7e00; color:#FFFFFF; text-align:center;" >Date &amp; Time</th>
+                    <th width="23.7%" style="background-color:#ff7e00; color:#FFFFFF; text-align:center;">Transaction Details</th>
+                    <th width="28.2%" style="background-color:#ff7e00; color:#FFFFFF; text-align:center;">Summery</th>
+                    <th width="16.9%" style="background-color:#ff7e00; color:#FFFFFF; text-align:center;">Status</th>
+                    <th width="14.6%" style="background-color:#ff7e00; color:#FFFFFF; text-align:center;">Total</th>
+                                        </tr>
+                                        <tr>
+                                            <td width="16.6%" style="text-align:center;">@ViewBag.Date.ToString("MM/dd/yyyy")</td>
+                                            <td width="23.7%" style="text-align:center;">@ViewBag.TransactionId</td>
+                                            <td width="28.2%" style="text-align:center;">
+                                                Registration for the
+                                                UPASA
+                                            </td>
+                                            <td width="16.9%" style="text-align:center;">@ViewBag.PaymentStatus</td>
+                                            <td width="14.6%" style="text-align:center;"><span class="pnk-t">$ @ViewBag.GrossTotal</span></td>
+
+                                        </tr>
+                                    </tbody>
+            </table>
+          </article> 
+          </article>
+     <article class="clearfix t-p30 mobile-t-p20 message t-c">
+                 <a style="background-image:linear-gradient(90deg, #f53257 0%, #b273f3 100%); border-radius:4px; padding:14px 35px; color:#fff;" href="index.html" class="Raleway-Medium font14 t-t-u tabhorizontal-dis-in"><span class="v-align-m font22">BACK TO HOME</span></a>
+            </article>
+        </article>
+</article>     
+</article>
+</article>
+   

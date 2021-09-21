@@ -1,0 +1,184 @@
+﻿@{
+    ViewBag.Title = "Add";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    var objPaymentSettings = (TCAssociationTool.Entities.PaymentSettings)ViewBag.objPaymentSettings;
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#Settings').addClass('active');
+        $('#wPaymentSettings').addClass('active');
+    });
+
+    function ValidateApplication() {
+        if ($('#ddlPaymentMethod').val() == '') { $('#ddlPaymentMethod').focus().addClass('validate'); return false; } else { $('#ddlPaymentMethod').removeClass('validate'); }
+        if ($('#AccountType').val() == '') { $('#AccountType').focus().addClass('validate'); return false; } else { $('#AccountType').removeClass('validate');}
+        if ($('#PaymentUrl').val() == '') { $('#PaymentUrl').focus().addClass('validate'); return false; } else { $('#PaymentUrl').removeClass('validate'); }
+        if ($('#PaymentEmail').val() == '') { $('#PaymentEmail').addClass('validate').focus(); return false; } else { $('#PaymentEmail').removeClass('validate'); }
+        if (!Common.CheckEmail($('#PaymentEmail').val())) { $('#PaymentEmail').val('').attr('placeholder', 'Enter valid email').focus().addClass('validate'); return false; } else { $('#PaymentEmail').removeClass('validate'); }
+        if ($('#PaymentPassword').val() == '') { $('#PaymentPassword').focus().addClass('validate'); return false; } else { $('#PaymentPassword').removeClass('validate'); }
+        if ($('#ddlCurrencyCode').val() == '') { $('#ddlCurrencyCode').focus().addClass('validate'); return false; } else { $('#ddlCurrencyCode').removeClass('validate'); }
+        if ($('#SuccessUrl').val() == '') { $('#SuccessUrl').focus().addClass('validate'); return false; } else { $('#SuccessUrl').removeClass('validate'); }
+        if ($('#CancelUrl').val() == '') { $('#CancelUrl').focus().addClass('validate'); return false; } else { $('#CancelUrl').removeClass('validate'); }
+
+        return true;
+    }
+
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Add Payment Setting Details </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="@Url.Action("Index", "PaymentSettings")"><i class="fa fa-money"></i> Payment Setting</a></li>
+        <li class="active"><i class="fa fa-money"></i>  Add Payment Setting Details</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="clearfix sepH_b"></div>
+   @using (Html.BeginForm("UpdateAppInfo", "PaymentSettings", FormMethod.Post))
+   {            
+        <div class="box validation">
+           @* <div class="box-header">
+                <h3 class="box-title dis-in">Payment Details </h3>
+            </div>*@
+            <div class="box-body">
+                <div class="row validation">
+                     @if (objPaymentSettings == null)
+                     {
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Payment Method :<span class="red-t">*</span></label>
+                        @Html.DropDownList("PaymentMethodId", new SelectList((IEnumerable<TCAssociationTool.Entities.PaymentMethods>)ViewBag.PaymentMethodsList, "PaymentMethodId", "PaymentMethod"), "Select Payment Method", new { id = "ddlPaymentMethod", @class="form-control", @onchange = "ValidateApplication();" })
+                                                        <span class="red-t" id="spanPaymentMethod"></span>
+                    </div>
+                         <div class="col-xs-12 col-lg-3 col-sm-6">
+                             <label>Account Type : <span class="red-t">*</span></label>
+                             <select id="AccountType" name="AccountType" class="form-control">
+                                                            <option value="">--Select--</option>
+                                                            <option value="Test">Test</option>
+                                                            <option value="Online">Online</option>
+                                                        </select>
+
+                             </div>
+                         <div class="col-xs-12 col-lg-3 col-sm-6">
+                             <label>Payment Url :<span class="red-t">*</span></label>
+                            @Html.TextBox("PaymentUrl", "", new {@class="form-control", @onchange = "return ValidateApplication();" })
+                             </div>
+                         <div class="col-xs-12 col-lg-3 col-sm-6">
+                             <label>Payment Email :<span class="red-t">*</span></label>
+                            @Html.TextBox("PaymentEmail", "", new {@class="form-control", @onchange = "return ValidateApplication();" })
+                             </div>
+                          <div class="col-xs-12 col-lg-3 col-sm-6">
+                             <label>Currency Code :<span class="red-t">*</span></label>
+                            @Html.DropDownList("CurrencyCodeId", new SelectList((IEnumerable<TCAssociationTool.Entities.CurrencyCodes>)ViewBag.CurrencyCodesList, "CurrencyCodeId", "CurrencyCode"), "Select Currency Code", new { id = "ddlCurrencyCode", @class="form-control", @onchange = "ValidateApplication();" })
+                                                    
+                             </div>
+                         <div class="col-xs-12 col-lg-3 col-sm-6">
+                             <label>Success Url :<span class="red-t">*</span></label>
+                            @Html.TextBox("SuccessUrl", "", new {@class="form-control", @onchange = "ValidateApplication();" })
+                             </div>
+                         <div class="col-xs-12 col-lg-3 col-sm-6">
+                             <label>Cancel Url :<span class="red-t">*</span></label>
+                            @Html.TextBox("CancelUrl", "", new {@class="form-control", @onchange = "return ValidateApplication();" })
+                             </div>
+                         <div class="col-xs-12 col-lg-3 col-sm-6">
+                             <label>Notify Url :</label>
+                           @Html.TextBox("NotifyUrl", "", new {@class="form-control", @onchange = "return ValidateApplication();" })
+                             </div>
+                         <div class="col-xs-12 col-lg-3 col-sm-6">
+                             <label>Token No :</label>
+                           @Html.TextBox("TokenNo", "", new {@class="form-control", @onchange = "return ValidateApplication();" })
+                             </div>
+                     }
+                     else
+                     {
+                         <input type="hidden" name="PaymentSettingId" id="PaymentSettingId" value="@(objPaymentSettings.PaymentSettingId)" />
+                           <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Payment Method :<span class="red-t">*</span></label>
+                        @Html.DropDownList("PaymentMethodId", new SelectList((IEnumerable<TCAssociationTool.Entities.PaymentMethods>)ViewBag.PaymentMethodsList, "PaymentMethodId", "PaymentMethod"), "Select Payment Method", new { id = "ddlPaymentMethod", @class="form-control", @onchange = "ValidateApplication();" })
+                                                        
+                    </div>
+                         <div class="col-xs-12 col-lg-3 col-sm-6">
+                             <label>Account Type : <span class="red-t">*</span></label>
+                             <select id="AccountType" name="AccountType" class="form-control">
+                                                            <option value="">--Select--</option>
+                                                            <option value="Test">Test</option>
+                                                            <option value="Online">Online</option>
+                                                        </select>
+                                                    
+
+                             </div>
+                         <div class="col-xs-12 col-lg-3 col-sm-6">
+                             <label>Payment Url :<span class="red-t">*</span></label>
+                           @Html.TextBox("PaymentUrl", objPaymentSettings.PaymentUrl, new {@class="form-control", @onchange = "return ValidateApplication();" })
+                                                  
+                             </div>
+                         <div class="col-xs-12 col-lg-3 col-sm-6">
+                             <label>Payment Email :<span class="red-t">*</span></label>
+                            @Html.TextBox("PaymentEmail", objPaymentSettings.PaymentEmail, new {@class="form-control", @onchange = "return ValidateApplication();" })
+                                                        
+                             </div>
+                          <div class="col-xs-12 col-lg-3 col-sm-6">
+                             <label>Currency Code :<span class="red-t">*</span></label>
+                            @Html.DropDownList("CurrencyCodeId", new SelectList((IEnumerable<TCAssociationTool.Entities.CurrencyCodes>)ViewBag.CurrencyCodesList, "CurrencyCodeId", "CurrencyCode"), "Select Currency Code", new { id = "ddlCurrencyCode", @class="form-control", @onchange = "ValidateApplication();" })
+                                                        
+                             </div>
+                         <div class="col-xs-12 col-lg-3 col-sm-6">
+                             <label>Success Url :<span class="red-t">*</span></label>
+                            @Html.TextBox("SuccessUrl", (string)objPaymentSettings.SuccessUrl, new {@class="form-control", @onchange = "ValidateApplication();" })
+                                                        
+                             </div>
+                         <div class="col-xs-12 col-lg-3 col-sm-6">
+                             <label>Cancel Url :<span class="red-t">*</span></label>
+                            @Html.TextBox("CancelUrl", (string)objPaymentSettings.CancelUrl, new {@class="form-control", @onchange = "return ValidateApplication();" })
+                                                       
+                             </div>
+                         <div class="col-xs-12 col-lg-3 col-sm-6">
+                             <label>Notify Url :</label>
+                           @Html.TextBox("NotifyUrl", (string)objPaymentSettings.NotifyUrl, new {@class="form-control", @onchange = "return ValidateApplication();" })
+                                                        
+                             </div>
+                         <div class="col-xs-12 col-lg-3 col-sm-6">
+                             <label>Token No :</label>
+                           @Html.TextBox("TokenNo", (string)objPaymentSettings.TokenNo, new {@class="form-control", @onchange = "return ValidateApplication();" })
+                                                       
+                             </div>
+                          <script type="text/javascript">
+                              $(document).ready(function () {
+                                  $('#ddlCurrencyCode').val('@objPaymentSettings.CurrencyCodeId');
+                                                        $('#ddlPaymentMethod').val('@objPaymentSettings.PaymentMethodId');
+                                                        $('#AccountType').val('@objPaymentSettings.AccountType');
+                                                    });
+                                                </script>
+                         
+                     }
+                    
+                </div>
+            </div>
+        </div>
+        
+        <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body text-right">
+                <input type="submit" value="Submit" class="btn btn-primary" onclick="return ValidateApplication();" />
+                <a class="btn btn-info" href="@Url.Action("Index", "PaymentSettings")">Cancel</a>
+            </div>
+            <!-- /.box-body -->
+        </div> 
+   }
+</div>
+
+
+

@@ -97,25 +97,20 @@ namespace TCAssociationTool.BLL
            ref List<Entities.News> lstNews,
            ref Entities.InnerPages objPInnerPages,
            ref List<Entities.WebsiteBanners> lstWebsiteBanners,
-           ref List<Entities.Events> lstUpcommingEvents,
            ref Entities.InnerPages objPHInnerPages,
-           ref List<Entities.Events> lstLatestEvents,
+           ref List<Entities.Events> lstUpcommingEvents,
            ref List<Entities.Sponsors> lstSponsors,
            ref List<Entities.Sponsors> lstMediaSponsors,
+           ref List<Entities.Photos> lstPhotos,
            ref List<Entities.Videos> lstVideos,
            ref Entities.AppInfo objAppInfo,
            ref List<Entities.SponsorCategories> lstSponsorCategories,
            ref Entities.Flyers objFlyers,
-           ref Entities.InnerPages objCInnerPages,
            ref List<Entities.InnerPageCategories> lstMenuItems,
            ref List<Entities.InnerPageCategories> lstMenuItems2,
            ref List<Entities.InnerPageCategories> lstMenuItems3,
            ref List<Entities.InnerPageCategories> lstMenuItems4,
            ref List<Entities.InnerPageCategories> FooterMenuItems,
-            ref Entities.InnerPages objSInnerPages,
-            ref List<Entities.CommitteeCategories> lstCommitteeCategories,
-           ref List<Entities.Events> lstEvents,
-           ref List<Entities.Photos> lstPhotos,
            ref int status)
         {
             DataSet ds = _AppInfo.FEGetListInitialLoad(ref status);
@@ -166,10 +161,18 @@ namespace TCAssociationTool.BLL
                 }
             }
 
-            // Upcomming Events List 
-            if (ds.Tables[3].Rows.Count != 0)
+            //ATA Youth Scholarships in HomePage
+            if (ds.Tables[3].Rows.Count == 1)
             {
-                foreach (DataRow dr in ds.Tables[3].Rows)
+                DataTable dt = ds.Tables[3];
+                objPHInnerPages.InnerPageId = Convert.ToInt64(dt.Rows[0]["InnerPageId"]);
+                objPHInnerPages.Heading = dt.Rows[0]["Heading"].ToString();
+                objPHInnerPages.Description = dt.Rows[0]["Description"].ToString();
+            }
+            // Upcomming Events List 
+            if (ds.Tables[4].Rows.Count != 0)
+            {
+                foreach (DataRow dr in ds.Tables[4].Rows)
                 {
                     Entities.Events objUpcommingEvents = new Entities.Events();
 
@@ -191,37 +194,48 @@ namespace TCAssociationTool.BLL
                 }
             }
 
-            //Welcome Message
-            if (ds.Tables[4].Rows.Count == 1)
-            {
-                DataTable dt = ds.Tables[4];
-                objPHInnerPages.InnerPageId = Convert.ToInt64(dt.Rows[0]["InnerPageId"]);
-                objPHInnerPages.Heading = dt.Rows[0]["Heading"].ToString();
-                objPHInnerPages.Description = dt.Rows[0]["Description"].ToString();
-            }
+           
 
             // Latest Events List 
+            //if (ds.Tables[5].Rows.Count != 0)
+            //{
+            //    foreach (DataRow dr in ds.Tables[5].Rows)
+            //    {
+            //        Entities.Events objLatestEvents = new Entities.Events();
+
+            //        objLatestEvents.EventId = Convert.ToInt64(dr["EventId"]);
+            //        objLatestEvents.StartDate = (dr["StartDate"] != DBNull.Value ? Convert.ToDateTime(dr["StartDate"]) : DateTime.MinValue);
+            //        objLatestEvents.EndDate = (dr["EndDate"] != DBNull.Value ? Convert.ToDateTime(dr["EndDate"]) : DateTime.MinValue);
+            //        objLatestEvents.EventName = dr["EventName"].ToString();
+            //        objLatestEvents.Location = dr["Location"].ToString();
+            //        objLatestEvents.BannerUrl = dr["BannerUrl"].ToString();
+            //        objLatestEvents.EventDetails = dr["EventDetails"].ToString();
+            //        objLatestEvents.City = dr["City"].ToString();
+            //        objLatestEvents.StateName = dr["StateName"].ToString();
+            //        objLatestEvents.UpdatedTime = Convert.ToDateTime(dr["UpdatedTime"]);
+            //        objLatestEvents.IsRegistration = (dr["IsRegistration"] != DBNull.Value ? Convert.ToBoolean(dr["IsRegistration"].ToString()) : false);
+            //        objLatestEvents.RegistrationStartDate = (dr["RegistrationStartDate"] != DBNull.Value ? Convert.ToDateTime(dr["RegistrationStartDate"]) : DateTime.MinValue);
+            //        objLatestEvents.RegistrationEndDate = (dr["RegistrationEndDate"] != DBNull.Value ? Convert.ToDateTime(dr["RegistrationEndDate"]) : DateTime.MinValue);
+
+            //        lstLatestEvents.Add(objLatestEvents);
+            //    }
+            //}
+
+            // Sponsors List  
             if (ds.Tables[5].Rows.Count != 0)
             {
                 foreach (DataRow dr in ds.Tables[5].Rows)
                 {
-                    Entities.Events objLatestEvents = new Entities.Events();
+                    Entities.Sponsors objHTCASponsors = new Entities.Sponsors();
 
-                    objLatestEvents.EventId = Convert.ToInt64(dr["EventId"]);
-                    objLatestEvents.StartDate = (dr["StartDate"] != DBNull.Value ? Convert.ToDateTime(dr["StartDate"]) : DateTime.MinValue);
-                    objLatestEvents.EndDate = (dr["EndDate"] != DBNull.Value ? Convert.ToDateTime(dr["EndDate"]) : DateTime.MinValue);
-                    objLatestEvents.EventName = dr["EventName"].ToString();
-                    objLatestEvents.Location = dr["Location"].ToString();
-                    objLatestEvents.BannerUrl = dr["BannerUrl"].ToString();
-                    objLatestEvents.EventDetails = dr["EventDetails"].ToString();
-                    objLatestEvents.City = dr["City"].ToString();
-                    objLatestEvents.StateName = dr["StateName"].ToString();
-                    objLatestEvents.UpdatedTime = Convert.ToDateTime(dr["UpdatedTime"]);
-                    objLatestEvents.IsRegistration = (dr["IsRegistration"] != DBNull.Value ? Convert.ToBoolean(dr["IsRegistration"].ToString()) : false);
-                    objLatestEvents.RegistrationStartDate = (dr["RegistrationStartDate"] != DBNull.Value ? Convert.ToDateTime(dr["RegistrationStartDate"]) : DateTime.MinValue);
-                    objLatestEvents.RegistrationEndDate = (dr["RegistrationEndDate"] != DBNull.Value ? Convert.ToDateTime(dr["RegistrationEndDate"]) : DateTime.MinValue);
+                    objHTCASponsors.SponsorId = Convert.ToInt64(dr["SponsorId"]);
+                    objHTCASponsors.SponsorCategoryId = Convert.ToInt64(dr["SponsorCategoryId"]);
+                    objHTCASponsors.LogoUrl = dr["LogoUrl"].ToString();
+                    objHTCASponsors.Target = dr["Target"].ToString();
+                    objHTCASponsors.RedirectUrl = dr["RedirectUrl"].ToString();
+                    objHTCASponsors.InsertedTime = Convert.ToDateTime(dr["InsertedTime"]);
 
-                    lstLatestEvents.Add(objLatestEvents);
+                    lstSponsors.Add(objHTCASponsors);
                 }
             }
 
@@ -239,25 +253,23 @@ namespace TCAssociationTool.BLL
                     objHTCASponsors.RedirectUrl = dr["RedirectUrl"].ToString();
                     objHTCASponsors.InsertedTime = Convert.ToDateTime(dr["InsertedTime"]);
 
-                    lstSponsors.Add(objHTCASponsors);
+                    lstMediaSponsors.Add(objHTCASponsors);
                 }
             }
-
-            // Sponsors List  
+            // Photo Gallery   
             if (ds.Tables[7].Rows.Count != 0)
             {
                 foreach (DataRow dr in ds.Tables[7].Rows)
                 {
-                    Entities.Sponsors objHTCASponsors = new Entities.Sponsors();
+                    TCAssociationTool.Entities.Photos objPhotos = new TCAssociationTool.Entities.Photos();
 
-                    objHTCASponsors.SponsorId = Convert.ToInt64(dr["SponsorId"]);
-                    objHTCASponsors.SponsorCategoryId = Convert.ToInt64(dr["SponsorCategoryId"]);
-                    objHTCASponsors.LogoUrl = dr["LogoUrl"].ToString();
-                    objHTCASponsors.Target = dr["Target"].ToString();
-                    objHTCASponsors.RedirectUrl = dr["RedirectUrl"].ToString();
-                    objHTCASponsors.InsertedTime = Convert.ToDateTime(dr["InsertedTime"]);
+                    objPhotos.PhotoId = Convert.ToInt64(dr["PhotoId"].ToString());
+                    objPhotos.PhotoCategoryId = Convert.ToInt64(dr["PhotoCategoryId"].ToString());
+                    objPhotos.ImageUrl = (dr["ImageUrl"] != DBNull.Value ? dr["ImageUrl"].ToString() : null);
+                    objPhotos.ImageDescription = (dr["ImageDescription"] != DBNull.Value ? dr["ImageDescription"].ToString() : null);
+                    objPhotos.AlbumLink = (dr["AlbumLink"] != DBNull.Value ? dr["AlbumLink"].ToString() : null);
 
-                    lstMediaSponsors.Add(objHTCASponsors);
+                    lstPhotos.Add(objPhotos);
                 }
             }
 
@@ -323,7 +335,7 @@ namespace TCAssociationTool.BLL
                 }
             }
 
-            //Flyers List   
+            //Flyers List
             if (ds.Tables[11].Rows.Count != 0)
             {
                 objFlyers.FlyerId = Convert.ToInt64(ds.Tables[11].Rows[0]["FlyerId"]);
@@ -331,19 +343,10 @@ namespace TCAssociationTool.BLL
                 objFlyers.RedirectUrl = ds.Tables[11].Rows[0]["RedirectUrl"].ToString();
             }
 
-            //Committe Categories List   
-            if (ds.Tables[12].Rows.Count == 1)
-            {
-                DataTable dt = ds.Tables[12];
 
-                objCInnerPages.InnerPageId = Convert.ToInt64(dt.Rows[0]["InnerPageId"]);
-                objCInnerPages.Heading = dt.Rows[0]["Heading"].ToString();
-                objCInnerPages.Description = dt.Rows[0]["Description"].ToString();
-            }
-
-            if (ds.Tables[13].Rows.Count != 0)
+            if (ds.Tables[12].Rows.Count != 0)
             {
-                foreach (DataRow dr in ds.Tables[13].Rows)
+                foreach (DataRow dr in ds.Tables[12].Rows)
                 {
                     if (Convert.ToInt32(dr["PageLevel"]) == 1)
                     {
@@ -403,9 +406,9 @@ namespace TCAssociationTool.BLL
                     }
                 }
             }
-            if (ds.Tables[14].Rows.Count != 0)
+            if (ds.Tables[13].Rows.Count != 0)
             {
-                foreach (DataRow dr in ds.Tables[14].Rows)
+                foreach (DataRow dr in ds.Tables[13].Rows)
                 {
                     Entities.InnerPageCategories objInnerPageCategories = new Entities.InnerPageCategories();
 
@@ -425,65 +428,9 @@ namespace TCAssociationTool.BLL
                     FooterMenuItems.Add(objInnerPageCategories);
                 }
             }
-
-            //President Message
-            if (ds.Tables[15].Rows.Count == 1)
-            {
-                DataTable dt = ds.Tables[15];
-
-                objSInnerPages.InnerPageId = Convert.ToInt64(dt.Rows[0]["InnerPageId"]);
-                objSInnerPages.Heading = dt.Rows[0]["Heading"].ToString();
-                objSInnerPages.Description = dt.Rows[0]["Description"].ToString();
-            }
-
-
-            // Committee Categories List  
-            if (ds.Tables[16].Rows.Count != 0)
-            {
-                foreach (DataRow dr in ds.Tables[16].Rows)
-                {
-                    Entities.CommitteeCategories objCommitteeCategories = new Entities.CommitteeCategories();
-
-                    objCommitteeCategories.CommitteeCategoryId = Convert.ToInt64(dr["CommitteeCategoryId"]);
-                    objCommitteeCategories.CategoryName = dr["CategoryName"].ToString();
-                    objCommitteeCategories.DisplayOrder = (dr["DisplayOrder"] != DBNull.Value ? Convert.ToInt32(dr["DisplayOrder"]) : 0);
-                    objCommitteeCategories.Type = (dr["Type"] != DBNull.Value ? dr["Type"].ToString() : null);
-
-                    lstCommitteeCategories.Add(objCommitteeCategories);
-                }
-            }
-
-            // Events List 
-            if (ds.Tables[17].Rows.Count != 0)
-            {
-                foreach (DataRow dr in ds.Tables[17].Rows)
-                {
-                    Entities.Events objEvents = new Entities.Events();
-
-                    objEvents.EventId = Convert.ToInt64(dr["EventId"]);
-                    objEvents.EventName = dr["EventName"].ToString();
-
-                    lstEvents.Add(objEvents);
-                }
-            }
-
-            if (ds.Tables[18].Rows.Count != 0)
-            {
-                foreach (DataRow dr in ds.Tables[18].Rows)
-                {
-                    TCAssociationTool.Entities.Photos objPhotos = new TCAssociationTool.Entities.Photos();
-
-                    objPhotos.PhotoId = Convert.ToInt64(dr["PhotoId"].ToString());
-                    objPhotos.PhotoCategoryId = Convert.ToInt64(dr["PhotoCategoryId"].ToString());
-                    objPhotos.ImageUrl = (dr["ImageUrl"] != DBNull.Value ? dr["ImageUrl"].ToString() : null);
-                    objPhotos.ImageDescription = (dr["ImageDescription"] != DBNull.Value ? dr["ImageDescription"].ToString() : null);
-                    objPhotos.AlbumLink = (dr["AlbumLink"] != DBNull.Value ? dr["AlbumLink"].ToString() : null);
-
-                    lstPhotos.Add(objPhotos);
-                }
-            }
-
+  
         }
+
 
         public void FEGetListAppInfo(ref Entities.AppInfo objAppInfo, ref List<Entities.News> lstLatestNews, ref int status)
         {
@@ -550,17 +497,16 @@ namespace TCAssociationTool.BLL
             ref List<Entities.Sponsors> lstSponsors,
             ref List<Entities.Sponsors> lstMediaSponsors,
             ref Entities.AppInfo objAppInfo,
-            ref List<Entities.SponsorCategories> lstSponsorCategories,
+            ref List<Entities.Photos> lstPhotos,
             ref List<Entities.Videos> lstVideos,
+            ref List<Entities.SponsorCategories> lstSponsorCategories,
             ref List<Entities.InnerPageCategories> lstMenuItems,
             ref List<Entities.InnerPageCategories> lstMenuItems2,
             ref List<Entities.InnerPageCategories> lstMenuItems3,
             ref List<Entities.InnerPageCategories> lstMenuItems4,
             ref List<Entities.InnerPageCategories> FooterMenuItems,
-             ref Entities.InnerPages objSInnerPages,
-            ref List<Entities.CommitteeCategories> lstCommitteeCategories,
-             ref List<Entities.Events> lstEvents,
-            ref List<Entities.Photos> lstPhotos,
+            ref Entities.InnerPages objSInnerPages,
+            // ref List<Entities.Events> lstEvents,
             ref int status)
         {
             TCAssociationTool.Entities.InnerPages objInnerPages = new TCAssociationTool.Entities.InnerPages();
@@ -586,10 +532,23 @@ namespace TCAssociationTool.BLL
 
             objInnerPages.lstNews = lstNews;
 
-            // Sponsors List  
+            //ATA Youth Scholarships
             if (ds.Tables[1].Rows.Count != 0)
             {
-                foreach (DataRow dr in ds.Tables[1].Rows)
+                if (ds.Tables[1].Rows.Count == 1)
+                {
+                    objSInnerPages.InnerPageId = Convert.ToInt64(ds.Tables[1].Rows[0]["InnerPageId"]);
+                    objSInnerPages.Heading = ds.Tables[1].Rows[0]["Heading"].ToString();
+                    objSInnerPages.Description = ds.Tables[1].Rows[0]["Description"].ToString();
+
+                    objInnerPages.objSInnerPages = objSInnerPages;
+                }
+            }
+
+            // Sponsors List  
+            if (ds.Tables[2].Rows.Count != 0)
+            {
+                foreach (DataRow dr in ds.Tables[2].Rows)
                 {
                     Entities.Sponsors objHTCASponsors = new Entities.Sponsors();
 
@@ -607,9 +566,9 @@ namespace TCAssociationTool.BLL
             objInnerPages.lstSponsors = lstSponsors;
 
             // Sponsors List  
-            if (ds.Tables[2].Rows.Count != 0)
+            if (ds.Tables[3].Rows.Count != 0)
             {
-                foreach (DataRow dr in ds.Tables[2].Rows)
+                foreach (DataRow dr in ds.Tables[3].Rows)
                 {
                     Entities.Sponsors objHTCASponsors = new Entities.Sponsors();
 
@@ -624,41 +583,75 @@ namespace TCAssociationTool.BLL
                 }
             }
             objInnerPages.lstMediaSponsors = lstMediaSponsors;
-            //AppInfo List  
-            if (ds.Tables[3].Rows.Count != 0)
+           
+            //Photos
+            if (ds.Tables[4].Rows.Count != 0)
             {
-                if (ds.Tables[3].Rows.Count == 1)
+                foreach (DataRow dr in ds.Tables[4].Rows)
                 {
-                    objAppInfo.AppInfoId = Convert.ToInt64(ds.Tables[3].Rows[0]["AppInfoId"]);
-                    objAppInfo.SiteName = ds.Tables[3].Rows[0]["SiteName"].ToString();
-                    objAppInfo.CompanyAddress = ds.Tables[3].Rows[0]["CompanyAddress"].ToString();
-                    objAppInfo.CompanyWebSite = ds.Tables[3].Rows[0]["CompanyWebSite"].ToString();
-                    objAppInfo.CompanyEmail = ds.Tables[3].Rows[0]["CompanyEmail"].ToString();
-                    objAppInfo.CompanyPhone = ds.Tables[3].Rows[0]["CompanyPhone"].ToString();
-                    objAppInfo.PresidentPhone = ds.Tables[3].Rows[0]["PresidentPhone"].ToString();
-                    objAppInfo.PresidentEmail = ds.Tables[3].Rows[0]["PresidentEmail"].ToString();
-                    objAppInfo.SecretaryEmail = ds.Tables[3].Rows[0]["SecretaryEmail"].ToString();
-                    objAppInfo.SecretaryPhone = ds.Tables[3].Rows[0]["SecretaryPhone"].ToString();
-                    objAppInfo.CustomerCareNumber = ds.Tables[3].Rows[0]["CustomerCareNumber"].ToString();
-                    objAppInfo.TollFreeNumber = ds.Tables[3].Rows[0]["TollFreeNumber"].ToString();
-                    objAppInfo.FacebookUrl = ds.Tables[3].Rows[0]["FacebookUrl"].ToString();
-                    objAppInfo.TwitterUrl = ds.Tables[3].Rows[0]["TwitterUrl"].ToString();
-                    objAppInfo.YoutubeUrl = ds.Tables[3].Rows[0]["YoutubeUrl"].ToString();
-                    objAppInfo.SupportEmail = ds.Tables[3].Rows[0]["SupportEmail"].ToString();
-                    objAppInfo.EnqueryEmail = ds.Tables[3].Rows[0]["EnqueryEmail"].ToString();
-                    objAppInfo.PageTitle = ds.Tables[3].Rows[0]["PageTitle"].ToString();
-                    objAppInfo.MetaDescription = ds.Tables[3].Rows[0]["MetaDescription"].ToString();
-                    objAppInfo.MetaKeywords = ds.Tables[3].Rows[0]["MetaKeywords"].ToString();
-                    objAppInfo.Topline = ds.Tables[3].Rows[0]["Topline"].ToString();
-                    objAppInfo.PageItems = (ds.Tables[3].Rows[0]["PageItems"] != DBNull.Value ? Convert.ToInt64(ds.Tables[3].Rows[0]["PageItems"]) : 0);
-                    objAppInfo.UpdatedTime = Convert.ToDateTime(ds.Tables[3].Rows[0]["UpdatedTime"]);
+                    TCAssociationTool.Entities.Photos objPhotos = new TCAssociationTool.Entities.Photos();
+
+                    objPhotos.PhotoId = Convert.ToInt64(dr["PhotoId"].ToString());
+                    objPhotos.PhotoCategoryId = Convert.ToInt64(dr["PhotoCategoryId"].ToString());
+                    objPhotos.ImageUrl = (dr["ImageUrl"] != DBNull.Value ? dr["ImageUrl"].ToString() : null);
+                    objPhotos.ImageDescription = (dr["ImageDescription"] != DBNull.Value ? dr["ImageDescription"].ToString() : null);
+                    objPhotos.AlbumLink = (dr["AlbumLink"] != DBNull.Value ? dr["AlbumLink"].ToString() : null);
+
+                    lstPhotos.Add(objPhotos);
+                }
+            }
+            // Videos List  
+            if (ds.Tables[5].Rows.Count != 0)
+            {
+                foreach (DataRow dr in ds.Tables[5].Rows)
+                {
+                    Entities.Videos objVideos = new Entities.Videos();
+
+                    objVideos.VideoId = Convert.ToInt64(dr["VideoId"]);
+                    objVideos.VideoCategoryId = Convert.ToInt64(dr["VideoCategoryId"]);
+                    objVideos.Heading = dr["Heading"].ToString();
+                    objVideos.VideoUrl = dr["VideoUrl"].ToString();
+                    objVideos.UpdatedTime = Convert.ToDateTime(dr["UpdatedTime"]);
+
+                    lstVideos.Add(objVideos);
+                }
+            }
+
+            //AppInfo List  
+            if (ds.Tables[6].Rows.Count != 0)
+            {
+                if (ds.Tables[6].Rows.Count == 1)
+                {
+                    objAppInfo.AppInfoId = Convert.ToInt64(ds.Tables[6].Rows[0]["AppInfoId"]);
+                    objAppInfo.SiteName = ds.Tables[6].Rows[0]["SiteName"].ToString();
+                    objAppInfo.CompanyAddress = ds.Tables[6].Rows[0]["CompanyAddress"].ToString();
+                    objAppInfo.CompanyWebSite = ds.Tables[6].Rows[0]["CompanyWebSite"].ToString();
+                    objAppInfo.CompanyEmail = ds.Tables[6].Rows[0]["CompanyEmail"].ToString();
+                    objAppInfo.CompanyPhone = ds.Tables[6].Rows[0]["CompanyPhone"].ToString();
+                    objAppInfo.PresidentPhone = ds.Tables[6].Rows[0]["PresidentPhone"].ToString();
+                    objAppInfo.PresidentEmail = ds.Tables[6].Rows[0]["PresidentEmail"].ToString();
+                    objAppInfo.SecretaryEmail = ds.Tables[6].Rows[0]["SecretaryEmail"].ToString();
+                    objAppInfo.SecretaryPhone = ds.Tables[6].Rows[0]["SecretaryPhone"].ToString();
+                    objAppInfo.CustomerCareNumber = ds.Tables[6].Rows[0]["CustomerCareNumber"].ToString();
+                    objAppInfo.TollFreeNumber = ds.Tables[6].Rows[0]["TollFreeNumber"].ToString();
+                    objAppInfo.FacebookUrl = ds.Tables[6].Rows[0]["FacebookUrl"].ToString();
+                    objAppInfo.TwitterUrl = ds.Tables[6].Rows[0]["TwitterUrl"].ToString();
+                    objAppInfo.YoutubeUrl = ds.Tables[6].Rows[0]["YoutubeUrl"].ToString();
+                    objAppInfo.SupportEmail = ds.Tables[6].Rows[0]["SupportEmail"].ToString();
+                    objAppInfo.EnqueryEmail = ds.Tables[6].Rows[0]["EnqueryEmail"].ToString();
+                    objAppInfo.PageTitle = ds.Tables[6].Rows[0]["PageTitle"].ToString();
+                    objAppInfo.MetaDescription = ds.Tables[6].Rows[0]["MetaDescription"].ToString();
+                    objAppInfo.MetaKeywords = ds.Tables[6].Rows[0]["MetaKeywords"].ToString();
+                    objAppInfo.Topline = ds.Tables[6].Rows[0]["Topline"].ToString();
+                    objAppInfo.PageItems = (ds.Tables[6].Rows[0]["PageItems"] != DBNull.Value ? Convert.ToInt64(ds.Tables[6].Rows[0]["PageItems"]) : 0);
+                    objAppInfo.UpdatedTime = Convert.ToDateTime(ds.Tables[6].Rows[0]["UpdatedTime"]);
                 }
             }
 
             //Sponsor Categories 
-            if (ds.Tables[4].Rows.Count != 0)
+            if (ds.Tables[7].Rows.Count != 0)
             {
-                foreach (DataRow dr in ds.Tables[4].Rows)
+                foreach (DataRow dr in ds.Tables[7].Rows)
                 {
                     TCAssociationTool.Entities.SponsorCategories objSponsorCategories = new TCAssociationTool.Entities.SponsorCategories();
 
@@ -671,9 +664,9 @@ namespace TCAssociationTool.BLL
 
             objInnerPages.lstSponsorCategories = lstSponsorCategories;
 
-            if (ds.Tables[5].Rows.Count != 0)
+            if (ds.Tables[8].Rows.Count != 0)
             {
-                foreach (DataRow dr in ds.Tables[5].Rows)
+                foreach (DataRow dr in ds.Tables[8].Rows)
                 {
                     if (Convert.ToInt32(dr["PageLevel"]) == 1)
                     {
@@ -733,9 +726,9 @@ namespace TCAssociationTool.BLL
                     }
                 }
             }
-            if (ds.Tables[6].Rows.Count != 0)
+            if (ds.Tables[9].Rows.Count != 0)
             {
-                foreach (DataRow dr in ds.Tables[6].Rows)
+                foreach (DataRow dr in ds.Tables[9].Rows)
                 {
                     Entities.InnerPageCategories objInnerPageCategories = new Entities.InnerPageCategories();
 
@@ -756,84 +749,7 @@ namespace TCAssociationTool.BLL
                 }
             }
 
-            // Videos List  
-            if (ds.Tables[7].Rows.Count != 0)
-            {
-                foreach (DataRow dr in ds.Tables[7].Rows)
-                {
-                    Entities.Videos objVideos = new Entities.Videos();
-
-                    objVideos.VideoId = Convert.ToInt64(dr["VideoId"]);
-                    objVideos.VideoCategoryId = Convert.ToInt64(dr["VideoCategoryId"]);
-                    objVideos.Heading = dr["Heading"].ToString();
-                    objVideos.VideoUrl = dr["VideoUrl"].ToString();
-                    objVideos.UpdatedTime = Convert.ToDateTime(dr["UpdatedTime"]);
-
-                    lstVideos.Add(objVideos);
-                }
-            }
-
-            //President Message
-            if (ds.Tables[8].Rows.Count != 0)
-            {
-                if (ds.Tables[8].Rows.Count == 1)
-                {
-                    objSInnerPages.InnerPageId = Convert.ToInt64(ds.Tables[8].Rows[0]["InnerPageId"]);
-                    objSInnerPages.Heading = ds.Tables[8].Rows[0]["Heading"].ToString();
-                    objSInnerPages.Description = ds.Tables[8].Rows[0]["Description"].ToString();
-
-                    objInnerPages.objSInnerPages = objSInnerPages;
-                }
-            }
-
-            // Committee Categories List  
-            if (ds.Tables[9].Rows.Count != 0)
-            {
-                foreach (DataRow dr in ds.Tables[9].Rows)
-                {
-                    Entities.CommitteeCategories objCommitteeCategories = new Entities.CommitteeCategories();
-
-                    objCommitteeCategories.CommitteeCategoryId = Convert.ToInt64(dr["CommitteeCategoryId"]);
-                    objCommitteeCategories.CategoryName = dr["CategoryName"].ToString();
-                    objCommitteeCategories.DisplayOrder = (dr["DisplayOrder"] != DBNull.Value ? Convert.ToInt32(dr["DisplayOrder"]) : 0);
-                    objCommitteeCategories.Type = (dr["Type"] != DBNull.Value ? dr["Type"].ToString() : null);
-
-                    lstCommitteeCategories.Add(objCommitteeCategories);
-                }
-            }
-
-            objInnerPages.lstCommitteeCategories = lstCommitteeCategories;
-
-            // Upcomming Events List 
-            if (ds.Tables[10].Rows.Count != 0)
-            {
-                foreach (DataRow dr in ds.Tables[10].Rows)
-                {
-                    Entities.Events objEvents = new Entities.Events();
-
-                    objEvents.EventId = Convert.ToInt64(dr["EventId"]);
-                    objEvents.EventName = dr["EventName"].ToString();
-
-                    lstEvents.Add(objEvents);
-                }
-            }
-
-            if (ds.Tables[11].Rows.Count != 0)
-            {
-                foreach (DataRow dr in ds.Tables[11].Rows)
-                {
-                    TCAssociationTool.Entities.Photos objPhotos = new TCAssociationTool.Entities.Photos();
-
-                    objPhotos.PhotoId = Convert.ToInt64(dr["PhotoId"].ToString());
-                    objPhotos.PhotoCategoryId = Convert.ToInt64(dr["PhotoCategoryId"].ToString());
-                    objPhotos.ImageUrl = (dr["ImageUrl"] != DBNull.Value ? dr["ImageUrl"].ToString() : null);
-                    objPhotos.ImageDescription = (dr["ImageDescription"] != DBNull.Value ? dr["ImageDescription"].ToString() : null);
-                    objPhotos.AlbumLink = (dr["AlbumLink"] != DBNull.Value ? dr["AlbumLink"].ToString() : null);
-
-                    lstPhotos.Add(objPhotos);
-                }
-            }
-
+           
             return objInnerPages;
         }
 

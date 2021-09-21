@@ -1,0 +1,60 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+
+
+    var Type = ViewBag.Type;
+    string str = "";
+
+    ViewBag.Title = TCAssociationTool.BLL.Common.DecodeURL(TCAssociationTool.BLL.Common.UppercaseFirst(Type)) + " Events - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+
+    ViewBag.heading = "Events";
+}
+<script>
+    $(document).ready(function () {
+        $('#MEvents').addClass('active');
+        PagerClickBind();
+    });
+
+    function PagerClickBind() {
+        $("ul.pagination li a").bind("click", function () {
+            EventBind($(this).text());
+        });
+    }
+
+    function sortresult(sortcolumn) {
+
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        EventBind(1);
+    }
+
+    function EventBind(Pageno) {
+        var pageno = Common.Pageno(Pageno);
+        var search = $('#keyword').val();
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();;
+
+        $.ajax({
+            url: '@Url.Action("EventsList", "Event")',
+            type: 'GET',
+            cache: false,
+            data: { search: search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items, Type: '@Type' },
+            success: function (result) {
+                $('#divEventsList').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+</script>
+
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortorder" name="hdnsortorder" value="DESC" type="hidden" />
+<input id="hdnsortcolumn" name="hdnsortcolumn" value="StartDate" type="hidden" />
+
+
+<article class="clearfix t-m0 l-h28 t-t-u Impact font26 evesec-tex letespa1 b-m25 tabhorizontal-b-m10 mobile-b-m5">@TCAssociationTool.BLL.Common.DecodeURL(@Type)<span class="evered-t"> Events</span><i class="inertitsid-img l-m10 mobile-hide">&nbsp;</i></article>
+<div id="divEventsList">
+                        @{Html.RenderAction("EventsList", "Event", new { Type = Type });}
+
+                    </div>

@@ -81,6 +81,12 @@ namespace TCAssociationTool.Entities
 
         public string Cvv { get; set; }
 
+        public string CardType { get; set; }
+
+        public string CardHolderFirstName { get; set; }
+
+        public string CardHolderLastName { get; set; }
+
         public string PaymentStatus { get; set; }
 
         public string Fax { get; set; }

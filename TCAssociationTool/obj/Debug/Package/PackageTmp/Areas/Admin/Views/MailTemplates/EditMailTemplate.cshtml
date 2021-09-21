@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "EditMailTemplate";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.MailTemplates objTemplates = ViewBag.objTemplates;
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#Others').addClass('active');
+        $('#wMailTemplates').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+
+    function Validate() {
+
+        if ($.trim($('#Heading').val()) == '') { document.getElementsByName('Heading')[0].placeholder = 'Required'; $('#Heading').focus().addClass("validate"); return false; } else { $('#Heading').focus().removeClass("validate"); }
+        if ($.trim($('#Subject').val()) == '') { document.getElementsByName('Subject')[0].placeholder = 'Required'; $('#Subject').focus().addClass("validate"); return false; } else { $('#Subject').focus().removeClass("validate"); }
+        if (CKEDITOR.instances.Description.getData() == "") { $('#Description').focus().addClass("red-border"); $('#lblDescription').html('Required.'); return false; } else { $('#Description').val(CKEDITOR.instances.Description.getData()); $('#lblDescription').html(''); }
+
+        return true;
+    }
+</script>
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Edit Mail Template </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i> Home</a></li> 
+        <li><a href="@Url.Action("Index", "MailTemplates")"><i class="fa fa-envelope"></i>Mail Templates</a></li>
+        <li class="active">Edit Mail Templates</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="clearfix sepH_b"></div>
+    @using (Html.BeginForm("AddMailTemplate", "MailTemplates", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+     <input type="hidden" name="MailTemplateId" id="MailTemplateId" value="@objTemplates.MailTemplateId" />
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Mail Template Details </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Heading: <span class="red-t">*</span></label>
+                        <input type="text" id="Heading" onkeypress="ResetValidateClass();" value=" @objTemplates.Heading" onclick="ResetValidateClass();" name="Heading" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Subject :<span class="red-t">*</span></label>
+                        <input type="text" id="Subject" value="@objTemplates.Subject"onclick="ResetValidateClass();" name="Subject" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Mail Type : </label>
+                        <select id="MailType" class="form-control" name="MailType" onclick="ResetValidateClass();">
+                            <option value="">-- Select Category --</option>
+                           <option value="">Selct Mail Type</option>
+                                                    <option @(objTemplates.MailType == "Auto" ? "selected=selected" : "") value="Auto">Auto</option>
+                                                    <option @(objTemplates.MailType == "Manual" ? "selected=selected" : "") value="Manual">Manual</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-lg-12 col-sm-6">
+                        <label>Description : <span class="red-t">*</span></label>
+                        <textarea rows="10" name="Description" id="Description" cols="80" style="visibility: hidden; display: none;">@objTemplates.Description</textarea><br />
+                        <label id="lblDescription" class="field-validation-error"></label>
+                        <script type="text/javascript">
+                            var editor = CKEDITOR.replace('Description', { contentsCss: '../css/editor.css' });
+                            
+                        </script>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body text-right">
+                <input type="submit" value="Submit" class="btn btn-primary" onclick="return Validate();" />
+                <a class="btn btn-info" href="@Url.Action("Index", "MailTemplates")">Cancel</a>
+            </div>
+            <!-- /.box-body -->
+        </div> 
+    }
+</div>

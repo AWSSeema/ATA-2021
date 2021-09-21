@@ -1,0 +1,189 @@
+﻿@using System.Configuration;
+@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+    var imgloc = ConfigurationManager.AppSettings["baseurl"] + "Content/committees/thumbphoto/";
+    var imglocNormal = ConfigurationManager.AppSettings["baseurl"] + "Content/committees/normalphoto/";
+
+    List<TCAssociationTool.Entities.Committees> lstCommittees = ViewBag.lstCommittees;    
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('#MWebsite').addClass('active'); 
+    });
+
+    function CommitteeStatus(CommitteeId) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CommitteeStatus", "Committees")', // the URL of the controller action method
+            data: { CommitteeId: CommitteeId }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    $('#divmessage').html(result.data);
+                    Onload($('#hdnPageNo').val());
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+                else {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+    function DeleteCommittee(CommitteeMemberId) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteCommitteeMember", "CommitteeMember")',  // the URL of the controller action method
+                data: { CommitteeMemberId: CommitteeMemberId }, // optional data
+                success: function (result) {
+                    if (result.ok) {
+                        $("#divmessage").html(result.data);
+                        Onload($('#hdnPageNo').val());
+                        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    }
+                    else {
+                        $("#divmessage").val(result.data);
+                        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    }
+                },
+            });
+        }
+    }
+
+    function UpdateDisplayOrder(i, CommitteeMemberId) {
+        var DisplayOrder = parseInt($('#DisplayOrder' + i).val());
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("CommitteeMemberDisplayOrder", "CommitteeMember")',
+            data: { DisplayOrder: DisplayOrder, CommitteeMemberId: CommitteeMemberId },
+            success: function (result) {
+                var div = '';
+                if (result.ok) {
+                    $("#divmessage").html(result.data);
+                    Onload(1);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+                else {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+</script>
+
+
+        @if (Total == -1)
+        {
+            <div class="norecords">Sorry failed processing your request.</div> 
+        }
+        else
+        {
+            <table width="100%" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th width="7%">S.No.</th>
+                        <th width="8%">Picture</th>
+                        <th width="12%">
+                            <a onclick="javascript:sortresult('Name');" class="white-t-u">Name @if (sortcolumn == "Name")
+                         {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }
+                        </th>
+                        <th width="20%">
+                            <a onclick="javascript:sortresult('Email');" class="white-t-u">Email @if (sortcolumn == "Email")
+                         {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }
+                        </th>
+                        <th width="12%">
+                            <a onclick="javascript:sortresult('PhoneNo');" class="white-t-u">Phone @if (sortcolumn == "PhoneNo")
+                         {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }
+                        </th>
+                        <th width="9%">
+                            <a onclick="javascript:sortresult('City');" class="white-t-u">City @if (sortcolumn == "City")
+                         {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }
+                        </th>
+                        <th width="12%">
+                            <a onclick="javascript:sortresult('DisplayOrder');" class="white-t-u">Order No @if (sortcolumn == "DisplayOrder")
+                                                                                                           {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }
+                        </th>
+                         <th width="9%">Status</th>
+                        <th width="8%">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (lstCommittees.Count != 0)
+                    {
+                        int i = 0;
+                        foreach (var item in lstCommittees)
+                        {
+                        <tr valign="top">
+                            <td>@item.RId
+                                </td>
+                           <td>
+                                <img width="50px"  title="@item.Name" alt="@item.Name" src="@TCAssociationTool.BLL.Common.ValidateImage((imgloc + item.ImageUrl), imgloc + "no-image.png")" class="borwhite5 border-radius shadow" />
+                            </td>
+                            <td style="text-align: left"><a href="@Url.Action("EditCommittee", "Committees", new { CommitteeId =  item.CommitteeId,CommitteeCategoryId= item.CommitteeCategoryId })"> @item.Name</a></td>
+                            <td>@item.Email</td>
+                            <td>@(item.PhoneNo != null && item.PhoneNo != "" ? item.PhoneNo : "N/A")</td>
+                            <td>@(item.City != null && item.City != "" ? item.City : "N/A")</td>
+                            <td>
+                                <input type="text" style="width:50px;margin-bottom:0px;" maxlength="3" id="DisplayOrder@(i)" value="@item.DisplayOrder" onkeypress ="return Common.isNumberKey(event)"/>
+                            <a onclick="UpdateDisplayOrder(@i,@item.CommitteeMemberId);" title="Update"><i class="fa fa-fw fa-refresh"></i></a>                   
+                                
+                            </td>
+                            <td>
+                                @{
+                            var isactive = "";
+                            var active = "";
+                            var disable = "";
+                            if (item.IsActive == true)
+                            {
+                                isactive = "Active";
+                                disable = "style=\"cursor: pointer;\" onclick=\"javascript:CommitteeStatus(" + item.CommitteeId + ");\"";
+                            }
+                            else
+                            {
+                                isactive = "Disabled";
+                                active = "style=\"cursor: pointer;\" onclick=\"javascript:CommitteeStatus(" + item.CommitteeId + ");\"";
+                            }
+                                    <div class="admin-active">@isactive
+                                        <ul>
+                                            <li><a @Html.Raw(active) >Active</a></li>
+                                            <li><a @Html.Raw(disable) >Disabled</a></li>
+                                        </ul>
+                                    </div>      
+                                }
+                            </td>
+                            <td style="text-align: center;"><a title="Edit" onclick="AddEditValidate('edit', @item.CommitteeMemberId);" ><i class="fa fa-pencil-square-o"></i>
+                            </a>
+                                <a title="Delete" class="cmdelete" onclick="javascript:DeleteCommittee(@item.CommitteeMemberId);"><i class="fa fa-trash-o"></i></a>
+                                @*<a title="Delete" class="sepV_a disable-alpha"><i class="icon-trash"></i></a>*@
+                            </td>
+                        </tr>
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="norecords" colspan="9">No Committee Members Found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        }
+     
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.pageno, "pagination pagination-centered"))

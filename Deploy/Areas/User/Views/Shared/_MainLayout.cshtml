@@ -1,0 +1,855 @@
+﻿@{
+    var baseurl = System.Configuration.ConfigurationManager.AppSettings["baseurl"];
+    var appname = System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+    TCAssociationTool.BLL.AppInfo _AppInfo = new TCAssociationTool.BLL.AppInfo();
+    TCAssociationTool.Entities.InnerPages objInnerPages = new TCAssociationTool.Entities.InnerPages();
+    TCAssociationTool.Entities.InnerPages objMInnerPages = new TCAssociationTool.Entities.InnerPages();
+    TCAssociationTool.Entities.InnerPages objPInnerPages = new TCAssociationTool.Entities.InnerPages();
+    TCAssociationTool.Entities.InnerPages objSInnerPages = new TCAssociationTool.Entities.InnerPages();
+    TCAssociationTool.Entities.AppInfo objAppInfo = new TCAssociationTool.Entities.AppInfo();
+    List<TCAssociationTool.Entities.News> lstNews = new List<TCAssociationTool.Entities.News>();
+    List<TCAssociationTool.Entities.Videos> lstVideos = new List<TCAssociationTool.Entities.Videos>();
+    List<TCAssociationTool.Entities.Events> lstUpcommingEvents = new List<TCAssociationTool.Entities.Events>();
+    List<TCAssociationTool.Entities.Events> lstEvents = new List<TCAssociationTool.Entities.Events>();
+    List<TCAssociationTool.Entities.InnerPageCategories> lstMenuItems = new List<TCAssociationTool.Entities.InnerPageCategories>();
+    List<TCAssociationTool.Entities.InnerPageCategories> lstMenuItems2 = new List<TCAssociationTool.Entities.InnerPageCategories>();
+    List<TCAssociationTool.Entities.InnerPageCategories> lstMenuItems3 = new List<TCAssociationTool.Entities.InnerPageCategories>();
+    List<TCAssociationTool.Entities.InnerPageCategories> lstMenuItems4 = new List<TCAssociationTool.Entities.InnerPageCategories>();
+    List<TCAssociationTool.Entities.InnerPageCategories> FooterMenuItems = new List<TCAssociationTool.Entities.InnerPageCategories>();
+    List<TCAssociationTool.Entities.InnerPageCategories> MenuItems = new List<TCAssociationTool.Entities.InnerPageCategories>();
+    List<TCAssociationTool.Entities.Photos> lstPhotos = new List<TCAssociationTool.Entities.Photos>();
+
+
+    var imglocEvent = System.Configuration.ConfigurationManager.AppSettings["adminimgurl"] + "events/banners/";
+
+    List<TCAssociationTool.Entities.CommitteeCategories> lstCommitteeCategories = new List<TCAssociationTool.Entities.CommitteeCategories>();
+
+
+    List<TCAssociationTool.Entities.Sponsors> lstSponsors = new List<TCAssociationTool.Entities.Sponsors>();
+    List<TCAssociationTool.Entities.Sponsors> lstMediaSponsors = new List<TCAssociationTool.Entities.Sponsors>();
+    List<TCAssociationTool.Entities.SponsorCategories> lstSponsorCategories = new List<TCAssociationTool.Entities.SponsorCategories>();
+
+    List<TCAssociationTool.Entities.InnerPages> lstInnerPages = ViewBag.lstInnerPages;
+    List<TCAssociationTool.Entities.InnerPageCategories> lstInnerPageCategories = ViewBag.lstInnerPageCategories;
+    int Status = 0;
+    int AStatus = 0;
+
+    objInnerPages = _AppInfo.FEGetListMainLayout(this.User.Identity.Name,
+        ref lstNews,
+        ref lstSponsors,
+        ref lstMediaSponsors,
+        ref objAppInfo,
+         ref lstPhotos,
+          ref lstVideos,
+         ref lstSponsorCategories,
+           ref lstMenuItems, ref lstMenuItems2, ref lstMenuItems3, ref lstMenuItems4, ref FooterMenuItems,
+          ref objSInnerPages,
+            ref Status);
+
+    lstNews = objInnerPages.lstNews;
+    lstSponsors = objInnerPages.lstSponsors;
+    lstSponsors = objInnerPages.lstSponsors;
+    lstSponsorCategories = objInnerPages.lstSponsorCategories;
+    lstMediaSponsors = objInnerPages.lstMediaSponsors;
+    lstUpcommingEvents = objInnerPages.lstUpcommingEvents;
+    lstInnerPages = objInnerPages.lstInnerPages;
+    lstInnerPageCategories = objInnerPages.lstInnerPageCategories;
+    objSInnerPages = objInnerPages.objSInnerPages;
+
+    var imglocsponsor = System.Configuration.ConfigurationManager.AppSettings["adminimgurl"] + "Sponsors/";
+
+    MenuItems = lstMenuItems.Concat(lstMenuItems2).Concat(lstMenuItems3).Concat(lstMenuItems4).ToList();
+
+    objAppInfo = _AppInfo.GetAppInfoDetails(ref AStatus);
+
+    string str = "";
+    if (ViewBag.str != null && ViewBag.str != "")
+    {
+        str = ViewBag.str;
+    }
+
+    string str1 = "";
+    if (TempData["forgot"] != null)
+    {
+        str1 = TempData["forgot"].ToString();
+    }
+
+    var gnimgloc = System.Configuration.ConfigurationManager.AppSettings["adminimgurl"] + "photogallery/normalphoto/";
+    var gtimgloc = System.Configuration.ConfigurationManager.AppSettings["adminimgurl"] + "photogallery/thumb/";
+
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 5.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Cache-control" content="description" />
+    <meta http-equiv="Cache-control" content="public" />
+    <meta http-equiv="Cache-control" content="private" />
+    <meta http-equiv="Cache-control" content="no-cache" />
+    <meta http-equiv="Cache-control" content="no-store" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <base href="@(baseurl)" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="description" content="@((string)ViewBag.MetaDescription != "" && (string)ViewBag.MetaDescription != null ? (string)ViewBag.MetaDescription : (objAppInfo.MetaDescription != null && objAppInfo.MetaDescription != "" ? objAppInfo.MetaDescription : @appname))" />
+    <meta name="keywords" content="@((string)ViewBag.MetaKeywords != "" && (string)ViewBag.MetaKeywords != null ? (string)ViewBag.MetaKeywords : (objAppInfo.MetaKeywords != null && objAppInfo.MetaKeywords != "" ? objAppInfo.MetaKeywords : @appname))" />
+    <title>@((string)ViewBag.Title != "" && (string)ViewBag.Title != null ? (string)ViewBag.Title : (objAppInfo.PageTitle != null && objAppInfo.PageTitle != "" ? objAppInfo.PageTitle : @appname))</title>
+    <link rel="shortcut icon" href="Content/User/images/fevicon.ico" />
+    <link rel="stylesheet" type="text/css" href="Content/User/ata.css" />
+    <link rel="stylesheet" type="text/css" href="Content/User/default.css" />
+    <link rel="stylesheet" type="text/css" href="Content/User/styles.css" />
+    <script type="text/javascript" src="Scripts/User/jquery.min.js"></script>
+    <script type="text/javascript" src="Scripts/User/jquery.nivo.slider.js"></script>
+    <script type="text/javascript" src="Scripts/User/Common.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if ('@ViewBag.str' == 'login-failed') {
+                LoginShow();
+                $('#ErrorMessage').show();
+            }
+
+
+            $('#login').dialog
+             ({
+                 autoOpen: false,
+                 width: 600,
+                 modal: true
+             });
+
+            $('#forgot-password').dialog
+            ({
+                autoOpen: false,
+                width: 600,
+                modal: true
+            });
+
+            if ('@str1' != "") {
+                $('#failedmsg1').html('@str1');
+                $('#failedmsg1').show();
+                $('#login1').dialog('open');
+                forgotshow();
+
+                $('#Email2').val('');
+
+                $('#Email2').removeClass('validate');
+
+                if ('@str1' == 'Password details sent to Email Id registered.') {
+                      setTimeout(LoginShow, 5000);
+                  }
+                  else {
+                      setTimeout(fmsghide, 7000);
+                  }
+              }
+
+        });
+          function forgotpasswordshow() {
+              $('#login').dialog('close');
+              $('#Email2').val('').removeClass('validate');
+              $('#forgot-password').dialog('open');
+          }
+          function LoginShow() {
+              $('#forgot-password').dialog('close');
+              $('#Email1').val('').removeClass('validate');
+              $('#Password1').val('').removeClass('validate');
+              $('#ErrorMessage').hide();
+              $('#login').dialog('open');
+          }
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.closable').append('<span id="lblclose" class="closelink" title="Close"></span>');
+            $('.closelink').click(function () {
+                $(this).parent().fadeOut('600', function () { $(this).remove(); });
+            });
+        });
+
+
+        function LoginValidate() {
+
+            var return_val = true;
+
+            if ($('#Password1').val() == "") { $('#Password1').focus().addClass('redborder'); $('#spanPassword1').show().html('Password Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return_val = false; } else { $('#spanPassword1').hide().html(''); $('#Password1').removeClass('redborder'); }
+            if ($.trim($('#Email1').val()) == '') { $('#Email1').focus().addClass('redborder'); $('#spanEmail1').show().html('Email Id Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanEmail1').hide().html(''); $('#Email1').removeClass("redborder"); }
+            if (!Common.CheckEmail($.trim($('#Email1').val()))) { $('#spanEmail1').show().html('Please enter valid email address.<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#Email1').focus().addClass("red-border"); return false; } else { $('#spanEmail1').html(''); }
+            $('.errormsg').append('<abbr onclick="closeValidation(this);">&nbsp;</abbr>');
+
+            return return_val;
+
+
+            //if ($('#Email1').val() == "") { $('#Email1').focus().addClass("validate"); return false; } else { $('#Email1').removeClass("validate"); }
+            //if (!Common.CheckEmail($('#Email1').val())) { $('#Email1').val(''); document.getElementsByName('Email')[0].placeholder = 'Invalid email address'; $('#Email1').focus().addClass("validate"); return false; } else { $('#Email1').removeClass("validate"); }
+            //if ($('#Password1').val() == '') { $('#Password1').focus().addClass("validate"); return false; } else { $('#Password1').focus().removeClass("validate"); }
+
+
+            //return true;
+        }
+
+        function closeValidation(field) {
+            $(field).parent().hide();
+        }
+
+        function ResetValidateClass() {
+            $('#Email1').removeClass("validate");
+            $('#Password1').removeClass("validate");
+
+        }
+
+        function fmsghide() {
+            $('#failedmsg1').hide();
+        }
+
+        function PostLogin() {
+            if (LoginValidate()) {
+                var model = {};
+                model.Email = $('#Email1').val();
+                model.Password = $('#Password1').val();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("LogOn", "Members")', // the URL of the controller action method
+                    data: JSON.stringify(model),
+                    datatype: "JSON",
+                    contentType: 'application/json',
+                    success: function (result) {
+                        if (result.ok) {
+                            window.location.href = '@baseurl' + 'profile.html';
+                        }
+                        else {
+                            $('#LoginBtn').removeAttr('disabled');
+                            $('#failedmsg').html(result.data).show();
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+    <script type="text/javascript">
+
+        function ValidateFPword1() {
+
+            if ($('#Email2').val() == "") { $('#Email2').focus().addClass('redborder'); $('#spanEmail2').show().html('Email Id Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanEmail2').hide().html(''); $('#Email2').removeClass("redborder"); }
+            if (!Common.CheckEmail($.trim($('#Email2').val()))) { $('#spanEmail2').show().html('Please enter valid email address.<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#Email2').focus().addClass("red-border"); return false; } else { $('#spanEmail2').html(''); }
+
+            //if ($.trim($('#Email2').val()) == '') { $('#Email2').focus().addClass("validate"); return false; } else { $('#Email2').focus().removeClass("validate"); }
+            //if (!Common.CheckEmail($('#Email2').val())) { $('#Email2').val(''); document.getElementsByName('Email')[0].placeholder = 'Invalid email address'; $('#Email2').focus().addClass("validate"); return false; } else { $('#Email2').removeClass("validate"); }
+
+            return true;
+        }
+        function ResetValidateClass() {
+            $('#Email').removeClass("validate");
+        }
+    </script>
+    <SCRIPT type="text/javascript">
+<!--    //set image paths
+        src = ["Content/User/images/user-icon1.png", "Content/User/images/no-image-2.png"] //set corresponding urls
+
+
+        //set duration for each image
+        duration = 3;
+
+        //Please do not edit below
+        ads = []; ct = 0;
+        function switchAd() {
+            var n = (ct + 1) % src.length;
+            if (ads[n] && (ads[n].complete || ads[n].complete == null)) {
+                document["Ad_Image"].src = ads[ct = n].src;
+            }
+            ads[n = (ct + 1) % src.length] = new Image;
+            ads[n].src = src[n];
+            setTimeout("switchAd()", duration * 1000);
+        }
+        function doLink() {
+            location.href = url[ct];
+        } onload = function () {
+            if (document.images)
+                switchAd();
+        }
+        //-->
+    </SCRIPT>
+    <!--[if lt IE 9]>
+          <script src="Scripts/User/html5shiv.min.js"></script>
+          <script src="Scripts/User/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <article class="clearfix position-r">
+        <article class="clearfix msg-caption">
+            <div id="divmessage">
+                <div class="pull-right mobile-pull-n" style="max-width:450px; min-width:450px;">
+                    @if (TempData["message"] != null)
+                    {@Html.Raw(TempData["message"].ToString())}
+                    @if (ViewBag.message != null)
+                    {@Html.Raw(ViewBag.message.ToString())}
+                </div>
+            </div>
+
+        </article>
+
+    </article>
+
+
+
+    <section class="clearfix off_canvas_animate slide off_canvas_container">
+        <article class="clearfix off_canvas_animate slide off_canvas_top_menu">
+            <article class="clearfix off_canvas_toggles"> <span class="nav_prev_btn"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Back</span> <span class="nav_close_btn"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span> </article>
+        </article>
+    </section>
+    <main class="clearfix content_animate slide content">
+        <!---  Header Section Start ------>
+        <header>
+            <article class="clearfix wrapper headerbac-bg">
+                <article class="clearfix topheadbor">
+                    <article class="clearfix sidestatues-imgs">
+                        <article class="clearfix inner-wrapper">
+                            <article class="clearfix charminar-img">
+                                <article class="clearfix block-row">
+                                    <article class="clearfix left-block eng-head-block"> <a href="@Url.Action("Index", "Home")" class="dis-b t-r t-m26 b-m21"> <img src="Content/User/images/english-title-logo.png" width="418" height="121" alt="" border="0" /> </a> </article>
+                                    <article class="clearfix middle-block h-logo-block position-r"> <a href="index.html" class="dis-b t-c toplogopos"> <img src="Content/User/images/logo.png" class="logoshad" width="205" height="189" alt="" border="0" /> </a> </article>
+                                    <article class="clearfix right-block tel-head-block"> <a href="@Url.Action("Index", "Home")" class="dis-b t-r t-m20"> <img src="Content/User/images/telugu-title-logo.png" width="420" height="128" alt="" border="0" /> </a> </article>
+                                </article>
+                            </article>
+                        </article>
+                    </article>
+                </article>
+            </article>
+            <article class="clearfix wrapper menubac-bg ">
+                <article class="clearfix inner-wrapper ">
+                    <menu class="clearfix">
+                        <span class="nav_toggle pull-right"> <span class="glyphicon glyphicon-align-justify b-p3" aria-hidden="true"></span> </span>
+                        <nav class="clearfix resmenuwrapper ">                            
+                            <ul class="clearfix list-pn m0 menu">
+                                <li class="active"><a href="@Url.Action("Index", "Home")">Home</a></li>
+                                <li>
+                                    <a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("About ATA") })">About ATA</a>
+                                    <section class="clearfix menudropdown">
+                                        <ul class="clearfix list-pn submenu">
+                                            <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("About ATA") })">About ATA</a></li>
+                                            <li><a href="Content/User/pdf/ATA_History.pdf" target="_blank" title="ATA History">ATA History</a></li>
+                                            <li><a href="Content/User/pdf/ATABYLAWS.pdf" target="_blank" title="ATA BY-LAWS">ATA BY-LAWS</a></li>
+                                            <li><a href="Content/User/pdf/ATACONSTITUTION.pdf" target="_blank" title="ATA constitution">ATA Constitution</a></li>
+                                            <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("ATA Mission") })">ATA Mission</a></li>
+                                        </ul>
+                                    </section>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Leadership") })">Leadership</a>
+                                    <section class="clearfix menudropdown">
+                                        <ul class="clearfix list-pn submenu">
+                                            <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Leadership") })">Organization</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Board of Trustees" })">Board of Trustees</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Executive Committee" })">Executive Committee</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Executive Director" })">Executive Director</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Advisory Committee" })">Advisory Committee </a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="ATA Office" })">ATA Office</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Standing Committees" })">Standing Committees</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="ATA Convention" })">ATA Convention</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Women Coordinators" })">Women Coordinators</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Regional Directors" })">Regional Directors</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Regional Coordinators" })">Regional Coordinators</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="Regional Advisors" })">Regional Advisors</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="International Coordinators" })">International Coordinators</a></li>
+                                            <li><a href="@Url.Action("Index", "Committee" , new { CType ="India Team" })">India Team</a></li>
+                                        </ul>
+                                    </section>
+                                </li>
+                                <li>
+                                    <a href="about-us.html">Membership</a>
+                                    <section class="clearfix menudropdown">
+                                        <ul class="clearfix list-pn submenu">
+                                            <li><a href="membership.html">Membership Registration</a></li>
+                                            <li><a href="membership-rewards.html">Membership Rewards</a></li>
+                                            <li><a href="member-benefits.html">Member Benefits</a></li>
+                                            <li><a href="membership-verification.html">Membership Verification</a></li>
+                                        </ul>
+                                    </section>
+                                </li>
+                                <li>
+                                    <a href="charity-projects.html">Charity / Projects</a>
+                                    <section class="clearfix menudropdown">
+                                        <ul class="clearfix list-pn submenu">
+                                            <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("charity-projects") })">Adopt A Village</a></li>
+                                            <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Adopt A Student") })">Adopt A Student</a></li>
+                                            <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Student Fund") })">Student Fund</a></li>
+                                            <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Community Service") })">Community Service</a></li>
+                                            <li><a href="donor.html">Donate to A Cause</a></li>
+                                            <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Adopt Gattu Mandal") })">Adopt Gattu Mandal</a></li>
+                                        </ul>
+                                    </section>
+                                </li>
+                                <!-- <li><a href="update-soon.html">Charity / Projects</a></li> -->
+                                <li>
+                                    <a href="gallery.html">Gallery</a>
+                                    <section class="clearfix menudropdown">
+                                        <ul class="clearfix list-pn submenu">
+                                            <li><a href="@Url.Action("PhotosList", "Gallery")">Photo Gallery</a></li>
+                                            <li><a href="@Url.Action("Videos","Gallery")">Video Gallery</a></li>
+                                        </ul>
+                                    </section>
+                                </li>
+                                <li><a href="media.html">Media</a></li>
+                                <li><a href="contact-us.html">CONTACT US</a></li>
+                            </ul>
+                        </nav>
+                    </menu>
+                </article>
+            </article>
+        </header>
+
+        <!---  Header Section End ------>
+        <!---  Main Section Start ------>
+        <section class="clearfix wrapper mainbac-bg b-p80 ">
+            <article class="clearfix banbac-bg2">
+                <!---  News Section Start ------>
+                <article class="clearfix inner-wrapper">
+                    <article class="clearfix block-row t-m30">                       
+                            <article class="clearfix latenew-bg t-radius6">
+            <article class="clearfix left-block2">
+              <article class="clearfix latestt-bgg t-p14">
+                <h3 class="clearfix m0 Arnprior font18 lates-tex l-h18 t-b-p11 t-c mobile-l-p0 mobile-t-c">Latest News<i class="latest-ico l-m5">&nbsp;</i></h3>
+              </article>
+            </article>
+            <article class="clearfix right-block2 news-middle-block t-p10 tabhorizontal-b-p10">
+              <article class="clearfix">
+                <article class="clearfix news overflow-h position-r tabhorizontal-l-p0"><ul class="clearfix m0 list-pn list-f latestnew-li">
+                    @if (lstNews != null && lstNews.Count != 0)
+                                            {
+                                                foreach (var item in lstNews)
+                                                {
+                                                    <li><a href="@Url.Action("Index", "News", new { nid = item.NewsId })">@item.Title <span class="yel-t">Click Here.</span></a></li>
+
+                                                }
+                                            }
+                  </ul>
+                </article>
+				
+              </article>
+            </article>
+			<!-- login btn -->
+			 <article class="clearfix login-end-block t-c t-p10 tabhorizontal-b-p10">
+				<article class="clearfix">
+					<a href="login.html" class="lgn-btn white-t font17 t-t-u">login</a>
+				</article>
+			 </article>
+			<!-- login btn ends-->
+          </article>
+                        </article>
+                    </article>
+                </article>
+                <!---  News Section End ------>
+                <!---  Images Section Start ------>
+                <article class="clearfix inner-wrapper t-p25 tabhorizontal-t-p15 tabhorizontal-b-m15 mobile-b-m5">
+                    @Html.Raw(objSInnerPages.Description)
+                </article>
+                <!---  Images Section ends ------>
+                <article class="clearfix inner-wrapper t-p25">
+                    <ul class="clearfix m0 list-f list-pn buttonslis">
+                        <li><a href="@Url.Action("AddMember","Members")"><i class="buttonimg1 r-m8"></i><span class="butexshad">Become A Member</span></a></li>
+                        <li><a href="@Url.Action("Index", "Donation")"><i class="buttonimg2 r-m8"></i><span class="butexshad">Donate Now</span></a></li>
+                        <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Scholarship Applic") })"><i class="buttonimg3 r-m8"></i><span class="butexshad">Scholarship Applic</span></a></li>
+                        <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("Health Bulletin") })"><i class="buttonimg4 r-m8"></i><span class="butexshad">Health Bulletin</span></a></li>
+                        <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("STUDENT SERVICES") })"><i class="buttonimg5 r-m8"></i><span class="butexshad">STUDENT SERVICES</span></a></li>
+                        <li><a href="@Url.Action("GetPageDetails", "InnerPages", new { PageTitle = TCAssociationTool.BLL.Common.EncodeURL("America Bharathi") })"><i class="buttonimg6 r-m8"></i><span class="butexshad">America Bharathi</span></a></li>
+                    </ul>
+                </article>
+                <article class="clearfix inner-wrapper t-p25">
+                    <article class="clearfix foot-bg1"></article>
+                    <article class="clearfix foot-bg2"></article>
+                    <article class="clearfix white-bg eventsbag-shad">
+                        <article class="clearfix eventstopbotbor">
+                            <article class="clearfix t-p25 b-p40 l-r-p35">
+                                <div class="clearfix block-row">
+
+                                    <div class="clearfix left-block7 r-p30 tabhorizontal-r-p0">
+                                        @RenderBody()
+                                    </div>
+
+                                    <div class="clearfix right-block7 tabhorizontal-hide">
+                                        <article class="clearfix quciklinks-bg position-r">
+                                            <article class="clearfix sponsortit-bg">
+                                                <h4 class="clearfix m0 FuturaPT-Demi white-t font24 t-t-u l-h24 t-c t-p8">Sponsors</h4>
+                                            </article>
+                                            <article class="clearfix t-m4">
+                                                <article class="clearfix sponsors overflow-h position-r">
+                                                    @if (lstSponsors != null && lstSponsors.Count != 0)
+                                                    {
+                                                        <ul class="clearfix m0 list-pn sponsorlis">
+                                                            @foreach (var item in lstSponsors)
+                                                            {
+
+                                                                <li>
+                                                                    @if (item.RedirectUrl != null && item.RedirectUrl != "")
+                                                                    {
+                                                                        <img src="@(imglocsponsor + item.LogoUrl)" class="border sponsorbord" alt="Img" width="190" height="85" />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img src="@(imglocsponsor + item.LogoUrl)" class="border sponsorbord" alt="Img" width="190" height="85" />
+                                                                    }
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    }
+                                                </article>
+                                            </article>
+                                            <article class="clearfix sponsortit-bg t-m20">
+                                                <h4 class="clearfix m0 FuturaPT-Demi white-t font24 t-t-u l-h24 t-c t-p8">Sponsors</h4>
+                                            </article>
+                                            <article class="clearfix t-m4">
+                                                <article class="clearfix sponsors overflow-h position-r">
+                                                    <ul class="clearfix m0 list-pn sponsorlis">
+                                                        @foreach (var item in lstSponsors)
+                                                        {
+
+                                                            <li>
+                                                                @if (item.RedirectUrl != null && item.RedirectUrl != "")
+                                                                {
+                                                                    <img src="@(imglocsponsor + item.LogoUrl)" class="border sponsorbord" alt="Img" width="190" height="85" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <img src="@(imglocsponsor + item.LogoUrl)" class="border sponsorbord" alt="Img" width="190" height="85" />
+                                                                }
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </article>
+                                            </article>
+                                        </article>
+                                        <article class="clearfix quciklinks-bg position-r mt-20p">
+                                            <article class="clearfix quicklintit-bg">
+                                                <h4 class="clearfix m0 FuturaPT-Demi white-t font24 t-t-u l-h24 t-c t-p8">Quick Links</h4>
+                                            </article>
+                                            <ul class="clearfix m0 list-pn quicklis l-p20 t-p50">
+                                                <li><a href="#"><i class="quick-ico1"></i>COMMITTEES</a></li>
+                                                <li><a href="#"><i class="quick-ico2"></i>LITERATURE</a></li>
+                                                <li><a href="#"><i class="quick-ico3"></i>BUSINESS FORUM</a></li>
+                                                <li><a href="#"><i class="quick-ico4"></i>WOMEN'S FORUM</a></li>
+                                                <li><a href="#"><i class="quick-ico5"></i>SPIRITUALITY</a></li>
+                                                <li><a href="#"><i class="quick-ico1"></i>STUDENT FORUM</a></li>
+                                                <li><a href="#"><i class="quick-ico2"></i>YOUTH FORUM</a></li>
+                                                <li><a href="#"><i class="quick-ico3"></i>IMMIGRATION</a></li>
+                                                <li><a href="#"><i class="quick-ico4"></i>PAST CONVENTIONS</a></li>
+                                                <li><a href="#"><i class="quick-ico5"></i>PRESIDENT'S CLUB</a></li>
+                                                <li><a href="#"><i class="quick-ico1"></i>PROGRAMS & EVENTS</a></li>
+                                                <li><a href="#"><i class="quick-ico2"></i>CLASSIFIEDS</a></li>
+                                                <li><a href="#"><i class="quick-ico3"></i>IN MEDIA</a></li>
+                                            </ul>
+                                        </article>
+                                    </div>
+                                    <div class="clearfix right-block7 resp-inn-sponser-block tabhorizontal-visible">
+                                        <div class="clearfix part-row">
+                                            <div class="part-6">
+                                                <article class="clearfix quciklinks-bg position-r b-m15">
+                                                    <article class="clearfix sponsortit-bg">
+                                                        <h4 class="clearfix m0 FuturaPT-Demi white-t font24 t-t-u l-h24 t-c t-p8">Sponsors</h4>
+                                                    </article>
+                                                    <article class="clearfix t-m4">
+                                                        <article class="clearfix sponsors overflow-h position-r">
+                                                            <ul class="clearfix m0 list-pn sponsorlis">
+                                                                <li><img src="Content/images/sponsor-img1.jpg" class="border sponsorbord" alt="Img" width="190" height="85"></li>
+                                                                <li><img src="Content/images/sponsor-img2.jpg" class="border sponsorbord" alt="Img" width="190" height="85"></li>
+                                                            </ul>
+                                                        </article>
+                                                    </article>
+                                                    <article class="clearfix sponsortit-bg t-m20">
+                                                        <h4 class="clearfix m0 FuturaPT-Demi white-t font24 t-t-u l-h24 t-c t-p8">Sponsors</h4>
+                                                    </article>
+                                                    <article class="clearfix t-m4">
+                                                        <article class="clearfix sponsors overflow-h position-r">
+                                                            <ul class="clearfix m0 list-pn sponsorlis">
+                                                                <li><img src="Content/User/images/sponsor-img1.jpg" class="border sponsorbord" alt="Img" width="190" height="85"></li>
+                                                                <li><img src="Content/User/images/sponsor-img2.jpg" class="border sponsorbord" alt="Img" width="190" height="85"></li>
+                                                            </ul>
+                                                        </article>
+                                                    </article>
+                                                </article>
+                                            </div>
+                                            <div class="part-6 tabhorizontal-l-p30 mobile-l-p0">
+                                                <article class="clearfix quciklinks-bg position-r">
+                                                    <article class="clearfix quicklintit-bg">
+                                                        <h4 class="clearfix m0 FuturaPT-Demi white-t font24 t-t-u l-h24 t-c t-p8">Quick Links</h4>
+                                                    </article>
+                                                    <ul class="clearfix m0 list-pn quicklis l-p20 t-p50">
+                                                        <li><a href="#"><i class="quick-ico1"></i>COMMITTEES</a></li>
+                                                        <li><a href="#"><i class="quick-ico2"></i>LITERATURE</a></li>
+                                                        <li><a href="#"><i class="quick-ico3"></i>BUSINESS FORUM</a></li>
+                                                        <li><a href="#"><i class="quick-ico4"></i>WOMEN'S FORUM</a></li>
+                                                        <li><a href="#"><i class="quick-ico5"></i>SPIRITUALITY</a></li>
+                                                        <li><a href="#"><i class="quick-ico1"></i>STUDENT FORUM</a></li>
+                                                        <li><a href="#"><i class="quick-ico2"></i>YOUTH FORUM</a></li>
+                                                        <li><a href="#"><i class="quick-ico3"></i>IMMIGRATION</a></li>
+                                                        <li><a href="#"><i class="quick-ico4"></i>PAST CONVENTIONS</a></li>
+                                                        <li><a href="#"><i class="quick-ico5"></i>PRESIDENT'S CLUB</a></li>
+                                                        <li><a href="#"><i class="quick-ico1"></i>PROGRAMS & EVENTS</a></li>
+                                                        <li><a href="#"><i class="quick-ico2"></i>CLASSIFIEDS</a></li>
+                                                        <li><a href="#"><i class="quick-ico3"></i>IN MEDIA</a></li>
+                                                    </ul>
+                                                </article>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        </article>
+                    </article>
+                </article>
+                <!---  Images Section Start ------>
+            </article>
+            <!---  photo Section Start ------>
+            <article class="clearfix inner-wrapper t-p25">
+                <article class="clearfix foot-bg1"></article>
+                <article class="clearfix foot-bg2"></article>
+                <article class="clearfix white-bg eventsbag-shad">
+                    <article class="clearfix eventstopbotbor">
+                        <article class="clearfix t-p25 b-p40 l-r-p20">
+                            <div class="clearfix">
+                                <h3 class="clearfix m0 FuturaPT-Demi font32 l-h32 eventstex-t t-t-u t-c t-p32 b-p20 tabhorizontal-b-p10 tabhorizontal-font26">Photo Gallery</h3>
+                                <article class="clearfix b-p30 tabhorizontal-b-p15">
+                                    @if (lstPhotos != null && lstPhotos.Count != 0)
+                                    {
+                                        <article class="clearfix m0 owl-carousel eventslis2 position-r">
+                                            @foreach (var item in lstPhotos)
+                                            {
+                                                <article class="items">
+                                                    <article class="clearfix"> <img src="@TCAssociationTool.BLL.Common.ValidateImage((gnimgloc + item.ImageUrl), gnimgloc + "no-image.jpg")" alt="Img" width="281" height="185" class="width100" /> </article>
+                                                </article>
+                                            }
+                                        </article>
+                                    }
+                                </article>
+                            </div>
+                            <div class="clearfix">
+                                <h3 class="clearfix m0 FuturaPT-Demi font32 l-h32 eventstex-t t-t-u t-c t-p6 b-p20 tabhorizontal-b-p10 tabhorizontal-font26">Video Gallery</h3>
+                                <article class="clearfix b-p30 tabhorizontal-b-p0">
+                                    @if (lstVideos != null && lstVideos.Count != 0)
+                                    {
+                                        <article class="clearfix m0 owl-carousel eventslis2 position-r">
+                                            @foreach (var item in lstVideos)
+                                            {
+                                                <article class="items">
+                                                    <article class="clearfix">
+                                                        <article class="clearfix position-r">
+                                                            <a href="https://www.youtube.com/embed/@(item.VideoUrl)" data-fancybox-group="gallery" class="various fancybox.iframe dis-b"> <span class="video-icon-hover flip">&nbsp;</span> <img src="http://i1.ytimg.com/vi/@(item.VideoUrl)/hqdefault.jpg" alt="@item.Heading" class="width100" width="" height="" /> </a>
+                                                        </article>
+                                                    </article>
+                                                </article>
+                                            }
+
+                                        </article>
+                                    }
+                                </article>
+
+                            </div>
+                        </article>
+                    </article>
+                </article>
+            </article>
+        </section>
+        <!---  photo Section end ------>
+        <!---  Main Section End ------>
+        <!--footer start-->
+        <article class="clearfix wrapper foot-bor">
+            <article class="clearfix">
+                <article class="clearfix inner-wrapper">
+                    <article class="clearfix foot-max-width">
+                        <article class="t-c"><a href="#"><img src="Content/User/images/bot-logo.png" class="t-m50n" width="146" height="142" alt="" border="0" /></a></article>
+                        <h3 class="m0 FuturaPT-Demi t-t-u font18 l-h20 f-head t-c t-p1" style="letter-spacing:0.5px;">American Telugu Association</h3>
+                        <article class="clearfix block-row t-p20">
+                            <article class="clearfix left-block6 r-p15 tabhorizontal-r-p10 mobile-r-p0">
+                                <article class="f-red-bor">
+                                    <h3 class="m0 Muli font12 l-h12 t-c t-p15">You can get in touch with us by e-mail.</h3>
+                                    <h3 class="m0 Muli-SemiBold font15 l-h16 t-c t-p7 b-p4">Post Box : @objAppInfo.CompanyAddress</h3>
+                                    <h3 class="m0 Muli-SemiBold font15 l-h16 t-c"><a href="mailto:@objAppInfo.CompanyEmail">@objAppInfo.CompanyEmail</a></h3>
+                                </article>
+                            </article>
+                            <article class="clearfix middle-block6 r-p15 tabhorizontal-r-p0 mobile-t-p10">
+                                <article class="f-orange-bor">
+                                    <article class="t-c t-p17">
+                                        <h3 class="m0 Muli font12 l-h12">Alternatively you can give us a call any -time.</h3>
+                                        <h3 class="m0 Montserrat-Medium font32 l-h26 t-p8 tabhorizontal-font28">@objAppInfo.CompanyPhone</h3>
+                                    </article>
+                                </article>
+                            </article>
+                            <article class="clearfix middle-block-6 r-p7 tabhorizontal-t-p10 tabhorizontal-r-p10 mobile-r-p0">
+                                <article class="f-red-bor l-p20 r-p1">
+                                    <h3 class="m0 Muli font12 l-h12 t-c t-p12 b-p7">Subscribe for Newsletter</h3>
+                                    <article class="l-r-m-auto foot-form">
+                                        <article class="clearfix box-row">
+                                            <article class="clearfix box-9">
+                                                <input placeholder="E-mail" id="NEmail" name="NEmail" class="form-control newsletter-form b-m0" style="border:2px solid #cecece; color:#2f2f2f !important; background:transparent !important; min-height:36px!important;font-family: 'Muli';" type="text" />
+                                            </article>
+                                            <article class="clearfix box-2">
+                                                <article class="clearfix l-m3 mobile-t-m0 position-r mobile-t-c">
+                                                    <input value="send" class="b-m0 Montserrat-SemiBold font12 white-t t-t-u t-c" onclick="NewsLetterSubmit();" style="min-height:36px!important; border:0px; border-radius: 2px; background: linear-gradient(to right, #ff3328 0%,#ff981a 100%);margin-left: -5px;padding-left: 15px;padding-right: 15px;letter-spacing: 1px;" type="submit" />
+                                                </article>
+                                            </article>
+                                        </article>
+                                    </article>
+                                </article>
+                            </article>
+                            <article class="clearfix right-block6 l-p8 tabhorizontal-t-p10 tabhorizontal-l-p0">
+                                <article class="f-orange-bor">
+                                    <article class="t-p9">
+                                        <h3 class="m0 Muli font12 l-h12 b-p8 t-c">Connect with us</h3>
+                                        <ul class="clearfix m0 list-f list-pn soc-li l-r-m-auto" style="max-width:194px;">
+                                            @if (objAppInfo.FacebookUrl != null && objAppInfo.FacebookUrl != "")
+                                            {
+                                                <li><a href="@objAppInfo.FacebookUrl" target="_blank"><img src="Content/User/images/fb.png" class="" width="" height="" alt="" border="0" /></a></li>
+                                            }
+                                            @if (objAppInfo.TwitterUrl != null && objAppInfo.TwitterUrl != "")
+                                            {
+                                                <li><a href="@objAppInfo.TwitterUrl" target="_blank"><img src="Content/User/images/twiter.png" class="" width="" height="" alt="" border="0" /></a></li>
+                                            }
+                                            @if (objAppInfo.YoutubeUrl != null && objAppInfo.YoutubeUrl != "")
+                                            {
+                                                <li><a href="@objAppInfo.YoutubeUrl" target="_blank"><img src="Content/User/images/youtube.png" class="" width="" height="" alt="" border="0" /></a></li>
+                                            }
+                                            <li><a href="#" target="_blank"><img src="Content/User/images/google.png" class="" width="" height="" alt="" border="0" /></a></li>
+                                        </ul>
+                                    </article>
+                                </article>
+                            </article>
+                        </article>
+                    </article>
+                </article>
+            </article>
+            <article class="clearfix inner-wrapper">
+                <article class="clearfix botm-menu-maxwid">
+                    <article class="clearfix  mobile-visible t-c l-h20 mobile-t-b-p20"> <a href="#" class="menu-link3 clearfix t-b-m0 t-b-m0 Montserrat-Medium font26" style="color:#25ab43;">Quick Links <span class="dis-b t-c t-p10"> <img src="Content/User/images/down-arrow1.png" width="20" height="14" /> </span> </a> </article>
+                    <article id="menu3" class="clearfix responsive-menu mobile-t-c">
+                        <ul class="clearfix m0 list-f list-pn bottomlis-li t-t-u Muli t-b-p40 mobile-t-c mobile-t-b-p0 letespa1 tabhorizontal-t-b-p20 ">
+                            <li><a href="#">ATA Committees </a></li>
+                            <li><a href="#">Programs And Events</a></li>
+                            <li><a href="#">Youth Programs</a></li>
+                            <li><a href="#"> Charity/Projects</a></li>
+                            <li><a href="#">In Media</a></li>
+                        </ul>
+                    </article>
+                </article>
+            </article>
+        </article>
+        <!--footer end-->
+        <article class="clearfix wrapper dkbrown-bg2 ">
+            <article class="clearfix foot-bg3"></article>
+            <article class="clearfix inner-wrapper text-center">
+                <article class="clearfix t-p32 b-p29 tabhorizontal-t-b-p20 t-c">
+                    <h4 class="clearfix m0 Muli font14 white-t l-h10 dis-in t-m4 tabhorizontal-t-c tabhorizontal-dis-b mobile-l-h18">© 2021 @objAppInfo.SiteName. All rights reserved.</h4>
+                    <!-- <h3 class="clearfix m0 segoeScript white-t font14 l-h12 dis-in f-r tabhorizontal-pull-n tabhorizontal-dis-b tabhorizontal-t-c tabhorizontal-t-p10">Design & developed by <span class="OpenSans"><a href="http://www.innovateindia.in/" target="_blank"><img src="Content/User/images/design.png" /></a></span></h3> -->
+                </article>
+            </article>
+        </article>
+
+
+        <script type="text/javascript" src="Scripts/User/bootstrap.min.js"></script>
+        <script type="text/javascript" src="Scripts/User/jquery.nivo.slider.js"></script>
+        <script type="text/javascript" src="Scripts/User/res-tab.js"></script>
+        <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#enqfrm').dialog
+               ({
+                   autoOpen: false,
+                   width: 750,
+                   modal: true
+               });
+
+        });
+        function CheckEmailAvailabilityforNL(email) {
+            var returnval = null;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CheckEmailAvailabilityforNL", "Home")', // the URL of the controller action method
+                data: { Email: email }, // optional data
+                datatype: "JSON",
+                async: false,
+                success: function (result) {
+                    if (result.ok) {
+                        returnval = result.data;
+                    }
+                }
+            });
+            return returnval;
+        }
+        function ValidateNewsLetter() {
+            if ($('#NEmail').val() == "") { $('#NEmail').focus().addClass("validate"); return false; } else { $('#NEmail').removeClass("validate"); }
+            if (!Common.CheckEmail($('#NEmail').val())) { $('#NEmail').val(''); $('#NEmail').attr('placeholder', 'Invalid email address'); $('#NEmail').focus().addClass("validate"); return false; } else { $('#NEmail').removeClass("validate"); }
+            if (!CheckEmailAvailabilityforNL($.trim($('#NEmail').val()))) { $('#NEmail').val(''); $('#NEmail').attr('placeholder', 'Already has that email. Try another?.'); $('#NEmail').focus().addClass("validate"); return false; } else { $('#NEmail').removeClass("validate"); }
+            return true;
+        }
+
+        function NResetValidateClass() {
+
+            $('#NEmail').removeClass("validate");
+
+        }
+
+        function NewsLetterSubmit() {
+            if (ValidateNewsLetter()) {
+                var Email = $('#NEmail').val();
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("NewsLetterForm", "Home")', // the URL of the controller action method
+                    data: { NEmail: Email }, // optional data
+                    datatype: "JSON",
+                    async: false,
+                    success: function (result) {
+                        if (result.ok) {
+                            $('#formdiv').hide();
+                            $('#messagediv').html(result.message).show();
+                        }
+                        else {
+                            $('#messagediv').html(result.message).show();
+                        }
+                    }
+                });
+            }
+        }
+
+        function subscribenow() {
+            $('#NEmail').val('');
+            $('#NEmail').removeClass("validate");
+            $('#SubscribeNow').dialog('open');
+        }
+
+        function EnqForm() {
+            $('#EName').val('');
+            $('#EEmail').val('');
+            $('#EPhoneNo').val('');
+            $('#EComments').val('');
+            $('#EName').removeClass("validate");
+            $('#EEmail').removeClass("validate");
+            $('#EPhoneNo').removeClass("validate");
+            $('#EComments').removeClass("validate");
+
+            $('#enqfrm').dialog('open');
+        }
+
+        function EnqValidate() {
+            if ($.trim($('#EName').val()) == "") { $('#EName').focus().addClass("validate"); $('#spanEName').show().html('Name Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanEName').hide().html(''); $('#EName').removeClass("validate"); }
+
+            if ($.trim($('#EEmail').val()) == '') { $('#EEmail').focus().addClass('redborder'); $('#spanEEmail').show().html('Email Id Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; }
+            else {
+                $('#spanEEmail').hide().html(''); $('#EEmail').removeClass('redborder');
+                if (!Common.CheckEmail($.trim($('#EEmail').val()))) { $('#spanEEmail').show().html('Please enter valid email. <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#EEmail').focus().addClass("redborder"); return false; } else { $('#spanEEmail').hide().html(''); $('#EEmail').removeClass('redborder'); }
+            }
+
+            if ($.trim($('#EPhoneNo').val()) == "") { $('#EPhoneNo').focus().addClass("validate"); $('#spanEPhoneNo').show().html('Phone No Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanEPhoneNo').hide().html(''); $('#EPhoneNo').removeClass("validate"); }
+
+            if ($.trim($('#EventId').val()) == "") { $('#EventId').focus().addClass("validate"); $('#spanEventId').show().html('Event Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanEventId').hide().html(''); $('#EventId').removeClass("validate"); }
+
+            if ($.trim($('#EComments').val()) == "") { $('#EComments').focus().addClass("validate"); $('#spanEComments').show().html('Comments Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanEComments').hide().html(''); $('#EComments').removeClass("validate"); }
+
+            //if ($.trim($('#EName').val()) == '') { $('#EName').focus().addClass("validate"); return false; } else { $('#EName').focus().removeClass("validate"); }
+            //if ($.trim($('#EEmail').val()) == '') { $('#EEmail').focus().addClass("validate"); return false; } else { $('#EEmail').focus().removeClass("validate"); }
+            //if (!Common.CheckEmail($('#EEmail').val())) { $('#EEmail').val(''); document.getElementsByName('Email')[0].placeholder = 'Please enter valid email id.'; $('#EEmail').focus().addClass("validate"); return false; } else { $('#EEmail').focus().removeClass("validate"); }
+            //if ($('#EPhoneNo').val() == '') { $('#EPhoneNo').focus().addClass("validate"); return false; } else { $('#EPhoneNo').focus().removeClass("validate"); }
+            //if ($.trim($('#EventId').val()) == '') { $('#EventId').focus().addClass('redborder'); $('#spanEventId').show().html('Phone No Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanEventId').hide().html(''); $('#EventId').removeClass('redborder'); }
+            //if ($('#EComments').val() == '') { $('#EComments').focus().addClass("validate"); return false; } else { $('#EComments').focus().removeClass("validate"); }
+            $('#btnreq').hide();
+            $('#btnres').show();
+            return true;
+        }
+        </script>
+</body>
+</html>
+

@@ -1,0 +1,160 @@
+﻿@using System.Configuration;
+@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+
+    List<TCAssociationTool.Entities.Golf2021> lstGolf2021 = ViewBag.lstGolf2021;
+
+
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    }
+}
+
+<script type="text/javascript">
+
+
+    function DeleteGolf2021(Id, ImageUrl) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete", "Golf2021")',  // the URL of the controller action method
+                data: { Id: Id, ImageUrl: ImageUrl }, // optional data
+                success: function (result) {
+                    if (result.ok) {
+                        $('#divmessage').html(result.data);
+                        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                        Golf2021Bind($('#hdnPageNo').val());
+                    }
+                    else {
+                        $('#divmessage').html(result.data);
+                        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    }
+                },
+            });
+        }
+    }
+
+
+   
+</script>
+
+@if (Total == -1)
+{
+    <div class="norecords">Sorry failed processing your request.</div>
+}
+else
+{
+    <table width="100%" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+               
+                <th style="text-align: center;" width="5%">S.No.</th>
+                <th>
+                    <a onclick="javascript:sortresult('playertype');" class="white-t-u">
+                        Player Type @if (sortcolumn == "playertype")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                <th width="10%">
+                    <a onclick="javascript:sortresult('player1_name');" class="white-t-u">
+                        Name @if (sortcolumn == "player1_name")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                <th width="10%">
+                    <a onclick="javascript:sortresult('player1_email');" class="white-t-u">
+                        Email @if (sortcolumn == "player1_email")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                <th width="10%">
+                    <a onclick="javascript:sortresult('player1_phone');" class="white-t-u">
+                        Phone @if (sortcolumn == "player1_phone")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                <th width="10%">
+                    <a onclick="javascript:sortresult('sponsorship');" class="white-t-u">
+                        Sponsorship @if (sortcolumn == "sponsorship")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                <th width="10%">
+                    <a onclick="javascript:sortresult('amount');" class="white-t-u">
+                        Amount @if (sortcolumn == "amount")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+
+                <th width="10%">
+                    <a onclick="javascript:sortresult('payment_status');" class="white-t-u">
+                        Payment Status @if (sortcolumn == "payment_status")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+
+                <th width="10%">
+                    <a onclick="javascript:sortresult('datesent');" class="white-t-u">
+                        Date sent @if (sortcolumn == "datesent")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                <th width="10%">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (lstGolf2021.Count != 0)
+            {
+                int i = 0;
+                foreach (var item in lstGolf2021)
+                {
+            <tr valign="top">
+               
+                <td style="text-align: center;">@item.RId</td>
+                <td class="t-t-c" style="text-align: left">@item.playertype</td>
+                <td class="t-t-c" style="text-align: left">@item.player1_name</td>
+                <td class="t-t-c" style="text-align: left">@item.player1_email</td>
+                <td class="t-t-c" style="text-align: left">@item.player1_phone</td>
+                <td class="t-t-c" style="text-align: left">@item.sponsorship</td>
+                <td class="t-t-c" style="text-align: left">@item.amount</td>
+                <td class="t-t-c" style="text-align: left">@item.PaymentStauts</td>
+
+                <td class="t-t-c" style="text-align: left">@item.created_at.ToString("dd-MM-yyyy")</td>
+
+                <td>
+                    <a href="@Url.Action("ViewGolf2021", "Golf2021", new { Id = item.Id})" title="View" class="r-p5"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("EditGolf2021", "Golf2021", new { Id = item.Id})" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>
+                    @if (userRole.Contains("SuperAdmin"))
+                    {
+                        <a class="themedelete" onclick="javascript:DeleteGolf2021(@item.Id);" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>
+                    }
+                </td>
+            </tr>
+                    i++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td class="norecords" colspan="7">No Records Found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.PageNo, "pagination pagination-centered"))

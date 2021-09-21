@@ -1,0 +1,631 @@
+﻿@{    
+    Layout = "~/Areas/API/Views/Shared/_MainLayout.cshtml";
+
+    var objEvents = (TCAssociationTool.Entities.Events)ViewBag.objEvents;
+    var Memberdetails = (TCAssociationTool.Entities.Members)ViewBag.Memberdetails;
+    var desc = "";
+    var innerpage = (TCAssociationTool.Entities.InnerPages)ViewBag.InnerPage;
+    if (innerpage != null)
+    {
+        desc = innerpage.Description;
+    }
+
+    ViewBag.Title = TCAssociationTool.BLL.Common.DecodeURL(TCAssociationTool.BLL.Common.UppercaseFirst(ViewBag.EventName)) + " Registration - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+
+    decimal MemberTotal = (objEvents.IsChild == true ? objEvents.ChildAmount : 0) + (objEvents.IsAdult == true ? objEvents.AdultAmount : 0) + (objEvents.IsCouple == true ? objEvents.CoupleAmount : 0) + (objEvents.IsVIPChild == true ? objEvents.VIPAmount : 0) + (objEvents.IsFamily == true ? objEvents.FamilyAmount : 0);
+    decimal NonMemberTotal = (objEvents.IsChild == true ? objEvents.NonChildAmount : 0) + (objEvents.IsAdult == true ? objEvents.NonAdultAmount : 0) + (objEvents.IsCouple == true ? objEvents.NonCoupleAmount : 0) + (objEvents.IsVIPChild == true ? objEvents.VIPAmount : 0) + (objEvents.IsFamily == true ? objEvents.NonFamilyAmount : 0);
+
+    List<TCAssociationTool.Entities.EventRegistrationTypes> lstEventRegistrationTypes = ViewBag.lstEventRegistrationTypes;
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$("#Mobile").mask("(999) 999-9999");
+        $('.closable').append('<span class="closelink" title="Close"></span>');
+        $('.closelink').click(function () {
+            $(this).parent().fadeOut('600', function () { $(this).remove(); });
+        }); 
+    });
+
+    function Validate(id) {
+        if ('@objEvents.EventCategory.ToLower()' == "cultural events") {
+            if ($('#ItemName').val() == "") { $('#ItemName').focus().addClass("validate"); document.getElementsByName('ItemName')[0].placeholder = 'Required'; return false; } else { $('#ItemName').focus().removeClass("validate"); }
+            if ($('#ItemCategory').val() == "") { $('#ItemCategory').focus().addClass("validate"); return false; } else { $('#ItemCategory').focus().removeClass("validate"); }
+            if ($('#ItemDuration').val() == "") { $('#ItemDuration').focus().addClass("validate"); document.getElementsByName('ItemDuration')[0].placeholder = 'Required'; return false; } else { $('#ItemDuration').focus().removeClass("validate"); }
+            if ($('#ItemDescription').val() == "") { $('#ItemDescription').focus().addClass("validate"); return false; } else { $('#ItemDescription').focus().removeClass("validate"); }
+        }
+        if ($('#DocumentUrl').val() == "") { $('#DocumentUrl').focus(); $('#Aspanfile').html('Required.'); return false; } else { $('#Aspanfile').html(''); }
+        //if (!Common.isDocument($('#DocumentUrl').val())) { $('#Aspanfile').html('Sorry document is invalid. Only allowed extensions are:<b>doc, docx, txt, xls, xlsx, pdf</b>.'); $('#DocumentUrl').focus(); return false; } else { $('#Aspanfile').html(''); }
+        if ($.trim($('#FirstName').val()) == '') { $('#FirstName').focus().addClass('redborder'); $('#spanFirstName').show().html('First Name Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanFirstName').hide().html(''); $('#FirstName').removeClass('redborder'); }
+        if ($.trim($('#LastName').val()) == '') { $('#LastName').focus().addClass('redborder'); $('#spanLastName').show().html('Last Name Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanLastName').hide().html(''); $('#LastName').removeClass('redborder'); }
+        if ($.trim($('#EmailId').val()) == '') { $('#EmailId').focus().addClass('redborder'); $('#spanEmail').show().html('Email Id Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanEmail').hide().html(''); $('#EmailId').removeClass("redborder"); }
+        if (!Common.CheckEmail($.trim($('#EmailId').val()))) { $('#spanEmail').show().html('Please enter valid email address.<span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); $('#EmailId').focus().addClass("red-border"); return false; } else { $('#spanEmail').html(''); }
+        if ($.trim($('#Mobile').val()) == '') { $('#Mobile').focus().addClass('redborder'); $('#spanMobile').show().html('Mobile No Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanMobile').hide().html(''); $('#Mobile').removeClass('redborder'); }
+
+        //if ($('#Mobile').val() == "") { $('#Mobile').focus().addClass("validate"); document.getElementsByName('Mobile')[0].placeholder = 'Required'; return false; } else { $('#Mobile').focus().removeClass("validate"); }
+        //var mobile = $('#Mobile').val();
+        //if (mobile.length < 14) { $('#Mobile').focus().addClass("validate"); alert('Please enter valid 10 digit mobile number like (xxx)-xxx-xxxx'); return false; }
+
+        if ($.trim($('#City').val()) == '') { $('#City').focus().addClass('redborder'); $('#spanCity').show().html('City Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spanCity').hide().html(''); $('#City').removeClass('redborder'); }
+
+        
+        var validval = 1;
+        for (v = 1; v <= @lstEventRegistrationTypes.Count; v++) {
+            if ($('#people'+v).val() == '' && validval == 1) 
+            {
+                validval = 1;
+            }
+            else {
+                validval = 0;
+            }
+        }
+        if (validval == 1 && id == 1) {
+            alert("Please select atleast one Registration Category .");
+            return false;
+        }
+
+        if (!RegValidate()) {
+            return true;
+        }
+        if ($.trim($('#txtCaptcha').val()) == '') { $('#txtCaptcha').focus().addClass('redborder'); $('#spantxtCaptcha').show().html('Captcha Required <span>&nbsp;</span><i>&nbsp;</i><abbr onclick="closeValidation(this);">&nbsp;</abbr>'); return false; } else { $('#spantxtCaptcha').hide().html(''); $('#txtCaptcha').removeClass('redborder'); }
+        //if ($('#txtCaptcha').val() == '') { $('#txtCaptcha').focus().addClass("validate"); return false; } else { $('#txtCaptcha').focus().removeClass("validate"); }
+        var str = Common.GetCaptcha();
+
+        if ($('#txtCaptcha').val() != str) { $('#txtCaptcha').val(''); document.getElementsByName('txtCaptcha')[0].placeholder = 'You entered wrong captcha.'; $('#txtCaptcha').focus().addClass("validate"); return false; } else { $('#txtCaptcha').focus().removeClass("validate"); }
+
+        return true;
+    }
+    function RegValidate() {
+        for (j = 1; j <= @lstEventRegistrationTypes.Count; j++) {
+            if ('@Memberdetails.MemberId' != "0") {
+                if ($('#people'+j).val() > 4) { $('#people'+j).val(''); document.getElementsByName('['+parseInt(j)-1+'].Count')[0].placeholder = 'Max 4'; $('#people' + j).focus().addClass("validate"); return false; } else { $('#people' + j).removeClass("validate"); }
+            }
+        } 
+        return true;
+    }
+
+    function ResetValidateClass() {
+        $('#ItemName').removeClass("validate");
+        $('#ItemCategory').removeClass("validate");
+        $('#ItemDuration').removeClass("validate");
+        $('#ItemDescription').removeClass("validate");
+        $('#FirstName').removeClass("validate");
+        $('#LastName').removeClass("validate");
+        $('#EmailId').removeClass("validate");
+        $('#Mobile').removeClass("validate");
+        $('#City').removeClass("validate");
+        $('#State').removeClass("validate");
+        $('#txtCaptcha').removeClass("validate");
+
+    }
+    function CreloadCaptcha() {
+        document.getElementById('CUcaptcha').src = document.getElementById('CUcaptcha').src + '/';
+    }
+    function calculate_total(plist) {
+        document.getElementById("amount" + plist).innerHTML = "$" + ($('#hamount' + plist).val() * $('#people' + plist).val());
+        @*for (j = 1; j <= @lstEventRegistrationTypes.Count; j++) {
+            if ('@Memberdetails.MemberId' != "0") {
+                    if ($('#people' + j).val() > 4) { $('#people' + j).val(''); document.getElementsByName('['+parseInt(j)-1+'].Count')[0].placeholder = 'Max 4'; $('#people' + j).focus().addClass("validate"); } else { $('#people' + j).removeClass("validate"); }
+                }
+                document.getElementById("amount" + j).innerHTML = "$" + ($('#hamount' + j).val() * $('#people' + j).val());
+        }*@
+         
+        total5 = 0;
+        var z = 0;
+        for (i = 1; i <= @lstEventRegistrationTypes.Count; i++) {
+            p = document.getElementById('people' + i).value;
+            p = parseInt(p);
+            if (p > 0) {
+                total5 = total5 + (p * $('#hamount' + i).val());
+            }
+        }
+        total5 = parseFloat(total5 + (total5 * parseInt(3) / 100)).toFixed(2);
+        document.getElementById("total").innerHTML = "$" + (total5);
+        $('#AmountPaid').val(total5)
+
+    }
+
+
+    var specialKeys = new Array();
+    specialKeys.push(8); //Backspace
+    specialKeys.push(9); //Tab
+    specialKeys.push(32); //Space
+    specialKeys.push(46); //Delete
+    specialKeys.push(36); //Home
+    specialKeys.push(35); //End
+    specialKeys.push(37); //Left
+    specialKeys.push(39); //Right    
+
+
+    function onlyAlphabets(e, t) {
+        try {
+            if (window.event) {
+                var charCode = window.event.keyCode;
+            }
+            else if (e) {
+                var charCode = e.which;
+            }
+            else { return true; }
+            if ((charCode == 32) || (charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (specialKeys.indexOf(e.keyCode) != -1 && e.charCode != e.keyCode))
+                return true;
+            else
+                return false;
+        }
+        catch (err) {
+            alert(err.Description);
+        }
+    }
+    function phonenochange(event) {
+        if (event.keyCode == 8 || event.keyCode == 46) {
+        }
+        else {
+            var ph = $('#Mobile').val();
+            if (ph.length == 3) { $('#Mobile').val(ph + '-'); }
+            if (ph.length == 7) { $('#Mobile').val(ph + '-'); }
+        }
+    }
+</script>
+
+ <article class="clearfix l-r-p40 white-bg tabhorizontal-l-r-p10">
+@* <article class="clearfix part-row">
+  <article class="clearfix part-9">
+<h2 class="clearfix font30 Anton mobile-font20 mobile-t-c t-p8 dkpink-t tabhorizontal-font28 t-m0"><span class="blue-t">Event Registration</span></h2>
+  </article>
+    <article class="clearfix part-3">
+    <article class="clearfix mobile-dis-b mobile-t-c mobile-b-p5">
+     <ul class="list-pn list-f b-m0 mobile-dis-in">
+  <li><a  href="@Url.Action("AddMember", "Members")" class=" r-m5"><img src="Content/User/images/reg.png" title="Member Registration" width="53" height="54"/></a></li>
+   <li><a href="@Url.Action("Index", "Donation")" class=" r-m5"><img src="Content/User/images/don.png" title="DonateNow" width="53" height="54"/></a></li>
+    <li><a href="@Url.Action("AddVolunteer", "Volunteer")"><img src="Content/User/images/mem.png" title="Volunteer Registration" width="53" height="54"/></a></li>
+  </ul>
+  </article></article>
+ </article>*@
+ </article>
+ <article class="clearfix white-bg t-p0">
+ 
+<article class="clearfix dk-gray-bg flower-border-new">
+<article class="clearfix l-r-p30 t-b-p40 tabhorizontal-p15 tabhorizontal-minheight0" style="min-height:1065px;">
+ <article class="clearfix white-bg l-r-p30 border-b border-t dkgray-border3 t-b-p10 tablet-l-r-p10 tabhorizontal-l-r-p15">
+                <h1 class="clearfix l-h24 Muli red-t font18 t-b-m0">Event Name: <span class="black-t latobold_italic font16">@objEvents.EventName</span></h1>
+                <article class="clearfix dis-b Muli font18 t-m0">
+                             <span class="red-t">Location:<span class="black-t latobold_italic font16"> @(objEvents.Location == null ? "N/A" : objEvents.Location)</span></span>
+                 <span class="green-t mobile-r-p0 Muli pull-right mobilev-pull-n t-m0 dis-b"><span class="red-t font18">Event On:</span>
+                          <span class="green-t font-w-b latobold_italic font16"> @(objEvents.StartDate == DateTime.MinValue ? "N/A" : objEvents.StartDate.ToString("MM/dd/yyyy"))</span></span></article>
+                          </article>
+    <article class="clearfix white-bg p25 mobile-p10 tabhorizontal-minheight0" style="min-height: 980px;">
+        @if (objEvents.IsRegistration == true && objEvents.RegistrationStartDate.Date <= DateTime.UtcNow.Date && objEvents.RegistrationEndDate.Date >= DateTime.UtcNow.Date)
+        {
+            if (desc != "" && desc == "event registration rules")
+            {
+            @Html.Raw(desc.Replace("src=\"/admin/Content/", "src=\"" + System.Configuration.ConfigurationManager.AppSettings["adminsiteurl"].ToString() + "admin/Content/"))
+            }
+            if (lstEventRegistrationTypes != null && lstEventRegistrationTypes.Count != 0)
+            {
+            <article class="clearfix border shadow t-b-p10 l-r-p10 t-l" style="max-width: 650px;">
+                <p class="b-m0"><span class="red-t">Note :-&nbsp;</span><b> Deadline for registration : <span class="red-t">@objEvents.RegistrationEndDate.ToString("MMMM dd, yyyy"). </span></b></p>
+            </article>
+            }
+            else
+            {
+            <article class="clearfix border shadow t-b-p7 l-r-p10 t-l">
+                <p class="b-m0"><span class="red-t">Note :-&nbsp;</span> <b>This event is free and Deadline for registration : <span class="red-t">@objEvents.RegistrationEndDate.ToString("MMMM dd, yyyy"). </span></b></p>
+            </article>
+            }
+
+            if (desc != null && @desc != "" && @desc != "event registration rules")
+            {
+            @Html.Raw(desc.Replace("src=\"/admin/Content/", "src=\"" + System.Configuration.ConfigurationManager.AppSettings["adminsiteurl"].ToString() + "admin/Content/"))
+            }
+            <article class="clearfix p10"></article>
+            <article class="clearfix font16 black-t l-h24 Poppins-Regular validation">
+                @using (Html.BeginForm("EventRegistration", "Event", FormMethod.Post))
+                {
+                    <input type="hidden" value="@objEvents.EventName" id="EventName" name="EventName" />
+                    <input type="hidden" value="@objEvents.EventId" id="EventId" name="EventId" />
+                    <input type="hidden" value="@ViewBag.MemberId" id="MemberId" name="MemberId" />
+                    <input type="hidden" id="AmountPaid" name="AmountPaid" />
+                    if (objEvents.EventCategory.ToLower() == "Cultural Events")
+                    { 
+                    <h4 class="font16 Poppins-Regular black-t t-m0 b-m7 ligrayborder-b b-p5">Item Details</h4>
+                    <article class="row-fluid b-p3 ">
+                        <article class="span12 position-r">
+                            <label class="font13 black-t">Item Name <span class="red-t">*</span></label>
+                            <input type="text" id="ItemName" name="ItemName" class="form-control border-radius0" />
+                            <span class="errormsg" id="spanItemName"></span>
+                        </article>
+                    </article>
+                    <article class="clearfix part-row b-p3">
+                        <article class="part-6 position-r">
+                            <article class="clearfix r-p10 tablet-r-p5 mobile-r-p0">
+                                <label class="font13 black-t">Item Category <span class="red-t">*</span></label> 
+                                <article class="clearfix dropdown" style="height: 35px;">
+                                    <select id="ItemCategory" name="ItemCategory" class="nput-block-level b-m0 dropdown-select border-radius0">
+                                        <option value="" selected="selected">-- Select --</option>
+                                        <option value="Dance">Dance</option>
+                                        <option value="Mono Action">Mono Action</option>
+                                        <option value="Martial Arts">Martial Arts - minimum 2 participants</option>
+                                        <option value="Fashion show">Fashion show</option>
+                                        <option value="Mimicry">Mimicry</option>
+                                        <option value="Vocal (Singing)">Vocal (Singing)</option>
+                                        <option value="Folk Dance">Folk Dance</option>
+                                        <option value="Instrumental">Instrumental - minimum 2 participants</option>
+                                        <option value="Kid Fancy dress">Kid Fancy dress - co-ordinated by GWTCS volunteers( age 4-6)</option>
+                                        <option value="National Anthem">National Anthem - co-ordinated by GWTCS volunteers (all kids age 4 -18)</option>
+                                        <option value="Magic Show">Magic Show</option>
+                                        <option value="Short Skits">Short Skits</option>
+                                    </select>
+                                     <span class="errormsg" id="spanItemCategory"></span>
+                                </article>
+                            </article>
+                        </article>
+                        <article class="part-6 position-r">
+                            <article class="clearfix l-p10 tablet-l-p5 mobile-l-p0">
+                                <label class="font13 black-t">Item Duration (in minutes)  <span class="red-t">*</span></label>
+                                <input type="text" id="ItemDuration" name="ItemDuration" onkeypress="return Common.isNumberKey(event);" class="form-control border-radius0" />
+                                <span class="errormsg" id="spanItemDuration"></span>
+                            </article>
+                        </article>
+                    </article>
+                    @*<article class="row-fluid b-p3">
+                        <article class="span12">
+                            <label class="font13 black-t">
+                                Item Description (Song/ Movie details)  <span class="red-t">*</span></label>
+                            <textarea id="ItemDescription" name="ItemDescription" class="form-control border-radius0"></textarea>
+                            <br />
+                            <span class="font-w-b">Instruction: Please enter the Song / Movie name for "Dance" and "Folk Dance" Entry. For all other entries, enter 'NA'.</span>
+
+                        </article>
+
+                    </article>*@
+                    <article class="clearfix p5 t-m10"></article>
+                    <h4 class="font16 Poppins-Regular black-t t-m0 b-m7 ligrayborder-b b-p5">Coordinator/Choreographer's Details</h4>
+                    <article class="clearfix part-row b-p3">
+                        <article class="part-6 position-r">
+                            <article class="clearfix r-p10 tablet-r-p5 mobile-r-p0">
+                                <label class="font13 black-t">First Name <span class="red-t">*</span></label>
+                                <input type="text" value="@Memberdetails.FirstName" id="FirstName" name="FirstName" class="form-control border-radius0"  />
+                                <span class="errormsg" id="spanFirstName"></span>
+                            </article>
+                        </article>
+                        <article class="part-6 position-r">
+                            <article class="clearfix l-p10 tablet-l-p5 mobile-l-p0">
+                                <label class="font13 black-t">Last Name <span class="red-t">*</span></label>
+                                <input type="text" value="@Memberdetails.LastName" id="LastName" name="LastName" class="form-control border-radius0"  />
+                                <span class="errormsg" id="spanLastName"></span>
+                            </article>
+                        </article>
+                    </article>
+                    <article class="clearfix part-row">
+                        <article class="part-6 position-r">
+                            <article class="clearfix r-p10 tablet-r-p5 mobile-r-p0">
+                                <label class="font13 black-t">Email <span class="red-t">*</span></label>
+                                <input type="text" value="@Memberdetails.Email" id="EmailId" name="Email" class="form-control border-radius0"  />
+                                <span class="errormsg" id="spanEmail"></span>
+                            </article>
+                        </article>
+                        <article class="part-6 position-r">
+                            <article class="clearfix l-p10 tablet-l-p5 mobile-l-p0">
+                                <label class="font13 black-t">Phone <span class="red-t">*</span></label>
+                                <input type="text" onkeypress="phonenochange(event); return Common.isNumberKey(event);" value="@Memberdetails.MobilePhone"  maxlength="12"  id="Mobile" name="Mobile" class="form-control border-radius0"  />
+                                <span class="errormsg" id="spanMobile"></span>
+                            </article>
+                        </article>
+                    </article>
+                    <article class="clearfix part-row">
+                        <article class="part-6 position-r">
+                            <article class="clearfix r-p10 tablet-r-p5 mobile-r-p0">
+                                <label class="font13 black-t">City <span class="red-t">*</span></label>
+                                <input type="text" value="@Memberdetails.City"   id="City" name="City" class="form-control border-radius0"  />
+                                 <span class="errormsg" id="spanCity"></span>
+                            </article>
+                        </article>
+                        <article class="part-6">
+                            <article class="clearfix l-p10 tablet-l-p5 mobile-l-p0">
+                                <label class="font13 black-t">State <span class="red-t">*</span></label>
+                                <article class="clearfix dropdown">
+                                    <select class="dropdown-select ui-select" id="Select1" name="State">
+                                        <option value="">Select State *</option>
+                                        <option @(Memberdetails.State == "Alabama" ? "selected=selected" : "") value="Alabama">Alabama</option>
+                                        <option @(Memberdetails.State == "Alaska" ? "selected=selected" : "") value="Alaska">Alaska</option>
+                                        <option @(Memberdetails.State == "Arizona" ? "selected=selected" : "") value="Arizona">Arizona</option>
+                                        <option @(Memberdetails.State == "Arkansas" ? "selected=selected" : "") value="Arkansas">Arkansas</option>
+                                        <option @(Memberdetails.State == "California" ? "selected=selected" : "") value="California">California</option>
+                                        <option @(Memberdetails.State == "Colorado" ? "selected=selected" : "") value="Colorado">Colorado</option>
+                                        <option @(Memberdetails.State == "Connecticut" ? "selected=selected" : "") value="Connecticut">Connecticut</option>
+                                        <option @(Memberdetails.State == "Delaware" ? "selected=selected" : "") value="Delaware">Delaware</option>
+                                        <option @(Memberdetails.State == "Florida" ? "selected=selected" : "") value="Florida">Florida</option>
+                                        <option @(Memberdetails.State == "Georgia" ? "selected=selected" : "") value="Georgia">Georgia</option>
+                                        <option @(Memberdetails.State == "Hawaii" ? "selected=selected" : "") value="Hawaii">Hawaii</option>
+                                        <option @(Memberdetails.State == "Idaho" ? "selected=selected" : "") value="Idaho">Idaho</option>
+                                        <option @(Memberdetails.State == "Illinois" ? "selected=selected" : "") value="Illinois">Illinois</option>
+                                        <option @(Memberdetails.State == "Indiana" ? "selected=selected" : "") value="Indiana">Indiana</option>
+                                        <option @(Memberdetails.State == "Iowa" ? "selected=selected" : "") value="Iowa">Iowa</option>
+                                        <option @(Memberdetails.State == "Kansas" ? "selected=selected" : "") value="Kansas">Kansas</option>
+                                        <option @(Memberdetails.State == "Kentucky" ? "selected=selected" : "") value="Kentucky">Kentucky</option>
+                                        <option @(Memberdetails.State == "Louisiana" ? "selected=selected" : "") value="Louisiana">Louisiana</option>
+                                        <option @(Memberdetails.State == "Maine" ? "selected=selected" : "") value="Maine">Maine</option>
+                                        <option @(Memberdetails.State == "Maryland" ? "selected=selected" : "") value="Maryland">Maryland</option>
+                                        <option @(Memberdetails.State == "Massachusetts" ? "selected=selected" : "") value="Massachusetts">Massachusetts</option>
+                                        <option @(Memberdetails.State == "Michigan" ? "selected=selected" : "") value="Michigan">Michigan</option>
+                                        <option @(Memberdetails.State == "Minnesota" ? "selected=selected" : "") value="Minnesota">Minnesota</option>
+                                        <option @(Memberdetails.State == "Mississippi" ? "selected=selected" : "") value="Mississippi">Mississippi</option>
+                                        <option @(Memberdetails.State == "Missouri" ? "selected=selected" : "") value="Missouri">Missouri</option>
+                                        <option @(Memberdetails.State == "Montana" ? "selected=selected" : "") value="Montana">Montana</option>
+                                        <option @(Memberdetails.State == "Nebraska" ? "selected=selected" : "") value="Nebraska">Nebraska</option>
+                                        <option @(Memberdetails.State == "Nevada" ? "selected=selected" : "") value="Nevada">Nevada</option>
+                                        <option @(Memberdetails.State == "New Hampshire" ? "selected=selected" : "") value="New Hampshire">New Hampshire</option>
+                                        <option @(Memberdetails.State == "New Jersey" ? "selected=selected" : "") value="New Jersey">New Jersey</option>
+                                        <option @(Memberdetails.State == "New Mexico" ? "selected=selected" : "") value="New Mexico">New Mexico</option>
+                                        <option @(Memberdetails.State == "New York" ? "selected=selected" : "") value="New York">New York</option>
+                                        <option @(Memberdetails.State == "North Carolina" ? "selected=selected" : "") value="Maryland">North Carolina</option>
+                                        <option @(Memberdetails.State == "North Dakota" ? "selected=selected" : "") value="North Dakota">North Dakota</option>
+                                        <option @(Memberdetails.State == "Ohio" ? "selected=selected" : "") value="Ohio">Ohio</option>
+                                        <option @(Memberdetails.State == "Oklahoma" ? "selected=selected" : "") value="Oklahoma">Oklahoma</option>
+                                        <option @(Memberdetails.State == "Oregon" ? "selected=selected" : "") value="Oregon">Oregon</option>
+                                        <option @(Memberdetails.State == "Pennsylvania" ? "selected=selected" : "") value="Pennsylvania">Pennsylvania</option>
+                                        <option @(Memberdetails.State == "Rhode Island" ? "selected=selected" : "") value="Rhode Island">Rhode Island</option>
+                                        <option @(Memberdetails.State == "South Carolina" ? "selected=selected" : "") value="South Carolina">South Carolina</option>
+                                        <option @(Memberdetails.State == "South Dakota" ? "selected=selected" : "") value="South Dakota">South Dakota</option>
+                                        <option @(Memberdetails.State == "Tennessee" ? "selected=selected" : "") value="Tennessee">Tennessee</option>
+                                        <option @(Memberdetails.State == "North Carolina" ? "selected=selected" : "") value="Texas">Texas</option>
+                                        <option @(Memberdetails.State == "Texas" ? "selected=selected" : "") value="North Dakota">North Dakota</option>
+                                        <option @(Memberdetails.State == "Utah" ? "selected=selected" : "") value="Utah">Utah</option>
+                                        <option @(Memberdetails.State == "Vermont" ? "selected=selected" : "") value="Vermont">Vermont</option>
+                                        <option @(Memberdetails.State == "Virginia" ? "selected=selected" : "") value="Virginia">Virginia</option>
+                                        <option @(Memberdetails.State == "Washington" ? "selected=selected" : "") value="Washington">Washington</option>
+                                        <option @(Memberdetails.State == "West Virginia" ? "selected=selected" : "") value="West Virginia"> West Virginia/option>
+                                        <option @(Memberdetails.State == "Wisconsin" ? "selected=selected" : "") value="Wisconsin">Wisconsin</option>
+                                        <option @(Memberdetails.State == "Wyoming" ? "selected=selected" : "") value="Wyoming">Wyoming</option>
+                                        <option @(Memberdetails.State == "Other" ? "selected=selected" : "") value="Other">Other</option>
+                                    </select>
+                                </article>
+                            </article>
+                        </article>
+                    </article>
+                    }
+                    else
+                    {
+                
+                    <article class="clearfix part-row">
+                        <article class="part-6 position-r">
+                            <article class="clearfix r-p10 tablet-r-p5 mobile-r-p0">
+                                <article class="clearfix">
+                                    <label for="First Name">First Name <span class="red-t">*</span></label>
+                                    <input value="@Memberdetails.FirstName" onchange="Validate();" id="FirstName" name="FirstName" class="form-control border-radius0" type="text">
+                                    <span class="errormsg" id="spanFirstName"></span>
+                                </article>
+                            </article>
+                        </article>
+                        <article class="part-6 position-r">
+                            <article class="clearfix l-p10 tablet-l-p5 mobile-l0">
+                                <article class="clearfix">
+                                    <label for="First Name">Last Name <span class="red-t">*</span></label>
+                                    <input value="@Memberdetails.LastName" onchange="Validate();" id="LastName" name="LastName" class="form-control border-radius0" type="text">
+                                    <span class="errormsg" id="spanLastName"></span>
+                                </article>
+                            </article>
+                        </article>
+                    </article>
+                    <article class="clearfix part-row">
+                        <article class="part-6 position-r">
+                            <article class="clearfix r-p10 tablet-r-p5 mobile-r-p0">
+                                <article class="clearfix">
+                                    <label for="First Name">Email <span class="red-t">*</span></label>
+                                    <input value="@Memberdetails.Email" onchange="Validate();" id="EmailId" name="Email" class="form-control border-radius0" type="text">
+                                     <span class="errormsg" id="spanEmail"></span>
+                                </article>
+                            </article>
+                        </article>
+                        <article class="part-6 position-r">
+                            <article class="clearfix l-p10 tablet-l-p5 mobile-l-p0">
+                                <article class="clearfix">
+                                    <label for="First Name">Phone <span class="red-t">*</span></label>
+                                    <input onkeypress="phonenochange(event); return Common.isNumberKey(event);" onchange="Validate();"  value="@Memberdetails.MobilePhone" maxlength="12" id="Mobile" name="Mobile" class="form-control border-radius0" type="text">
+                                    <span class="errormsg" id="spanMobile"></span>
+                                </article>
+                            </article>
+                        </article>
+                    </article>
+                    <article class="clearfix part-row">
+                        <article class="part-6 position-r">
+                            <article class="clearfix r-p10 tablet-r-p5 mobile-r-p0">
+                                <article class="clearfix">
+                                    <label for="First Name">City <span class="red-t">*</span></label>
+                                    <input value="@Memberdetails.City" id="City" onchange="Validate();" name="City" class="form-control border-radius0" type="text">
+                                    <span class="errormsg" id="spanCity"></span>
+                                </article>
+                            </article>
+                        </article>
+                        <article class="part-6 position-r">
+                            <article class="clearfix l-p10 tablet-l-p5 mobile-l-p0">
+                                <label>State</label>
+                                <article class="clearfix dropdown">
+                                    <select class="dropdown-select ui-select" id="State" onchange="Validate();" name="State">
+                                        <option value="">Select State</option>
+                                        <option @(Memberdetails.State == "Alabama" ? "selected=selected" : "") value="Alabama">Alabama</option>
+                                        <option @(Memberdetails.State == "Alaska" ? "selected=selected" : "") value="Alaska">Alaska</option>
+                                        <option @(Memberdetails.State == "Arizona" ? "selected=selected" : "") value="Arizona">Arizona</option>
+                                        <option @(Memberdetails.State == "Arkansas" ? "selected=selected" : "") value="Arkansas">Arkansas</option>
+                                        <option @(Memberdetails.State == "California" ? "selected=selected" : "") value="California">California</option>
+                                        <option @(Memberdetails.State == "Colorado" ? "selected=selected" : "") value="Colorado">Colorado</option>
+                                        <option @(Memberdetails.State == "Connecticut" ? "selected=selected" : "") value="Connecticut">Connecticut</option>
+                                        <option @(Memberdetails.State == "Delaware" ? "selected=selected" : "") value="Delaware">Delaware</option>
+                                        <option @(Memberdetails.State == "Florida" ? "selected=selected" : "") value="Florida">Florida</option>
+                                        <option @(Memberdetails.State == "Georgia" ? "selected=selected" : "") value="Georgia">Georgia</option>
+                                        <option @(Memberdetails.State == "Hawaii" ? "selected=selected" : "") value="Hawaii">Hawaii</option>
+                                        <option @(Memberdetails.State == "Idaho" ? "selected=selected" : "") value="Idaho">Idaho</option>
+                                        <option @(Memberdetails.State == "Illinois" ? "selected=selected" : "") value="Illinois">Illinois</option>
+                                        <option @(Memberdetails.State == "Indiana" ? "selected=selected" : "") value="Indiana">Indiana</option>
+                                        <option @(Memberdetails.State == "Iowa" ? "selected=selected" : "") value="Iowa">Iowa</option>
+                                        <option @(Memberdetails.State == "Kansas" ? "selected=selected" : "") value="Kansas">Kansas</option>
+                                        <option @(Memberdetails.State == "Kentucky" ? "selected=selected" : "") value="Kentucky">Kentucky</option>
+                                        <option @(Memberdetails.State == "Louisiana" ? "selected=selected" : "") value="Louisiana">Louisiana</option>
+                                        <option @(Memberdetails.State == "Maine" ? "selected=selected" : "") value="Maine">Maine</option>
+                                        <option @(Memberdetails.State == "Maryland" ? "selected=selected" : "") value="Maryland">Maryland</option>
+                                        <option @(Memberdetails.State == "Massachusetts" ? "selected=selected" : "") value="Massachusetts">Massachusetts</option>
+                                        <option @(Memberdetails.State == "Michigan" ? "selected=selected" : "") value="Michigan">Michigan</option>
+                                        <option @(Memberdetails.State == "Minnesota" ? "selected=selected" : "") value="Minnesota">Minnesota</option>
+                                        <option @(Memberdetails.State == "Mississippi" ? "selected=selected" : "") value="Mississippi">Mississippi</option>
+                                        <option @(Memberdetails.State == "Missouri" ? "selected=selected" : "") value="Missouri">Missouri</option>
+                                        <option @(Memberdetails.State == "Montana" ? "selected=selected" : "") value="Montana">Montana</option>
+                                        <option @(Memberdetails.State == "Nebraska" ? "selected=selected" : "") value="Nebraska">Nebraska</option>
+                                        <option @(Memberdetails.State == "Nevada" ? "selected=selected" : "") value="Nevada">Nevada</option>
+                                        <option @(Memberdetails.State == "New Hampshire" ? "selected=selected" : "") value="New Hampshire">New Hampshire</option>
+                                        <option @(Memberdetails.State == "New Jersey" ? "selected=selected" : "") value="New Jersey">New Jersey</option>
+                                        <option @(Memberdetails.State == "New Mexico" ? "selected=selected" : "") value="New Mexico">New Mexico</option>
+                                        <option @(Memberdetails.State == "New York" ? "selected=selected" : "") value="New York">New York</option>
+                                        <option @(Memberdetails.State == "North Carolina" ? "selected=selected" : "") value="Maryland">North Carolina</option>
+                                        <option @(Memberdetails.State == "North Dakota" ? "selected=selected" : "") value="North Dakota">North Dakota</option>
+                                        <option @(Memberdetails.State == "Ohio" ? "selected=selected" : "") value="Ohio">Ohio</option>
+                                        <option @(Memberdetails.State == "Oklahoma" ? "selected=selected" : "") value="Oklahoma">Oklahoma</option>
+                                        <option @(Memberdetails.State == "Oregon" ? "selected=selected" : "") value="Oregon">Oregon</option>
+                                        <option @(Memberdetails.State == "Pennsylvania" ? "selected=selected" : "") value="Pennsylvania">Pennsylvania</option>
+                                        <option @(Memberdetails.State == "Rhode Island" ? "selected=selected" : "") value="Rhode Island">Rhode Island</option>
+                                        <option @(Memberdetails.State == "South Carolina" ? "selected=selected" : "") value="South Carolina">South Carolina</option>
+                                        <option @(Memberdetails.State == "South Dakota" ? "selected=selected" : "") value="South Dakota">South Dakota</option>
+                                        <option @(Memberdetails.State == "Tennessee" ? "selected=selected" : "") value="Tennessee">Tennessee</option>
+                                        <option @(Memberdetails.State == "North Carolina" ? "selected=selected" : "") value="Texas">Texas</option>
+                                        <option @(Memberdetails.State == "Texas" ? "selected=selected" : "") value="North Dakota">North Dakota</option>
+                                        <option @(Memberdetails.State == "Utah" ? "selected=selected" : "") value="Utah">Utah</option>
+                                        <option @(Memberdetails.State == "Vermont" ? "selected=selected" : "") value="Vermont">Vermont</option>
+                                        <option @(Memberdetails.State == "Virginia" ? "selected=selected" : "") value="Virginia">Virginia</option>
+                                        <option @(Memberdetails.State == "Washington" ? "selected=selected" : "") value="Washington">Washington</option>
+                                        <option @(Memberdetails.State == "West Virginia" ? "selected=selected" : "") value="West Virginia"> West Virginia/option>
+                                        <option @(Memberdetails.State == "Wisconsin" ? "selected=selected" : "") value="Wisconsin">Wisconsin</option>
+                                        <option @(Memberdetails.State == "Wyoming" ? "selected=selected" : "") value="Wyoming">Wyoming</option>
+                                        <option @(Memberdetails.State == "Other" ? "selected=selected" : "") value="Other">Other</option>
+                                    </select>
+                                </article>
+                            </article>
+                        </article>
+                    </article>
+                    }
+                    if (lstEventRegistrationTypes != null && lstEventRegistrationTypes.Count != 0)
+                    {
+                        int i = 1;
+                        if (Memberdetails.MemberId == 0)
+                        { 
+                   <article class="clearfix t-p10 latobold_italic black-t">
+                        <span class="t-u">Note</span> :- <b>Membership will be validated during the distribution of tickets, if the membership is invalid or expired, they will be asked to renew the membership or the difference amount in tickets (member vs nonmember) will be collected.</b><br> <a href="@Url.Action("AddMember", "Members")" class="red-t">Become a member</a> <!--/ <a class="red-t" onclick="LoginShow();">Login</a>--> for Membership discounts and benefits
+                    </article>
+		    
+	
+                        }
+                    <article class="clearfix t-p10 overflow_x-a ">
+                        <article class="clearfix border border-t4">
+                            <table style="background-color: #fff;" class="table Poppins-Regular font14 dkblack-t3 b-m0 tabletext-l" width="100%" cellspacing="0" cellpadding="0" border="0">
+                                <tbody>
+                                    <tr>
+                                        <th width="40%" align="left" valign="middle">Registration Category</th>
+                                        <!--<th width="24%" align="center" valign="middle">Price (Member)</th>-->
+                                        <!--<th width="20%" align="center" valign="middle">Price (Non Member)</th>-->
+					<th width="20%" align="center" valign="middle">Price</th>
+                                        <th width="9%" align="center" valign="middle">Count </th>
+                                        <th width="13%" align="center" valign="middle">Amount</th>
+                                    </tr>
+                                    @foreach (var item in lstEventRegistrationTypes)
+                                    {
+                                        <tr>
+                                            <td align="left" valign="middle">@item.RegistrationTitle
+                                                <input type="hidden" value="@item.EventRegistrationTypeId" name="[@(i - 1)].EventRegistrationTypeId">
+                                            </td>
+                                            <!--<td align="center" valign="middle">$ @(item.MemberAmount != 0 ? item.MemberAmount.ToString() : "Free")
+                                            </td>-->
+                                            <td align="center" valign="middle">$ @(item.NonMemberAmount != 0 ? item.NonMemberAmount.ToString() : "Free")
+                                                <input id="hamount@(i)" value="@((Memberdetails.MemberId != 0 && Memberdetails.MembershipTypeId != 0) ? item.MemberAmount : item.NonMemberAmount)" type="hidden">
+                                            </td>
+                                            <td align="center" valign="middle">
+                                                <input class="form-control b-m0" name="[@(i-1)].Count" id="people@(i)" onkeyup="calculate_total(@(i))" onkeypress="return Common.isNumberKey(event);" maxlength="4" type="text" style="max-height: 30px;" />
+                                            </td>
+                                            <td align="center" valign="middle">
+                                                <article id="amount@(i)">$0</article>
+                                            </td>
+                                        </tr> 
+                                        i++;
+                                    }
+                                </tbody>
+                            </table>
+                        </article>
+                    </article>
+                    @*<article class="clearfix border gray-border white-bg shadow-b t-b-m15 p10">
+                        <article class="part-row">
+                            <article class="part-3 t-p20"><span class="v-align-m">Payment Method :</span> </article>
+                            <article class="part-4 l-m0">
+                                <img alt="Paypal" src="Content/User/images/paypal.jpg">
+                            </article>
+                            <article class="part-3 t-p20"><span class="v-align-m">Total Amount : </span></article>
+                            <article class="part-2 l-m0 t-p20">
+                                <b class="font16 red-t">
+                                    <span id="total"><span class="v-align-m">$0</span></span>
+                                </b>
+                            </article>
+                        </article>
+                    </article>*@ 
+                    
+                    <article class="clearfix border gray-border white-bg shadow-b t-b-m15 p10">
+                        <article class="part-row sm-row box-row t-c tablet-t-l mobile-c">
+                        <article class="box-7">
+                        <article class="part-6 t-p15 tablet-t-p10 mobile-t-p0 mobilev-font14"><span class="v-align-m">Payment Method :</span> </article>
+                        <article class="part-6 l-m0 tablet-t-l">
+                                <img alt="Paypal" src="Content/images/suleka.jpg">
+                            </article>
+                        </article> 
+                        <article class="box-5">
+                            <span class="v-align-m font14 blue-t">Service charge : 3%</span>
+                            <article class="part-8 t-p10 tablet-t-p10 mobile-t-p0 t-r mobile-t-c">
+                                <span class="v-align-m mobilev-font14">Total Amount : </span></article>
+                            <article class="part-4 t-p10 tablet-t-p10 mobile-t-c">
+                                <b class="font16 red-t">
+                                    <span id="total"><span class="v-align-m">$0</span></span>
+                                </b>
+                            </article>
+                        </article>
+                        </article>
+                    </article>
+                    }
+                    else
+                    {
+                    @*<article class="clearfix border gray-border white-bg shadow-b p10">
+                        <article class="clearfix graygradient-b blueshadow-b  l-r-p10 t-l">
+                            <p class="b-m0"><span class="red-t">Note :-&nbsp;</span> This event is free for @(Memberdetails.MemberId == 0 ? "non" : "") members.</p>
+                        </article>
+                    </article>*@
+                    }  
+                    <label class="font15 black-t">Type the following text as shown <span class="red-t">*</span></label>
+                    <article class="part-row b-p3">
+                        <article class="part-10">
+                            <article class="box-row">
+                                <article class="box-5 r-p15 position-r">
+                                    <input id="txtCaptcha" onchange="Validate();" name="txtCaptcha" class="form-control border-radius0" type="text" style="max-height: 40px;" />
+                                    <span class="errormsg" id="spantxtCaptcha"></span>
+                                </article>
+                                <article class="box-7 font24 roboto_condensedbold_italic black-t ">
+                                    <img title="captcha" alt="captcha" id="CUcaptcha" src="Members/ShowCaptchaImage" style="min-height: 42px;" width="120" height="28"><a href="javascript:CreloadCaptcha();">
+                                        <span class="l-p5">
+                                            <img title="Refresh" src="Content/User/images/refresh.png" alt="Refresh">
+                                        </span></a>
+                                </article>
+                            </article>
+                        </article>
+                        <article class="part-2 t-r">
+                            <img src="Content/User/images/search-loading.gif" id="loadalert" class="hide" alt="Loading">
+                        </article>
+                        <article class="clearfix t-b-p10 mobile-t-c">
+                            <a href="thankyou-for-registration.html">
+                                <input value="SUBMIT" onclick="return Validate(1);" class="btn btn-danger btn-sm btn-block font18 l-r-p30 t-b-p10 t-t-u" type="submit"></a>
+                        </article>
+                    </article>
+                }
+            </article>
+        }
+        else
+        {
+            <h3 class="red-t Poppins-SemiBold font24 tbp20 t-c mobile-font15">
+	Registrations are closed or Registrations not available for this event </h3>
+           
+        }
+    </article>
+
+    </article>
+    </article>
+     </article>

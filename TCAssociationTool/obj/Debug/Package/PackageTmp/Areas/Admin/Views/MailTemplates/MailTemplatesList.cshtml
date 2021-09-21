@@ -1,0 +1,101 @@
+﻿@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+
+    List<TCAssociationTool.Entities.MailTemplates> lstMailTemplate = ViewBag.lstMailTemplate;
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    } 
+    
+}
+<link type="text/css" media="screen" rel="stylesheet" href="colorbox/colorbox.css" />
+<script type="text/javascript" src="colorbox/jquery.colorbox.js"></script>
+		<script type="text/javascript">
+		    $(document).ready(function () {
+		        $("a[rel]").colorbox({ transition: "fade" });
+		        $(".viewdetails").colorbox({ iframe: true, innerWidth: 750, innerHeight: 500 });
+		    });
+		</script>
+<script type="text/javascript">
+    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+</script>
+<div class="row-fluid">
+    <div class="span12">
+        @if (Total == -1)
+        {
+            <div class="norecords">Sorry failed processing your request.</div> 
+        }
+        else
+        {
+            <table width="100%" class="table table-bordered table-hover">
+               <thead>
+                    <tr>
+                        <th width="41">S.No.</th>
+                        <th><a onclick="javascript:sortresult('Heading');" class="white-t-u">Heading @if (sortcolumn == "Heading")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</th>
+                        <th width="100">
+                            <a onclick="javascript:sortresult('MailType');" class="white-t-u">Mail Type @if (sortcolumn == "MailType")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }
+                        </th>
+                        <th width="100">Preview</th>
+                        <th width="42">Edit</th>
+                        @if (userRole.Contains("SuperAdmin"))
+                             {
+                        <th width="60">Delete</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (lstMailTemplate.Count != 0)
+                    {
+                        foreach (var item in lstMailTemplate)
+                        { 
+                        <tr>
+                            <td width="41">@item.RId</td>
+                            <td style="text-align: left">@item.Heading </td>
+                            <td align="center">@(item.MailType==""?"N/A":item.MailType)</td>
+                            <td align="center">
+                                <a title="View" href="@Url.Action("ViewMailTemplate", "MailTemplates", new { MailTemplateId = item.MailTemplateId })" data-lightview-group='example' class='lightview rightmost' data-lightview-type='iframe' data-lightview-options="width: 700" data-lightview-caption="@item.Heading">
+                                <i class="fa fa-eye"></i></a>
+
+                            </td>
+                            <td align="center"><a title="Edit" href="@Url.Action("EditMailTemplate", "MailTemplates", new { MailTemplateId = item.MailTemplateId })"><i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                             @if (userRole.Contains("SuperAdmin"))
+                             {
+                            <td align="center">
+                               
+                                <a id="12" onclick="javascript:Delete(@item.MailTemplateId);" class="ntdelete"><i class="fa fa-trash-o"></i></a>
+                                
+                                @*<a title="Delete" class="sepV_a disable-alpha"><i class="icon-trash"></i></a>*@
+                            </td>
+                             }
+                        </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="norecords" colspan="9">No Mail Templates Found.</td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.pageno, "pagination pagination-centered"))

@@ -1,0 +1,33 @@
+﻿@{
+    Layout = "~/Areas/User/Views/Shared/_MainLayout.cshtml";
+    ViewBag.Title = "Acknowledgment - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+}
+
+<article class="clearfix l-r-p40 t-b-p5 white-bg tabhorizontal-l-r-p10">
+ <article class="clearfix part-row">
+  <article class="clearfix part-9">
+<h2 class="clearfix font30 Anton mobile-font20 mobile-t-c t-p8 dkpink-t tabhorizontal-font28 t-m0"><span class="blue-t">Thank   </span> You</h2>
+  </article>
+    <article class="clearfix part-3">
+    <article class="clearfix mobile-dis-b mobile-t-c mobile-b-p5">  <ul class="list-pn list-f b-m0 mobile-dis-in">
+ <li><a  href="@Url.Action("AddMember", "Members")" class=" r-m5"><img src="Content/User/images/reg.png" title="Member Registration"  width="53" height="54"/></a></li>
+   <li><a href="@Url.Action("Index", "Donation")" class=" r-m5"><img src="Content/User/images/don.png" title="DonateNow"  width="53" height="54"/></a></li>
+   <li><a href="@Url.Action("AddVolunteer", "Volunteer")"><img src="Content/User/images/mem.png" title="Volunteer Registration" width="53" height="54"/></a></li>
+  </ul>
+
+  </article></article>
+ </article>
+ </article>
+ <article class="clearfix white-bg p10 t-p0"> 
+ 
+<article class="clearfix dk-gray-bg flower-border-new"> 
+<article class="clearfix l-r-p30 t-b-p40 tabhorizontal-p15 tabhorizontal-minheight0" style="min-height:900px;"> 
+<article class="clearfix l-r-m-auto t-c t-p40 b-p60 tabhorizontal-t-b-p60 mobile-t-b-p15" style="max-width:600px;">
+<img src="Content/User/images/thankyou2.png" alt="Thank You" title="Thank You" width="160" height="209" border="0" />
+<h4 class="poppins-medium font30 green-t">Thank You...!!!</h4>
+<article class="clearfix t-p8 b-p15 font14 l-h20 poppins-regular">Your details has been submitted to administrator for approval. Our Team will contact you soon.</article>
+<a href="index.html" class="btn btn-danger poppins-medium font18 t-t-u l-r-p40" style="max-width:393px;">Back To Home</a>
+             </article>
+</article>     
+</article>
+     </article>

@@ -31,6 +31,10 @@ namespace TCAssociationTool.Areas.User.Controllers
         PayByPayPal objPayByPayPal = new PayByPayPal();
         TCAssociationTool.BLL.AppInfo _appinfo = new BLL.AppInfo();
         Entities.Members objMemberDetails = new Entities.Members();
+
+        public string action1 = string.Empty;
+        public string hash1 = string.Empty;
+        public string txnid1 = string.Empty;
         
 
         #region Membership
@@ -176,6 +180,34 @@ namespace TCAssociationTool.Areas.User.Controllers
 
                                     return new RedirectResult(returnurl);
                                 }
+                            }
+                            else if (objMembers.PaymentMethod == "CreditCard")
+                            {
+                                action1 = ConfigurationManager.AppSettings["PaymentUrl"];
+                                ViewBag.action1 = action1;
+                                //ViewBag.hash = hash1;
+                                //ViewBag.txnid = txnid1;
+                                //ViewBag.key = ConfigurationManager.AppSettings["TokenNo"];
+                                ViewBag.firstname = objMembers.FirstName.Trim();
+                                ViewBag.lastname = objMembers.LastName.Trim();
+                                ViewBag.email = objMembers.Email.Trim();
+                                ViewBag.phone = (objMembers.HomePhone != null ? objMembers.HomePhone + " " + objMembers.HomePhone.Trim() : objMembers.HomePhone);
+                                ViewBag.surl = ConfigurationManager.AppSettings["baseurl"].ToString() + "member-registration-acknowledgement.html" + "?MemberId=" + MemberId + "&PaymentMethod=" + objMembers.PaymentMethod;
+                                ViewBag.furl = ConfigurationManager.AppSettings["baseurl"];
+                                ViewBag.service_provider = "first_data";
+                                ViewBag.address = objMembers.Address;
+                                ViewBag.city = objMembers.City;
+                                ViewBag.state = objMembers.State;
+                                ViewBag.CardNumber = objMembers.CardNumber;
+                                ViewBag.cardtype = objMembers.CardNumber;
+                                ViewBag.holderfirstname = objMembers.CardHolderFirstName;
+                                ViewBag.holderlastname = objMembers.CardHolderLastName;
+                                ViewBag.CSVMonth = objMembers.CSVMonth;
+                                ViewBag.CSVYear = objMembers.CSVYear;
+                                ViewBag.Cvv = objMembers.Cvv;
+
+
+                                ViewBag.amount = objMembers.Amount;
                             }
                             else if (objMembers.PaymentMethod == "Cash/Cheque")
                             {
@@ -477,6 +509,119 @@ namespace TCAssociationTool.Areas.User.Controllers
                         }
                         return RedirectToAction("Thankyou", "Members");
                     }
+                }
+                else if (PaymentMethod == "CreditCard")
+                {
+                    if (objMembers.UserName != null && objMembers.UserName != "")
+                    {
+                        Username = objMembers.UserName;
+                    }
+                    else
+                    {
+                        Username = HttpContext.User.Identity.Name.ToString();
+                    }
+
+                    if (Username != "")
+                    {
+                        Entities.MembershipOrders objMembershipOrders = new Entities.MembershipOrders();
+                        objMembershipOrders.OrderType = OrderType;
+                        objMembershipOrders.Amount = objMembers.MemberAmount;
+                        objMembershipOrders.ExpiryDate = objMembers.ExpiryDate;
+                        objMembershipOrders.PaymentMethod = "CreditCard";
+                        objMembershipOrders.TransactionId = "sale";
+                        objMembershipOrders.PaymentStatus = "Completed";
+                        objMembershipOrders.MemberId = objMembers.MemberId;
+                        objMembershipOrders.MembershipTypeId = objMembers.MembershipTypeId;
+                        objMembershipOrders.MembershipType = objMembers.MembershipType;
+                        objMembershipOrders.OrderDate = DateTime.UtcNow;
+                        objMembershipOrders.UpdatedBy = Username;
+
+                        result = _Members.InsertMemberOrder(objMembershipOrders);
+                        if (result == 1)
+                        {
+                            ViewBag.PayerEmail = objMembers.Email;
+                            ViewBag.OrderType = objMembershipOrders.OrderType;
+                            ViewBag.UserName = Username;
+                            ViewBag.ReceiverEmail = "info@ataworld.org";
+                            ViewBag.AddressCity = objMembers.City;
+                            ViewBag.AddressName = objMembers.Address;
+                            ViewBag.AddressState = objMembers.State;
+                            ViewBag.AddressZip = objMembers.ZipCode;
+                            ViewBag.GrossTotal = objMembers.Amount;
+                            ViewBag.PaymentStatus = "Completed";
+                            ViewBag.TransactionId = "sale";
+                            ViewBag.MemberId = MemberId;
+                            DateTime Date = paydate = DateTime.UtcNow;
+                            ViewBag.PaymentDate = Date.ToString("MM/dd/yyyy");
+                        }
+
+                        int _status1 = 0; Entities.MailTemplates objTemplates = _MailTemplates.GetMailTemplateById("Thank you for Becoming a Member", 0, ref _status1);
+                        if (objTemplates != null)
+                        {
+                            StringBuilder body = new StringBuilder();
+                            body.Append(objTemplates.Description);
+                            body.Replace("[usersiteurl]", ConfigurationManager.AppSettings["baseurl"].ToString());
+                            body.Replace("[FBUrl]", objAppInfo.FacebookUrl);
+                            body.Replace("[TWUrl]", objAppInfo.TwitterUrl);
+                            body.Replace("[YUrl]", objAppInfo.YoutubeUrl);
+                            body.Replace("[GUrl]", objAppInfo.SupportEmail);
+                            body.Replace("[TPhone]", objAppInfo.CompanyPhone);
+                            body.Replace("[TEmail]", objAppInfo.CompanyEmail);
+                            body.Replace("[USERNAME]", BLL.Common.UppercaseFirst(objMembers.FirstName + " " + objMembers.LastName));
+                            body.Replace("[MemberId]", objMembers.SpouseCell);
+                            body.Replace("[MEMBERID]", objMembers.MemberId.ToString());
+                            body.Replace("[FirstName]", objMembers.FirstName);
+                            body.Replace("[LastName]", objMembers.LastName);
+                            body.Replace("[IntrestedArea]", objMembers.SpouseSkils);
+                            body.Replace("[SpouseEmail]", objMembers.SpouseEmail);
+                            body.Replace("[Email]", objMembers.Email);
+                            body.Replace("[MobilePhone]", objMembers.MobilePhone);
+                            body.Replace("[MembershipType]", objMembers.MembershipType);
+                            body.Replace("[TransactionId]", "sale");
+                            body.Replace("[PaymentType]", "CreditCard");
+                            body.Replace("[PaymentStatus]", "Completed");
+                            body.Replace("[PaymentDate]", paydate.ToShortDateString());
+                            body.Replace("[SiteName]", objAppInfo.SiteName);
+                            BLL.Common.SendMail(objMembers.Email, objTemplates.Subject, body.ToString());
+                        }
+
+
+                        int statusAdmin = 0;
+                        Entities.MailTemplates objTemplatesAdmin = _MailTemplates.GetMailTemplateById("Admin Member Registration", 0, ref statusAdmin);
+                        if (objTemplatesAdmin != null && objTemplatesAdmin.MailTemplateId != 0)
+                        {
+                            StringBuilder body1 = new StringBuilder();
+                            body1.Append(objTemplatesAdmin.Description);
+                            body1.Replace("[usersiteurl]", ConfigurationManager.AppSettings["baseurl"].ToString());
+                            body1.Replace("[FBUrl]", objAppInfo.FacebookUrl);
+                            body1.Replace("[TWUrl]", objAppInfo.TwitterUrl);
+                            body1.Replace("[YUrl]", objAppInfo.YoutubeUrl);
+                            body1.Replace("[GUrl]", objAppInfo.SupportEmail);
+                            body1.Replace("[TPhone]", objAppInfo.CompanyPhone);
+                            body1.Replace("[TEmail]", objAppInfo.CompanyEmail);
+                            body1.Replace("[MemberId]", objMembers.SpouseCell);
+                            body1.Replace("[MEMBERID]", objMembers.MemberId.ToString());
+                            body1.Replace("[FirstName]", objMembers.FirstName);
+                            body1.Replace("[LastName]", objMembers.LastName);
+                            body1.Replace("[Email]", objMembers.Email);
+                            body1.Replace("[MobilePhone]", objMembers.MobilePhone);
+                            body1.Replace("[MemberSkils]", objMembers.MemberSkils);
+                            body1.Replace("[IntrestedArea]", objMembers.SpouseSkils);
+                            body1.Replace("[SpouseCell]", objMembers.SpouseCell);
+                            body1.Replace("[SpouseEmail]", objMembers.SpouseEmail);
+                            body1.Replace("[MembershipType]", objMembers.MembershipType);
+                            body1.Replace("[TransactionId]", "sale");
+                            body1.Replace("[PaymentType]", "CreditCard");
+                            body1.Replace("[PaymentStatus]", "Completed");
+                            body1.Replace("[PaymentDate]", paydate.ToShortDateString());
+                            body1.Replace("[SiteName]", objAppInfo.SiteName);
+
+                            BLL.Common.SendMailwithfrom(objAppInfo.CompanyEmail, ConfigurationManager.AppSettings["adminemailid"], "Registered Member Details - TLCA", body1.ToString());
+                        }
+                    }
+
+
+
                 }
                 else if (PaymentMethod == "Cash/Cheque")
                 {

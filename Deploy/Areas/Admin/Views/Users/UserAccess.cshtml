@@ -1,0 +1,55 @@
+﻿@{Layout = null;
+  var userroles = (List<TCAssociationTool.Entities.Roles>)ViewBag.userRoleslst;
+  var roleslst = (List<TCAssociationTool.Entities.Roles>)ViewBag.lstRoles;
+}
+<script>
+    function validateroles() {
+        var RoleIds = Common.GetCheckBoxValue('RoleNamecheckbox');
+        if (RoleIds == "") {
+            alert("Please select atleast one Item.");
+            return false;
+        }
+        $('#RoleIds').val(RoleIds);
+    }
+</script>
+
+@{int j = 1;
+  foreach (var role in roleslst)
+  {
+      int t1 = 0;
+      if (userroles != null)
+      {
+          for (var x1 = 0; x1 < userroles.Count; x1++)
+          {
+              if (role.RoleId == userroles[x1].RoleId)
+              {
+                  t1 = 1;
+
+              }
+          }
+      }
+<div class="clearfix">
+        @if (t1 == 1)
+        {
+          
+            <label>
+                <input type="checkbox" checked="checked" name="RoleNamecheckbox" id="RoleNamecheckbox-@j" class="flat-red" value= "@{@role.RoleId}">
+                Manage @role.RoleName
+            </label>
+           
+        }
+        else
+        {
+            <label>
+                <input type="checkbox" name="RoleNamecheckbox" id="RoleNamecheckbox-@j" class="flat-red" value= "@{@role.RoleId}">
+                Manage @role.RoleName
+            </label> 
+        }
+
+    </div>
+    
+            j++;
+  }
+}
+    
+    

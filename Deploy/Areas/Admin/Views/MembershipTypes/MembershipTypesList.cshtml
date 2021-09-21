@@ -1,0 +1,143 @@
+﻿@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+    List<TCAssociationTool.Entities.MembershipTypes> lstMembershipType = ViewBag.lstMembershipTypes;    
+}
+<script>
+    $(document).ready(function () {
+        $('#wMembers').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+
+    function MembershipTypeStatus(MembershipTypeId) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("UpdateMembershipTypeStatus", "MembershipTypes")', // the URL of the controller action method
+            data: { MembershipTypeId: MembershipTypeId }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    $('#divmessage').html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    MembershipTypeBind(1);
+                }
+                else {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+    function UpdateDisplayOrder(i, MembershipTypeId) {
+        var DisplayOrder = parseInt($('#DisplayOrder' + i).val());
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UpdateDisplayOrder", "MembershipTypes")',
+            data: { DisplayOrder: DisplayOrder, MembershipTypeId: MembershipTypeId },
+            success: function (result) {
+                var div = '';
+                if (result.ok) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    MembershipTypeBind(1);
+                }
+                else {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+</script>
+        @if (Total == -1)
+        {
+            <div class="norecords">Sorry failed processing your request.</div> 
+        }
+        else
+        {
+            <table width="100%" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th width="44" style="text-align:center;">S.No.</th>
+                        <th><a onclick="javascript:sortresult('MembershipType');" class="white-t-u">Type @if (sortcolumn == "MembershipType")
+                         {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</th>
+                        <th width="20%">
+                            <a onclick="javascript:sortresult('Price');" class="white-t-u">Price @if (sortcolumn == "Price")
+                         {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }
+                        </th>
+                        <th width="20%">Validity</th>
+                         <th width="15%">
+                            <a onclick="javascript:sortresult('DisplayOrder');" class="white-t-u">Order No @if (sortcolumn == "DisplayOrder")
+                                                                                                           {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }
+                        </th>
+                         <th width="15%">
+                            <a onclick="javascript:sortresult('IsActive');" class="white-t-u">Status @if (sortcolumn == "IsActive")
+                                                                                                     {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }
+                        </th>
+                        <th width="9%">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                     @if (lstMembershipType.Count != 0)
+                     {
+                         int i = 0;
+                         foreach (var item in lstMembershipType)
+                         { 
+                    <tr>
+                        <td style="text-align:center">@item.RId</td>
+                        <td style="text-align: left">@item.MembershipType</td>
+                         <td style="text-align: left">@item.Price</td>
+                          <td style="text-align: left">@(item.Validity != DateTime.MinValue ? item.Validity.ToString("MM/dd/yyyy"): "Life Time")</td>
+                        <td>
+                                <input type="text" style="width:50px;margin-bottom:0px;" maxlength="3" id="DisplayOrder@(i)" value="@item.DisplayOrder" onkeypress ="return Common.isNumberKey(event)"/>
+                            <a onclick="UpdateDisplayOrder(@i,@item.MembershipTypeId);" title="Update"><i class="fa fa-fw fa-refresh"></i></a>                   
+                                
+                            </td>
+                        <td align="left">
+                                 @{
+                            var isactive = "";
+                            var active = "";
+                            var disable = "";
+                            if (item.IsActive == true)
+                            {
+                                isactive = "Active";
+                                disable = "style=\"cursor: pointer;\" onclick=\"javascript:MembershipTypeStatus(" + item.MembershipTypeId + ");\"";
+                            }
+                            else
+                            {
+                                isactive = "Disabled";
+                                active = "style=\"cursor: pointer;\" onclick=\"javascript:MembershipTypeStatus(" + item.MembershipTypeId + ");\"";
+                            }
+                        <div class="admin-active">@isactive
+                            <ul>
+                                <li><a @Html.Raw(active) >Active</a></li>
+                                <li><a @Html.Raw(disable) >Disabled</a></li>
+                            </ul>
+                        </div>      
+                    }
+                            </td>
+                        <td>
+                            <a title="Edit"onclick="MembershipTypeEdit(@item.MembershipTypeId);" ><i class="fa fa-pencil-square-o"></i></a>
+                            <a title="Delete" id="10" onclick="javascript:Delete(@item.MembershipTypeId);" class="scdelete"><i class="fa fa-trash-o"></i></a>
+                        </td>
+                    </tr>
+                                             i++;
+                                         }
+                                     }
+                                     else
+                                     {
+                        <tr>
+                            <td class="norecords" colspan="9">No Membership Types Found.</td>
+                        </tr>
+                    }
+            </table>
+        }
+     
+  @Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.pageno, "pagination pagination-centered"))

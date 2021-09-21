@@ -39,7 +39,16 @@ namespace TCAssociationTool.DAL
                     new SqlParameter("@InsertedDate",DateTime.UtcNow),
                     new SqlParameter("@UpdatedBy",objDonors.UpdatedBy),
                     new SqlParameter("@UpdatedDate",DateTime.UtcNow),
-                    new SqlParameter("@QStatus",0)
+                    new SqlParameter("@QStatus",0),
+                    new SqlParameter("@MI",(objDonors.MI == null ?DBNull.Value:(object)objDonors.MI)),                    
+                    new SqlParameter("@Profession",(objDonors.Profession == null ?DBNull.Value:(object)objDonors.Profession)),                    
+                    new SqlParameter("@Address2",(objDonors.Address2 == null ?DBNull.Value:(object)objDonors.Address2)),
+                    new SqlParameter("@City",(objDonors.City == null ?DBNull.Value:(object)objDonors.City)),
+                    new SqlParameter("@State",(objDonors.State == null ?DBNull.Value:(object)objDonors.State)),
+                    new SqlParameter("@ZipCode",(objDonors.ZipCode == null ?DBNull.Value:(object)objDonors.ZipCode)),
+                    new SqlParameter("@MobilePhone",(objDonors.MobilePhone == null ?DBNull.Value:(object)objDonors.MobilePhone)),
+                    new SqlParameter("@Fax",(objDonors.Fax == null ?DBNull.Value:(object)objDonors.Fax)),
+                    new SqlParameter("@WebsiteAddress",(objDonors.WebsiteAddress == null ?DBNull.Value:(object)objDonors.WebsiteAddress)),                    
                     };
 
                 _sqlP[0].SqlDbType = SqlDbType.NVarChar;

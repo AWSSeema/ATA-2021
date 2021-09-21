@@ -52,6 +52,28 @@ namespace TCAssociationTool.Entities
 	    public string  UpdatedBy  {get ; set ;}
 
 	    public DateTime  UpdatedDate  {get ; set ;}
+      
+        public string MI { get; set; }
+
+        public string Profession { get; set; }
+
+        public string Address2 { get; set; }
+
+        public string City { get; set; }
+
+        public string State { get; set; }
+
+        public string ZipCode { get; set; }
+
+        public string MobilePhone { get; set; }
+
+        public string Fax { get; set; }
+
+        public string WebsiteAddress { get; set; }
+
+        public string Field1 { get; set; }
+
+        public string Filed2 { get; set; }
 
         public string CardNumber { get; set; }
 
@@ -60,6 +82,14 @@ namespace TCAssociationTool.Entities
         public string CSVYear { get; set; }
 
         public string Cvv { get; set; }
+
+        public string CardType { get; set; }
+
+        public string CardHolderFirstName { get; set; }
+
+        public string CardHolderLastName { get; set; }
+
+        
 
     }
 }

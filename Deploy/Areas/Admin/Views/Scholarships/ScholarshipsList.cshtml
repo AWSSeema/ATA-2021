@@ -1,0 +1,215 @@
+﻿@using System.Configuration;
+@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+
+    List<TCAssociationTool.Entities.Scholarships> lstScholarships = ViewBag.lstScholarships;
+
+
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    }
+    var loc = ConfigurationManager.AppSettings["baseurl"] + "Content/documents/";
+}
+
+<script type="text/javascript">
+
+
+    function DeleteScholarships(Id) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete", "Scholarships")',  // the URL of the controller action method
+                data: { Id: Id}, // optional data
+                success: function (result) {
+                    if (result.ok) {
+                        $('#divmessage').html(result.data);
+                        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                        ScholarshipsBind($('#hdnPageNo').val());
+                    }
+                    else {
+                        $('#divmessage').html(result.data);
+                        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    }
+                },
+            });
+        }
+    }
+
+    function ScholarshipsStatus(Id) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ScholarshipsStatus", "Scholarships")', // the URL of the controller action method
+            data: { id: Id }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    $('#divmessage').html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    ScholarshipsBind($('#hdnPageNo').val());
+                }
+                else {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+</script>
+
+@if (Total == -1)
+{
+    <div class="norecords">Sorry failed processing your request.</div>
+}
+else
+{
+    <table width="100%" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+
+                <th style="text-align: center;" width="5%">S.No.</th>
+                <th>
+                    <a onclick="javascript:sortresult('as_number');" class="white-t-u">
+                        As Number @if (sortcolumn == "as_number")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                <th width="10%">
+                    <a onclick="javascript:sortresult('is_ata_member');" class="white-t-u">
+                        Is ATA Member @if (sortcolumn == "is_ata_member")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                <th width="10%">
+                    <a onclick="javascript:sortresult('firstname');" class="white-t-u">
+                        Name @if (sortcolumn == "firstname")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                <th width="10%">
+                    <a onclick="javascript:sortresult('email');" class="white-t-u">
+                        Email @if (sortcolumn == "email")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                <th width="10%">
+                    <a onclick="javascript:sortresult('phone');" class="white-t-u">
+                        Phone @if (sortcolumn == "phone")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                <th width="10%">
+                    <a onclick="javascript:sortresult('documents');" class="white-t-u">
+                        Documents @if (sortcolumn == "documents")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+
+                <th width="10%">
+                    <a onclick="javascript:sortresult('status2');" class="white-t-u">
+                        Status @if (sortcolumn == "status2")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+
+                <th width="10%">
+                    <a onclick="javascript:sortresult('datesent');" class="white-t-u">
+                        Date sent @if (sortcolumn == "datesent")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                <th width="10%">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (lstScholarships.Count != 0)
+            {
+                int i = 0;
+                foreach (var item in lstScholarships)
+                {
+            <tr valign="top">
+
+                <td style="text-align: center;">@item.RId</td>
+                <td class="t-t-c" style="text-align: left">@item.as_number</td>
+                <td class="t-t-c" style="text-align: left">@item.is_ata_member</td>
+                <td class="t-t-c" style="text-align: left">@item.firstname</td>
+                <td class="t-t-c" style="text-align: left">@item.email</td>
+                <td class="t-t-c" style="text-align: left">@item.phone</td>
+                <td class="t-t-c" style="text-align: left">
+
+                    @if (item.documents != null && item.documents != "")
+                    {
+                        <a href="@(loc + item.documents)" download="@item.documents" target="_blank">Download Document <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>
+                    }
+                    else
+                    {
+                        <span>No Document</span>
+                    }
+                </td>
+               
+                <td>
+                    @{
+                        var isactive = "";
+                        var active = "";
+                        var disable = "";
+                        if (item.status2 == "1")
+                        {
+                            isactive = "Active";
+                            disable = "style=\"cursor: pointer;\" onclick=\"javascript:ScholarshipsStatus(" + item.Id + ");\"";
+                        }
+                        else
+                        {
+                            isactive = "Disabled";
+                            active = "style=\"cursor: pointer;\" onclick=\"javascript:ScholarshipsStatus(" + item.Id + ");\"";
+                        }
+                        <div class="admin-active">
+                            @isactive
+                            <ul>
+                                <li><a @Html.Raw(active)>Active</a></li>
+                                <li><a @Html.Raw(disable)>Disabled</a></li>
+                            </ul>
+                        </div>
+                    }
+                </td>
+             
+
+                <td class="t-t-c" style="text-align: left">@(item.datesent != null && item.datesent != DateTime.MinValue ? item.datesent.ToString("dd/MM/yyyy") : "N/A")</td>
+
+                <td>
+                    <a href="@Url.Action("ViewScholarships", "Scholarships", new { Id = item.Id})" title="View" class="r-p5"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("EditScholarships", "Scholarships", new { Id = item.Id})" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>
+                    @if (userRole.Contains("SuperAdmin"))
+                    {
+                        <a class="themedelete" onclick="javascript:DeleteScholarships(@item.Id);" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>
+                    }
+                </td>
+            </tr>
+                    i++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td class="norecords" colspan="7">No Scholarships Found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.PageNo, "pagination pagination-centered"))

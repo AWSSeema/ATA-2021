@@ -1,0 +1,217 @@
+﻿@{
+    ViewBag.Title = "Profile - " + System.Configuration.ConfigurationManager.AppSettings["ApplicationName"];
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+    var objuser = (TCAssociationTool.Entities.Users)ViewBag.objuser;
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+
+        $(".date").inputmask("mm/dd/yyyy", { "placeholder": "mm/dd/yyyy" });
+        //Money Euro
+        $("[data-mask]").inputmask();
+    });
+    function CheckProfileEmailAvailability(email) {
+        var returnval = null;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CheckProfileEmailAvailability", "Users")', // the URL of the controller action method
+            data: { UserId: $('#UserId').val(), Email: email }, // optional data
+            datatype: "JSON",
+            async: false,
+            success: function (result) {
+                if (result.ok) {
+                    returnval = result.data;
+                }
+            }
+        });
+        return returnval;
+    }
+
+    function EValidateProfile() {
+        //Account Information
+        if ($.trim($('#EEmail').val()) == '') { document.getElementsByName('EEmail')[0].placeholder = 'Required'; $('#EEmail').focus().addClass("validate"); return false; } else { $('#EEmail').removeClass("validate"); }
+        if (!Common.CheckEmail($.trim($('#EEmail').val()))) { $('#EEmail').val(''); document.getElementsByName('EEmail')[0].placeholder = 'Please enter valid email.'; $('#EEmail').focus().addClass("validate"); return false; } else { $('#EEmail').removeClass("validate"); }
+
+        if (!CheckProfileEmailAvailability($.trim($('#EEmail').val()))) { $('#EEmail').val(''); document.getElementsByName('EEmail')[0].placeholder = 'Email address already exist.'; $('#EEmail').focus().addClass("validate"); return false; } else { $('#EEmail').removeClass("validate"); }
+
+        return true;
+    }
+    function EditProfile() {
+
+        $('#Edit').hide();
+        $('#ViewProfile').hide();
+        $('#EditProfile').show();
+        $('#btnEdit').hide();
+    }
+    function ShowProfile() {
+        $('#Edit').show();
+        $('#ViewProfile').show();
+        $('#EditProfile').hide();
+        $('#btnEdit').show();
+    }
+
+    function ValidatePassword() {
+
+        if ($('#OldPassword').val() == "") { document.getElementsByName('OldPassword')[0].placeholder = 'Required'; $('#OldPassword').focus().addClass("validate"); return false; } else { $('#OldPassword').focus().removeClass("validate"); }
+        if ($('#NewPassword').val() == "") { document.getElementsByName('NewPassword')[0].placeholder = 'Required'; $('#NewPassword').focus().addClass("validate"); return false; } else { $('#NewPassword').focus().removeClass("validate"); }
+        if (!Common.ValidatePassword($('#NewPassword').val())) { $('#NewPassword').val(''); document.getElementsByName('NewPassword')[0].placeholder = 'Please enter minimum 8 charecters (atleast one special charecter & one numeric charecter).'; $('#NewPassword').focus().addClass("validate"); return false; } else { $('#NewPassword').focus().removeClass("validate"); }
+        if ($('#ConfPassword').val() == "") { document.getElementsByName('ConfPassword')[0].placeholder = 'Required'; $('#ConfPassword').focus().addClass("validate"); return false; } else { $('#ConfPassword').focus().removeClass("validate"); }
+        if ($('#NewPassword').val() != $('#ConfPassword').val()) { $('#ConfPassword').val(''); document.getElementsByName('ConfPassword')[0].placeholder = 'Password and confirm password do not match.'; $('#ConfPassword').focus().addClass("validate"); return false; } else { $('#ConfPassword').focus().removeClass("validate"); }
+
+        //if (!Common.ValidatePassword($('#NewPassword').val())) { $('#spanNewPassword').html('Please enter minimum 8 charecters (atleast one special charecter & one numeric charecter).'); $('#NewPassword').focus().addClass("red-border"); return false; } else { $('#spanPassword').html(''); $('#Password').focus().removeClass("red-border"); }
+
+        //if (!Common.ValidatePassword($('#OldPassword').val())) { $('#spanPassword').html('Please enter minimum 8 charecters (atleast one special charecter & one numeric charecter).'); $('#Password').focus().addClass("red-border"); return false; } else { $('#spanPassword').html(''); }
+        //if ($('#NewPassword').val() == '') { $('#spanNewPassword').html('Required.'); $('#NewPassword').focus().addClass("red-border"); return false; } else { $('#spanNewPassword').html(''); $('#NewPassword').focus().removeClass("red-border"); }
+        //if (!Common.ValidatePassword($('#NewPassword').val())) { $('#spanNewPassword').html('Please enter minimum 8 charecters (atleast one special charecter & one numeric charecter).'); $('#NewPassword').focus().addClass("red-border"); return false; } else { $('#spanPassword').html(''); $('#Password').focus().removeClass("red-border"); }
+        //if ($('#ConfPassword').val() == '') { $('#spanConfPassword').html('Required.'); $('#ConfPassword').focus().addClass("red-border"); return false; } else { $('#spanConfPassword').html(''); $('#ConfPassword').focus().removeClass("red-border"); }
+        //if ($('#NewPassword').val() != $('#ConfPassword').val()) { $('#spanPassword').html('Password and confirm password do not match.'); return false; } else { $('#spanPassword').html(''); }
+        return true;
+    }
+
+    function resetclass() {
+        $('#OldPassword').removeClass("validate");
+        $('#NewPassword').removeClass("validate");
+        $('#ConfPassword').removeClass("validate");
+    }
+    $(function () {
+        $(".date").inputmask("mm/dd/yyyy", { "placeholder": "mm/dd/yyyy" });
+        //Money Euro
+        $("[data-mask]").inputmask();
+    });
+
+    function ResetValidateClass() {
+        $('#EEmail').removeClass("validate");
+    }
+</script>
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Profile</h1>
+    <ol class="breadcrumb">
+        <li class="active"><i class="fa fa-dashboard"></i>Profile</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        { @Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        { @Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <!-- /.box-header -->
+        <div class="box-header">
+            <div class="clearfix row">
+                <div class="clearfix col-xs-12 col-lg-6 col-sm-6">
+                    <h3 class="box-title dis-in">User Profile </h3>
+                </div>
+                <div id="Edit" class="col-xs-12 col-lg-6 col-sm-6 text-right"><a onclick="EditProfile();" class="btn btn-danger btn-sm margin" style="color: #FFFFFF;">Edit Profile</a></div>
+            </div>
+        </div>
+        <div class="box-body" id="ViewProfile">
+            <table width="96%" cellspacing="0" cellpadding="4" border="0" align="center" id="ViewProfile">
+                <tbody>
+                    <tr>
+                        <td width="13%">User Name</td>
+                        <td width="87%">@objuser.UserName</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>@objuser.Email</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>@objuser.MobilePhone</td>
+                    </tr>
+                    <tr>
+                        <td>Designation</td>
+                        <td>@objuser.Designation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="box-body hide-b" id="EditProfile">
+            <table width="96%" cellspacing="0" cellpadding="4" border="0" align="center">
+                @using (Html.BeginForm("UpdateUser", "Users", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.Hidden("UserId", @objuser.UserId)
+                    @Html.Hidden("Type", "Profile")
+                    <tbody>
+                        <tr>
+                            <td width="13%">User Name</td>
+                            <td width="87%">@objuser.UserName</td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td>
+                                <input type="text" value="@objuser.Email" class="inputstyle" id="EEmail" name="Email">
+                                <span class="field-validation-error" id="EspanEmail"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Phone</td>
+                            <td>
+                                <input type="text" value="@objuser.MobilePhone" class="inputstyle" id="EMobilePhone" name="MobilePhone">
+                                <span class="field-validation-error" id="EspanMobilePhone"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Designation</td>
+                            <td>
+                                <input type="text" value="@objuser.Designation" class="inputstyle" id="EDesignation" name="Designation">
+                                <span class="field-validation-error" id="EspanDesignation"></span></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>
+                                <div class="clearfix t-p5">
+                                    <input type="submit" class="btn btn-primary font-w7" value="Submit" onclick="return EValidateProfile();" />
+                                    <a class="btn btn-info" onclick="ShowProfile();">Cancel</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                }
+            </table>
+        </div>
+    </div>
+
+    <div class="box">
+        <!-- /.box-header -->
+        <div class="box-header">
+            <h3 class="box-title">Change Password </h3>
+        </div>
+        @using (Html.BeginForm("ChangePassword", "Account"))
+        {
+            @Html.Hidden("UserId", (Int64)@objuser.UserId)
+            <div class="box-body">
+                <div class="row validation">
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Old password</label>
+                        <input type="password" name="OldPassword" id="OldPassword" onclick="resetclass();" onkeypress="resetclass();" maxlength="15" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>New Password</label>
+                        <input type="password" name="NewPassword" id="NewPassword" onclick="resetclass();" onkeypress="resetclass();" maxlength="15" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-lg-4 col-sm-6">
+                        <label>Confirm Password</label>
+                        <input type="password" name="ConfPassword" id="ConfPassword" onclick="resetclass();" onkeypress="resetclass();" maxlength="15" class="form-control">
+                    </div>
+                </div>
+                <div class="box-body text-right">
+                    <input type="submit" class="btn btn-primary" value="Submit" onclick="return ValidatePassword();" />
+                    <a class="btn btn-info" href="javascript:history.back()">Cancel</a>
+                </div>
+            </div>
+        }
+        <!-- /.box-body -->
+    </div>
+</div>
+
+
+
+
+

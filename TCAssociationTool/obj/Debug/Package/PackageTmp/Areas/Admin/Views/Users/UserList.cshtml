@@ -1,0 +1,163 @@
+﻿@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 total = (Int64)ViewBag.total; 
+
+<table width="100%" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th width="5%" align="center" style="padding:8px 6px">S.No.</th>
+            <th style="text-align: left;padding:8px 6px">
+                <a onclick="javascript:sortresult('UserName');" class="white-t-u">Name @if (sortcolumn == "UserName")
+                                                                                       {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a>
+            </th>
+            <th width="25%" style="padding:8px 6px">
+                <a onclick="javascript:sortresult('Email');" class="white-t-u">Email @if (sortcolumn == "Email")
+                                                                                     {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a>
+            </th>
+            <th width="11%" style="padding:8px 6px">
+                <a onclick="javascript:sortresult('Designation');" class="white-t-u">Designation @if (sortcolumn == "Designation")
+                                                                                     {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a>
+            </th>
+            <th width="11%" style="padding:8px 6px">
+                <a onclick="javascript:sortresult('MobilePhone');" class="white-t-u">Mobile Phone @if (sortcolumn == "MobilePhone")
+                                                                                     {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a>
+            </th>
+            @*<th width="85">Last Login </th>*@
+            <th width="5%" style="padding:8px 6px">#</th>
+            <th width="10%" style="padding:8px 6px">
+                <a onclick="javascript:sortresult('IsApproved');" class="white-t-u">Status @if (sortcolumn == "IsApproved")
+                                                                                           {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a>
+            </th>
+            <th width="7%" style="padding:8px 6px">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (total != 0)
+        {
+            foreach (var item in (List<TCAssociationTool.Entities.Users>)ViewBag.lstuser)
+            {
+              
+            <tr>
+                <td valign="top">@item.RId</td>
+                <td style="text-align: left">@item.UserName</td>
+                <td><a href="mailto:@item.Email" >@item.Email</a> </td>
+                 <td style="text-align: left">@item.Designation</td>
+                <td style="text-align: left">@(item.MobilePhone != null && item.MobilePhone != "" ? item.MobilePhone : "N/A")</td>
+                @*<td>@(item.LastLoginDate==DateTime.MinValue?"": item.LastLoginDate.ToShortDateString())</td>*@
+                  @if (!item.RoleName.Contains("SuperAdmin"))
+                  {
+                <td><a onclick="GetUserRoles(@item.UserId);">Access</a></td>
+                  }
+                  else
+                  {
+                      <td>&nbsp;</td>
+                  }
+                <td>
+                    @{
+                  var isactive = "";
+                  var active = "";
+                  var disable = "";
+                  if (item.IsApproved == true)
+                  {
+                      isactive = "Active";
+                      disable = "style=\"cursor: pointer;\" onclick=\"javascript:UserStatus(" + item.UserId + ");\"";
+                  }
+                  else
+                  {
+                      isactive = "Disabled";
+                      active = "style=\"cursor: pointer;\" onclick=\"javascript:UserStatus(" + item.UserId + ");\"";
+                  }
+                  if (!item.RoleName.Contains("SuperAdmin"))
+                  {
+                        <div class="admin-active">@isactive
+                            <ul>
+                                <li><a @Html.Raw(active) >Active</a></li>
+                                <li><a @Html.Raw(disable) >Disabled</a></li>
+                            </ul>
+                        </div>             
+                  }
+                  else
+                  {
+                        @isactive
+                  }                    
+                    
+                    }
+                </td>
+                <td>
+                    @if (item.RoleName != "SuperAdmin")
+                    {
+                        <a title="Edit" class="sepV_a" onclick="UserEdit(@item.UserId);"><i class="fa fa-pencil-square-o"></i></a>
+                        <a title="Delete" onclick="javascript:UserDelete(@item.UserId, '@item.UserName');"><i class="fa fa-trash-o"></i></a> 
+                    }
+                    else
+                    {
+                        <a title="Edit" class="sepV_a" onclick="UserEdit(@item.UserId);"><i class="fa fa-pencil-square-o"></i></a>
+                    }
+
+                </td>
+            </tr>
+       
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8" class="norecords">No User found.</td>
+            </tr>
+        }
+        <script type="text/javascript">
+            function UserStatus(UserId) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("UserStatus", "Users")', // the URL of the controller action method
+                    data: { UserId: UserId }, // optional data
+                    datatype: "JSON",
+                    success: function (result) {
+                        if (result.ok) {
+                            $('#divmessage').html(result.data);
+                            $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            UserBind(1, 'on');
+                        }
+                        else {
+                            $('#divmessage').html(result.data);
+                            $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                        }
+                    }
+                });
+            }
+
+            function UserDelete(UserId, UserName) {
+
+                var conf = confirm('Do you want to delete user ' + UserName + '?');
+
+                if (conf) {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("UserDelete", "Users")', // the URL of the controller action method
+                        data: { UserId: UserId }, // optional data
+                        datatype: "JSON",
+                        success: function (result) {
+                            if (result.ok) {
+                                $('#divmessage').html(result.data);
+                                $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                                $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                                UserBind(1, 'on');
+                            }
+                            else {
+                                $('#divmessage').html(result.data);
+                                $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                                $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            }
+                        }
+                    });
+                }
+            }
+        </script>
+    </tbody>
+</table>
+    @Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref total, (Int64)ViewBag.pageno, "pagination pagination-right m-t0"))
+}
