@@ -114,8 +114,8 @@ namespace TCAssociationTool.Areas.Admin.Controllers
                     case 1:
                         if (image != null)
                         {
-                            image.Resize(350, 350, true, false);
-                            image.Crop(1, 1, 1, 1);
+                            //image.Resize(350, 350, true, false);
+                            //image.Crop(1, 1, 1, 1);
                             image.Save(ConfigurationManager.AppSettings["uploadPath"] + "\\news\\" + imageurl);
                         }
                         TempData["message"] = "<div class=\"alert alert-success alert-dismissable\">Inserted Record Successfully</div>";
@@ -123,8 +123,8 @@ namespace TCAssociationTool.Areas.Admin.Controllers
                     case 2:
                         if (image != null)
                         {
-                            image.Resize(350, 350, true, false);
-                            image.Crop(1, 1, 1, 1);
+                            //image.Resize(350, 350, true, false);
+                            //image.Crop(1, 1, 1, 1);
                             image.Save(ConfigurationManager.AppSettings["uploadPath"] + "\\news\\" + imageurl);
                         }
                         TempData["message"] = "<div class=\"alert alert-success alert-dismissable\">Changes has been Updated Successfully</div>";

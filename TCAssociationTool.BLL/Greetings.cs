@@ -92,6 +92,7 @@ namespace TCAssociationTool.BLL
                     objGreetings.link = (dt.Rows[0]["link"] != DBNull.Value ? dt.Rows[0]["link"].ToString() : "");
                     objGreetings.target = (dt.Rows[0]["target"] != DBNull.Value ? dt.Rows[0]["target"].ToString() : "");
                     objGreetings.lastdate = (dt.Rows[0]["lastdate"] != DBNull.Value ? Convert.ToDateTime(dt.Rows[0]["lastdate"].ToString()) : DateTime.MinValue);
+                    objGreetings.Elastdate = objGreetings.lastdate.ToString("dd/MM/yyyy");
 
 
                 }

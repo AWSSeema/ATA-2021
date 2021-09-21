@@ -34,7 +34,7 @@
         var sortcolumn = $('#hdnsortcolumn').val();
         var sortorder = $('#hdnsortorder').val();
         var items = $('#txtitems').val();
-        var Search = $('#txtsearch').val();
+        var Search = $('#txtsearch').val().trim();
         var InnerPageCategoryId = $('#InnerPageCategoryId').val();
 
         $.ajax({
@@ -96,7 +96,7 @@
 <div class="content-header">
     <h1>Menu Pages</h1>
     <ol class="breadcrumb">
-        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a ><i class="fa fa-dashboard"></i>Home</a></li>
         <li class="active"><i class="fa fa-list-alt"></i>Menu Pages</li>
     </ol>
 </div>

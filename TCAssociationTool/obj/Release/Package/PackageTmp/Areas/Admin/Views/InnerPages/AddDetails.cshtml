@@ -28,10 +28,9 @@
     });
 
     function Validate() {
-
-        if ($.trim($('#Heading').val()) == '') { document.getElementsByName('Heading')[0].placeholder = 'Page Name Required'; $('#Heading').focus().addClass("validate"); return false; } else { $('#Heading').focus().removeClass("validate"); }
-        if ($.trim($('#InnerPageCategoryId').val()) == '') { document.getElementsByName('InnerPageCategoryId')[0].placeholder = 'Menu Required'; $('#InnerPageCategoryId').focus().addClass("validate"); return false; } else { $('#InnerPageCategoryId').focus().removeClass("validate"); }
-        if (CKEDITOR.instances.Description.getData() == "") { $('#Description').focus().addClass("red-border"); $('#lblDescription').html('Description Required.'); return false; } else { $('#Description').val(CKEDITOR.instances.Description.getData()); $('#lblDescription').html(''); }
+       if ($.trim($('#InnerPageCategoryId').val()) == '') { document.getElementsByName('InnerPageCategoryId')[0].placeholder = 'Menu Required'; $('#InnerPageCategoryId').focus().addClass("validate"); return false; } else { $('#InnerPageCategoryId').focus().removeClass("validate"); }
+       if ($.trim($('#Heading').val()) == '') { document.getElementsByName('Heading')[0].placeholder = 'Page Name Required'; $('#Heading').focus().addClass("validate"); return false; } else { $('#Heading').focus().removeClass("validate"); }
+       if (CKEDITOR.instances.Description.getData() == "") { $('#Description').focus().addClass("red-border"); $('#lblDescription').html('Description Required.'); return false; } else { $('#Description').val(CKEDITOR.instances.Description.getData()); $('#lblDescription').html(''); }
 
         return true;
     }
@@ -109,7 +108,7 @@
                     </div>
                     <div class="col-xs-12 col-lg-2 col-sm-6">
                         <label>Display Order : </label>
-                        <input type="text" onkeypress="return Common.isNumberKey(event)" id="DisplayOrder" onclick="ResetValidateClass();" name="DisplayOrder" class="form-control">
+                        <input type="text" onkeypress="return Common.isNumberKey(event)" id="DisplayOrder" onclick="ResetValidateClass();" name="DisplayOrder" maxlength="3" class="form-control">
                     </div>                     
                 </div>
                 <div class="row">

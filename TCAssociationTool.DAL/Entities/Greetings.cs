@@ -25,5 +25,6 @@ namespace TCAssociationTool.Entities
         public string target { get; set; }
         public DateTime date_modified { get; set; }
         public DateTime lastdate { get; set; }
+        public string Elastdate { get; set; }
     }
 }

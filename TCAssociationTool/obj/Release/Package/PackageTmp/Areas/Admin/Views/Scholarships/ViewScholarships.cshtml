@@ -1,0 +1,448 @@
+﻿@{
+    ViewBag.Title = "AddMailTemplate";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.Scholarships objScholarships = ViewBag.objScholarships;
+
+    string imgurl = System.Configuration.ConfigurationManager.AppSettings["baseurl"] + "Content/documents/";
+}
+
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Scholarships</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "Scholarships")"><i class="fa fa-print"></i>Scholarships</a></li>
+        <li class="active">View Scholarships</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+
+
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box validation">
+        <!-- /.box-header -->
+        <div class="box-header">
+            <h3 class="box-title dis-in">View Scholarships </h3>
+        </div>
+      
+            <input type="hidden" name="Id" id="Id" value="@objScholarships.Id" />
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Personal Details </h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Scholarship Number :</label>
+                            @objScholarships.as_number
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Name :</label>
+                            @objScholarships.firstname
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Is ATA Member :</label>
+                            @objScholarships.is_ata_member
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Address 1 :</label>
+                            @objScholarships.address
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Address 2 :</label>
+                            @objScholarships.address2
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>City:</label>
+                            @objScholarships.city
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>State:</label>
+                            @objScholarships.state
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Country :</label>
+                            @objScholarships.country
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Zipcode :</label>
+                            @objScholarships.zipcode
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Permanent Address Details </h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Address1 :</label>
+                            @objScholarships.permanent_address
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Address2 :</label>
+                            @objScholarships.permanent_address2
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>City:</label>
+                            @objScholarships.permanent_city
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>State:</label>
+                            @objScholarships.permanent_state
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Country :</label>
+                            @objScholarships.permanent_country
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> ZipCode :</label>
+                            @objScholarships.permanent_zipcode
+                        </div>
+
+
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Email :</label>
+                            @objScholarships.email
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Phone No :</label>
+                            @objScholarships.phone
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Other Details</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Date of Birth :</label>
+                            @objScholarships.dob
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Place of Birth :</label>
+                            @objScholarships.place_of_birth
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Country of Citizenship:</label>
+                            @objScholarships.citizenship
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-4 col-sm-6">
+                            <label>Name and Address of Institution Enrolled In:</label>
+                            @objScholarships.institution
+                        </div>
+
+                        <div class="col-xs-12 col-lg-4 col-sm-6">
+                            <label> Major Field of Study/Intended Profession or Degree :</label>
+                            @objScholarships.study
+                        </div>
+
+
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Parent or Guardian Details</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Name :</label>
+                            @objScholarships.parent_firstname
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Relationship :</label>
+                            @objScholarships.relationship
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Address of Parent or Guardian</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Address 1 :</label>
+                            @objScholarships.parent_address
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Address 2 :</label>
+                            @objScholarships.parent_address2
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>City :</label>
+                            @objScholarships.parent_city
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> State :</label>
+                            @objScholarships.parent_state
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Country :</label>
+                            @objScholarships.parent_country
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> ZipCode :</label>
+                            @objScholarships.parent_zipcode
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Email of Parent or Guardian :</label>
+                            @objScholarships.parent_email
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Phone of Parent or Guardian :</label>
+                            @objScholarships.parent_phone
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Occupation of Mother :</label>
+                            @objScholarships.mother_occupation
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Occupation of Father :</label>
+                            @objScholarships.father_occupation
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Household Income :</label>
+                            @objScholarships.income
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Address of Parent or Guardian</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Name of the High School :</label>
+                            @objScholarships.school_name
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> School Location :</label>
+                            @objScholarships.school_location
+                        </div>
+
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Dates of Attendance :</label>
+                            @objScholarships.attendance
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Honors, Awards and Scholarships</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Name of Award :</label>
+                            @objScholarships.award1_name
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Year and Duration :</label>
+                            @objScholarships.award1_year
+                        </div>
+
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Name of Award :</label>
+                            @objScholarships.award2_name
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>  Year and Duration  :</label>
+                            @objScholarships.award2_year
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Expected Cost of Tuition For Application Year :</label>
+                            @objScholarships.tuition_cost
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Expected Cost of Housing :</label>
+                            @objScholarships.housing_cost
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Document :</label>
+                            @if (objScholarships.documents != null && objScholarships.documents != "")
+                            {
+                                <a href="@(imgurl + objScholarships.documents)" target="_blank">Preview</a> <span>/</span><a href="@(imgurl + objScholarships.documents)" download="@objScholarships.documents">Download</a>
+                            }
+                        </div>
+
+
+                    
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-6 col-sm-6">
+                            <label> Extra-Curricular Activities and Community Service :</label>
+                            @objScholarships.extra_activities
+                        </div>
+
+                        <div class="col-xs-12 col-lg-6 col-sm-6">
+                            <label>  Brief note of your vision of ATA for the coming 6 years and next 12 years, How ATA could help the community :</label>
+                            @objScholarships.brief_note
+                        </div>
+                    </div>
+
+                    </div>
+
+                </div>
+
+
+
+
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body text-right">
+               
+                    <a class="btn btn-info" href="@Url.Action("Index", "Scholarships")">Cancel</a>
+                </div>
+                <!-- /.box-body -->
+            </div>
+      
+        <!-- /.box-body -->
+    </div>
+    <!-- /.content -->
+</div>
+

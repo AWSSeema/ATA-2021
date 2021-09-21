@@ -161,9 +161,10 @@
             success: function (result) {
                 if (result.ok) {
                     $('#divmessage').html(result.data);
-                    EventssRegistrationTypesBind();
-
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
                     $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+
+                    EventssRegistrationTypesBind();
                 }
                 else {
                     $('#divmessage').html(result.data);
@@ -344,7 +345,7 @@
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
                         <label class="t-p5 font12">Zip Code :</label>
-                        <input type="text" id="ZipCode" name="ZipCode" value="@objEvent.ZipCode" class="form-control">
+                        <input type="text" onkeypress="return Common.isNumberKey(event)" id="ZipCode" name="ZipCode" value="@objEvent.ZipCode" class="form-control">
                         <span id="spanZipCode" class="red-t"></span>
                     </div>
                     <div class="col-xs-12 col-lg-6 col-sm-6">

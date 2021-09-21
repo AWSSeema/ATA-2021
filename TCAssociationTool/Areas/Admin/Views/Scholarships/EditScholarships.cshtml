@@ -118,7 +118,27 @@
                         </div>
                         <div class="col-xs-12 col-lg-3 col-sm-6">
                             <label>State</label>
-                            <input type="text" class="form-control" name="state" value=" @objScholarships.state" onclick="ResetValidateClass();" id="state">
+                            <select class="form-control" name="state" id="state">
+                                <option value="">--Select--</option>
+                                <option @(objScholarships.state == "Atlanta" ? "selected='selected'" : "") value="Atlanta"> Atlanta</option>
+                                <option @(objScholarships.state == "Austin" ? "selected='selected'" : "") value="Austin"> Austin</option>
+                                <option @(objScholarships.state == "Boston" ? "selected='selected'" : "") value="Boston"> Boston</option>
+                                <option @(objScholarships.state == "Chicago Land" ? "selected='selected'" : "") value="Chicago Land"> Chicago Land</option>
+                                <option @(objScholarships.state == "Dallas" ? "selected='selected'" : "") value="Dallas"> Dallas</option>
+                                <option @(objScholarships.state == "DC Metro" ? "selected='selected'" : "") value="DC Metro"> DC Metro</option>
+                                <option @(objScholarships.state == "Delaware" ? "selected='selected'" : "") value="Delaware"> Delaware</option>
+                                <option @(objScholarships.state == "Detroit" ? "selected='selected'" : "") value="Detroit"> Detroit</option>
+                                <option @(objScholarships.state == "Los Angeles" ? "selected='selected'" : "") value="Los Angeles"> Los Angeles</option>
+                                <option @(objScholarships.state == "Maryland" ? "selected='selected'" : "") value="Maryland"> Maryland</option>
+                                <option @(objScholarships.state == "Nashville" ? "selected='selected'" : "") value="Nashville"> Nashville</option>
+                                <option @(objScholarships.state == "New England" ? "selected='selected'" : "") value="New England"> New England</option>
+                                <option @(objScholarships.state == "New Jersey" ? "selected='selected'" : "") value="New Jersey"> New Jersey</option>
+                                <option @(objScholarships.state == "Orlando" ? "selected='selected'" : "") value="Orlando"> Orlando</option>
+                                <option @(objScholarships.state == "Raleigh" ? "selected='selected'" : "") value="Raleigh"> Raleigh</option>
+                                <option @(objScholarships.state == "Richmond" ? "selected='selected'" : "") value="Richmond"> Richmond</option>
+                                <option @(objScholarships.state == "Seattle" ? "selected='selected'" : "") value="Seattle"> Seattle</option>
+                                <option @(objScholarships.state == "Washington DC" ? "selected='selected'" : "") value="Washington DC"> Washington DC</option>
+                            </select>
                         </div>
 
                         <div class="col-xs-12 col-lg-3 col-sm-6">
@@ -168,8 +188,29 @@
                         </div>
                         <div class="col-xs-12 col-lg-3 col-sm-6">
                             <label>State</label>
-                            <input type="text" class="form-control" name="permanent_state" value=" @objScholarships.permanent_state" onclick="ResetValidateClass();" id="permanent_state">
+                            <select class="form-control" name="permanent_state" id="permanent_state">
+                                <option value="">--Select--</option>
+                                <option @(objScholarships.permanent_state == "Atlanta" ? "selected='selected'" : "") value="Atlanta"> Atlanta</option>
+                                <option @(objScholarships.permanent_state == "Austin" ? "selected='selected'" : "") value="Austin"> Austin</option>
+                                <option @(objScholarships.permanent_state == "Boston" ? "selected='selected'" : "") value="Boston"> Boston</option>
+                                <option @(objScholarships.permanent_state == "Chicago Land" ? "selected='selected'" : "") value="Chicago Land"> Chicago Land</option>
+                                <option @(objScholarships.permanent_state == "Dallas" ? "selected='selected'" : "") value="Dallas"> Dallas</option>
+                                <option @(objScholarships.permanent_state == "DC Metro" ? "selected='selected'" : "") value="DC Metro"> DC Metro</option>
+                                <option @(objScholarships.permanent_state == "Delaware" ? "selected='selected'" : "") value="Delaware"> Delaware</option>
+                                <option @(objScholarships.permanent_state == "Detroit" ? "selected='selected'" : "") value="Detroit"> Detroit</option>
+                                <option @(objScholarships.permanent_state == "Los Angeles" ? "selected='selected'" : "") value="Los Angeles"> Los Angeles</option>
+                                <option @(objScholarships.permanent_state == "Maryland" ? "selected='selected'" : "") value="Maryland"> Maryland</option>
+                                <option @(objScholarships.permanent_state == "Nashville" ? "selected='selected'" : "") value="Nashville"> Nashville</option>
+                                <option @(objScholarships.permanent_state == "New England" ? "selected='selected'" : "") value="New England"> New England</option>
+                                <option @(objScholarships.permanent_state == "New Jersey" ? "selected='selected'" : "") value="New Jersey"> New Jersey</option>
+                                <option @(objScholarships.permanent_state == "Orlando" ? "selected='selected'" : "") value="Orlando"> Orlando</option>
+                                <option @(objScholarships.permanent_state == "Raleigh" ? "selected='selected'" : "") value="Raleigh"> Raleigh</option>
+                                <option @(objScholarships.permanent_state == "Richmond" ? "selected='selected'" : "") value="Richmond"> Richmond</option>
+                                <option @(objScholarships.permanent_state == "Seattle" ? "selected='selected'" : "") value="Seattle"> Seattle</option>
+                                <option @(objScholarships.permanent_state == "Washington DC" ? "selected='selected'" : "") value="Washington DC"> Washington DC</option>
+                            </select>
                         </div>
+                      
 
                     </div>
 
@@ -177,7 +218,7 @@
 
                         <div class="col-xs-12 col-lg-3 col-sm-6">
                             <label> Country </label>
-                            <input type="text" class="form-control" name="permanent_state" value=" @objScholarships.permanent_state" onclick="ResetValidateClass();" id="permanent_state">
+                            <input type="text" class="form-control" name="permanent_country" value=" @objScholarships.permanent_country" onclick="ResetValidateClass();" id="permanent_country">
 
                         </div>
 
@@ -323,9 +364,27 @@
 
                         <div class="col-xs-12 col-lg-3 col-sm-6">
                             <label> State </label>
-                            <input type="text" class="form-control" name="parent_state" value=" @objScholarships.parent_state" onclick="ResetValidateClass();" id="parent_state">
-
-
+                            <select class="form-control" name="parent_state" id="parent_state">
+                                <option value="">--Select--</option>
+                                <option @(objScholarships.parent_state == "Atlanta" ? "selected='selected'" : "") value="Atlanta"> Atlanta</option>
+                                <option @(objScholarships.parent_state == "Austin" ? "selected='selected'" : "") value="Austin"> Austin</option>
+                                <option @(objScholarships.parent_state == "Boston" ? "selected='selected'" : "") value="Boston"> Boston</option>
+                                <option @(objScholarships.parent_state == "Chicago Land" ? "selected='selected'" : "") value="Chicago Land"> Chicago Land</option>
+                                <option @(objScholarships.parent_state == "Dallas" ? "selected='selected'" : "") value="Dallas"> Dallas</option>
+                                <option @(objScholarships.parent_state == "DC Metro" ? "selected='selected'" : "") value="DC Metro"> DC Metro</option>
+                                <option @(objScholarships.parent_state == "Delaware" ? "selected='selected'" : "") value="Delaware"> Delaware</option>
+                                <option @(objScholarships.parent_state == "Detroit" ? "selected='selected'" : "") value="Detroit"> Detroit</option>
+                                <option @(objScholarships.parent_state == "Los Angeles" ? "selected='selected'" : "") value="Los Angeles"> Los Angeles</option>
+                                <option @(objScholarships.parent_state == "Maryland" ? "selected='selected'" : "") value="Maryland"> Maryland</option>
+                                <option @(objScholarships.parent_state == "Nashville" ? "selected='selected'" : "") value="Nashville"> Nashville</option>
+                                <option @(objScholarships.parent_state == "New England" ? "selected='selected'" : "") value="New England"> New England</option>
+                                <option @(objScholarships.parent_state == "New Jersey" ? "selected='selected'" : "") value="New Jersey"> New Jersey</option>
+                                <option @(objScholarships.parent_state == "Orlando" ? "selected='selected'" : "") value="Orlando"> Orlando</option>
+                                <option @(objScholarships.parent_state == "Raleigh" ? "selected='selected'" : "") value="Raleigh"> Raleigh</option>
+                                <option @(objScholarships.parent_state == "Richmond" ? "selected='selected'" : "") value="Richmond"> Richmond</option>
+                                <option @(objScholarships.parent_state == "Seattle" ? "selected='selected'" : "") value="Seattle"> Seattle</option>
+                                <option @(objScholarships.parent_state == "Washington DC" ? "selected='selected'" : "") value="Washington DC"> Washington DC</option>
+                            </select>
                         </div>
 
                     </div>

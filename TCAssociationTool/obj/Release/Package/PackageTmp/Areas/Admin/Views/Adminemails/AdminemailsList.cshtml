@@ -1,0 +1,341 @@
+﻿@using System.Configuration;
+@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+
+    List<TCAssociationTool.Entities.Adminemails> lstAdminemails = ViewBag.lstAdminemails;
+
+
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    }
+    var loc = ConfigurationManager.AppSettings["baseurl"] + "Content/documents/";
+}
+
+<script type="text/javascript">
+
+
+    function DeleteAdminemails(Id) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete", "Adminemails")',  // the URL of the controller action method
+                data: { Id: Id}, // optional data
+                success: function (result) {
+                    if (result.ok) {
+                        $('#divmessage').html(result.data);
+                        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                        AdminemailsBind($('#hdnPageNo').val());
+                    }
+                    else {
+                        $('#divmessage').html(result.data);
+                        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    }
+                },
+            });
+        }
+    }
+
+    function AdminemailsUpdatedefaultmembership(Id) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AdminemailsUpdatedefaultmembership", "Adminemails")', // the URL of the controller action method
+            data: { id: Id }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    $('#divmessage').html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    AdminemailsBind($('#hdnPageNo').val());
+                }
+                else {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+    function AdminemailsUpdatedefaultdonation(Id) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AdminemailsUpdatedefaultdonation", "Adminemails")', // the URL of the controller action method
+            data: { id: Id }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    $('#divmessage').html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    AdminemailsBind($('#hdnPageNo').val());
+                }
+                else {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+
+    function AdminemailsUpdateismembership(Id) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AdminemailsUpdateismembership", "Adminemails")', // the URL of the controller action method
+            data: { id: Id }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    $('#divmessage').html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    AdminemailsBind($('#hdnPageNo').val());
+                }
+                else {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+
+    function AdminemailsUpdateisdonation(Id) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AdminemailsUpdateisdonation", "Adminemails")', // the URL of the controller action method
+            data: { id: Id }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    $('#divmessage').html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    AdminemailsBind($('#hdnPageNo').val());
+                }
+                else {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+</script>
+
+@if (Total == -1)
+{
+    <div class="norecords">Sorry failed processing your request.</div>
+}
+else
+{
+    <table width="100%" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+
+                <th style="text-align: center;" width="5%">S.No.</th>
+                <th>
+                    <a onclick="javascript:sortresult('name');" class="white-t-u">
+                        Name @if (sortcolumn == "name")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+
+                <th width="20%">
+                    <a onclick="javascript:sortresult('email');" class="white-t-u">
+                        Email @if (sortcolumn == "email")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+
+                <th width="10%">
+                    <a onclick="javascript:sortresult('designation');" class="white-t-u">
+                        Designation @if (sortcolumn == "designation")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                <th width="10%">
+                    <a onclick="javascript:sortresult('ismembership');" class="white-t-u">
+                        Is MemberShip @if (sortcolumn == "ismembership")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+
+                <th width="10%">
+                    <a onclick="javascript:sortresult('isdonation');" class="white-t-u">
+                        IS Donation @if (sortcolumn == "isdonation")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+
+
+                <th width="12%">
+                    <a onclick="javascript:sortresult('ismembership');" class="white-t-u">
+                        Default  Membership @if (sortcolumn == "ismembership")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+
+                <th width="10%">
+                    <a onclick="javascript:sortresult('isdonation');" class="white-t-u">
+                        Default Donation @if (sortcolumn == "isdonation")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+
+                <th width="10%">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (lstAdminemails.Count != 0)
+            {
+                int i = 0;
+                foreach (var item in lstAdminemails)
+                {
+            <tr valign="top">
+
+                <td style="text-align: center;">@item.RId</td>
+                <td class="t-t-c" style="text-align: left">@item.name</td>
+                <td class="t-t-c" style="text-align: left">@item.email</td>
+                <td class="t-t-c" style="text-align: left">@item.designation</td>
+
+                <td>
+                    @{
+                        var isactive2 = "";
+                        var active2 = "";
+                        var disable2 = "";
+                        if (item.ismembership == true)
+                        {
+                            isactive2 = "Active";
+                            disable2 = "style=\"cursor: pointer;\" onclick=\"javascript:AdminemailsUpdateismembership(" + item.Id + ");\"";
+                        }
+                        else
+                        {
+                            isactive2 = "Disabled";
+                            active2 = "style=\"cursor: pointer;\" onclick=\"javascript:AdminemailsUpdateismembership(" + item.Id + ");\"";
+                        }
+                        <div class="admin-active">
+                            @isactive2
+                            <ul>
+                                <li><a @Html.Raw(active2)>Active</a></li>
+                                <li><a @Html.Raw(disable2)>Disabled</a></li>
+                            </ul>
+                        </div>
+                    }
+                </td>
+
+
+                <td>
+                    @{
+                        var isactive3 = "";
+                        var active3 = "";
+                        var disable3 = "";
+                        if (item.isdonation == true)
+                        {
+                            isactive3 = "Active";
+                            disable3 = "style=\"cursor: pointer;\" onclick=\"javascript:AdminemailsUpdateisdonation(" + item.Id + ");\"";
+                        }
+                        else
+                        {
+                            isactive3 = "Disabled";
+                            active3 = "style=\"cursor: pointer;\" onclick=\"javascript:AdminemailsUpdateisdonation(" + item.Id + ");\"";
+                        }
+                        <div class="admin-active">
+                            @isactive3
+                            <ul>
+                                <li><a @Html.Raw(active3)>Active</a></li>
+                                <li><a @Html.Raw(disable3)>Disabled</a></li>
+                            </ul>
+                        </div>
+                    }
+                </td>
+
+                <td>
+                    @{
+                        var isactive = "";
+                        var active = "";
+                        var disable = "";
+                        if (item.defaultmembership == true)
+                        {
+                            isactive = "Active";
+                            disable = "style=\"cursor: pointer;\" onclick=\"javascript:AdminemailsUpdatedefaultmembership(" + item.Id + ");\"";
+                        }
+                        else
+                        {
+                            isactive = "Disabled";
+                            active = "style=\"cursor: pointer;\" onclick=\"javascript:AdminemailsUpdatedefaultmembership(" + item.Id + ");\"";
+                        }
+                        <div class="admin-active">
+                            @isactive
+                            <ul>
+                                <li><a @Html.Raw(active)>Active</a></li>
+                                <li><a @Html.Raw(disable)>Disabled</a></li>
+                            </ul>
+                        </div>
+                    }
+                </td>
+
+
+                <td>
+                    @{
+                        var isactive1 = "";
+                        var active1 = "";
+                        var disable1 = "";
+                        if (item.defaultdonation == true)
+                        {
+                            isactive1 = "Active";
+                            disable1 = "style=\"cursor: pointer;\" onclick=\"javascript:AdminemailsUpdatedefaultdonation(" + item.Id + ");\"";
+                        }
+                        else
+                        {
+                            isactive1 = "Disabled";
+                            active1 = "style=\"cursor: pointer;\" onclick=\"javascript:AdminemailsUpdatedefaultdonation(" + item.Id + ");\"";
+                        }
+                        <div class="admin-active">
+                            @isactive1
+                            <ul>
+                                <li><a @Html.Raw(active1)>Active</a></li>
+                                <li><a @Html.Raw(disable1)>Disabled</a></li>
+                            </ul>
+                        </div>
+                    }
+                </td>
+
+
+
+                <td>
+                    <a onclick="AdminemailsEdit(@item.Id);" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>
+                    @if (userRole.Contains("SuperAdmin"))
+                    {
+                        <a class="themedelete" onclick="javascript:DeleteAdminemails(@item.Id);" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>
+                    }
+                </td>
+            </tr>
+                    i++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td class="norecords" colspan="7">No Records Found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.PageNo, "pagination pagination-centered"))

@@ -1,0 +1,170 @@
+﻿@using System.Configuration;
+@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+
+    List<TCAssociationTool.Entities.Health> lstHealth = ViewBag.lstHealth;
+
+
+
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    }
+
+}
+
+<script type="text/javascript">
+
+
+    function DeleteHealth(Id) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete", "Health")',  // the URL of the controller action method
+                data: { Id: Id}, // optional data
+                success: function (result) {
+                    if (result.ok) {
+                        $('#divmessage').html(result.data);
+                        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                        HealthBind($('#hdnPageNo').val());
+                    }
+                    else {
+                        $('#divmessage').html(result.data);
+                        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    }
+                },
+            });
+        }
+    }
+
+    function HealthUpdateStatus(Id) {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("HealthUpdateStatus", "Health")', // the URL of the controller action method
+            data: { Id: Id }, // optional data
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    $('#divmessage').html(result.data);
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    HealthBind($('#hdnPageNo').val());
+                }
+                else {
+                    $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+
+</script>
+
+@if (Total == -1)
+{
+    <div class="norecords">Sorry failed processing your request.</div>
+}
+else
+{
+    <table width="100%" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+
+
+                <th style="text-align: center;" width="5%">S.No.</th>
+                <th>
+                    <a onclick="javascript:sortresult('heading');" class="white-t-u">
+                        Page Name @if (sortcolumn == "heading")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                <th width="10%">
+                    <a onclick="javascript:sortresult('issuedate');" class="white-t-u">
+                        Issue Date @if (sortcolumn == "issuedate")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+
+                <th width="10%">Status</th>
+
+                <th width="10%">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (lstHealth.Count != 0)
+            {
+                int i = 0;
+                var location = ConfigurationManager.AppSettings["usersiteurl"];
+                foreach (var item in lstHealth)
+                {
+            <tr valign="top">
+
+
+                <td style="text-align: center;">@item.RId</td>
+                <td class="t-t-c" style="text-align: left">@item.heading</td>
+                <td class="t-t-c" style="text-align: left">@(item.issuedate != null && item.issuedate != DateTime.MinValue ? item.issuedate.ToString("dd/MM/yyyy") : "N/A")</td>
+
+                <td>
+                    @{
+                        var isactive = "";
+                        var active = "";
+                        var disable = "";
+                        if (item.status2 == true)
+                        {
+                            isactive = "Active";
+                            disable = "style=\"cursor: pointer;\" onclick=\"javascript:HealthUpdateStatus(" + item.Id + ");\"";
+                        }
+                        else
+                        {
+                            isactive = "Disabled";
+                            active = "style=\"cursor: pointer;\" onclick=\"javascript:HealthUpdateStatus(" + item.Id + ");\"";
+                        }
+                        <div class="admin-active">
+                            @isactive
+                            <ul>
+                                <li><a @Html.Raw(active)>Active</a></li>
+                                <li><a @Html.Raw(disable)>Disabled</a></li>
+                            </ul>
+                        </div>
+                    }
+                </td>
+
+                <td>
+
+                    <a target="_blank" href="@location@(TCAssociationTool.BLL.Common.EncodeURL(item.heading)).html" title="View" class="r-p5"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("EditHealth", "Health", new { Id = item.Id})" title="View" class="r-p5"><i class="fa fa-pencil"></i></a>
+
+                    @if (userRole.Contains("SuperAdmin"))
+                    {
+                        <a class="themedelete" onclick="javascript:DeleteHealth(@item.Id);" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>
+                    }
+                </td>
+            </tr>
+                    i++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td class="norecords" colspan="7">No Health Found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.PageNo, "pagination pagination-centered"))

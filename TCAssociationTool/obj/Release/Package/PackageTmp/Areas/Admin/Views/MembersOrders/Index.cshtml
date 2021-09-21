@@ -41,7 +41,7 @@
         var sortcolumn = $('#hdnsortcolumn').val();
         var sortorder = $('#hdnsortorder').val();
         var items = $('#txtitems').val();
-        var Search = $('#txtsearch').val();
+        var Search = $('#txtsearch').val().trim();
 
         $.ajax({
             url: '@Url.Action("MembersOrdersList", "MembersOrders")',

@@ -73,23 +73,23 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>Title <span class="red-t">*</span></label>
+                        <label>Member Name : <span class="red-t">*</span></label>
                         <input type="text" class="form-control" name="membername" value="@objVaccinations.membername" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="membername">
                         <span class="field-validation-error" id="spanmembername"></span>
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>Position <span class="red-t">*</span></label>
+                        <label>Position  :<span class="red-t">*</span></label>
                         <input type="text" class="form-control" value="@objVaccinations.position" id="position" name="position" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
                         <span class="field-validation-error" id="spanposition"></span>
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>Relation <span class="red-t">*</span></label>
+                        <label>Relation : <span class="red-t">*</span></label>
                         <input type="text" class="form-control" value="@objVaccinations.relation" id="relation" name="relation" onclick="ResetValidateClass();">
                         <span class="field-validation-error" id="spanrelation"></span>
                     </div>
 
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>First Name <span class="red-t">*</span></label>
+                        <label>First Name : <span class="red-t">*</span></label>
                         <input type="text" class="form-control" value="@objVaccinations.firstname" name="firstname" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="firstname">
                         <span class="field-validation-error" id="spanfirstname"></span>
                     </div>
@@ -101,23 +101,23 @@
                 <div class="row">
 
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>ast Name <span class="red-t">*</span></label>
+                        <label>Last Name : <span class="red-t">*</span></label>
                         <input type="text" class="form-control" value="@objVaccinations.lastname" id="lastname" name="lastname" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
                         <span class="field-validation-error" id="spanlastname"></span>
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>Phone <span class="red-t">*</span></label>
+                        <label>Contact Phone : <span class="red-t">*</span></label>
                         <input type="text" class="form-control" value="@objVaccinations.phone" id="phone" name="phone" onclick="ResetValidateClass();" onkeypress="return Common.isNumberKey(event);">
                         <span class="field-validation-error" id="spanphone"></span>
                     </div>
 
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>Age </label>
+                        <label>Age  : </label>
                         <input type="text" class="form-control" value="@objVaccinations.age" name="age" id="age">
 
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>Date  Sent </label>
+                        <label>Date  Sent : </label>
                         <input type="text" class="form-control date" value="@objVaccinations.datesent.ToString("dd/MM/yyyy")" id="datesent" name="datesent">
 
                     </div>
@@ -125,18 +125,6 @@
                 </div>
             </div>
 
-
-
-            <div class="box-body">
-                <div class="row">
-                  
-                    <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>Comments </label>
-                        <textarea id="comments" name="comments" class="form-control">@objVaccinations.comments</textarea>
-                    </div>
-
-                </div>
-            </div>
 
             <div class="box">
                 <!-- /.box-header -->

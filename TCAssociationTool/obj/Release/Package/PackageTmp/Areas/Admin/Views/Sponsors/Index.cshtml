@@ -219,17 +219,17 @@
                         <select class="form-control" id="SponsorCategoryId" name="SponsorCategoryId">
                             <option value="">-- Select --</option>
                             @if (lstSponsorCategories != null)
-                                 {
-                                     foreach (var item in lstSponsorCategories)
-                                     { 
-                                <option value="@item.SponsorCategoryId">@item.CategoryName</option>
-                                     }
+                            {
+                                foreach (var item in lstSponsorCategories)
+                                {
+                                    <option value="@item.SponsorCategoryId">@item.CategoryName</option>
+                                }
                             }
                         </select>
                     </div>
                     <div class="col-xs-12 col-lg-6">
                         <label>Display Order </label>
-                        <input type="text" name="DisplayOrder" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" placeholder="DisplayOrder" id="DisplayOrder" value="" class="form-control">
+                        <input type="text" maxlength="3" name="DisplayOrder" onkeypress="return Common.isNumberKey(event); ResetValidateClass();" onclick="ResetValidateClass();" placeholder="DisplayOrder" id="DisplayOrder" value="" class="form-control">
                         <span id="spanDisplayOrder" class="field-validation-error"></span>
                     </div>
                     <div class="col-xs-12 col-lg-6">
@@ -248,16 +248,18 @@
                     </div>
                     <div class="col-xs-12 col-lg-12">
                         <b class="red-t">Note</b> : : Enter the "Redirect URL" start with http://
-                    <br />
+                        <br />
                         2. Image size should be maintained width * height (950 * 450)
-                    </div> 
+                    </div>
                 </div>
                 <div class="modal-footer clearfix">
-                        <input type="submit" onclick="return Validate();" value="Submit" class="btn btn-danger" />
-                        <a class="btn btn-primary pull-left" data-dismiss="modal">Cancel</a>
-                    </div>
+                    <input type="submit" onclick="return Validate();" value="Submit" class="btn btn-danger" />
+                    <a class="btn btn-primary pull-left" data-dismiss="modal">Cancel</a>
+                </div>
             </div>
+
             
+
         </div>
         </div>
     }

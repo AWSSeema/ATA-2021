@@ -90,7 +90,7 @@
                     </div>
                     <div class="col-xs-12 col-lg-4 col-sm-6">
                         <label>Display Order </label>
-                        <input type="text" placeholder="Position " value="@objInnerPageCategories.Position" class="form-control" id="Position" name="Position" />
+                        <input type="text" placeholder="Position " value="@objInnerPageCategories.Position" class="form-control" maxlength="3" id="Position" name="Position" onkeypress="return Common.isNumberKey(event)" />
                     </div>
                     @*<div class="col-xs-12 col-lg-2 col-sm-6">
                         <label style="display: block;">&nbsp;</label>

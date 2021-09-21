@@ -105,8 +105,27 @@
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
                         <label>State <span class="red-t">*</span></label>
-                        <input type="text" class="form-control" value="@objWomensday.state" id="state" name="state" onclick="ResetValidateClass();" onkeypress="return Common.isNumberKey(event);">
-
+                        <select class="form-control" name="state" id="state">
+                            <option value="">--Select--</option>
+                            <option @(objWomensday.state == "Atlanta" ? "selected='selected'" : "") value="Atlanta"> Atlanta</option>
+                            <option @(objWomensday.state == "Austin" ? "selected='selected'" : "") value="Austin"> Austin</option>
+                            <option @(objWomensday.state == "Boston" ? "selected='selected'" : "") value="Boston"> Boston</option>
+                            <option @(objWomensday.state == "Chicago Land" ? "selected='selected'" : "") value="Chicago Land"> Chicago Land</option>
+                            <option @(objWomensday.state == "Dallas" ? "selected='selected'" : "") value="Dallas"> Dallas</option>
+                            <option @(objWomensday.state == "DC Metro" ? "selected='selected'" : "") value="DC Metro"> DC Metro</option>
+                            <option @(objWomensday.state == "Delaware" ? "selected='selected'" : "") value="Delaware"> Delaware</option>
+                            <option @(objWomensday.state == "Detroit" ? "selected='selected'" : "") value="Detroit"> Detroit</option>
+                            <option @(objWomensday.state == "Los Angeles" ? "selected='selected'" : "") value="Los Angeles"> Los Angeles</option>
+                            <option @(objWomensday.state == "Maryland" ? "selected='selected'" : "") value="Maryland"> Maryland</option>
+                            <option @(objWomensday.state == "Nashville" ? "selected='selected'" : "") value="Nashville"> Nashville</option>
+                            <option @(objWomensday.state == "New England" ? "selected='selected'" : "") value="New England"> New England</option>
+                            <option @(objWomensday.state == "New Jersey" ? "selected='selected'" : "") value="New Jersey"> New Jersey</option>
+                            <option @(objWomensday.state == "Orlando" ? "selected='selected'" : "") value="Orlando"> Orlando</option>
+                            <option @(objWomensday.state == "Raleigh" ? "selected='selected'" : "") value="Raleigh"> Raleigh</option>
+                            <option @(objWomensday.state == "Richmond" ? "selected='selected'" : "") value="Richmond"> Richmond</option>
+                            <option @(objWomensday.state == "Seattle" ? "selected='selected'" : "") value="Seattle"> Seattle</option>
+                            <option @(objWomensday.state == "Washington DC" ? "selected='selected'" : "") value="Washington DC"> Washington DC</option>
+                        </select>
                     </div>
 
                     <div class="col-xs-12 col-lg-3 col-sm-6">
@@ -120,14 +139,12 @@
                         <input type="text" class="form-control" value="@objWomensday.amount" name="amount" id="amount" onkeypress="return Common.isNumberKey(event);">
 
                     </div>
-                   
 
-                </div>
-            </div>
 
 
 
-            <div class="box-body">
+                </div>
+
                 <div class="row">
 
                     <div class="col-xs-12 col-lg-3 col-sm-6">
@@ -136,14 +153,13 @@
 
                     </div>
 
-                    <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>Comments </label>
-                        <textarea id="comments" name="comments" class="form-control">@objWomensday.comments</textarea>
-                    </div>
 
                 </div>
             </div>
 
+
+
+        
             <div class="box">
                 <!-- /.box-header -->
                 <div class="box-body text-right">

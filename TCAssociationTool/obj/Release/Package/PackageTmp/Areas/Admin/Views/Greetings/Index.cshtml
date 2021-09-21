@@ -1,0 +1,281 @@
+﻿@using System.Configuration;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    var imgloc = ConfigurationManager.AppSettings["baseurl"] + "Content/Greetings/NormalImages/";
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#WGreetings').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $("#lastdate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
+
+        PagerClickBind();
+    });
+
+    function sortresult(sortcolumn) {
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        GreetingsBind(1);
+    }
+
+    function GreetingsBind(Pageno) {
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = $('#keyword').val();
+
+        $.ajax({
+            url: '@Url.Action("GreetingsList", "Greetings")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items },
+            success: function (result) {
+                $('#divThemeBanner').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            GreetingsBind($(this).text());
+        });
+    }
+
+    function EditGreetings(id) {
+        $.ajax({
+            url: '@Url.Action("EditGreetings", "Greetings")',
+            type: 'POST',
+            data: { id: id },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objGreetings = result.data;
+                    $('#title').val(objGreetings.title);
+                    $('#RedirectUrl').val(objGreetings.RedirectUrl);
+                    $('#imgwidth').val(objGreetings.imgwidth);
+                    $('#status2').val(objGreetings.status2);
+                    $('#top_padding').val(objGreetings.top_padding);
+                    $('#link').val(objGreetings.link);
+                    $('#target').val(objGreetings.target);
+                    $('#id').val(objGreetings.id);
+                    $('#lastdate').val(objGreetings.Elastdate);
+                    //var Date = Common.ConvertDate(objGreetings.lastdate);
+                    //$('#lastdate').val(Date);
+                    //if (Common.ConvertDate(objGreetings.lastdate) != '1/1/1') {
+                    //    $('#lastdate').show();
+                      
+                    //}
+
+                    $('#spantitle').html('');
+                    $('#spanTarget').html('');
+
+                    $('#title').focus().removeClass("validate");
+                   $('#lbltitle').html('Edit Greetings');
+                    $('#Aspanfile').html('');
+                    $("#AddGreetings").modal('show');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+                else {
+                    $('#divmessage').val(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+   
+    function Add() {
+        clearInnerPageCategory();
+        $("#AddGreetings").modal('show');
+        $('#lbltitle').html('Add Greeting');
+    }
+
+    function clearInnerPageCategory() {
+        $('#id').val('0');
+        $('#imgsrc').val('');
+        $('#title').val('');
+        $('#link').val('');
+        $('#target').val('');
+        $('#spanfile').html('');
+        $('#spanBannerUrl').html('');
+        $('#spanBannerTitle').html('');
+        $('#spanOrderNo').html('');
+        $('#spanRedirectUrl').html('');
+        $('#spanDescription').html('');
+        $('#BannerUrl').focus().removeClass("validate");
+        $('#BannerTitle').focus().removeClass("validate");
+        $('#OrderNo').focus().removeClass("validate");
+        $('#Description').focus().removeClass("validate");
+    }
+    function Validate() {
+
+        if ($('#id').val() == "0") {
+            if ($('#imgsrc').val() == "") { $('#spanfile').html('Required.'); $('#imgsrc').focus(); return false; } else { $('#spanfile').html(' '); }
+
+            if (!Common.isImage($('#imgsrc').val())) { $('#spanfile').html('Sorry image is invalid. Only allowed extensions are:<b>jpg, png, PNG, gif, jpeg, JPEG</b>.'); $('#imgsrc').focus(); return false; } else { $('#spanfile').html(''); }
+            //if ($('#hdnimgvalidate').val() == '0') { $('#spanfile').html('Please select image with diemensions equal to 1366 * 543.'); $('#ImageUrl').focus(); return false; } else { $('#spanfile').html(''); }
+        }
+        if ($('#imgsrc').val() != "") {
+            if (!Common.isImage($('#imgsrc').val())) { $('#spanfile').html('Sorry image is invalid. Only allowed extensions are:<b>jpg, png, PNG, gif, jpeg, JPEG</b>.'); $('#imgsrc').focus(); return false; } else { $('#spanfile').html(''); }
+            //if ($('#hdnimgvalidate').val() == '0') { $('#spanfile').html('Please select image with diemensions equal to 1366 * 543.'); $('#ImageUrl').focus(); return false; } else { $('#spanfile').html(''); }
+        }
+        if ($('#title').val() == "") { $('#title').addClass("validate"); return false; } else { $('#title').focus().removeClass("validate"); }
+        //if ($('#OrderNo').val() == "") { $('#OrderNo').addClass("validate");  return  false; } else { $('#OrderNo').focus().removeClass("validate"); }
+
+        return true;
+    }
+
+    function ResetValidateClass() {
+        $('#BannerUrl').removeClass("validate");
+        $('#BannerTitle').removeClass("validate");
+        $('#OrderNo').removeClass("validate");
+    }
+
+    function ClearSearch() {
+        $('#keyword').val('');
+        GreetingsBind(1);
+    }
+</script>
+<input type="hidden" id="hdnimgvalidate" value="0" />
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="ID" />
+<input id="hdnsortorder" type="hidden" value="DESC" />
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Greetings </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active"><i class="fa fa-th-large"></i> Greetings</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-4 col-sm-6">
+                    <label>Search</label>
+                    <input type="text" placeholder="Title" name="keyword" id="keyword" class="form-control" />
+                </div>
+                <div class="col-xs-12 col-lg-8 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <button class="btn btn-primary" type="submit" onclick="GreetingsBind(1);">Search</button>
+                    <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
+                    <a data-toggle="modal" onclick="Add();" class="btn btn-danger pull-right">Add Greeting</a>
+                </div>
+            </div>
+        </div>
+        <div id="divThemeBanner" class="box-body table-responsive">
+            @{Html.RenderAction("GreetingsList", "Greetings");}
+        </div>
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="AddGreetings" tabindex="-1" role="dialog" aria-hidden="true">
+    @using (Html.BeginForm("AddGreetings", "Greetings", FormMethod.Post, new { enctype = "multipart/form-data", style = "margin-bottom:0" }))
+    {
+        <input type="hidden" id="id" name="id" value="0" />
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span id="lbltitle"></span></h4>
+                </div>
+                <div class="modal-body validation">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-12" style="margin-bottom:5px;">
+                            <label>Picture  <span class="red-t">*</span></label>
+                            <input type="file" name="imgsrc" id="imgsrc" />
+                            <span class="field-validation-error" id="spanfile" style="display: inline-block; padding-top: 5px;"></span>
+                        </div>
+                        @*<div class="col-xs-12 col-lg-12" style="margin-bottom:5px;">
+            <b class="red-t">Note</b> : Banner size should be maintain 1366 x 543.
+        </div>*@
+                        <div class="col-xs-12 col-lg-12" style="margin-bottom:5px;">
+                            <label>Title <span class="red-t">*</span> </label>
+                            <input type="text" name="title" placeholder="" id="title" value="" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-12" style="margin-bottom:5px;">
+                            <label>Popup Width </label>
+                            <input type="text" name="imgwidth" onkeypress="return Common.isNumberKey(event)" placeholder="" id="imgwidth" value="" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-12" style="margin-bottom:5px;">
+                            <label>Top Padding of popup </label>
+                            <input type="text" name="top_padding" placeholder="" id="top_padding" value="" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-12" style="margin-bottom:5px;">
+                            <label>Link </label>
+                            <input type="text" name="link" placeholder="" id="link" value="" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-12" style="margin-bottom:5px;">
+                            <label>Show banner till </label>
+                            <input type="text" name="lastdate" id="lastdate" value="" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-12">
+                            <label>Target</label>
+                            <select name="target" class="form-control" id="target" onclick="ResetValidateClass();">
+                                <option value="">--Select--</option>
+                                <option value="_blank">Blank</option>
+                                <option value="_parent">Parent</option>
+                            </select>
+                        </div>
+                        <div class="col-xs-12 col-lg-12">
+                            <b class="red-t">Note</b> : <br />
+                            1. If Target is Blank, url will open in new Tab.<br />
+                            2. If Target is Parent, url will open with in Tab.
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer clearfix">
+                    <input type="submit" onclick="return Validate();" value="Submit" class="btn btn-danger">
+                    <a class="btn btn-primary pull-left" data-dismiss="modal">Cancel</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+<script>
+    var _URL = window.URL || window.webkitURL;
+    $("#ImageUrl").change(function (e) {
+        var file, img;
+        if ((file = this.files[0])) {
+            img = new Image();
+            img.onload = function () {
+                if (this.width == 1366 && this.height == 543) {
+                    $('#hdnimgvalidate').val('1');
+                }
+                else {
+                    $('#hdnimgvalidate').val('0');
+                }
+            };
+            img.src = _URL.createObjectURL(file);
+        }
+    });
+
+</script>

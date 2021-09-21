@@ -43,11 +43,11 @@
 <script type="text/javascript" src="ckfinder/ckfinder.js"></script>
 <!-- breadcumb -->
 <div class="content-header">
-    <h1>Golf2021</h1>
+    <h1>Golf 2021</h1>
     <ol class="breadcrumb">
         <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
-        <li><a href="@Url.Action("Index", "Golf2021")"><i class="fa fa-print"></i>Golf2021</a></li>
-        <li class="active">Edit Golf2021</li>
+        <li><a href="@Url.Action("Index", "Golf2021")"><i class="fa fa-print"></i>Golf 2021</a></li>
+        <li class="active">Edit Golf 2021</li>
     </ol>
 </div>
 <!--end breadcumb -->
@@ -64,7 +64,7 @@
     <div class="box validation">
         <!-- /.box-header -->
         <div class="box-header">
-            <h3 class="box-title dis-in">Edit Golf2021 </h3>
+            <h3 class="box-title dis-in">Edit Golf 2021 </h3>
         </div>
         @using (Html.BeginForm("InsertGolf2021", "Golf2021", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
@@ -111,29 +111,31 @@
                             <input type="text" class="form-control" value="@objGolf2021.player1_email" id="player1_email" name="player1_email" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
                             <span class="field-validation-error" id="spanplayer1_email"></span>
                         </div>
-                        <div class="col-xs-12 col-lg-3 col-sm-6">
-                            <label>T Shirt <span class="red-t">*</span></label>
-                            <input type="text" class="form-control" value="@objGolf2021.player1_tshirt" id="player1_tshirt" name="player1_tshirt" onclick="ResetValidateClass();">
-                            <span class="field-validation-error" id="spanplayer1_tshirt"></span>
-                        </div>
+                        @*<div class="col-xs-12 col-lg-3 col-sm-6">
+                <label>T Shirt <span class="red-t">*</span></label>
+                <input type="text" class="form-control" value="@objGolf2021.player1_tshirt" id="player1_tshirt" name="player1_tshirt" onclick="ResetValidateClass();">
+                <span class="field-validation-error" id="spanplayer1_tshirt"></span>
+            </div>*@
 
                         <div class="col-xs-12 col-lg-3 col-sm-6">
                             <label>Sponsorship <span class="red-t">*</span></label>
                             <input type="text" class="form-control" value="@objGolf2021.sponsorship" name="sponsorship" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="sponsorship">
                             <span class="field-validation-error" id="spansponsorship"></span>
                         </div>
-                    </div>
 
-                    <div class="row">
                         <div class="col-xs-12 col-lg-3 col-sm-6">
                             <label>Payment Status <span class="red-t">*</span></label>
                             <select class="form-control" id="payment_status" name="payment_status">
                                 <option value="">Select</option>
                                 <option @(objGolf2021.payment_status == 0 ? "selected=selected" : "") value="0">Pending</option>
                                 <option @(objGolf2021.payment_status == 1 ? "selected=selected" : "") value="1">Completed</option>
-                            
+
                             </select>
                         </div>
+                    </div>
+
+                    <div class="row">
+
                         <div class="col-xs-12 col-lg-3 col-sm-6">
                             <label>Payment Method<span class="red-t">*</span></label>
                             <input type="text" class="form-control" value="@objGolf2021.payment_method" id="payment_method" name="payment_method" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
@@ -152,15 +154,26 @@
                         </div>
                     </div>
 
+                    @*<div class="row">
+
+                      
+
+                        <div class="col-xs-12 col-lg-4 col-sm-6">
+                           <label>Admin Comments </label>
+                            <textarea id="comments" name="comments" class="form-control">@objGolf2021.comments</textarea>
+
+                        </div>
+                    </div>*@
+
                 </div>
 
             </div>
 
 
 
-            <div class="box">
+            <!--<div class="box">-->
                 <!-- /.box-header -->
-                <div class="box-header">
+                <!--<div class="box-header">
                     <h3 class="box-title dis-in">Player2 Details </h3>
                 </div>
 
@@ -197,9 +210,9 @@
             </div>
 
 
-            <div class="box">
+            <div class="box">-->
                 <!-- /.box-header -->
-                <div class="box-header">
+                <!--<div class="box-header">
                     <h3 class="box-title dis-in">Player3 Details </h3>
                 </div>
 
@@ -234,9 +247,9 @@
                 </div>
 
             </div>
-            <div class="box">
+            <div class="box">-->
                 <!-- /.box-header -->
-                <div class="box-header">
+                <!--<div class="box-header">
                     <h3 class="box-title dis-in">Player4 Details </h3>
                 </div>
 
@@ -270,11 +283,11 @@
 
                 </div>
 
-            </div>
+            </div>-->
 
-            <div class="box">
+            <!--<div class="box">-->
                 <!-- /.box-header -->
-                <div class="box-header">
+                <!--<div class="box-header">
                     <h3 class="box-title dis-in">Other Details </h3>
                 </div>
 
@@ -304,7 +317,7 @@
 
                 </div>
 
-            </div>
+            </div>-->
 
 
 

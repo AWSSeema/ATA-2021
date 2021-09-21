@@ -30,7 +30,8 @@
         var sortcolumn = $('#hdnsortcolumn').val();
         var sortorder = $('#hdnsortorder').val();
         var items = $('#txtitems').val();
-        var Search = $('#keyword').val();
+        var Search = $('#keyword').val().trim();
+        
         var CommitteeCategoryId = $('#CommitteeCategoryId').val();
 
         $.ajax({
@@ -204,7 +205,7 @@
                     <div class="form-group">
                         <div class="form-group" id="hdnCommittee">
                             <div class="col-xs-12 col-lg-12">
-                                <label>Member :</label>
+                                <label>Member : <span class="red-t">*</span></label>
                                 <select id="CommitteeId" class="form-control" name="CommitteeId">
                                     <option value="">Select</option>
                                     @if (lstCommittee != null)

@@ -1,8 +1,15 @@
-﻿using System;
+﻿using TCAssociationTool.BLL;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
+using ClosedXML.Excel;
 
 namespace TCAssociationTool.Areas.Admin.Controllers
 {
@@ -10,7 +17,7 @@ namespace TCAssociationTool.Areas.Admin.Controllers
     {
         BLL.Womensday _Womensday = new BLL.Womensday();
         Entities.Womensday objWomensday = new Entities.Womensday();
-
+        DAL.Womensday _DWomensday = new DAL.Womensday();
         [Models.SessionClass.SessionExpireFilter]
         public ActionResult Index()
         {
@@ -195,6 +202,62 @@ namespace TCAssociationTool.Areas.Admin.Controllers
             return Json(new { ok = _bool, data = str });
         }
 
+
+        [HttpPost]
+        public JsonResult WomensdayDeleteAll(string Id)
+        {
+            string str = "";
+            try
+            {
+                Int64 _status = _Womensday.WomensdayDeleteAll(Id);
+                if (_status == 1)
+                {
+                    str = "<div class=\"alert alert-success alert-dismissable\">Records Deleted Successfully</div>";
+                    return Json(new { ok = true, data = str });
+                }
+                else
+                {
+                    str = "<div class=\"error-alert closable\">Failed deleting members.</div>";
+                    return Json(new { ok = false, data = str });
+                }
+            }
+            catch
+            {
+                str = "<div class=\"alert alert-danger alert-dismissable\">Failed transaction.</div>";
+                return Json(new { ok = false, data = str });
+            }
+        }
+
+        public void WomensdayExporttoExcel(string Search = "", string location = "", string SortColumn = "Id", string SortOrder = "DESC")
+        {
+            string Sort = (SortColumn != "" ? SortColumn + " " + SortOrder : "");
+            try
+            {
+                DataTable dtUni = _DWomensday.ExportWomensdayList(Search, location, Sort);
+
+                using (XLWorkbook wb = new XLWorkbook())
+                {
+                    wb.Worksheets.Add(dtUni, "Womensday-Registration-Export");
+
+                    Response.Clear();
+                    Response.Buffer = true;
+                    Response.Charset = "";
+                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    Response.AddHeader("content-disposition", "attachment;filename=Womensday-Registration-Export-" + DateTime.UtcNow.ToString("MM-dd-yyyy") + ".xlsx");
+                    using (MemoryStream MyMemoryStream = new MemoryStream())
+                    {
+                        wb.SaveAs(MyMemoryStream);
+                        MyMemoryStream.WriteTo(Response.OutputStream);
+                        Response.Flush();
+                        Response.End();
+                    }
+                }
+            }
+            catch
+            {
+                TempData["message"] = "<div class=\"alert alert-danger alert-dismissable\">Failed transaction.</div>";
+            }
+        }
 
     }
 }

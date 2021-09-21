@@ -1,8 +1,10 @@
-﻿@{
+﻿@using System.Configuration;
+@{
     ViewBag.Title = "AddMailTemplate";
     Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
 
     TCAssociationTool.Entities.News objNews = ViewBag.objNews;
+    var imgloc = ConfigurationManager.AppSettings["baseurl"] + "Content/news/";
 }
 
 <script type="text/javascript">
@@ -14,10 +16,10 @@
         //if ($('#OrderNo').val() == '') { $('#OrderNo').addClass("validate"); return_val = false; } else { $('#OrderNo').removeClass("validate"); }
 
         if ($.trim($('#Title').val()) == '') { document.getElementsByName('Title')[0].placeholder = 'Title Required'; $('#Title').focus().addClass("validate"); return false; } else { $('#Title').focus().removeClass("validate"); }
-      //  if ($.trim($('#Type').val()) == '') { document.getElementsByName('Type')[0].placeholder = 'Type Required'; $('#Type').focus().addClass("validate"); return false; } else { $('#Type').focus().removeClass("validate"); }
+        //  if ($.trim($('#Type').val()) == '') { document.getElementsByName('Type')[0].placeholder = 'Type Required'; $('#Type').focus().addClass("validate"); return false; } else { $('#Type').focus().removeClass("validate"); }
         if ($.trim($('#PostDate').val()) == '') { document.getElementsByName('PostDate')[0].placeholder = 'PostDate Required'; $('#PostDate').focus().addClass("validate"); return false; } else { $('#PostDate').focus().removeClass("validate"); }
         if ($.trim($('#OrderNo').val()) == '') { document.getElementsByName('OrderNo')[0].placeholder = 'Order No Required'; $('#OrderNo').focus().addClass("validate"); return false; } else { $('#OrderNo').focus().removeClass("validate"); }
-    
+
         if ($('#ImageUrl').val() != "") {
             if (!Common.isImage($('#ImageUrl').val())) { $('#spanfile').html('Sorry image is invalid. Only allowed extensions are:<b>jpg, png, PNG, gif, jpeg, JPEG</b>.'); $('#ImageUrl').focus(); return false; } else { $('#spanfile').html(''); }
         }
@@ -56,10 +58,10 @@
     <!-- Main content -->
     <div id="divmessage">
         @if (TempData["message"] != null)
-        { @Html.Raw(TempData["message"].ToString())}
+        {@Html.Raw(TempData["message"].ToString())}
 
         @if (ViewBag.message != null)
-        { @Html.Raw(ViewBag.message.ToString())}
+        {@Html.Raw(ViewBag.message.ToString())}
     </div>
     <div class="box validation">
         <!-- /.box-header -->
@@ -68,22 +70,22 @@
         </div>
         @using (Html.BeginForm("Save", "News", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
-            <input type="hidden"  name="NewsId" id="NewsId" value="@objNews.NewsId"/>
+            <input type="hidden" name="NewsId" id="NewsId" value="@objNews.NewsId" />
             <div class="box-body">
                 <div class="row">
                     <div class="col-xs-12 col-lg-3 col-sm-6">
                         <label>Title <span class="red-t">*</span></label>
-                        <input type="text"  class="form-control" value="@objNews.Title" name="Title" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="Title">
-                    </div> 
+                        <input type="text" class="form-control" value="@objNews.Title" name="Title" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="Title">
+                    </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
                         <label>Post Date <span class="red-t">*</span></label>
-                        <input type="text"  class="form-control date" value="@objNews.PostDate.ToString("dd-MM-yyyy")" id="PostDate" name="PostDate" />
+                        <input type="text" class="form-control date" value="@objNews.PostDate.ToString("dd-MM-yyyy")" id="PostDate" name="PostDate" />
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
                         <label>Order No <span class="red-t">*</span></label>
                         <input type="text" class="form-control" id="OrderNo" value="@objNews.OrderNo" maxlength="3" name="OrderNo" onkeypress="return Common.isNumberKey(event);">
                     </div>
-                    
+
                 </div>
             </div>
             <div class="box-body">
@@ -92,14 +94,15 @@
                         <label>Image </label>
                         <input type="file" name="ImageUrl" id="ImageUrl" />
                         <span id="spanfile" class="red-t"></span>
+                        <a href="@(imgloc + objNews.ImageUrl)" target="_blank">View Image</a>
                     </div>
                     <div class="col-xs-12 col-lg-12">
                         <b class="red-t">Note</b> : Image size should be maintained width * height (200 * 105)
 
                     </div>
                 </div>
-            </div> 
-            
+            </div>
+
             <div class='box-body'>
                 <label>Description <span class="red-t">*</span></label>
                 <textarea rows="10" placeholder="Description *" name="NewsText" id="Description" cols="80" style="visibility: hidden; display: none;">@objNews.NewsText</textarea><br />

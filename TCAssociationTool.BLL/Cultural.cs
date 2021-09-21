@@ -91,13 +91,14 @@ namespace TCAssociationTool.BLL
             return objCultural;
         }
 
-        public List<TCAssociationTool.Entities.Cultural> GetCulturalListByVariable(Int64 PaymentMethod, Int64 PaymentStatus, string Search, string Sort, int PageNo, int Items, ref int Total)
+    
+        public List<TCAssociationTool.Entities.Cultural> GetCulturalListByVariable(string StartDate, string EndDate, Int64 PaymentStatus, string category, string location, string Search, string Sort, int PageNo, int Items, ref int Total)
         {
             List<TCAssociationTool.Entities.Cultural> lstCultural = new List<TCAssociationTool.Entities.Cultural>();
-            DataTable dt = _Cultural.GetCulturalsListByVariable(PaymentMethod, PaymentStatus, Search, Sort, PageNo, Items, ref Total);
+            DataTable dt = _Cultural.GetCulturalsListByVariable(StartDate, EndDate,PaymentStatus, category, location, Search, Sort, PageNo, Items, ref Total);
             if (dt.Rows.Count == 0 && PageNo != 0)
             {
-                dt = _Cultural.GetCulturalsListByVariable(PaymentMethod, PaymentStatus, Search, Sort, PageNo - 1, Items, ref Total);
+                dt = _Cultural.GetCulturalsListByVariable(StartDate, EndDate, PaymentStatus, category, location, Search, Sort, PageNo - 1, Items, ref Total);
             }
             if (dt.Rows.Count != 0)
             {
@@ -133,7 +134,6 @@ namespace TCAssociationTool.BLL
                     objCultural.age = dr["age"] != DBNull.Value ? dr["age"].ToString() : null;
                     objCultural.gender = dr["gender"] != DBNull.Value ? dr["gender"].ToString() : null;
                     objCultural.location_id = (dr["location_id"] != DBNull.Value ? Convert.ToInt64(dr["location_id"]) : 0);
-                    objCultural.PaymentMethod = dr["PaymentMethod"] != DBNull.Value ? dr["PaymentMethod"].ToString() : null;
                     objCultural.PaymentStatus = dr["PaymentStatus"] != DBNull.Value ? dr["PaymentStatus"].ToString() : null;
                     objCultural.youtubeurl = dr["youtubeurl"] != DBNull.Value ? dr["youtubeurl"].ToString() : null;
                     objCultural.subcategory = dr["subcategory"] != DBNull.Value ? dr["subcategory"].ToString() : null;

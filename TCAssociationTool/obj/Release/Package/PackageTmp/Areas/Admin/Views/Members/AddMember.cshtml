@@ -189,8 +189,8 @@
         //if (!CheckUserNameAvailability($.trim($('#UserName').val()))) { $('#spanUserName').html('User Name already exist.'); $('#UserName').focus().addClass("red-border"); return false; } else { $('#spanUserName').html(''); $('#UserName').focus().removeClass("red-border"); }
         if ($('#Email').val() == "") { $('#spanEmail').html('Email Required.'); $('#Email').focus().addClass("red-border"); return false; } else { $('#spanEmail').html(''); $('#Email').focus().removeClass("red-border"); }
         if (!Common.CheckEmail($('#Email').val())) { $('#spanEmail').html('Please enter valid email address.'); $('#Email').focus().addClass("red-border"); return false; } else { $('#spanEmail').html(''); $('#Email').focus().removeClass("red-border"); }
-        if (!CheckProfileEmailAvailability($.trim($('#Email').val()), $('#MemberId').val())) { $('#spanEmail').html('Email address is not available.'); $('#Email').focus().addClass("red-border"); return false; } else { $('#spanEmail').html(''); $('#Email').focus().removeClass("red-border"); }
-
+       // if (!CheckProfileEmailAvailability($.trim($('#Email').val()), $('#MemberId').val())) { $('#spanEmail').html('Email address is not available.'); $('#Email').focus().addClass("red-border"); return false; } else { $('#spanEmail').html(''); $('#Email').focus().removeClass("red-border"); }
+       //aaaaa
         if ($('#Address').val() == "") { $('#spanAddress').html('Address Required.'); $('#Address').focus().addClass("red-border"); return false; } else { $('#spanAddress').html(''); $('#Address').focus().removeClass("red-border"); }
 
         if ($('#MembershipTypeId').val() == "") { $('#spanMembershipTypeId').html('Membership Type Required.'); $('#MembershipTypeId').focus(); return false; } else { $('#spanMembershipTypeId').html(''); }
@@ -325,7 +325,7 @@
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
                         <label class="t-p5">Mobile Phone :</label>
-                        <input type="text" id="MobilePhone" name="MobilePhone" onkeypress="return Common.isNumberKey(event);" class="form-control" />
+                        <input type="text" id="MobilePhone" name="MobilePhone" onkeypress="return Common.isNumberKey(event);" maxlength="12" class="form-control" />
                         <span class="field-validation-error" id="spanMobilePhone"></span>
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
@@ -349,7 +349,8 @@
                         <span class="field-validation-error" id="spanSpouseFirstName"></span>
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label class="t-p5 font12">Profession :</label>
+                        <label>Profession :</label>
+    
                         <input type="text" id="SpouseOccupation" name="SpouseOccupation" class="form-control" />
                         <span class="field-validation-error"></span>
                     </div>
@@ -369,7 +370,7 @@
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
                         <label>Home Phone:</label>
-                        <input type="text" id="HomePhone" name="HomePhone" class="form-control" />
+                        <input type="text" id="HomePhone" name="HomePhone" onkeypress="return Common.isNumberKey(event);" maxlength="12" class="form-control" />
                         <span class="field-validation-error" id="spanHomePhone"></span>
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
@@ -384,12 +385,12 @@
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
                         <label>Zip Code:</label>
-                        <input type="text" id="ZipCode" name="ZipCode" class="form-control" />
+                        <input type="text" id="ZipCode" name="ZipCode" onkeypress="return Common.isNumberKey(event);" maxlength="8" class="form-control" />
                         <span class="field-validation-error" id="spanZipCode"></span>
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
                         <label class="t-p5">Mobile Phone </label>
-                        <input type="text" id="EMobilePhone" name="MobilePhone" class="form-control" />
+                        <input type="text" id="EMobilePhone" name="MobilePhone" onkeypress="return Common.isNumberKey(event);" maxlength="12" class="form-control" />
                         <span class="field-validation-error"></span>
                     </div>
                      <div class="col-xs-12 col-lg-3 col-sm-6">

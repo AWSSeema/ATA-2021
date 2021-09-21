@@ -180,12 +180,13 @@
                         </td>
                         <td style="text-align: center" class="t-t-c">@item.Amount</td>
                         <td style="text-align: center">
+                            <a title="wSendmail" class="sepV_a" href="@Url.Action("SendMail", "Home", new { Email = item.Email }))"><i class="fa fa-envelope-o"></i></a>
                             <a title="View" href="@Url.Action("ViewDonor", "Donors", new { DonorId = item.DonorId })" class="r-p5"><i class="fa fa-eye"></i></a>
                             <a href="@Url.Action("EditDonor", "Donors", new { DonorId = item.DonorId })" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>
                             @if (userRole.Contains("SuperAdmin"))
-        {
-                    <a class="themedelete" onclick="javascript:Delete(@item.DonorId);" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>
-}
+                            {
+                                <a class="themedelete" onclick="javascript:Delete(@item.DonorId);" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>
+                            }
 
                         </td>
                     </tr>

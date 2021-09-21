@@ -1,0 +1,229 @@
+﻿@{
+    ViewBag.Title = "ViewDetails";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.Cultural objDetails = ViewBag.objCultural;
+    var objMembers = (TCAssociationTool.Entities.Members)ViewBag.objMembers;
+    List<TCAssociationTool.Entities.DonationCategories> lstDonationCategories = ViewBag.lstDonationCategories;
+    var cssloc = System.Configuration.ConfigurationManager.AppSettings["usersiteurl"] + "Content/Admin/front-end-style.css";
+
+    var imglocNormal = System.Configuration.ConfigurationManager.AppSettings["adminimageurl"] + "innerpages/";
+
+    var Type = ViewBag.Type;
+
+    var lstPaymentMethod = (List<TCAssociationTool.Entities.PaymentMethods>)objMembers.lstPaymentMethod;
+    var lstPaymentStatus = (List<TCAssociationTool.Entities.PaymentStatus>)objMembers.lstPaymentStatus;
+}
+
+<script type="text/javascript" src="ckViewor/ckViewor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#WebPages').addClass('active');
+        $('#wCultural').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+
+    function Validate() {
+
+        //Account Information
+        if ($.trim($('#FirstName').val()) == '') { document.getElementsByName('FirstName')[0].placeholder = 'Required'; $('#FirstName').focus().addClass("validate"); return false; } else { $('#FirstName').focus().removeClass("validate"); }
+        if ($.trim($('#LastName').val()) == '') { document.getElementsByName('LastName')[0].placeholder = 'Required'; $('#LastName').focus().addClass("validate"); return false; } else { $('#LastName').focus().removeClass("validate"); }
+        if ($.trim($('#DonationCategoryId').val()) == '') { document.getElementsByName('DonationCategoryId')[0].placeholder = 'Required'; $('#DonationCategoryId').focus().addClass("validate"); return false; } else { $('#DonationCategoryId').focus().removeClass("validate"); }
+
+        return true;
+    }
+    function ResetValidateClass() {
+        $('#Heading').removeClass("validate");
+        $('#DonationCategoryId').removeClass("validate");
+    }
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>View Cultural </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "Cultural")"><i class="fa fa-list-alt"></i>Cultural</a></li>
+        <li class="active">View Cultural</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="clearfix sepH_b"></div>
+    @using (Html.BeginForm("AddCultural", "Cultural", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="hidden" name="id" id="id" value="@objDetails.id" />
+        <input type="hidden" name="cultural_no" id="cultural_no" value="@objDetails.cultural_no" />
+        <input type="hidden" name="firstname" id="firstname" value="@objDetails.firstname" />
+        <input type="hidden" name="lastname" id="lastname" value="@objDetails.lastname" />
+        <input type="hidden" name="middlename" id="middlename" value="@objDetails.middlename" />
+        <input type="hidden" name="email" id="email" value="@objDetails.email" />
+        <input type="hidden" name="address1" id="address1" value="@objDetails.address1" />
+        <input type="hidden" name="city" id="city" value="@objDetails.city" />
+        <input type="hidden" name="city" id="city" value="@objDetails.city" />
+        <input type="hidden" name="zip" id="zip" value="@objDetails.zip" />
+        <input type="hidden" name="mobile" id="mobile" value="@objDetails.mobile" />
+        <input type="hidden" name="comments" id="comments" value="@objDetails.comments" />
+        <input type="hidden" name="category" id="category" value="@objDetails.category" />
+        <input type="hidden" name="amount" id="amount" value="@objDetails.amount" />
+        <input type="hidden" name="payment_statusid" id="payment_statusid" value="@objDetails.payment_statusid" />
+        <input type="hidden" name="datemodified" id="datemodified" value="@objDetails.datemodified" />
+        <input type="hidden" name="payment_methodid" id="payment_methodid" value="@objDetails.payment_methodid" />
+        <input type="hidden" name="adminid" id="adminid" value="@objDetails.adminid" />
+        <input type="hidden" name="cheque_details" id="cheque_details" value="@objDetails.cheque_details" />
+        <input type="hidden" name="vcode" id="vcode" value="@objDetails.vcode" />
+        <input type="hidden" name="isconfirm" id="isconfirm" value="@objDetails.isconfirm" />
+        <input type="hidden" name="cardno" id="cardno" value="@objDetails.cardno" />
+        <input type="hidden" name="dob" id="dob" value="@objDetails.dob" />
+        <input type="hidden" name="age" id="age" value="@objDetails.age" />
+        <input type="hidden" name="gender" id="gender" value="@objDetails.gender" />
+        <input type="hidden" name="location" id="location" value="@objDetails.location" />
+        <input type="hidden" name="location_id" id="location_id" value="@objDetails.location_id" />
+        <input type="hidden" name="subcategory" id="subcategory" value="@objDetails.subcategory" />
+        <input type="hidden" name="description" id="description" value="@objDetails.description" />
+
+
+        <div class="box validation">
+
+            <div class="box validation">
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Competiton  Details </h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Cultural Number : </label>
+                            @objDetails.cultural_no
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>First Name : </label>
+                            @objDetails.firstname
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Middle Name : <span class="red-t"></span></label>
+                            @objDetails.middlename
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Last Name : </label>
+                            @objDetails.lastname
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="box validation">
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Contact  Details </h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Address : </label>
+                            @objDetails.address1
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>City : </label>
+                            @objDetails.city
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>State : </label>
+                            @objDetails.state
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Zip Code : </label>
+                            @objDetails.zip
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Mobile : </label>
+                            @objDetails.mobile
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Email : </label>
+                            @objDetails.email
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Vcode : </label>
+                            @objDetails.vcode
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="box validation">
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Other  Details </h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label class="t-p5">Category :</label>
+                            @objDetails.category
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Amount : </label>
+                            @objDetails.amount
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label class="t-p5">Payment Method :</label>
+                            @objDetails.PaymentMethod
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Location : </label>
+                            @objDetails.location
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Age : </label>
+                            @objDetails.age
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Youtube URL : </label>
+                            @objDetails.youtubeurl
+                        </div>
+
+                        @*<div class="col-xs-12 col-lg-3 col-sm-6">
+                                <label>Admin Comments : </label>
+                                <textarea name="admincomments" id="admincomments" onclick="ResetValidateClass();" class="form-control">@objDetails.admincomments</textarea>
+                            </div>*@
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-12 col-sm-6">
+                            <label>Admin Comments : </label>
+                            <textarea name="admincomments" id="admincomments" onclick="ResetValidateClass();" class="form-control">@objDetails.admincomments</textarea>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body text-right">
+                <input type="submit" value="Update" class="btn btn-primary" onclick="return Validate();" />
+              </div>
+            <!-- /.box-body -->
+        </div>
+    }
+</div>

@@ -41,6 +41,12 @@ namespace TCAssociationTool.BLL
             return _status;
         }
 
+        public Int64 Golf2021UpdatePaymentStatus(Int64 Id)
+        {
+            Int64 _status = 0;
+            _status = _Golf2021.Golf2021UpdatePaymentStatus(Id);
+            return _status;
+        }
 
 
         #endregion
@@ -65,7 +71,7 @@ namespace TCAssociationTool.BLL
                     objGolf2021.player1_email = (dt.Rows[0]["player1_email"] != DBNull.Value ? dt.Rows[0]["player1_email"].ToString() : "");
                     objGolf2021.player1_tshirt = (dt.Rows[0]["player1_tshirt"] != DBNull.Value ? dt.Rows[0]["player1_tshirt"].ToString() : "");
                     objGolf2021.sponsorship = (dt.Rows[0]["sponsorship"] != DBNull.Value ? dt.Rows[0]["sponsorship"].ToString() : "");
-                    objGolf2021.created_at = (dt.Rows[0]["created_at"] != DBNull.Value ? Convert.ToDateTime(dt.Rows[0]["datcreated_atesent"]) : DateTime.MinValue);
+                    objGolf2021.created_at = (dt.Rows[0]["created_at"] != DBNull.Value ? Convert.ToDateTime(dt.Rows[0]["created_at"]) : DateTime.MinValue);
                     objGolf2021.payment_status = (dt.Rows[0]["payment_status"] != DBNull.Value ? Convert.ToInt64(dt.Rows[0]["payment_status"]) : 0);
                     objGolf2021.payment_method = (dt.Rows[0]["payment_method"] != DBNull.Value ? dt.Rows[0]["payment_method"].ToString() : "");
                     objGolf2021.cardno = (dt.Rows[0]["cardno"] != DBNull.Value ? dt.Rows[0]["cardno"].ToString() : "");

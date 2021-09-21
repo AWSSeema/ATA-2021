@@ -51,23 +51,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adminemails.cs" />
+    <Compile Include="AmericaBharati.cs" />
     <Compile Include="AppInfo.cs" />
+    <Compile Include="ATAMessages.cs" />
     <Compile Include="BluePay.cs" />
+    <Compile Include="Categories.cs" />
     <Compile Include="CommitteeCategories.cs" />
     <Compile Include="CommitteeMembers.cs" />
     <Compile Include="Committees.cs" />
     <Compile Include="Common.cs" />
+    <Compile Include="CommunityNews.cs" />
+    <Compile Include="Coupons.cs" />
     <Compile Include="Cultural.cs" />
+    <Compile Include="CulturalLocations.cs" />
+    <Compile Include="CulturalRegistrations.cs" />
     <Compile Include="DonationCategories.cs" />
     <Compile Include="Donors.cs" />
     <Compile Include="Enquiries.cs" />
     <Compile Include="EventCategories.cs" />
+    <Compile Include="EventForm.cs" />
     <Compile Include="Events.cs" />
+    <Compile Include="Feedbacks.cs" />
     <Compile Include="Flyers.cs" />
     <Compile Include="Golf2021.cs" />
     <Compile Include="Greetings.cs" />
+    <Compile Include="Health.cs" />
     <Compile Include="InnerPageCategories.cs" />
     <Compile Include="InnerPages.cs" />
+    <Compile Include="LafitnessVouchers.cs" />
     <Compile Include="MailTemplates.cs" />
     <Compile Include="Members.cs" />
     <Compile Include="MembershipTypes.cs" />
@@ -81,6 +93,8 @@
     <Compile Include="Scholarships.cs" />
     <Compile Include="SponsorCategories.cs" />
     <Compile Include="Sponsors.cs" />
+    <Compile Include="SubCategories.cs" />
+    <Compile Include="Ticket.cs" />
     <Compile Include="Users.cs" />
     <Compile Include="Vaccinations.cs" />
     <Compile Include="VideoCategories.cs" />

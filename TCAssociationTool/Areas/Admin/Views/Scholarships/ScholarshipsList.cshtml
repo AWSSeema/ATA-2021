@@ -150,11 +150,11 @@ else
                 <td class="t-t-c" style="text-align: left">@item.firstname</td>
                 <td class="t-t-c" style="text-align: left">@item.email</td>
                 <td class="t-t-c" style="text-align: left">@item.phone</td>
-                <td class="t-t-c" style="text-align: left">
+                <td class="t-t-c" style="text-align: center">
 
                     @if (item.documents != null && item.documents != "")
                     {
-                        <a href="@(loc + item.documents)" download="@item.documents" target="_blank">Download Document <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>
+                        <a href="@(loc + item.documents)" download="@item.documents" target="_blank">View </a>
                     }
                     else
                     {

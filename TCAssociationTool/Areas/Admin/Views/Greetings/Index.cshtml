@@ -9,11 +9,11 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $("#lastdate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-10:+10", altFormat: 'mm/dd/yy' });
-        $('#wGreetings').addClass('active');
+        $('#WGreetings').addClass('active');
         $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
         $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
-       
+        $("#lastdate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
+
         PagerClickBind();
     });
 
@@ -65,12 +65,13 @@
                     $('#link').val(objGreetings.link);
                     $('#target').val(objGreetings.target);
                     $('#id').val(objGreetings.id);
-                    var Date = Common.ConvertDate(objGreetings.lastdate);
-                    $('#lastdate').val(Date);
-                    if (Common.ConvertDate(objGreetings.lastdate) != '1/1/1') {
-                        $('#lastdate').show();
+                    $('#lastdate').val(objGreetings.Elastdate);
+                    //var Date = Common.ConvertDate(objGreetings.lastdate);
+                    //$('#lastdate').val(Date);
+                    //if (Common.ConvertDate(objGreetings.lastdate) != '1/1/1') {
+                    //    $('#lastdate').show();
                       
-                    }
+                    //}
 
                     $('#spantitle').html('');
                     $('#spanTarget').html('');
@@ -144,8 +145,8 @@
 </script>
 <input type="hidden" id="hdnimgvalidate" value="0" />
 <input id="hdnPageNo" type="hidden" value="1" />
-<input id="hdnsortcolumn" type="hidden" value="id" />
-<input id="hdnsortorder" type="hidden" value="ASC" />
+<input id="hdnsortcolumn" type="hidden" value="ID" />
+<input id="hdnsortorder" type="hidden" value="DESC" />
 
 <!-- breadcumb -->
 <div class="content-header">

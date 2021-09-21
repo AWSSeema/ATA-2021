@@ -47,7 +47,7 @@
     <ol class="breadcrumb">
         <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
         <li><a href="@Url.Action("Index", "Donors")"><i class="fa fa-list-alt"></i>Donors</a></li>
-        <li class="active">Edit Web Page</li>
+        <li class="active">Edit Donor</li>
     </ol>
 </div>
 <!--end breadcumb -->
@@ -82,20 +82,22 @@
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
                         <label>Phone No : </label>
-                        <input type="text" value="@objDetails.PhoneNo" id="Email" onclick="ResetValidateClass();" name="PhoneNo" class="form-control">
+                        <input type="text" value="@objDetails.PhoneNo" id="PhoneNo" onclick="return Common.isNumberKey(event); ResetValidateClass();" name="PhoneNo" class="form-control">
                     </div>
+                </div>
 
+                <div class="row">
                     <div class="col-xs-12 col-lg-3 col-sm-6">
                         <label>Category : <span class="red-t">*</span></label>
                         <select id="DonationCategoryId" class="form-control" name="DonationCategoryId" onclick="ResetValidateClass();">
                             <option value="">- Select Category -</option>
                             @if (lstDonationCategories.Count > 0)
-            {
-                foreach (var item in lstDonationCategories)
-                {
-                    <option @(item.CategoryName == objDetails.DonationProgram ? "selected=selected" : "") value="@(item.DonationCategoryId)">@(item.CategoryName)</option>
-}
-}
+                            {
+                                foreach (var item in lstDonationCategories)
+                                {
+                                    <option @(item.CategoryName == objDetails.DonationProgram ? "selected=selected" : "") value="@(item.DonationCategoryId)">@(item.CategoryName)</option>
+                                }
+                            }
                         </select>
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
@@ -108,8 +110,12 @@
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
                         <label>Amount : </label>
-                        <input type="text" id="Amount" value="@objDetails.Amount" name="Amount" class="form-control">
+                        <input type="text" onkeypress="return Common.isNumberKey(event)" id="Amount" value="@objDetails.Amount" name="Amount" class="form-control">
                     </div>
+
+                </div>
+
+                <div class="row">
                     <div class="col-xs-12 col-lg-3 col-sm-6">
                         <label>TransactionId : </label>
                         <input type="text" id="TransactionId" value=" @(objDetails.TransactionId == "0" ? "N/A" : objDetails.TransactionId)" name="TransactionId" class="form-control">
@@ -121,22 +127,22 @@
                             {
                                 <option value="">Select</option>
                                 foreach (var item in lstPaymentMethod)
-                                { 
-                                <option  @(item.PaymentMethodId == objDetails.PaymentMethodId ? "selected=selected" : "")  value="@item.PaymentMethodId">@item.PaymentMethod</option>
+                                {
+                                    <option @(item.PaymentMethodId == objDetails.PaymentMethodId ? "selected=selected" : "") value="@item.PaymentMethodId">@item.PaymentMethod</option>
                                 }
                             }
                         </select>
                         <span class="field-validation-error" id="spanPaymentMethodId"></span>
                     </div>
                     <div class="col-xs-12 col-lg-3 col-sm-6">
-                         <label>Payment Status :</label>
+                        <label>Payment Status :</label>
                         <select class="form-control" name="PaymentStatusId" id="PaymentStatusId">
                             @if (lstPaymentStatus != null)
                             {
                                 <option value="">Select</option>
                                 foreach (var item in lstPaymentStatus)
-                                { 
-                                <option  @(item.PaymentStatusId == objDetails.PaymentStatusId ? "selected=selected" : "") value="@item.PaymentStatusId">@item.PaymentStatus1</option>
+                                {
+                                    <option @(item.PaymentStatusId == objDetails.PaymentStatusId ? "selected=selected" : "") value="@item.PaymentStatusId">@item.PaymentStatus1</option>
                                 }
                             }
                         </select>
@@ -146,20 +152,22 @@
                         <label>OrderDate : </label>
                         <input type="text" id="OrderDate" value="@(objDetails.OrderDate==DateTime.MinValue?"":objDetails.OrderDate.ToString("dd/MM/yyyy"))" name="OrderDate" class="form-control">
                     </div>
-                   @* <div class="col-xs-12 col-lg-3 col-sm-6">
-                        <label>PaymentBy : </label>
-                        <input type="text" id="PaymentBy" value="@objDetails.PaymentBy" name="PaymentBy" class="form-control">
-                    </div>*@
+                </div>
+                @* <div class="col-xs-12 col-lg-3 col-sm-6">
+            <label>PaymentBy : </label>
+            <input type="text" id="PaymentBy" value="@objDetails.PaymentBy" name="PaymentBy" class="form-control">
+        </div>*@
+                <div class="row">
                     <div class="col-xs-12 col-lg-3 col-sm-6">
                         <label>Address : </label>
                         <textarea name="Address" id="Address" onclick="ResetValidateClass();" class="form-control">@objDetails.Address</textarea>
                     </div>
                 </div>
-                
-               
-              
-                 
-               
+
+
+
+
+
             </div>
         </div>
         <div class="box">

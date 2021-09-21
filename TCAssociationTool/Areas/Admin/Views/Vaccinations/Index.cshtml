@@ -2,7 +2,18 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+    var userRole = "";
 
+    HttpContext ctx = HttpContext.Current;
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+        userRole = authTicket.UserData;
+    }
 }
 
 <script type="text/javascript">
@@ -29,7 +40,9 @@
         var sortorder = $('#hdnsortorder').val();
         var items = $('#txtitems').val();
         var Search = $('#keyword').val().trim();
-      
+
+
+
         $.ajax({
             url: '@Url.Action("VaccinationsList", "Vaccinations")',
             type: 'GET',
@@ -48,7 +61,14 @@
         });
     }
 
-    
+    function validate(Id) {
+        if (Id == "") {
+            alert("Please select atleast one Item.");
+            return false;
+        }
+        return true;
+    }
+
     function ClearSearch() {
         $('#keyword').val('');
         $('#Type').val('');
@@ -84,7 +104,7 @@
             <div class="clearfix row">
                 <div class="col-xs-12 col-lg-3 col-sm-6">
                     <label>Search</label>
-                    <input type="text" placeholder="Member Name/First  Name /Last Name" name="keyword" id="keyword" class="form-control" />
+                    <input type="text" placeholder="Member Name/First  Name /phone" name="keyword" id="keyword" class="form-control" />
                 </div>
                 <div class="col-xs-12 col-lg-9 col-sm-6">
                     <div>
@@ -92,7 +112,11 @@
                     </div>
                     <button class="btn btn-primary" type="submit" onclick="VaccinationsBind(1);">Search</button>
                     <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
-                    <a data-toggle="modal" href="@Url.Action("AddVaccinations", "Vaccinations")" class="btn btn-danger pull-right">Add Vaccinations</a>
+                    @*<a data-toggle="modal" href="@Url.Action("AddVaccinations", "Vaccinations")" class="btn btn-danger pull-right">Add Vaccinations</a>*@
+                    @if (userRole.Contains("SuperAdmin"))
+                    {
+                <a class="btn btn-danger pull-right r-m10" id="deletemembers" onclick="DeleteAll();">Delete Vaccination(s) </a>
+                    }
                 </div>
             </div>
         </div>

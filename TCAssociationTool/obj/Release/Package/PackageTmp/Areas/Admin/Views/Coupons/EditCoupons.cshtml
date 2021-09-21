@@ -1,0 +1,106 @@
+﻿@{
+    ViewBag.Title = "EditCoupons";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+    List<TCAssociationTool.Entities.Coupons> lstCoupons = ViewBag.lstCoupons;
+
+    TCAssociationTool.Entities.Coupons objCoupons = ViewBag.objCoupons;
+}
+
+
+<script>
+    $(document).ready(function () {
+        $('#wCoupons').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $("#expirydate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-10:+10", altFormat: 'mm/dd/yy' });
+        $("#datemodified").datepicker({ changeMonth: true, changeYear: true, yearRange: "-10:+10", altFormat: 'mm/dd/yy' });
+
+    });
+
+    function Validate() {
+
+        if ($.trim($('#Code').val()) == '') { document.getElementsByName('Code')[0].placeholder = 'Required'; $('#Code').focus().addClass("validate"); return false; } else { $('#Code').focus().removeClass("validate"); }
+       // if ($.trim($('#DurationinDays').val()) == '') { document.getElementsByName('DurationinDays')[0].placeholder = 'Required'; $('#DurationinDays').focus().addClass("validate"); return false; } else { $('#DurationinDays').focus().removeClass("validate"); }
+
+
+        return true;
+    }
+    function ResetValidateClass() {
+        $('#Code').removeClass("validate");
+       }
+
+
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Edit Coupons </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Coupons")"><i class="fa fa-dashboard"></i>Coupons</a></li>
+        <li class="active">Edit Coupons</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="clearfix sepH_b"></div>
+    @using (Html.BeginForm("AddCoupons", "Coupons", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="hidden" name="Id" id="Id" value="@objCoupons.Id" />
+
+        <div class="box validation">
+            <div class="box-header">
+                <h3 class="box-title dis-in">Coupons Details </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>Code : <span class="red-t">*</span></label>
+                        <input type="text" id="Code" value="@objCoupons.code" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" name="Code" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>membership_type : </label>
+                        <input type="text" id="membership_type" value="@objCoupons.membership_type" onkeypress="ResetValidateClass();" onclick="ResetValidateClass();" name="membership_type" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>discount : </label>
+                        <input type="text" id="discount" value="@objCoupons.discount" onkeypress="return Common.isNumberKey(event)" onclick="ResetValidateClass();" name="discount" class="form-control">
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>expiry date </label>
+                        <input type="text" class="form-control date" value="@objCoupons.expirydate.ToString("dd-MM-yyyy")" id="expirydate" name="expirydate" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+                    </div>
+                    <div class="col-xs-12 col-lg-3 col-sm-6">
+                        <label>date modified</label>
+                        <input type="text" class="form-control date" value="@objCoupons.datemodified.ToString("dd-MM-yyyy")" id="datemodified" name="datemodified" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+            <div class="box">
+                <div class="box-body text-right">
+                    <input type="submit" value="Submit" class="btn btn-primary" onclick="return Validate();" />
+                    <a class="btn btn-info" href="@Url.Action("Index", "Coupons")">Cancel</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

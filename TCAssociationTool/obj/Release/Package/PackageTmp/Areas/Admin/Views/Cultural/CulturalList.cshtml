@@ -1,0 +1,242 @@
+﻿@using System.Configuration
+@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+
+    List<TCAssociationTool.Entities.Cultural> lstCultural = ViewBag.lstCultural;
+
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    }
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+    });
+
+    function DeleteAll() {
+        Id = Common.GetCheckBoxValue('checkbox')
+        if (validate(Id)) {
+            var val1 = confirm("Do you want to delete for selected members?");
+            if (val1) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("MembersDeleteAll", "Members")', // the URL of the controller action method
+                        data: { id: Id }, // optional data
+                        success: function (result) {
+                            $("#divmessage").html(result.data);
+                            $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+
+                            $('#divmessage').show();
+                            DetailsBind($('#hdnPageNo').val());
+                        },
+                        error: function (req, status, error) {
+                            $("#divmessage").html(result.data);
+                            $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            $('#divmessage').show();
+                        }
+                    });
+                }
+            }
+    }
+
+    function MailToCulturals() {
+        Id = Common.GetCheckBoxValue('checkbox')
+        if (validate(Id)) {
+             if (val1) {
+                $.ajax({
+                    type: "Get",
+                    url: '@Url.Action("SendMail", "Home")', // the URL of the controller action method
+                        data: { Email: Id }, // optional data
+                        success: function (result) {
+                            $("#divmessage").html(result.data);
+                            $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+
+                            $('#divmessage').show();
+                           
+                        },
+                        error: function (req, status, error) {
+                            $("#divmessage").html(result.data);
+                            $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            $('#divmessage').show();
+                        }
+                    });
+                }
+            }
+    }
+
+   function Select(check) {
+            var arr = document.getElementsByName(check);
+            if (arr[0].checked == true) {
+                Common.selectAll('checkbox', check);
+            }
+            else {
+                Common.clearAll('checkbox', check);
+            }
+        }
+
+
+</script>
+
+<table width="100%" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th class="table_checkbox">
+                <input type="checkbox" name="mainchk" onclick="javascript: Select('mainchk');" />
+            </th>
+            <th width="5%" align="center" style="text-align: center;">S.No.</th>
+            <th width="15%" style="text-align: left; padding: 8px 6px">
+                <a onclick="javascript:sortresult('firstname');" class="white-t-u">
+                    First Name  @if (sortcolumn == "firstname")
+                    {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                </a>
+            </th>
+            <th width="12%" style="padding: 8px 6px">
+                <a onclick="javascript:sortresult('lastname');" class="white-t-u">
+                    Last Name @if (sortcolumn == "lastname")
+                    {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                </a>
+            </th>
+            <th width="10%" style="padding: 8px 6px">
+                <a onclick="javascript:sortresult('amount');" class="white-t-u">
+                    Amount @if (sortcolumn == "amount")
+                    {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                </a>
+            </th>
+           
+            <th width="10%">
+                <a onclick="javascript:sortresult('category');" class="white-t-u">
+                    Category @if (sortcolumn == "category")
+                    {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                </a>
+            </th>
+            <th width="9%" style="padding: 8px 6px">
+                <a onclick="javascript:sortresult('location');" class="white-t-u">
+                    Location @if (sortcolumn == "location")
+                    {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                </a>
+            </th>
+            <th width="11%" style="padding: 8px 6px">
+                <a onclick="javascript:sortresult('datesent');" class="white-t-u">
+                    Date Sent @if (sortcolumn == "datesent")
+                    {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                </a>
+            </th>
+            <th width="14%" style="padding: 8px 6px">
+                <a onclick="javascript:sortresult('payment_methodid');" class="white-t-u">
+                    Payment Method @if (sortcolumn == "payment_methodid")
+                    {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                </a>
+            </th>
+            <th width="8%" style="padding: 8px 6px">
+                <a onclick="javascript:sortresult('cardno');" class="white-t-u">
+                    Card No @if (sortcolumn == "cardno")
+                    {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                </a>
+            </th>
+            <th width="18%" style="padding: 8px 6px">
+                <a onclick="javascript:sortresult('PaymentStatus');" class="white-t-u">
+                   P Status @if (sortcolumn == "PaymentStatus")
+                    {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                </a>
+            </th>
+            <th width="7%" style="padding: 8px 6px">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (lstCultural.Count != 0)
+        {
+            Int64 i = 1;
+            foreach (var item in lstCultural)
+            {
+
+        <tr>
+            @if (userRole.Contains("SuperAdmin"))
+            {
+                <td valign="top">
+                    <input type="checkbox" name="checkbox" id="checkbox-@i" value="@{@item.id}" />
+                </td>
+            }
+            <td style="text-align: center;">@item.RId</td>
+            <td style="text-align: left">@item.firstname</td>
+            <td style="text-align: left">@item.lastname</td>
+            <td style="text-align: left">@item.amount</td>
+            <td style="text-align: left">@item.category</td>
+
+            <td style="text-align: left">@item.location</td>
+            <td style="text-align: left">@item.datesent.ToString("dd/MM/yyyy")</td>
+            <td style="text-align: left">@item.PaymentMethod</td>
+            <td style="text-align: left">@item.cardno</td>
+            <td style="text-align: left">@(item.PaymentStatus == null ? "N/A" : item.PaymentStatus)</td>
+
+            <td>
+                <a onclick="window.open('@Url.Action("ViewCultural", "Cultural", new { id = item.id })', 'newwindow',  'width=1000,height=700'); return false;" title="View" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>
+                @if (userRole.Contains("SuperAdmin"))
+                {
+                    @*<a title="Edit" class="sepV_a" href="@Url.Action("EditCultural", "Cultural", new { id = item.id })"><i class="fa fa-pencil-square-o"></i></a>*@
+
+                    <a class="themedelete" onclick="javascript:CulturalDelete(@item.id);" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>
+                    <a title="wSendmail" class="sepV_a" href="@Url.Action("SendMail", "Home", new { Email = item.email }))"><i class="fa fa-envelope-o"></i></a>
+                }
+            </td>
+        </tr>
+                i++;
+            }
+
+
+        }
+        else
+        {
+            <tr>
+                <td colspan="10" class="norecords">No Members found.</td>
+            </tr>
+        }
+        <script type="text/javascript">
+           
+
+            function CulturalDelete(id) {
+
+                var conf = confirm('Do you want to delete this record?');
+
+                if (conf) {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("DeleteCultural", "Cultural")', // the URL of the controller action method
+                        data: { id: id }, // optional data
+                        datatype: "JSON",
+                        success: function (result) {
+                            if (result.ok) {
+                                $('#divmessage').html(result.data);
+                                DetailsBind(1);
+                                $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            }
+                            else {
+                                $('#divmessage').html(result.data);
+                                $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            }
+                        }
+                    });
+                }
+            }
+        </script>
+    </tbody>
+</table>
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.pageno, "pagination pagination-right m-t0"))

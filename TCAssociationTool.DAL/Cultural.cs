@@ -70,26 +70,31 @@ namespace TCAssociationTool.DAL
             return _status;
         }
 
-      
-       public DataTable GetCulturalsListByVariable(Int64 PaymentMethod, Int64 PaymentStatus, string Search, string Sort, int PageNo, int Items, ref int Total)
+     
+
+       public DataTable GetCulturalsListByVariable(string StartDate,string EndDate,Int64 PaymentStatus,string category, string location, string Search, string Sort, int PageNo, int Items, ref int Total)
         {
             DataTable dt = null;
             try
             {
                 _sqlP = new[]
                 {
-                    new SqlParameter("@Search",Search),
+                    new SqlParameter("@StartDate",StartDate),
+                    new SqlParameter("@EndDate",EndDate),
                     new SqlParameter("@PaymentStatus",PaymentStatus),
-                    new SqlParameter("@PaymentMethod",PaymentMethod),
+                    new SqlParameter("@category",category),
+                    new SqlParameter("@location",location),
+                    new SqlParameter("@Search",Search),
                     new SqlParameter("@Sort",Sort),
                     new SqlParameter("@PageNo",PageNo),
                     new SqlParameter("@Items",Items),
                     new SqlParameter("@Total",Total)
                 };
 
-                _sqlP[6].Direction = System.Data.ParameterDirection.Output;
+
+                _sqlP[9].Direction = System.Data.ParameterDirection.Output;
                 dt = _dbAccess.GetDataTable("culturalGetListByVariable", ref _sqlP);
-                Total = Convert.ToInt32(_sqlP[6].Value);
+                Total = Convert.ToInt32(_sqlP[9].Value);
             }
             catch (Exception ex)
             {
@@ -140,7 +145,8 @@ namespace TCAssociationTool.DAL
             return _status;
         }
 
-        public DataTable ExportCulturalList(string Search,Int64 PaymentStatusId, string StartDate, string EndDate, string ExpiryDate, string Sort)
+    
+        public DataTable ExportCulturalList(string StartDate, string EndDate, Int64 PaymentStatus, string category, string location, string Search, string Sort)
         {
             DataTable dt = null;
             int Total = 0;
@@ -148,19 +154,20 @@ namespace TCAssociationTool.DAL
             {
                 _sqlP = new[]
                 {
-                   
-                    new SqlParameter("@PaymentStatusId",PaymentStatusId),
+
                     new SqlParameter("@StartDate",StartDate),
                     new SqlParameter("@EndDate",EndDate),
-                    new SqlParameter("@ExpiryDate",ExpiryDate),
+                    new SqlParameter("@PaymentStatus",PaymentStatus),
+                    new SqlParameter("@category",category),
+                    new SqlParameter("@location",location),
                     new SqlParameter("@Search",Search),
                     new SqlParameter("@Sort",Sort),
                     new SqlParameter("@Total",Total)
                 };
 
-                _sqlP[6].Direction = System.Data.ParameterDirection.Output;
+                _sqlP[7].Direction = System.Data.ParameterDirection.Output;
                 dt = _dbAccess.GetDataTable("ExportCulturalGetList", ref _sqlP);
-                Total = Convert.ToInt32(_sqlP[6].Value);
+                Total = Convert.ToInt32(_sqlP[7].Value);
             }
             catch (Exception ex)
             {

@@ -16,9 +16,11 @@ namespace TCAssociationTool.Areas.Admin.Controllers
     [Models.SessionClass.PermitAccess(Roles = "SuperAdmin,")]
     public class DonorsController : Controller
     {
+
         TCAssociationTool.BLL.Donors _Donor = new TCAssociationTool.BLL.Donors();
         DAL.Donors _DonorsD = new DAL.Donors();
         BLL.Members _Members = new BLL.Members();
+        Entities.Members objMembers = new Entities.Members();
         BLL.DonationCategories _DonationCategories = new BLL.DonationCategories();
         TCAssociationTool.Entities.Donors objRequestCalls = new TCAssociationTool.Entities.Donors();
 
@@ -27,6 +29,10 @@ namespace TCAssociationTool.Areas.Admin.Controllers
         {
             try
             {
+                int qstatus = 0;
+                objMembers = _Members.AddMembershipRequirement(ref qstatus);
+                ViewBag.objMembers = objMembers;
+
                 int _qstatus = 0;
                 List<Entities.DonationCategories> _lstDonationCategories = _DonationCategories.GetDonationCategoriesList(ref _qstatus);
                 if (_qstatus == 1)
@@ -50,14 +56,14 @@ namespace TCAssociationTool.Areas.Admin.Controllers
 
         [HttpGet]
         [Areas.Admin.Models.SessionClass.SessionExpireFilter]
-        public ActionResult DonorsList(Int64 PaymentMethod = 0, Int64 PaymentStatus = 0, string search = "", string SortColumn = "UpdatedDate", string SortOrder = "Desc", int PageNo = 1, int PageItems = 10)
+        public ActionResult DonorsList(Int64 PaymentMethodId = 0, Int64 PaymentStatusId = 0, string StartDate = "", string EndDate = "", string search = "", string SortColumn = "UpdatedDate", string SortOrder = "Desc", int PageNo = 1, int PageItems = 10)
         {
             string Sort = (SortColumn != "" ? SortColumn + " " + SortOrder : "");
             int Total = 0;
             List<Entities.Donors> lstDonors = new List<Entities.Donors>();
             try
             {
-                lstDonors = _Donor.GetDonorsListByVariable(PaymentMethod,PaymentStatus, HttpUtility.UrlDecode(search.Trim()), Sort, PageNo, PageItems, ref Total);
+                lstDonors = _Donor.GetDonorsListByVariable(PaymentMethodId, PaymentStatusId, StartDate, EndDate, HttpUtility.UrlDecode(search.Trim()), Sort, PageNo, PageItems, ref Total);
                
             }
             catch (Exception ex)

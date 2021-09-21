@@ -1,0 +1,134 @@
+﻿@using System.Configuration;
+@{ Layout = null;}
+@{
+    string sortcolumn = (string)ViewBag.sortcolumn;
+    string sortorder = (string)ViewBag.sortorder;
+    Int64 Total = (Int64)ViewBag.total;
+    var PageNo = (Int64)ViewBag.pageno;
+    var Items = (Int64)ViewBag.items;
+
+
+    List<TCAssociationTool.Entities.LafitnessVouchers> lstLafitnessVouchers = ViewBag.lstLafitnessVouchers;
+
+
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+    string userRole = null;
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+        userRole = authTicket.UserData;
+    }
+    var loc = ConfigurationManager.AppSettings["baseurl"] + "Content/documents/";
+}
+
+<script type="text/javascript">
+
+
+    function DeleteLafitnessVouchers(Id) {
+        var val2 = confirm("Do you want to delete this record?");
+        if (val2) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete", "LafitnessVouchers")',  // the URL of the controller action method
+                data: { Id: Id}, // optional data
+                success: function (result) {
+                    if (result.ok) {
+                        $('#divmessage').html(result.data);
+                        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                        LafitnessVouchersBind($('#hdnPageNo').val());
+                    }
+                    else {
+                        $('#divmessage').html(result.data);
+                        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    }
+                },
+            });
+        }
+    }
+
+    
+  
+</script>
+
+@if (Total == -1)
+{
+    <div class="norecords">Sorry failed processing your request.</div>
+}
+else
+{
+    <table width="100%" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+
+                <th style="text-align: center;" width="5%">S.No.</th>
+                <th>
+                    <a onclick="javascript:sortresult('voucher');" class="white-t-u">
+                        Voucher @if (sortcolumn == "voucher")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+
+                <th width="20%">
+                    <a onclick="javascript:sortresult('member_id');" class="white-t-u">
+                        Member @if (sortcolumn == "member_id")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                
+                <th width="10%">
+                    <a onclick="javascript:sortresult('assigned_on');" class="white-t-u">
+                        Assigned On @if (sortcolumn == "assigned_on")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+                <th width="10%">
+                    <a onclick="javascript:sortresult('expire_date');" class="white-t-u">
+                        Expire Date @if (sortcolumn == "expire_date")
+                        {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
+                    </a>
+                </th>
+               
+
+                <th width="10%">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (lstLafitnessVouchers.Count != 0)
+            {
+                int i = 0;
+                foreach (var item in lstLafitnessVouchers)
+                {
+                    <tr valign="top">
+                       
+                        <td style="text-align: center;">@item.RId</td>
+                        <td class="t-t-c" style="text-align: left">@item.voucher</td>
+                        <td class="t-t-c" style="text-align: left">@item.member_id</td>
+                        <td class="t-t-c" style="text-align: left">@(item.assigned_on != null && item.assigned_on != DateTime.MinValue ? item.assigned_on.ToString("dd/MM/yyyy") : "N/A")</td>
+                        <td class="t-t-c" style="text-align: left">@(item.expire_date != null && item.expire_date != DateTime.MinValue ? item.expire_date.ToString("dd/MM/yyyy") : "N/A")</td>
+                        
+
+                        <td>
+                            <a onclick="LafitnessVouchersEdit(@item.Id);" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>
+                            @if (userRole.Contains("SuperAdmin"))
+                            {
+                                <a class="themedelete" onclick="javascript:DeleteLafitnessVouchers(@item.Id);" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>
+                            }
+                        </td>
+                    </tr>
+                    i++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td class="norecords" colspan="7">No LafitnessVouchers Found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+@Html.Raw(TCAssociationTool.BLL.Common.SetPaging((Int64)ViewBag.items, ref Total, (Int64)ViewBag.PageNo, "pagination pagination-centered"))

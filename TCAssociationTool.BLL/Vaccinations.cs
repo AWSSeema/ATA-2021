@@ -41,13 +41,20 @@ namespace TCAssociationTool.BLL
             return _status;
         }
 
-    
+        public Int64 VaccinationsDeleteAll(string Id)
+        {
+            Int64 _status = 0;
+            _status = _Vaccinations.VaccinationsDeleteAll(Id);
+            return _status;
+        }
+
+
 
         #endregion
 
         #region Entities filling
 
-     
+
 
         public TCAssociationTool.Entities.Vaccinations GetVaccinationsById(Int64 Id, ref int status)
         {
@@ -97,6 +104,7 @@ namespace TCAssociationTool.BLL
                     objVaccinations.position = (dr["position"] != DBNull.Value ? dr["position"].ToString() : "");
                     objVaccinations.relation = (dr["relation"] != DBNull.Value ? dr["relation"].ToString() : "");
                     objVaccinations.firstname = (dr["firstname"] != DBNull.Value ? dr["firstname"].ToString() : "");
+                    objVaccinations.lastname = (dr["lastname"] != DBNull.Value ? dr["lastname"].ToString() : "");
                     objVaccinations.phone = (dr["phone"] != DBNull.Value ? dr["phone"].ToString() : "");
                     objVaccinations.age = (dr["age"] != DBNull.Value ? dr["age"].ToString() : "");
                     objVaccinations.comments = (dr["comments"] != DBNull.Value ? dr["comments"].ToString() : "");

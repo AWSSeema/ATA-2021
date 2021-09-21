@@ -49,7 +49,45 @@
         }
     }
 
-   
+     function DeleteAll() {
+        Id = Common.GetCheckBoxValue('checkbox')
+        if (validate(Id)) {
+            var val1 = confirm("Do you want to delete for selected Item?");
+            if (val1) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("WomensdayDeleteAll", "Womensday")', // the URL of the controller action method
+                    data: { Id: Id }, // optional data
+                        success: function (result) {
+                            $("#divmessage").html(result.data);
+                            $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+
+                            $('#divmessage').show();
+                            WomensdayBind($('#hdnPageNo').val());
+                        },
+                        error: function (req, status, error) {
+                            $("#divmessage").html(result.data);
+                            $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                            $('#divmessage').show();
+                        }
+                    });
+                }
+            }
+    }
+
+
+    function Select(check) {
+        var arr = document.getElementsByName(check);
+        if (arr[0].checked == true) {
+            Common.selectAll('checkbox', check);
+        }
+        else {
+            Common.clearAll('checkbox', check);
+        }
+    }
+
 </script>
 
 @if (Total == -1)
@@ -61,7 +99,9 @@ else
     <table width="100%" class="table table-bordered table-hover">
         <thead>
             <tr>
-
+                <th class="table_checkbox">
+                    <input type="checkbox" name="mainchk" onclick="javascript: Select('mainchk');" />
+                </th>
                 <th style="text-align: center;" width="5%">S.No.</th>
                 <th>
                     <a onclick="javascript:sortresult('firstname');" class="white-t-u">
@@ -69,7 +109,7 @@ else
                         {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" />}
                     </a>
                 </th>
-              
+
                 <th width="10%">
                     <a onclick="javascript:sortresult('phone');" class="white-t-u">
                         phone @if (sortcolumn == "phone")
@@ -101,7 +141,7 @@ else
                     </a>
                 </th>
 
-          
+
 
                 <th width="10%">
                     <a onclick="javascript:sortresult('datesent');" class="white-t-u">
@@ -118,33 +158,38 @@ else
                 int i = 0;
                 foreach (var item in lstWomensday)
                 {
-                    <tr valign="top">
+            <tr valign="top">
+                @if (userRole.Contains("SuperAdmin"))
+                {
+                    <td valign="top">
+                        <input type="checkbox" name="checkbox" id="checkbox-@i" value="@{@item.Id}" />
+                    </td>
+                }
+                <td style="text-align: center;">@item.RId</td>
+                <td class="t-t-c" style="text-align: left">@item.firstname</td>
+                <td class="t-t-c" style="text-align: left">@item.phone</td>
+                <td class="t-t-c" style="text-align: left">@item.state</td>
+                <td class="t-t-c" style="text-align: left">@item.location</td>
+                <td class="t-t-c" style="text-align: left">@item.amount</td>
+                <td class="t-t-c" style="text-align: left">
 
-                        <td style="text-align: center;">@item.RId</td>
-                        <td class="t-t-c" style="text-align: left">@item.firstname</td>
-                        <td class="t-t-c" style="text-align: left">@item.phone</td>
-                        <td class="t-t-c" style="text-align: left">@item.state</td>
-                        <td class="t-t-c" style="text-align: left">@item.location</td>
-                        <td class="t-t-c" style="text-align: left">@item.amount</td>
-                        <td class="t-t-c" style="text-align: left">
-
-                          1
-                        </td>
-
-                      
+                    1
+                </td>
 
 
-                        <td class="t-t-c" style="text-align: left">@(item.datesent != null && item.datesent != DateTime.MinValue ? item.datesent.ToString("dd/MM/yyyy") : "N/A")</td>
 
-                        <td>
-                            <a href="@Url.Action("ViewWomensday", "Womensday", new { Id = item.Id})" title="View" class="r-p5"><i class="fa fa-eye"></i></a>
-                            <a href="@Url.Action("EditWomensday", "Womensday", new { Id = item.Id})" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>
-                            @if (userRole.Contains("SuperAdmin"))
-                            {
-                                <a class="themedelete" onclick="javascript:DeleteWomensday(@item.Id);" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>
-                            }
-                        </td>
-                    </tr>
+
+                <td class="t-t-c" style="text-align: left">@(item.datesent != null && item.datesent != DateTime.MinValue ? item.datesent.ToString("dd/MM/yyyy") : "N/A")</td>
+
+                <td>
+                    <a href="@Url.Action("ViewWomensday", "Womensday", new { Id = item.Id})" title="View" class="r-p5"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("EditWomensday", "Womensday", new { Id = item.Id})" title="Edit" class="r-p5"><i class="fa fa-pencil-square-o"></i></a>
+                    @if (userRole.Contains("SuperAdmin"))
+                    {
+                        <a class="themedelete" onclick="javascript:DeleteWomensday(@item.Id);" id="12" title="Delete"><i class="fa fa-trash-o"></i></a>
+                    }
+                </td>
+            </tr>
                     i++;
                 }
             }

@@ -1,0 +1,337 @@
+﻿@{
+    ViewBag.Title = "AddMailTemplate";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.Golf2021 objGolf2021 = ViewBag.objGolf2021;
+}
+
+<script type="text/javascript">
+    function Validate() {
+        var return_val = true;
+
+        if ($.trim($('#playertype').val()) == '') { document.getElementsByName('playertype')[0].placeholder = 'Required'; $('#playertype').focus().addClass("validate"); return false; } else { $('#playertype').focus().removeClass("validate"); }
+        if ($.trim($('#player1_name').val()) == '') { document.getElementsByName('player1_name')[0].placeholder = 'Required'; $('#player1_name').focus().addClass("validate"); return false; } else { $('#player1_name').focus().removeClass("validate"); }
+        if ($.trim($('#player1_phone').val()) == '') { document.getElementsByName('player1_phone')[0].placeholder = 'Required'; $('#player1_phone').focus().addClass("validate"); return false; } else { $('#player1_phone').focus().removeClass("validate"); }
+        if ($('#player1_email').val() == "") { $('#spanplayer1_email').html('Email Required.'); $('#player1_email').focus().addClass("red-border"); return false; } else { $('#spanplayer1_email').html(''); $('#player1_email').focus().removeClass("red-border"); }
+        if (!Common.CheckEmail($('#player1_email').val())) { $('#spanplayer1_email').html('Please enter valid email address.'); $('#player1_email').focus().addClass("red-border"); return false; } else { $('#spanplayer1_email').html(''); $('#player1_email').focus().removeClass("red-border"); }
+        if ($.trim($('#player1_tshirt').val()) == '') { document.getElementsByName('player1_tshirt')[0].placeholder = 'Required'; $('#player1_tshirt').focus().addClass("validate"); return false; } else { $('#player1_tshirt').focus().removeClass("validate"); }
+      
+
+        return return_val;
+    }
+
+   
+
+    function ResetValidateClass() {
+        $('#playertype').removeClass("validate");
+        $('#player1_name').removeClass("validate");
+        $('#player1_phone').removeClass("validate");
+        $('#player1_email').removeClass("validate");
+        $('#player1_tshirt').removeClass("validate");
+       
+    }
+
+    $(document).ready(function () {
+        $('#wGolf2021').addClass('active');
+        $('#Others').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
+    });
+</script>
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Golf 2021</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "Golf2021")"><i class="fa fa-print"></i>Golf 2021</a></li>
+        <li class="active">Edit Golf 2021</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box validation">
+        <!-- /.box-header -->
+        <div class="box-header">
+            <h3 class="box-title dis-in">Edit Golf 2021 </h3>
+        </div>
+        @using (Html.BeginForm("InsertGolf2021", "Golf2021", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input type="hidden" name="Id" id="Id" value="@objGolf2021.Id" />
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Player1 Details </h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Player Type <span class="red-t">*</span></label>
+                            <input type="text" class="form-control" name="playertype" value="@objGolf2021.playertype" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="playertype">
+                            <span class="field-validation-error" id="spanplayertype"></span>
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Amount <span class="red-t">*</span></label>
+                            <input type="text" class="form-control" value="@objGolf2021.amount" id="amount" name="amount" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+                            <span class="field-validation-error" id="spanamount"></span>
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Ip Address <span class="red-t">*</span></label>
+                            <input type="text" class="form-control" value="@objGolf2021.ip_address" id="ip_address" name="ip_address" onclick="ResetValidateClass();">
+                            <span class="field-validation-error" id="spanip_address"></span>
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Name <span class="red-t">*</span></label>
+                            <input type="text" class="form-control" value="@objGolf2021.player1_name" name="player1_name" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="player1_name">
+                            <span class="field-validation-error" id="spanplayer1_name"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Phone <span class="red-t">*</span></label>
+                            <input type="text" class="form-control" name="player1_phone" value="@objGolf2021.player1_phone" onclick="ResetValidateClass();" onkeypress="return Common.isNumberKey(event);" id="player1_phone">
+                            <span class="field-validation-error" id="spanplayer1_phone"></span>
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Email<span class="red-t">*</span></label>
+                            <input type="text" class="form-control" value="@objGolf2021.player1_email" id="player1_email" name="player1_email" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+                            <span class="field-validation-error" id="spanplayer1_email"></span>
+                        </div>
+                        @*<div class="col-xs-12 col-lg-3 col-sm-6">
+                <label>T Shirt <span class="red-t">*</span></label>
+                <input type="text" class="form-control" value="@objGolf2021.player1_tshirt" id="player1_tshirt" name="player1_tshirt" onclick="ResetValidateClass();">
+                <span class="field-validation-error" id="spanplayer1_tshirt"></span>
+            </div>*@
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Sponsorship <span class="red-t">*</span></label>
+                            <input type="text" class="form-control" value="@objGolf2021.sponsorship" name="sponsorship" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="sponsorship">
+                            <span class="field-validation-error" id="spansponsorship"></span>
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Payment Status <span class="red-t">*</span></label>
+                            <select class="form-control" id="payment_status" name="payment_status">
+                                <option value="">Select</option>
+                                <option @(objGolf2021.payment_status == 0 ? "selected=selected" : "") value="0">Pending</option>
+                                <option @(objGolf2021.payment_status == 1 ? "selected=selected" : "") value="1">Completed</option>
+
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Payment Method<span class="red-t">*</span></label>
+                            <input type="text" class="form-control" value="@objGolf2021.payment_method" id="payment_method" name="payment_method" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Card No <span class="red-t">*</span></label>
+                            <input type="text" class="form-control" value="@objGolf2021.cardno" id="cardno" name="cardno" onclick="ResetValidateClass();">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Payment Response <span class="red-t">*</span></label>
+                            <input type="text" class="form-control" value="@objGolf2021.payment_response" name="payment_response" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="payment_response">
+                            <span class="field-validation-error" id="spansponsorship"></span>
+                        </div>
+                    </div>
+
+                    @*<div class="row">
+
+                      
+
+                        <div class="col-xs-12 col-lg-4 col-sm-6">
+                           <label>Admin Comments </label>
+                            <textarea id="comments" name="comments" class="form-control">@objGolf2021.comments</textarea>
+
+                        </div>
+                    </div>*@
+
+                </div>
+
+            </div>
+
+
+
+            <!--<div class="box">-->
+                <!-- /.box-header -->
+                <!--<div class="box-header">
+                    <h3 class="box-title dis-in">Player2 Details </h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Name </label>
+                            <input type="text" class="form-control" value="@objGolf2021.player2_name" name="player2_name" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="player2_name">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Phone </label>
+                            <input type="text" class="form-control" name="player2_phone" value="@objGolf2021.player2_phone" onclick="ResetValidateClass();" onkeypress="return Common.isNumberKey(event);" id="player2_phone">
+
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Email</label>
+                            <input type="text" class="form-control" value="@objGolf2021.player2_email" id="player2_email" name="player2_email" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>T Shirt </label>
+                            <input type="text" class="form-control" value="@objGolf2021.player2_tshirt" id="player2_tshirt" name="player2_tshirt" onclick="ResetValidateClass();">
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <div class="box">-->
+                <!-- /.box-header -->
+                <!--<div class="box-header">
+                    <h3 class="box-title dis-in">Player3 Details </h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Name </label>
+                            <input type="text" class="form-control" value="@objGolf2021.player3_name" name="player3_name" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="player3_name">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Phone </label>
+                            <input type="text" class="form-control" name="player3_phone" value="@objGolf2021.player3_phone" onclick="ResetValidateClass();" onkeypress="return Common.isNumberKey(event);" id="player3_phone">
+
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Email</label>
+                            <input type="text" class="form-control" value="@objGolf2021.player3_email" id="player3_email" name="player3_email" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>T Shirt </label>
+                            <input type="text" class="form-control" value="@objGolf2021.player3_tshirt" id="player3_tshirt" name="player3_tshirt" onclick="ResetValidateClass();">
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div class="box">-->
+                <!-- /.box-header -->
+                <!--<div class="box-header">
+                    <h3 class="box-title dis-in">Player4 Details </h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Name </label>
+                            <input type="text" class="form-control" value="@objGolf2021.player4_name" name="player4_name" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="player4_name">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Phone </label>
+                            <input type="text" class="form-control" name="player4_phone" value="@objGolf2021.player4_phone" onclick="ResetValidateClass();" onkeypress="return Common.isNumberKey(event);" id="player4_phone">
+
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Email</label>
+                            <input type="text" class="form-control" value="@objGolf2021.player4_email" id="player4_email" name="player4_email" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
+
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>T Shirt </label>
+                            <input type="text" class="form-control" value="@objGolf2021.player4_tshirt" id="player4_tshirt" name="player4_tshirt" onclick="ResetValidateClass();">
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>-->
+
+            <!--<div class="box">-->
+                <!-- /.box-header -->
+                <!--<div class="box-header">
+                    <h3 class="box-title dis-in">Other Details </h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>IP </label>
+                            <input type="text" class="form-control" value="@objGolf2021.ip" name="ip" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();" id="ip">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Vcode </label>
+                            <input type="text" class="form-control" name="vcode" value="@objGolf2021.vcode" onclick="ResetValidateClass();"  id="vcode">
+
+                        </div>
+                
+                        <div class="col-xs-12 col-lg-4 col-sm-6">
+                            <label>Comments </label>
+                            <textarea id="comments" name="comments" class="form-control">@objGolf2021.comments</textarea>
+                           
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>-->
+
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body text-right">
+                    <input type="submit" onclick="return Validate()" class="btn btn-primary" id="add" value="Submit" name="add">
+                    <a class="btn btn-info" href="@Url.Action("Index", "Golf2021")">Cancel</a>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        }
+        <!-- /.box-body -->
+    </div>
+            <!-- /.content -->
+        </div>
+

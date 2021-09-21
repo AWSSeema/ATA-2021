@@ -33,6 +33,9 @@
             success: function (result) {
                 if (result.ok) {
                     $('#divmessage').html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+
                     $('#message').hide();
                     $('#divmessage').show();
                     Onload($('#hdnPageNo').val());
@@ -56,6 +59,9 @@
                 success: function (result) {
                     $('#message').hide();
                     $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+
                     Onload($('#hdnPageNo').val());
                 },
                 error: function (req, status, error) {

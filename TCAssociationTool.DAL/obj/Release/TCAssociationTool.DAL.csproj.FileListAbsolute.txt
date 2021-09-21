@@ -14,3 +14,9 @@ D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.DAL\obj\Release\
 D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.csproj.CoreCompileInputs.cache
 D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.dll
 D:\Development\Projects\TeluguAssociationTool\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.pdb
+D:\Development\Projects\ATA-2021\TCAssociationTool.DAL\bin\Release\TCAssociationTool.DAL.dll
+D:\Development\Projects\ATA-2021\TCAssociationTool.DAL\bin\Release\TCAssociationTool.DAL.pdb
+D:\Development\Projects\ATA-2021\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.csproj.AssemblyReference.cache
+D:\Development\Projects\ATA-2021\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.csproj.CoreCompileInputs.cache
+D:\Development\Projects\ATA-2021\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.dll
+D:\Development\Projects\ATA-2021\TCAssociationTool.DAL\obj\Release\TCAssociationTool.DAL.pdb

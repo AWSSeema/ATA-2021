@@ -1,0 +1,216 @@
+﻿@using System.Configuration;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    var imgloc = ConfigurationManager.AppSettings["baseurl"] + "Content/WomensdayLocations/NormalImages/";
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#lastdate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-10:+10", altFormat: 'mm/dd/yy' });
+        $('#MEvents').addClass('active');
+        $('#WWomensdayLocations').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+
+        PagerClickBind();
+    });
+
+    function sortresult(sortcolumn) {
+        $('#hdnsortorder').val(($('#hdnsortorder').val() == 'ASC' ? 'DESC' : 'ASC'));
+        $('#hdnsortcolumn').val(sortcolumn);
+        WomensdayLocationsBind(1);
+    }
+
+    function WomensdayLocationsBind(Pageno) {
+        var pageno = Common.Pageno(Pageno);
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var items = $('#txtitems').val();
+        var Search = $('#keyword').val();
+
+        $.ajax({
+            url: '@Url.Action("WomensdayLocationsList", "WomensdayLocations")',
+            type: 'GET',
+            cache: false,
+            data: { Search: Search, PageNo: pageno, SortColumn: sortcolumn, SortOrder: sortorder, Items: items },
+            success: function (result) {
+                $('#divThemeBanner').html(result);
+                PagerClickBind();
+            }
+        });
+    }
+
+    function PagerClickBind() {
+        $(".pagination a").bind("click", function () {
+            WomensdayLocationsBind($(this).text());
+        });
+    }
+
+    function EditWomensdayLocations(id) {
+        $.ajax({
+            url: '@Url.Action("EditWomensdayLocations", "WomensdayLocations")',
+            type: 'POST',
+            data: { id: id },
+            datatype: "JSON",
+            success: function (result) {
+                if (result.ok) {
+                    var objWomensdayLocations = result.data;
+                    $('#Id').val(objWomensdayLocations.Id);
+                    $('#location').val(objWomensdayLocations.location);
+                    $('#adminemail').val(objWomensdayLocations.adminemail);
+                    $('#amount').val(objWomensdayLocations.amount);
+                    $('#event_details').val(objWomensdayLocations.event_details);
+              
+
+                    $('#location').focus().removeClass("validate");
+                   $('#lbltitle').html('Edit Womensday Locations');
+                    $('#Aspanfile').html('');
+                    $("#AddWomensdayLocations").modal('show');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+                else {
+                    $('#divmessage').val(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            }
+        });
+    }
+
+
+    function Add() {
+        clearInnerPageCategory();
+        $("#AddWomensdayLocations").modal('show');
+        $('#lbltitle').html('Add Womensday Locations');
+    }
+
+    function clearInnerPageCategory() {
+        $('#id').val('0');
+        $('#location').val('');
+        $('#adminemail').val('');
+        $('#amount').val('');
+        $('#status2').val('');
+        $('#event_details').html('');
+       
+    }
+    function Validate() {
+
+        
+        if ($('#location').val() == "") { $('#location').addClass("validate"); return false; } else { $('#location').focus().removeClass("validate"); }
+        if ($('#adminemail').val() == "") { $('#adminemail').addClass("validate"); return false; } else { $('#adminemail').focus().removeClass("validate"); }
+        if ($('#amount').val() == "") { $('#amount').addClass("validate"); return false; } else { $('#amount').focus().removeClass("validate"); }
+        if ($('#event_details').val() == "") { $('#event_details').addClass("validate"); return false; } else { $('#event_details').focus().removeClass("validate"); }
+
+        return true;
+    }
+
+    function ResetValidateClass() {
+        $('#location').removeClass("validate");
+        $('#adminemail').removeClass("validate");
+        $('#amount').removeClass("validate");
+        $('#event_details').removeClass("validate");
+    }
+
+    function ClearSearch() {
+        $('#keyword').val('');
+        WomensdayLocationsBind(1);
+    }
+</script>
+<input type="hidden" id="hdnimgvalidate" value="0" />
+<input id="hdnPageNo" type="hidden" value="1" />
+<input id="hdnsortcolumn" type="hidden" value="id" />
+<input id="hdnsortorder" type="hidden" value="Desc" />
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Womensday Locations </h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active"><i class="fa fa-th-large"></i> Womensday Locations</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+<div class="content">
+    <!-- Main content -->
+
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box">
+        <div class="clearfix box-body">
+            <div class="clearfix row">
+                <div class="col-xs-12 col-lg-4 col-sm-6">
+                    <label>Search</label>
+                    <input type="text" placeholder="Location/Admin email" name="keyword" id="keyword" class="form-control" />
+                </div>
+                <div class="col-xs-12 col-lg-8 col-sm-6">
+                    <div>
+                        <label>&nbsp;</label>
+                    </div>
+                    <button class="btn btn-primary" type="submit" onclick="WomensdayLocationsBind(1);">Search</button>
+                    <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
+                    <a data-toggle="modal" onclick="Add();" class="btn btn-danger pull-right">Add </a>
+                </div>
+            </div>
+        </div>
+        <div id="divThemeBanner" class="box-body table-responsive">
+            @{Html.RenderAction("WomensdayLocationsList", "WomensdayLocations");}
+        </div>
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="AddWomensdayLocations" tabindex="-1" role="dialog" aria-hidden="true">
+    @using (Html.BeginForm("AddWomensdayLocations", "WomensdayLocations", FormMethod.Post, new { enctype = "multipart/form-data", style = "margin-bottom:0" }))
+    {
+        <input type="hidden" id="Id" name="Id" value="0" />
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span id="lbltitle"></span></h4>
+                </div>
+                <div class="modal-body validation">
+                    <div class="row">
+
+                      
+                        <div class="col-xs-12 col-lg-12" style="margin-bottom:5px;">
+                            <label>Location <span class="red-t">*</span> </label>
+                            <input type="text" name="location" placeholder="" id="location" value="" class="form-control">
+                        </div>
+                       
+                        <div class="col-xs-12 col-lg-12" style="margin-bottom:5px;">
+                            <label>Admin Email </label>
+                            <input type="text" name="adminemail" placeholder="" id="adminemail" value="" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-12" style="margin-bottom:5px;">
+                            <label>Amount </label>
+                            <input type="text" name="amount" onkeypress="return Common.isNumberKey(event)" placeholder="" id="amount" value="" class="form-control">
+                        </div>
+                        <div class="col-xs-12 col-lg-12" style="margin-bottom:5px;">
+                            <label>
+                                Event ID
+                                (Get venue, date, link from event table):
+                            </label>
+                            <input type="text" name="event_details" id="event_details" value="" class="form-control">
+                        </div>
+                       
+
+                    </div>
+                </div>
+                <div class="modal-footer clearfix">
+                    <input type="submit" onclick="return Validate();" value="Submit" class="btn btn-danger">
+                    <a class="btn btn-primary pull-left" data-dismiss="modal">Cancel</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

@@ -116,7 +116,7 @@
             <table width="96%" cellspacing="0" cellpadding="4" border="0" align="center" id="ViewProfile">
                 <tbody>
                     <tr>
-                        <td width="13%">User Name</td>
+                        <td width="13%">First Name</td>
                         <td width="87%">@objuser.UserName</td>
                     </tr>
                     <tr>
@@ -142,7 +142,7 @@
                     @Html.Hidden("Type", "Profile")
                     <tbody>
                         <tr>
-                            <td width="13%">User Name</td>
+                            <td width="13%">First Name</td>
                             <td width="87%">@objuser.UserName</td>
                         </tr>
                         <tr>
@@ -189,15 +189,15 @@
             <div class="box-body">
                 <div class="row validation">
                     <div class="col-xs-12 col-lg-4 col-sm-6">
-                        <label>Old password</label>
+                        <label>Old password :  <span class="red-t">*</span></label>
                         <input type="password" name="OldPassword" id="OldPassword" onclick="resetclass();" onkeypress="resetclass();" maxlength="15" class="form-control">
                     </div>
                     <div class="col-xs-12 col-lg-4 col-sm-6">
-                        <label>New Password</label>
+                        <label>New Password :  <span class="red-t">*</span></label>
                         <input type="password" name="NewPassword" id="NewPassword" onclick="resetclass();" onkeypress="resetclass();" maxlength="15" class="form-control">
                     </div>
                     <div class="col-xs-12 col-lg-4 col-sm-6">
-                        <label>Confirm Password</label>
+                        <label>Confirm Password :  <span class="red-t">*</span></label>
                         <input type="password" name="ConfPassword" id="ConfPassword" onclick="resetclass();" onkeypress="resetclass();" maxlength="15" class="form-control">
                     </div>
                 </div>

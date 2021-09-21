@@ -1,0 +1,160 @@
+﻿@{
+    ViewBag.Title = "AddMailTemplate";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.Health objHealth = ViewBag.objHealth;
+    string imgurl = System.Configuration.ConfigurationManager.AppSettings["baseurl"] + "Content/documents/";
+    var cssloc = System.Configuration.ConfigurationManager.AppSettings["usersiteurl"] + "Content/Admin/front-end-style.css";
+
+}
+
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+
+<script type="text/javascript">
+    function Validate() {
+        var return_val = true;
+
+        if ($.trim($('#heading').val()) == '') { document.getElementsByName('heading')[0].placeholder = 'Required'; $('#heading').focus().addClass("validate"); return false; } else { $('#heading').focus().removeClass("validate"); }
+        if ($.trim($('#pagetitle').val()) == '') { document.getElementsByName('pagetitle')[0].placeholder = 'Required'; $('#pagetitle').focus().addClass("validate"); return false; } else { $('#pagetitle').focus().removeClass("validate"); }
+        if ($.trim($('#issuedate').val()) == '') { document.getElementsByName('issuedate')[0].placeholder = 'Required'; $('#issuedate').focus().addClass("validate"); return false; } else { $('#issuedate').focus().removeClass("validate"); }
+
+
+        return return_val;
+    }
+
+
+
+    function ResetValidateClass() {
+
+        $('#heading').removeClass("validate");
+        $('#pagetitle').removeClass("validate");
+        $('#issuedate').removeClass("validate");
+
+    }
+
+    $(document).ready(function () {
+        $('#wHealth').addClass('active');
+        $('#Others').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+      //  $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
+        $("#issuedate").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
+
+
+    });
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1> Health Bulletin</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "Health")"><i class="fa fa-print"></i> Health Bulletin</a></li>
+        <li class="active">Edit Health Bulletin</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+
+
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box validation">
+        <!-- /.box-header -->
+      
+        @using (Html.BeginForm("InsertHealth", "Health", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input type="hidden" name="Id" id="Id" value="@objHealth.Id" />
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Edit Health Bulletin</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Page Name :<span class="red-t">*</span> </label>
+                            <input type="text" class="form-control" name="heading" value=" @objHealth.heading" onclick="ResetValidateClass();" id="heading">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Issue Date : <span class="red-t">*</span></label>
+                            <input type="text" class="form-control" name="issuedate" value=" @objHealth.issuedate" onclick="ResetValidateClass();" id="issuedate">
+
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Page Url :</label>
+                            <input type="text" class="form-control" name="pageurl" value=" @objHealth.pageurl" onclick="ResetValidateClass();" id="pageurl">
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Page Title :<span class="red-t">*</span></label>
+                            <textarea id="pagetitle" name="pagetitle" class="form-control">@objHealth.pagetitle</textarea>
+
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Meta Keywords :</label>
+                            <textarea id="metakeywords" name="metakeywords" class="form-control">@objHealth.metakeywords</textarea>
+
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Meta Description :</label>
+                            <textarea id="metadesc" name="metadesc" class="form-control">@objHealth.metadesc</textarea>
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Topics :</label>
+                            <textarea id="topics" name="topics" class="form-control">@objHealth.topics</textarea>
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-12 col-sm-6">
+                            <label>Description : <span class="red-t">*</span></label>
+                            <textarea rows="10" name="description" id="description" cols="80" style="visibility: hidden; display: none;">@objHealth.description</textarea><br />
+                            <label id="lblDescription" class="field-validation-error"></label>
+                            <script type="text/javascript">
+                                var editor = CKEDITOR.replace('description', { contentsCss: '@(cssloc)' });
+                            CKFinder.setupCKEditor(editor, '@(System.Configuration.ConfigurationManager.AppSettings["baseurl"])ckfinder/');
+                            </script>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body text-right">
+                    <input type="submit" onclick="return Validate()" class="btn btn-primary" id="add" value="Submit" name="add">
+
+                    <a class="btn btn-info" href="@Url.Action("Index", "Health")">Cancel</a>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        }
+        <!-- /.box-body -->
+    </div>
+    <!-- /.content -->
+</div>
+

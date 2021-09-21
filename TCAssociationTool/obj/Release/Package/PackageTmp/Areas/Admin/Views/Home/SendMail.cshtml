@@ -17,6 +17,7 @@
     function Validate() {
         if ($('#EmailFrom').val() == '') { document.getElementsByName('EmailFrom')[0].placeholder = 'Required'; $('#EmailFrom').focus().addClass("validate"); return false; } else { $('#EmailFrom').focus().removeClass("validate"); }
         if ($('#EmailTo').val() == '') { document.getElementsByName('EmailTo')[0].placeholder = 'Required'; $('#EmailTo').focus().addClass("validate"); return false; } else { $('#EmailTo').focus().removeClass("validate"); }
+        if (!Common.CheckEmail($('#EmailTo').val())) { $('#EmailTo').val(''); document.getElementsByName('EmailTo')[0].placeholder = 'Please enter valid email id.'; $('#EmailTo').focus().addClass("validate"); return false; } else { $('#EmailTo').focus().removeClass("validate"); }
         if ($('#MailTemplateId').val() == '') { document.getElementsByName('MailTemplateId')[0].placeholder = 'Required'; $('#MailTemplateId').focus().addClass("validate"); return false; } else { $('#MailTemplateId').focus().removeClass("validate"); }
         if ($('#Subject').val() == '') { document.getElementsByName('Subject')[0].placeholder = 'Required'; $('#Subject').focus().addClass("validate"); return false; } else { $('#Subject').focus().removeClass("validate"); }
         if (CKEDITOR.instances.description.getData() == "") { $('#description').focus(); $('#spandescription').html('Required.'); return false; } else { $('#description').val(CKEDITOR.instances.description.getData()); $('#spandescription').html(''); }
@@ -83,12 +84,12 @@
 
                     </div>
                     <div class="col-xs-12 col-lg-4 col-sm-6">
-                        <label>Email To</label>
+                        <label>Email To <span class="red-t">*</span></label>
                         <input type="text" placeholder="Email To"  class="form-control" value="@ViewBag.Email" name="EmailTo" id="EmailTo" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
                         <span class="clearfix">If multiple mails, separate by (,) comma</span>
                     </div>
                     <div class="col-xs-12 col-lg-5 col-sm-6">
-                        <label>Subject</label>
+                        <label>Subject <span class="red-t">*</span></label>
                         <input type="text" placeholder="Subject" class="form-control" name="Subject" id="Subject" onclick="ResetValidateClass();" onkeypress="ResetValidateClass();">
                     </div>
                     @*<div class="col-xs-12 col-lg-3 col-sm-6">

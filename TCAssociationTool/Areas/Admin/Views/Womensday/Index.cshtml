@@ -2,14 +2,26 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+    var userRole = "";
 
+    HttpContext ctx = HttpContext.Current;
+    HttpCookie authCookie = HttpContext.Current.Request.Cookies["UserCookie"];
+
+    FormsAuthenticationTicket authTicket;
+
+    if (this.User.Identity.IsAuthenticated && this.User.Identity.Name != null && Context.Session != null)
+    {
+        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+        userRole = authTicket.UserData;
+    }
 }
 
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('#wWomensday').addClass('active');
-        $('#Others').addClass('active');
+       
+        $('#MEvents').addClass('active');
+        $('#WWomensday').addClass('active');
         $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
         $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
         $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
@@ -49,10 +61,29 @@
         });
     }
 
+    function validate(Id) {
+        if (Id == "") {
+            alert("Please select atleast one Item.");
+            return false;
+        }
+        return true;
+    }
+
+
+    function ExporttoExcel() {
+        var sortcolumn = $('#hdnsortcolumn').val();
+        var sortorder = $('#hdnsortorder').val();
+        var Search = $('#keyword').val().trim();
+        var location = $('#location').val();
+    
+
+        window.location.href = "Admin/Womensday/WomensdayExporttoExcel?Search=" + Search + "&location=" + location +  "&SortColumn=" + sortcolumn + "&SortOrder=" + sortorder;
+
+    }
 
     function ClearSearch() {
         $('#keyword').val('');
-        $('#Type').val('');
+        $('#location').val('');
         WomensdayBind(1);
     }
 </script>
@@ -87,13 +118,43 @@
                     <label>Search</label>
                     <input type="text" placeholder="Member Name/First  Name /Last Name" name="keyword" id="keyword" class="form-control" />
                 </div>
-                <div class="col-xs-12 col-lg-9 col-sm-6">
+                <div class="col-xs-4 col-lg-3 col-sm-6">
+                    <label>Location</label>
+                    <select class="form-control" name="location" id="location">
+                        <option value="">--Select--</option>
+                        <option value="Atlanta"> Atlanta</option>
+                        <option value="Austin"> Austin</option>
+                        <option value="Boston"> Boston</option>
+                        <option value="Chicago Land"> Chicago Land</option>
+                        <option value="Dallas"> Dallas</option>
+                        <option value="DC Metro"> DC Metro</option>
+                        <option value="Delaware"> Delaware</option>
+                        <option value="Detroit"> Detroit</option>
+                        <option value="Los Angeles"> Los Angeles</option>
+                        <option value="Maryland"> Maryland</option>
+                        <option value="Nashville"> Nashville</option>
+                        <option value="New England"> New England</option>
+                        <option value="New Jersey"> New Jersey</option>
+                        <option value="Orlando"> Orlando</option>
+                        <option value="Raleigh"> Raleigh</option>
+                        <option value="Richmond"> Richmond</option>
+                        <option value="Seattle"> Seattle</option>
+                        <option value="Washington DC"> Washington DC</option>
+                    </select>
+                </div>
+                <div class="col-xs-12 col-lg-6 col-sm-6">
                     <div>
                         <label>&nbsp;</label>
                     </div>
                     <button class="btn btn-primary" type="submit" onclick="WomensdayBind(1);">Search</button>
                     <button class="btn btn-info" type="submit" onclick="ClearSearch();">Clear</button>
                     <a data-toggle="modal" href="@Url.Action("AddWomensday", "Womensday")" class="btn btn-danger pull-right">Add Womensday</a>
+                    <a class="btn btn-danger pull-right r-m10" onclick="ExporttoExcel();">Export to Excel</a>
+
+                    @if (userRole.Contains("SuperAdmin"))
+                    {
+                <a class="btn btn-danger pull-right r-m10" id="delete" onclick="DeleteAll();">Delete Registration(s) </a>
+                    }
                 </div>
             </div>
         </div>
@@ -103,4 +164,3 @@
 
     </div>
 </div>
-

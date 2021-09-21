@@ -1,0 +1,208 @@
+﻿@{
+    ViewBag.Title = "AddMailTemplate";
+    Layout = "~/Areas/Admin/Views/Shared/_MainLayout.cshtml";
+
+    TCAssociationTool.Entities.CulturalRegistrations objCulturalRegistrations = ViewBag.objCulturalRegistrations;
+    string imgurl = System.Configuration.ConfigurationManager.AppSettings["baseurl"] + "Content/documents/";
+}
+
+<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="ckfinder/ckfinder.js"></script>
+
+<script type="text/javascript">
+    function Validate() {
+        var return_val = true;
+
+        if ($.trim($('#comments').val()) == '') { document.getElementsByName('comments')[0].placeholder = 'Required'; $('#comments').focus().addClass("validate"); return false; } else { $('#comments').focus().removeClass("validate"); }
+       
+
+        return return_val;
+    }
+
+
+
+    function ResetValidateClass() {
+
+        $('#comments').removeClass("validate");
+    
+    }
+
+    $(document).ready(function () {
+        $('#wGolf2021').addClass('active');
+        $('#Others').addClass('active');
+        $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+        $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+      //  $(".date").datepicker({ changeMonth: true, changeYear: true, yearRange: "-90:+0", altFormat: 'mm/dd/yy' });
+        $("#datesent").datepicker({ changeMonth: true, changeYear: true, yearRange: "-50:+50", altFormat: 'dd/mm/yy', dateFormat: "dd/mm/yy" });
+
+
+    });
+</script>
+
+<!-- breadcumb -->
+<div class="content-header">
+    <h1>Cultural Registrations</h1>
+    <ol class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="@Url.Action("Index", "CulturalRegistrations")"><i class="fa fa-print"></i>Cultural Registrations</a></li>
+        <li class="active">View Cultural Registration</li>
+    </ol>
+</div>
+<!--end breadcumb -->
+
+
+<div class="content">
+    <!-- Main content -->
+    <div id="divmessage">
+        @if (TempData["message"] != null)
+        {@Html.Raw(TempData["message"].ToString())}
+
+        @if (ViewBag.message != null)
+        {@Html.Raw(ViewBag.message.ToString())}
+    </div>
+    <div class="box validation">
+        <!-- /.box-header -->
+        <div class="box-header">
+            <h3 class="box-title dis-in">View CulturalRegistrations </h3>
+        </div>
+        @using (Html.BeginForm("InsertCulturalRegistrations", "CulturalRegistrations", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input type="hidden" name="Id" id="Id" value="@objCulturalRegistrations.Id" />
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">View Registration Details</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Item Title</label>
+                            @objCulturalRegistrations.item_title
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Item Type</label>
+                            @objCulturalRegistrations.item_type
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> Item Description </label>
+                            @objCulturalRegistrations.item_description
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Group Name</label>
+                            @objCulturalRegistrations.group_name
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Minutes </label>
+                            @objCulturalRegistrations.minutes
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Url</label>
+                            @objCulturalRegistrations.url
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Choreographer</label>
+                            @objCulturalRegistrations.choreographer
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-header">
+                    <h3 class="box-title dis-in">Contact Details</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Address1</label>
+                            @objCulturalRegistrations.address1
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Address2 </label>
+                            @objCulturalRegistrations.address2
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> City </label>
+                            @objCulturalRegistrations.city
+                        </div>
+
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label> State </label>
+                            @objCulturalRegistrations.state
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>ZipCode </label>
+                            @objCulturalRegistrations.zip
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Email</label>
+                            @objCulturalRegistrations.email
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Mobile</label>
+                            @objCulturalRegistrations.mobile
+                        </div>
+                        <div class="col-xs-12 col-lg-3 col-sm-6">
+                            <label>Name</label>
+                            @objCulturalRegistrations.name
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-lg-3 col-sm-6">
+                    <label>Admin Comments </label>
+                    <textarea id="comments" name="comments" class="form-control">@objCulturalRegistrations.comments</textarea>
+
+                </div>
+
+            </div>
+
+
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body text-right">
+                    <input type="submit" onclick="return Validate()" class="btn btn-primary" id="add" value="Submit" name="add">
+
+                    <a class="btn btn-info" href="@Url.Action("Index", "CulturalRegistrations")">Cancel</a>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        }
+        <!-- /.box-body -->
+    </div>
+    <!-- /.content -->
+</div>
+

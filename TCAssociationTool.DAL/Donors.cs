@@ -121,7 +121,7 @@ namespace TCAssociationTool.DAL
             return _status;
         }
         
-        public DataTable GetDonorsListByVariable(Int64 PaymentMethod, Int64 PaymentStatus, string Search, string Sort, int PageNo, int Items, ref int Total)
+        public DataTable GetDonorsListByVariable(Int64 PaymentMethodId, Int64 PaymentStatusId, string StartDate, string EndDate, string Search, string Sort, int PageNo, int Items, ref int Total)
         {
             DataTable dt = null;
             try
@@ -129,17 +129,19 @@ namespace TCAssociationTool.DAL
                 _sqlP = new[] 
                 {
                     new SqlParameter("@Search",Search),
-                    new SqlParameter("@PaymentStatus",PaymentStatus),
-                    new SqlParameter("@PaymentMethod",PaymentMethod),
+                    new SqlParameter("@PaymentStatusId",PaymentStatusId),
+                    new SqlParameter("@PaymentMethodId",PaymentMethodId),
+                    new SqlParameter("@StartDate",StartDate),
+                    new SqlParameter("@EndDate",EndDate),
                     new SqlParameter("@Sort",Sort),
                     new SqlParameter("@PageNo",PageNo),
                     new SqlParameter("@Items",Items),                    
                     new SqlParameter("@Total",Total)
                 };
 
-                _sqlP[6].Direction = System.Data.ParameterDirection.Output;
+                _sqlP[8].Direction = System.Data.ParameterDirection.Output;
                 dt = _dbAccess.GetDataTable("DonorsGetListByVariable", ref _sqlP);
-                Total = Convert.ToInt32(_sqlP[6].Value);
+                Total = Convert.ToInt32(_sqlP[8].Value);
             }
             catch (Exception ex)
             {

@@ -37,8 +37,29 @@
     $(document).ready(function () {
         $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
         $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
-        $('#MWebsite').addClass('active'); 
+        $('#MWebsite').addClass('active');
     });
+
+
+       function EnquiryStatus(EnquiryId) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("EnquiryStatus", "Enquiry")',  // the URL of the controller action method
+                data: { EnquiryId: EnquiryId }, // optional data
+                success: function (result) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    EnquiryBind(1);
+                },
+                error: function (req, status, error) {
+                    $("#divmessage").html(result.data);
+                    $('.alert-danger').append('<i class="fa fa-ban"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                    $('.alert-success').append('<i class="fa fa-check"></i><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>');
+                }
+            });
+    }
+
 </script>
 
 @if (Total == -1)
@@ -60,8 +81,8 @@ else
                 <th width="12%"><a onclick="javascript:sortresult('UpdatedDate');" class="white-t-u">Posted Date @if (sortcolumn == "UpdatedDate")
                                                                                                                  {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a></th>
 
-                <th width="11%"><a onclick="javascript:sortresult('IsActive');" class="white-t-u">Status @if (sortcolumn == "IsActive")
-                                                                                                         {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a></th>
+                @*<th width="11%"><a onclick="javascript:sortresult('IsActive');" class="white-t-u">Status @if (sortcolumn == "IsActive")
+                                                                                                         {<img alt="@(sortorder)" title="@(sortorder)" src="Content/Admin/images/sort_@(sortorder).gif" /> }</a></th>*@
 
                 <th width="7%">Action</th>
             </tr>
@@ -79,7 +100,7 @@ else
                     <td>@item.Email</td>
                     <td>@(item.Field1 == null ? "N/A" : item.Field1)</td>
                     <td>@item.InsertedTime.ToString("MM/dd/yyyy")</td>
-                    <td>
+                    @*<td>
                         @{
                     var isactive = "";
                     var active = "";
@@ -100,7 +121,7 @@ else
                                     <li><a @Html.Raw(disable) >Pending</a></li>
                                 </ul>
                             </div>      
-                        }</td>
+                        }</td>*@
                     <td>
                         @*<a  href="@Url.Action("EditEnquiry", "Enquiries", new { EnquiryId = item.EnquiryId })"><i class="fa fa-pencil-square-o"></i></a>*@
                         <a  href="@Url.Action("ViewEnquiry", "Enquiry", new { EnquiryId = item.EnquiryId })" ><i class="fa fa-eye"></i></a>
